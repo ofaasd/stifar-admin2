@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\admin\RuangController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,3 +19,4 @@ Route::get('/', function () {
 })->name('/');
 
 Route::view('index', 'index')->name('index');
+Route::resource('admin/masterdata/ruang', RuangController::class)->name('index','ruang');
