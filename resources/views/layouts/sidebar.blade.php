@@ -56,9 +56,9 @@
                     {{-- <li><a href="{{ route('ruang/')}}">Ruang</a></li> --}}
                     <li><a href="#">Sesi</a></li>
                     <li><a href="/admin/masterdata/asal-sekolah">Sekolah</a></li>
-                    <li><a href="#">Waktu</a></li>
-                    <li><a href="#">Rumpun</a></li>
-                    <li><a href="#">Fakultas</a></li>
+                    <li><a href="/admin/masterdata/waktu">Waktu</a></li>
+                    <li><a href="/admin/masterdata/rumpun">Rumpun</a></li>
+                    <li><a href="/admin/masterdata/fakultas">Fakultas</a></li>
                 </ul>
             </li>
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
