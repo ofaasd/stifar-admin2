@@ -7,6 +7,7 @@ use App\Http\Controllers\admin\GelombangController;
 use App\Http\Controllers\admin\WaktuController;
 use App\Http\Controllers\admin\FakultasController;
 use App\Http\Controllers\admin\RumpunController;
+use App\Http\Controllers\admin\TahunAjaranController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,3 +31,4 @@ Route::resource('admin/masterdata/gelombang', GelombangController::class)->name(
 Route::resource('admin/masterdata/waktu', WaktuController::class)->name('index','waktu');
 Route::resource('admin/masterdata/fakultas', FakultasController::class)->name('index','fakultas');
 Route::resource('admin/masterdata/rumpun', RumpunController::class)->name('index','rumpun');
+Route::resource('admin/masterdata/ta', TahunAjaranController::class)->name('index','ta');

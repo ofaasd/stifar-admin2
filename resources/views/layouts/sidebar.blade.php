@@ -41,7 +41,7 @@
                             <li><a href="#">Renstra</a></li>
                         </ul>
                     </li>
-                    <li><a href="#">Tahun Ajaran</a></li>
+                    <li><a href="/admin/masterdata/ta">Tahun Ajaran</a></li>
                     <li><a href="#">Jenjang</a></li>
                     <li><a href="#">Jabatan</a></li>
                     <li>
