@@ -13,7 +13,7 @@
 
 :root {
     --theme-deafult: #7366ff;
-    --theme-secondary: #f73164;
+    --theme-secondary: #0cc1ee;
     --light-background: rgba(242, 243, 247, 0.7);
     --body-font-color: #2F2F3B;
     --chart-border: #ECF3FA;
@@ -37,7 +37,7 @@
     --fc-button-bg-color: var(--theme-deafult);
     --fc-button-active-bg-color: var(--theme-deafult);
     --fc-button-active-border-color: var(--theme-deafult);
-    --fc-button-border-color: var(--theme-deafult); 
+    --fc-button-border-color: var(--theme-deafult);
     --fc-button-hover-bg-color: var(--theme-deafult);
     --fc-button-hover-border-color: var(--theme-deafult);
 }
@@ -64,102 +64,104 @@ body[class='dark-only'] {
 
 
 //  *** components ***
-@import "components/according.scss";
-@import "components/alert.scss";
-@import "components/avatars.scss";
-@import "components/badge.scss";
-@import "components/bookmark.scss";
-@import "components/breadcrumb.scss";
-@import "components/builders.scss";
+@import "components/according";
+@import "components/alert";
+@import "components/avatars";
+@import "components/badge";
+@import "components/bookmark";
+@import "components/breadcrumb";
+@import "components/builders";
 
-@import "components/buttons.scss";
+@import "components/buttons";
 
-@import "components/card.scss";
-@import "components/color.scss";
-@import "components/datatable.scss";
-@import "components/datepicker.scss";
-@import "components/dropdown.scss";
-@import "components/form-builder.scss";
-@import "components/form-input.scss";
+@import "components/card";
+@import "components/color";
+@import "components/datatable";
+@import "components/datepicker";
+@import "components/dropdown";
+@import "components/form-builder";
+@import "components/form-input";
 @import "components/form-wizard";
-@import "components/forms.scss";
-@import "components/form_builder-2.scss";
-@import "components/icons.scss";
-@import "components/list.scss";
-@import "components/loader.scss";
-@import "components/popover.scss";
-@import "components/print.scss";
-@import "components/radio.scss";
-@import "components/ribbon.scss";
-@import "components/switch.scss";
-@import "components/tab.scss";
-@import "components/table.scss";
-@import "components/touchspin.scss";
-@import "components/tour.scss";
-@import "components/tree.scss";
-@import "components/typeahead-search.scss";
+@import "components/forms";
+@import "components/form_builder-2";
+@import "components/icons";
+@import "components/list";
+@import "components/loader";
+@import "components/popover";
+@import "components/print";
+@import "components/radio";
+@import "components/ribbon";
+@import "components/switch";
+@import "components/tab";
+@import "components/table";
+@import "components/touchspin";
+@import "components/tour";
+@import "components/tree";
+@import "components/typeahead-search";
 @import "components/scrollbar";
 
 
 
 //	*** pages ***
 
-@import "pages/blog.scss";
-@import "pages/bookmark-app.scss";
-@import "pages/cart.scss";
-@import "pages/chart.scss";
-@import "pages/chat.scss";
-@import "pages/checkout.scss";
-@import "pages/comingsoon.scss";
-@import "pages/contacts.scss";
-@import "pages/dashboard_2.scss";
-@import "pages/dashboard_3.scss";
-@import "pages/dashboard_4.scss";
-@import "pages/dashboard_5.scss";
-@import "pages/dashboard_default.scss";
-@import "pages/ecommerce.scss";
-@import "pages/email-application.scss";
-@import "pages/errorpage.scss";
-@import "pages/faq.scss";
-@import "pages/file.scss";
-@import "pages/gallery.scss";
-@import "pages/internationalization.scss";
-@import "pages/job-search.scss";
-@import "pages/jsgrid.scss";
-@import "pages/kanban.scss";
-@import "pages/knowledgebase.scss";
-@import "pages/landing.scss";
-@import "pages/language.scss";
-@import "pages/learning.scss";
-@import "pages/login.scss";
-@import "pages/megaoption.scss";
-@import "pages/order-history.scss";
-@import "pages/page.scss";
-@import "pages/pricing.scss";
-@import "pages/progress.scss";
-@import "pages/projectlist.scss";
-@import "pages/social-app.scss";
-@import "pages/task.scss";
-@import "pages/timeline-v.scss";
-@import "pages/timeliny.scss";
-@import "pages/user-profile.scss";
-@import "pages/wishlist.scss";
+@import "pages/blog";
+@import "pages/bookmark-app";
+@import "pages/cart";
+@import "pages/chart";
+@import "pages/chat";
+@import "pages/checkout";
+@import "pages/comingsoon";
+@import "pages/contacts";
+@import "pages/dashboard_2";
+@import "pages/dashboard_3";
+@import "pages/dashboard_4";
+@import "pages/dashboard_5";
+@import "pages/dashboard_default";
+@import "pages/ecommerce";
+@import "pages/email-application";
+@import "pages/errorpage";
+@import "pages/faq";
+@import "pages/file";
+@import "pages/gallery";
+@import "pages/internationalization";
+@import "pages/job-search";
+@import "pages/jsgrid";
+@import "pages/kanban";
+@import "pages/knowledgebase";
+@import "pages/landing";
+@import "pages/language";
+@import "pages/learning";
+@import "pages/login";
+@import "pages/megaoption";
+@import "pages/order-history";
+@import "pages/page";
+@import "pages/pricing";
+@import "pages/progress";
+@import "pages/projectlist";
+@import "pages/social-app";
+@import "pages/task";
+@import "pages/timeline-v";
+@import "pages/timeliny";
+@import "pages/user-profile";
+@import "pages/wishlist";
 
 
 /* ---------------------
 	*** themes ***
 -----------------------*/
-@import "themes/dark.scss";
-@import "themes/theme-customizer.scss";
-@import "themes/update.scss";
-// *** layout *** 
+// *** layout ***
+@import "layout/footer";
+@import "layout/grid";
+@import "layout/header";
+@import "layout/navs";
+@import "layout/search";
+@import "layout/select2";
+@import "layout/sidebar";
+@import "layout/rtl";
+@import "layout/box-layout";
 
-@import "layout/footer.scss";
-@import "layout/grid.scss";
-@import "layout/header.scss";
-@import "layout/navs.scss";
-@import "layout/search.scss";
-@import "layout/select2.scss";
-@import "layout/sidebar.scss";
-@import "layout/rtl.scss";
-@import "layout/box-layout.scss";
+// *** Theme ***
+@import "themes/dark";
+@import "themes/theme-customizer";
+@import "themes/update";
+@import "themes/responsive";

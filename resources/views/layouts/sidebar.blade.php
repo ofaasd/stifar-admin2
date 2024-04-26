@@ -1,10 +1,10 @@
 <div class="sidebar-wrapper" sidebar-layout="stroke-svg">
     <div>
-      <div class="logo-wrapper"><a href="{{ route('/')}}"><img class="img-fluid for-light" src="{{ asset('assets/images/logo/logo.png') }}" alt=""><img class="img-fluid for-dark" src="{{ asset('assets/images/logo/logo_dark.png') }}" alt=""></a>
+      <div class="logo-wrapper"><a href="{{ route('dashboard')}}"><img class="img-fluid for-light" src="{{ asset('assets/images/logo/logo.png') }}" alt=""><img class="img-fluid for-dark" src="{{ asset('assets/images/logo/logo_dark.png') }}" alt=""></a>
         <div class="back-btn"><i class="fa fa-angle-left"></i></div>
         <div class="toggle-sidebar"><i class="status_toggle middle sidebar-toggle" data-feather="grid"> </i></div>
       </div>
-      <div class="logo-icon-wrapper"><a href="{{ route('/')}}"><img class="img-fluid" src="{{ asset('assets/images/logo/logo-icon.png') }}" alt=""></a></div>
+      <div class="logo-icon-wrapper"><a href="{{ route('dashboard')}}"><img class="img-fluid" src="{{ asset('assets/images/logo/logo-icon.png') }}" alt=""></a></div>
       <nav class="sidebar-main">
         <div class="left-arrow" id="left-arrow"><i data-feather="arrow-left"></i></div>
         <div id="sidebar-menu">
@@ -12,9 +12,10 @@
             <li class="back-btn">
               <div class="mobile-back text-end"><span>Back</span><i class="fa fa-angle-right ps-2" aria-hidden="true"></i></div>
             </li>
-            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{ route('index')}}" >
+            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{ route('dashboard')}}" >
                 <span><i class="fa fa-home"></i> Dashboard</span></a>
             </li>
+            @role('super-admin')
             <li class="sidebar-list">
                 <a class="sidebar-link sidebar-title" href="#">
                     <span><i class="fa fa-book"></i> Master Data</span>
@@ -61,6 +62,8 @@
                     <li><a href="#">Fakultas</a></li>
                 </ul>
             </li>
+            @endrole
+            @can('edit pmb')
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
                 <span><i class="fa fa-file-text"></i> Admisi</span></a>
                 <ul class="sidebar-submenu">
@@ -80,6 +83,7 @@
                     <li><a href="#">Berita Gambar/Slideshow</a></li>
                 </ul>
             </li>
+            @endcan
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
                 <span><i class="fa fa-university"></i> Akademik</span></a>
                 <ul class="sidebar-submenu">
@@ -102,7 +106,7 @@
                      <li><a href="#">KHS</a></li>
                      <li>
                         <a class="submenu-title" href="#">
-                            <span>Ujian</span>  
+                            <span>Ujian</span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
                             <li><a href="#">Pengaturan</a></li>{{--  Ada menu untuk toggle ujian sedang dibuka atau ditutup--}}
@@ -115,43 +119,43 @@
                      <li><a href="#">Perubahan Status Akademik</a></li>
                      <li><a href="#">Setting Pertemuan</a></li>
                      <li><a href="#">Perwalian</a></li>
-                     
+
                      <li>
                         <a class="submenu-title" href="#">
-                            <span>Presensi</span>  
+                            <span>Presensi</span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
                             <li><a href="#">Input Presensi</a></li>
                             <li><a href="#">Ganti Kuliah - Pengganti</a></li>
-                            
+
                         </ul>
                     </li>
                     <li>
                         <a class="submenu-title" href="#">
-                            <span>Yuidisium</span>  
+                            <span>Yuidisium</span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
                             <li><a href="#">Setting</a></li>
                             <li><a href="#">Proses</a></li>
                             <li><a href="#">Cetak</a></li>
-                            
+
                         </ul>
                     </li>
                      <li><a href="#">Persuratan</a></li>
                      <li>
                         <a class="submenu-title" href="#">
-                            <span>Transkrip / Ijazah</span>  
+                            <span>Transkrip / Ijazah</span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
                             <li><a href="#">Print Ijazah</a></li>
                             <li><a href="#">Print Transkrip</a></li>
                             <li><a href="#">Legalisir</a></li>
-                            
+
                         </ul>
                     </li>
                     <li>
                         <a class="submenu-title" href="#">
-                            <span>Skripsi</span>  
+                            <span>Skripsi</span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
                             <li><a href="#">Manajemen Skripsi</a></li>
@@ -164,7 +168,7 @@
                      <li><a href="#">Histori Jadwal</a></li>
                      <li>
                         <a class="submenu-title" href="#">
-                            <span>Cetak Berkas</span>  
+                            <span>Cetak Berkas</span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
                             <li><a href="#">Absensi</a></li>
@@ -185,7 +189,7 @@
                     <li><a href="#">Struktur</a></li>
                     <li>
                         <a class="submenu-title" href="#">
-                            <span>Riwayat</span>  
+                            <span>Riwayat</span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
                             <li><a href="#">Mengajar</a></li>
@@ -203,8 +207,8 @@
                     <li><a href="#">Surat Izin</a></li>
                 </ul>
             </li>
-            
-            
+
+
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#">
                 <span><i class="fa fa-money"></i> Keuangan</span></a>
                 <ul class="sidebar-submenu">
