@@ -42,7 +42,7 @@
                             <li><a href="#">Renstra</a></li>
                         </ul>
                     </li>
-                    <li><a href="#">Tahun Ajaran</a></li>
+                    <li><a href="/admin/masterdata/ta">Tahun Ajaran</a></li>
                     <li><a href="#">Jenjang</a></li>
                     <li><a href="#">Jabatan</a></li>
                     <li>
@@ -56,10 +56,10 @@
                     </li>
                     {{-- <li><a href="{{ route('ruang/')}}">Ruang</a></li> --}}
                     <li><a href="#">Sesi</a></li>
-                    <li><a href="#">Sekolah</a></li>
-                    <li><a href="#">Waktu</a></li>
-                    <li><a href="#">Rumpun</a></li>
-                    <li><a href="#">Fakultas</a></li>
+                    <li><a href="/admin/masterdata/asal-sekolah">Sekolah</a></li>
+                    <li><a href="/admin/masterdata/waktu">Waktu</a></li>
+                    <li><a href="/admin/masterdata/rumpun">Rumpun</a></li>
+                    <li><a href="/admin/masterdata/fakultas">Fakultas</a></li>
                 </ul>
             </li>
             @endrole
@@ -67,7 +67,7 @@
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
                 <span><i class="fa fa-file-text"></i> Admisi</span></a>
                 <ul class="sidebar-submenu">
-                    <li><a href="#">Gelombang</a></li>
+                    <li><a href="/admin/masterdata/gelombang">Gelombang</a></li>
                     <li><a href="#">Pendaftaran Mahasiswa</a></li>
                     <li><a href="#">Pengaturan Ujian PMB</a></li>
                     <li><a href="#">Surat Pengumuman</a></li>
