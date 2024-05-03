@@ -54,7 +54,7 @@
                         </ul>
                     </li>
                     {{-- <li><a href="{{ route('ruang/')}}">Ruang</a></li> --}}
-                    <li><a href="#">Sesi</a></li>
+                    <li><a href="/admin/masterdata/sesi">Sesi</a></li>
                     <li><a href="/admin/masterdata/asal-sekolah">Sekolah</a></li>
                     <li><a href="/admin/masterdata/waktu">Waktu</a></li>
                     <li><a href="/admin/masterdata/rumpun">Rumpun</a></li>
