@@ -26,6 +26,10 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header pb-0 card-no-border">
+                        <a href="/admin/masterdata/kurikulum" class="btn btn-warning"> > Kurikulum</a>
+                        <a href="/admin/masterdata/matakuliah" class="btn btn-success"> > Matakuliah</a>
+                        <br>
+                        <br>
                         <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal">+ {{$title}}</button>
                         <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
                             <div class="modal-dialog" role="document">
@@ -39,23 +43,16 @@
                                         </div>
                                         <div class="modal-body">
                                             <div class="mb-3">
-                                                <label for="kode_ta" class="form-label">Kode Tahun Ajaran</label>
-                                                <input type="text" name="kode_ta" id="kode_ta" class="form-control">
+                                                <label for="nama_kelompok" class="form-label">Nama Kelompok</label>
+                                                <input type="text" name="nama_kelompok" id="nama_kelompok" class="form-control">
                                             </div>
                                             <div class="mb-3">
-                                                <label for="tgl_awal" class="form-label">Tanggal Awal Tahun Ajaran</label>
-                                                <input type="date" name="tgl_awal" id="tgl_awal" class="form-control">
+                                                <label for="nama_kelompok_eng" class="form-label">Nama Kelompok Eng</label>
+                                                <input type="text" name="nama_kelompok_eng" id="nama_kelompok_eng" class="form-control">
                                             </div>
                                             <div class="mb-3">
-                                                <label for="tgl_akhir" class="form-label">Tanggal Akhir Tahun Ajaran</label>
-                                                <input type="date" name="tgl_akhir" id="tgl_akhir" class="form-control">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="status" class="form-label">Status Tahun Ajaran</label>
-                                                <select name="status" id="status" class="form-control">
-                                                        <option value="Aktif">Aktif</option>
-                                                        <option value="Tidak Aktif">Tidak Aktif</option>
-                                                </select>
+                                                <label for="kode" class="form-label">Kode Kelompok</label>
+                                                <input type="text" name="kode" id="kode" class="form-control">
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -75,10 +72,9 @@
                                     <tr>
                                         <th></th>
                                         <th>ID</th>
-                                        <th>Kode TA</th>
-                                        <th>Tanggal Awal</th>
-                                        <th>Tanggal Akhir</th>
-                                        <th>Status</th>
+                                        <th>Nama Kelompok</th>
+                                        <th>Nama Kelompok English</th>
+                                        <th>Kode Kelompok</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>

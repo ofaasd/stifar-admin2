@@ -16,7 +16,7 @@
 
 @section('breadcrumb-items')
     <li class="breadcrumb-item">Master Data</li>
-    <li class="breadcrumb-item active">Asal Sekolah PMB</li>
+    <li class="breadcrumb-item active">{{$title}}</li>
 @endsection
 
 @section('content')
@@ -26,6 +26,10 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header pb-0 card-no-border">
+                        <a href="/admin/masterdata/matakuliah" class="btn btn-warning"> > Matakuliah</a>
+                        <a href="/admin/masterdata/kelompok-mk" class="btn btn-success"> > Kelompok Matakuliah</a>
+                        <br>
+                        <br>
                         <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal">+ {{$title}}</button>
                         <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
                             <div class="modal-dialog" role="document">
@@ -39,19 +43,33 @@
                                         </div>
                                         <div class="modal-body">
                                             <div class="mb-3">
-                                                <label for="kode_ta" class="form-label">Kode Tahun Ajaran</label>
-                                                <input type="text" name="kode_ta" id="kode_ta" class="form-control">
+                                                <label for="kode_prodi" class="form-label">Kode Kurikulum</label>
+                                                <input type="text" name="kode_prodi" id="kode_prodi" class="form-control">
                                             </div>
                                             <div class="mb-3">
-                                                <label for="tgl_awal" class="form-label">Tanggal Awal Tahun Ajaran</label>
-                                                <input type="date" name="tgl_awal" id="tgl_awal" class="form-control">
+                                                <label for="progdi" class="form-label">Kode Program Studi</label>
+                                                    <select name="progdi" id="progdi" class="form-control" required="">
+                                                        <option selected disabled>Pilih Kode Program Studi</option>
+                                                        @foreach($data_prodi as $dp)
+                                                            <option value="{{ $dp['kode_prodi'] }}">{{ $dp['nama_prodi'] }}</option>
+                                                        @endforeach
+                                                    </select>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="tgl_akhir" class="form-label">Tanggal Akhir Tahun Ajaran</label>
-                                                <input type="date" name="tgl_akhir" id="tgl_akhir" class="form-control">
+                                                <label for="thn_ajar" class="form-label">Tahun Ajaran</label>
+                                                <select name="thn_ajar" id="thn_ajar" class="form-control" required="">
+                                                        <option selected disabled>Pilih Tahun Ajaran </option>
+                                                        @foreach($data_ta as $da)
+                                                            <option value="{{ $da['kode_ta'] }}">{{ $da['tgl_awal'] }} s/d {{ $da['tgl_akhir'] }}</option>
+                                                        @endforeach
+                                                    </select>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="status" class="form-label">Status Tahun Ajaran</label>
+                                                <label for="angkatan" class="form-label">Angkatan</label>
+                                                <input type="number" name="angkatan" id="angkatan" class="form-control">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="status" class="form-label">Status Kurikulum</label>
                                                 <select name="status" id="status" class="form-control">
                                                         <option value="Aktif">Aktif</option>
                                                         <option value="Tidak Aktif">Tidak Aktif</option>
@@ -75,10 +93,10 @@
                                     <tr>
                                         <th></th>
                                         <th>ID</th>
-                                        <th>Kode TA</th>
-                                        <th>Tanggal Awal</th>
-                                        <th>Tanggal Akhir</th>
-                                        <th>Status</th>
+                                        <th>Kode Kurikulum</th>
+                                        <th>Kode Prodi</th>
+                                        <th>Angkatan</th>
+                                        <th>Tahun Ajaran</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -103,7 +121,7 @@
         $(function () {
 
             const baseUrl = {!! json_encode(url('/')) !!};
-            const title = "{{strtolower($url)}}";
+            const title = "{{strtolower($title)}}";
             const page = '/'.concat("admin/masterdata/").concat(title);
             var my_column = $('#my_column').val();
             const pecah = my_column.split('\n');
@@ -114,7 +132,7 @@
                 //alert(data_obj.data);
                 my_data.push(data_obj);
             });
-
+            //alert(data_obj);
             console.log(my_data);
 
             const dt = $("#basic-1").DataTable({

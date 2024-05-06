@@ -36,7 +36,7 @@
                             <span>PRODI</span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
-                            <li><a href="#">Daftar Prodi</a></li>
+                            <li><a href="/admin/masterdata/program-studi">Daftar Prodi</a></li>
                             <li><a href="#">Atribut Prodi</a></li>
                             <li><a href="#">Akreditasi</a></li>
                             <li><a href="#">Renstra</a></li>
@@ -55,7 +55,7 @@
                         </ul>
                     </li>
                     {{-- <li><a href="{{ route('ruang/')}}">Ruang</a></li> --}}
-                    <li><a href="#">Sesi</a></li>
+                    <li><a href="/admin/masterdata/sesi">Sesi</a></li>
                     <li><a href="/admin/masterdata/asal-sekolah">Sekolah</a></li>
                     <li><a href="/admin/masterdata/waktu">Waktu</a></li>
                     <li><a href="/admin/masterdata/rumpun">Rumpun</a></li>
@@ -87,7 +87,7 @@
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
                 <span><i class="fa fa-university"></i> Akademik</span></a>
                 <ul class="sidebar-submenu">
-                     <li><a href="#">Matakuliah</a></li>
+                     <li><a href="/admin/masterdata/matakuliah">Matakuliah</a></li>
                      <li><a href="#">Jadwal</a></li>
                      <li><a href="#">Plot Jadwal Ajar</a></li>
                      <li><a href="#">Kontrol Jadwal</a></li>

@@ -16,7 +16,7 @@
 
 @section('breadcrumb-items')
     <li class="breadcrumb-item">Master Data</li>
-    <li class="breadcrumb-item active">Asal Sekolah PMB</li>
+    <li class="breadcrumb-item active">{{$title}}</li>
 @endsection
 
 @section('content')
@@ -39,23 +39,28 @@
                                         </div>
                                         <div class="modal-body">
                                             <div class="mb-3">
-                                                <label for="kode_ta" class="form-label">Kode Tahun Ajaran</label>
-                                                <input type="text" name="kode_ta" id="kode_ta" class="form-control">
+                                                <label for="kode_prodi" class="form-label">Kode Program Studi</label>
+                                                <input type="text" name="kode_prodi" id="kode_prodi" class="form-control">
                                             </div>
                                             <div class="mb-3">
-                                                <label for="tgl_awal" class="form-label">Tanggal Awal Tahun Ajaran</label>
-                                                <input type="date" name="tgl_awal" id="tgl_awal" class="form-control">
+                                                <label for="kode_nim" class="form-label">Kode Nim</label>
+                                                <input type="text" name="kode_nim" id="kode_nim" class="form-control">
                                             </div>
                                             <div class="mb-3">
-                                                <label for="tgl_akhir" class="form-label">Tanggal Akhir Tahun Ajaran</label>
-                                                <input type="date" name="tgl_akhir" id="tgl_akhir" class="form-control">
+                                                <label for="jenjang" class="form-label">Jenjang</label>
+                                                <input type="text" name="jenjang" id="jenjang" class="form-control">
                                             </div>
                                             <div class="mb-3">
-                                                <label for="status" class="form-label">Status Tahun Ajaran</label>
-                                                <select name="status" id="status" class="form-control">
-                                                        <option value="Aktif">Aktif</option>
-                                                        <option value="Tidak Aktif">Tidak Aktif</option>
-                                                </select>
+                                                <label for="nama_prodi" class="form-label">Nama Program Studi</label>
+                                                <input type="text" name="nama_prodi" id="nama_prodi" class="form-control">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="tgl_pendirian" class="form-label">Tanggal Pendirian</label>
+                                                <input type="date" name="tgl_pendirian" id="tgl_pendirian" class="form-control">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="no_sk_pendirian" class="form-label">No SK Pendirian (SK Akreditasi)</label>
+                                                <input type="text" name="no_sk_pendirian" id="no_sk_pendirian" class="form-control">
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -75,10 +80,12 @@
                                     <tr>
                                         <th></th>
                                         <th>ID</th>
-                                        <th>Kode TA</th>
-                                        <th>Tanggal Awal</th>
-                                        <th>Tanggal Akhir</th>
-                                        <th>Status</th>
+                                        <th>Kode Prodi</th>
+                                        <th>Kode NIM</th>
+                                        <th>Kode Jenjang</th>
+                                        <th>Nama Program Studi</th>
+                                        <th>Tgl Pendirian</th>
+                                        <th>No SK</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -114,7 +121,7 @@
                 //alert(data_obj.data);
                 my_data.push(data_obj);
             });
-
+            //alert(data_obj);
             console.log(my_data);
 
             const dt = $("#basic-1").DataTable({

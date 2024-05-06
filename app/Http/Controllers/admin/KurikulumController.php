@@ -4,31 +4,35 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Kurikulum;
+use App\Models\Prodi;
 use App\Models\TahunAjaran;
 
-class TahunAjaranController extends Controller
+class KurikulumController extends Controller
 {
-    public $indexed = ['', 'id', 'kode_ta', 'tgl_awal', 'tgl_akhir', 'status'];
+    public $indexed = ['', 'id', 'kode_kurikulum', 'progdi', 'thn_ajar', 'angkatan', 'status'];
     public function index(Request $request)
     {
         //
         if (empty($request->input('length'))) {
-            $title = "Tahun Ajaran";
-            $url = "ta";
+            $title = "Kurikulum";
             $indexed = $this->indexed;
-            return view('admin.master.tahun_ajaran.index', compact('title','indexed', 'url'));
+            $data_prodi = Prodi::orderBy('id')->get();
+            $data_ta = TahunAjaran::orderBy('id')->get();
+            return view('admin.master.kurikulum.index', compact('title','indexed', 'data_prodi', 'data_ta'));
         }else{
             $columns = [
                 1 => 'id',
-                2 => 'kode_ta',
-                3 => 'tgl_awal',
-                4 => 'tgl_akhir',
-                5 => 'status'
+                2 => 'kode_kurikulum',
+                3 => 'progdi',
+                4 => 'thn_ajar',
+                5 => 'angkatan',
+                6 => 'status',
             ];
 
             $search = [];
 
-            $totalData = TahunAjaran::count();
+            $totalData = Kurikulum::count();
 
             $totalFiltered = $totalData;
 
@@ -39,43 +43,46 @@ class TahunAjaranController extends Controller
 
 
             if (empty($request->input('search.value'))) {
-                $ta = TahunAjaran::offset($start)
+                $kurikulum = Kurikulum::offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
                     ->get();
             } else {
                 $search = $request->input('search.value');
 
-                $ta = TahunAjaran::where('id', 'LIKE', "%{$search}%")
-                    ->orWhere('kode_ta', 'LIKE', "%{$search}%")
-                    ->orWhere('tgl_awal', 'LIKE', "%{$search}%")
-                    ->orWhere('tgl_akhir', 'LIKE', "%{$search}%")
+                $kurikulum = Kurikulum::where('id', 'LIKE', "%{$search}%")
+                    ->orWhere('kode_kurikulum', 'LIKE', "%{$search}%")
+                    ->orWhere('progdi', 'LIKE', "%{$search}%")
+                    ->orWhere('thn_ajar', 'LIKE', "%{$search}%")
+                    ->orWhere('angkatan', 'LIKE', "%{$search}%")
                     ->orWhere('status', 'LIKE', "%{$search}%")
                     ->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
                     ->get();
 
-                $totalFiltered = TahunAjaran::where('id', 'LIKE', "%{$search}%")
-                ->orWhere('kode_ta', 'LIKE', "%{$search}%")
-                ->orWhere('tgl_awal', 'LIKE', "%{$search}%")
-                ->orWhere('tgl_akhir', 'LIKE', "%{$search}%")
+                $totalFiltered = Kurikulum::where('id', 'LIKE', "%{$search}%")
+                ->orWhere('kode_kurikulum', 'LIKE', "%{$search}%")
+                ->orWhere('progdi', 'LIKE', "%{$search}%")
+                ->orWhere('thn_ajar', 'LIKE', "%{$search}%")
+                ->orWhere('angkatan', 'LIKE', "%{$search}%")
                 ->orWhere('status', 'LIKE', "%{$search}%")
                 ->count();
             }
 
             $data = [];
 
-            if (!empty($ta)) {
+            if (!empty($kurikulum)) {
             // providing a dummy id instead of database ids
                 $ids = $start;
 
-                foreach ($ta as $row) {
+                foreach ($kurikulum as $row) {
                     $nestedData['id'] = $row->id;
                     $nestedData['fake_id'] = ++$ids;
-                    $nestedData['kode_ta'] = $row->kode_ta;
-                    $nestedData['tgl_awal'] = $row->tgl_awal;
-                    $nestedData['tgl_akhir'] = $row->tgl_akhir;
+                    $nestedData['kode_kurikulum'] = $row->kode_kurikulum;
+                    $nestedData['progdi'] = $row->progdi;
+                    $nestedData['thn_ajar'] = $row->thn_ajar;
+                    $nestedData['angkatan'] = $row->angkatan;
                     $nestedData['status'] = $row->status;
                     $data[] = $nestedData;
                 }
@@ -104,28 +111,30 @@ class TahunAjaranController extends Controller
         $id = $request->id;
 
         if ($id) {
-            $ta = TahunAjaran::updateOrCreate(
+            $kurikulum = Kurikulum::updateOrCreate(
                 ['id' => $id],
                 [
-                    'kode_ta' => $request->kode_ta,
-                    'tgl_awal' => $request->tgl_awal,
-                    'tgl_akhir' => $request->tgl_akhir,
+                    'kode_kurikulum' => $request->kode_kurikulum,
+                    'progdi' => $request->progdi,
+                    'thn_ajar' => $request->thn_ajar,
+                    'angkatan' => $request->angkatan,
                     'status' => $request->status
                 ]
             );
 
             return response()->json('Updated');
         } else {
-            $ta = TahunAjaran::updateOrCreate(
+            $kurikulum = Kurikulum::updateOrCreate(
                 ['id' => $id],
                 [
-                    'kode_ta' => $request->kode_ta,
-                    'tgl_awal' => $request->tgl_awal,
-                    'tgl_akhir' => $request->tgl_akhir,
+                    'kode_kurikulum' => $request->kode_kurikulum,
+                    'progdi' => $request->progdi,
+                    'thn_ajar' => $request->thn_ajar,
+                    'angkatan' => $request->angkatan,
                     'status' => $request->status
                 ]
             );
-            if ($ta) {
+            if ($kurikulum) {
                 return response()->json('Created');
             } else {
                 return response()->json('Failed Create Academic');
@@ -137,13 +146,13 @@ class TahunAjaranController extends Controller
         //
         $where = ['id' => $id];
 
-        $ta = TahunAjaran::where($where)->first();
+        $kurikulum = Kurikulum::where($where)->first();
 
-        return response()->json($ta);
+        return response()->json($kurikulum);
     }
     public function destroy(string $id)
     {
         //
-        $ta = TahunAjaran::where('id', $id)->delete();
+        $kurikulum = Kurikulum::where('id', $id)->delete();
     }
 }

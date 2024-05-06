@@ -16,7 +16,7 @@
 
 @section('breadcrumb-items')
     <li class="breadcrumb-item">Master Data</li>
-    <li class="breadcrumb-item active">Asal Sekolah PMB</li>
+    <li class="breadcrumb-item active">{{$title}}</li>
 @endsection
 
 @section('content')
@@ -39,21 +39,31 @@
                                         </div>
                                         <div class="modal-body">
                                             <div class="mb-3">
-                                                <label for="kode_ta" class="form-label">Kode Tahun Ajaran</label>
-                                                <input type="text" name="kode_ta" id="kode_ta" class="form-control">
+                                                <label for="kode_sesi" class="form-label">Kode Sesi</label>
+                                                <input type="text" placeholder="Kode Sesi" name="kode_sesi" id="kode_sesi" class="form-control" required="">
                                             </div>
                                             <div class="mb-3">
-                                                <label for="tgl_awal" class="form-label">Tanggal Awal Tahun Ajaran</label>
-                                                <input type="date" name="tgl_awal" id="tgl_awal" class="form-control">
+                                                <label for="id_waktu" class="form-label">Pilih Waktu Sesi</label>
+                                                <select name="id_waktu" id="id_waktu" class="form-control" required="">
+                                                        <option selected disabled>Pilih Waktu</option>
+                                                    @foreach($data_waktu as $dw)
+                                                        <option value="{{ $dw['id'] }}">{{ $dw['nama_sesi'] }}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="tgl_akhir" class="form-label">Tanggal Akhir Tahun Ajaran</label>
-                                                <input type="date" name="tgl_akhir" id="tgl_akhir" class="form-control">
+                                                <label for="id_ruang" class="form-label">Pilih Ruang Sesi</label>
+                                                <select name="id_ruang" id="id_ruang" class="form-control" required="">
+                                                        <option selected disabled>Pilih Ruang</option>
+                                                    @foreach($data_ruang as $dr)
+                                                        <option value="{{ $dr['id'] }}">{{ $dr['nama_ruang'] }}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                             <div class="mb-3">
                                                 <label for="status" class="form-label">Status Tahun Ajaran</label>
                                                 <select name="status" id="status" class="form-control">
-                                                        <option value="Aktif">Aktif</option>
+                                                        <option value="Aktif" selected="">Aktif</option>
                                                         <option value="Tidak Aktif">Tidak Aktif</option>
                                                 </select>
                                             </div>
@@ -75,9 +85,9 @@
                                     <tr>
                                         <th></th>
                                         <th>ID</th>
-                                        <th>Kode TA</th>
-                                        <th>Tanggal Awal</th>
-                                        <th>Tanggal Akhir</th>
+                                        <th>Kode Sesi</th>
+                                        <th>Nama Sesi</th>
+                                        <th>Nama Ruang</th>
                                         <th>Status</th>
                                         <th>Actions</th>
                                     </tr>
@@ -103,7 +113,7 @@
         $(function () {
 
             const baseUrl = {!! json_encode(url('/')) !!};
-            const title = "{{strtolower($url)}}";
+            const title = "{{strtolower($title)}}";
             const page = '/'.concat("admin/masterdata/").concat(title);
             var my_column = $('#my_column').val();
             const pecah = my_column.split('\n');

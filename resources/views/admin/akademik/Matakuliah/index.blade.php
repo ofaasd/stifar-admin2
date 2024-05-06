@@ -26,6 +26,10 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header pb-0 card-no-border">
+                        <a href="/admin/masterdata/kurikulum" class="btn btn-warning"> > Kurikulum</a>
+                        <a href="/admin/masterdata/kelompok-mk" class="btn btn-success"> > Kelompok Matakuliah</a>
+                        <br>
+                        <br>
                         <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal">+ {{$title}}</button>
                         <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
                             <div class="modal-dialog" role="document">
@@ -39,22 +43,67 @@
                                         </div>
                                         <div class="modal-body">
                                             <div class="mb-3">
-                                                <label for="kode_ta" class="form-label">Kode Tahun Ajaran</label>
-                                                <input type="text" name="kode_ta" id="kode_ta" class="form-control">
+                                                <label for="kode_matkul" class="form-label">Kode Matakuliah</label>
+                                                <input type="text" name="kode_matkul" id="kode_matkul" class="form-control">
                                             </div>
                                             <div class="mb-3">
-                                                <label for="tgl_awal" class="form-label">Tanggal Awal Tahun Ajaran</label>
-                                                <input type="date" name="tgl_awal" id="tgl_awal" class="form-control">
+                                                <label for="nama_matkul" class="form-label">Nama Matakuliah</label>
+                                                <input type="text" name="nama_matkul" id="nama_matkul" class="form-control">
                                             </div>
                                             <div class="mb-3">
-                                                <label for="tgl_akhir" class="form-label">Tanggal Akhir Tahun Ajaran</label>
-                                                <input type="date" name="tgl_akhir" id="tgl_akhir" class="form-control">
+                                                <label for="nama_matkul_eng" class="form-label">Nama Matakuliah Eng</label>
+                                                <input type="text" name="nama_matkul_eng" id="nama_matkul_eng" class="form-control">
                                             </div>
                                             <div class="mb-3">
-                                                <label for="status" class="form-label">Status Tahun Ajaran</label>
-                                                <select name="status" id="status" class="form-control">
-                                                        <option value="Aktif">Aktif</option>
-                                                        <option value="Tidak Aktif">Tidak Aktif</option>
+                                                <label for="jumlah_sks" class="form-label">Jumlah SKS</label>
+                                                <input type="number" name="jumlah_sks" id="jumlah_sks" class="form-control">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="semester" class="form-label">Semester</label>
+                                                <input type="number" name="semester" id="semester" class="form-control">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="tp" class="form-label">Teori/Praktek</label>
+                                                <select id="tp" name="tp" class="form-control" required="">
+                                                    <option selected disabled>Pilih Jenis Matakuliah</option>
+                                                    <option value="T">Teori</option>
+                                                    <option value="P">Praktik</option>
+                                                    <option value="TP">Teori & Praktik</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="kel_mk" class="form-label">Kelompok Matakuliah</label>
+                                                <select id="kel_mk" name="kel_mk" class="form-control" required="">
+                                                    <option selected disabled>Pilih Kelompok Matakuliah</option>
+                                                    @foreach($kelmk as $kelmk)
+                                                        <option value="{{ $kelmk['id'] }}">{{ $kelmk['nama_kelompok'] }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="rumpun" class="form-label">Rumpun Matakuliah</label>
+                                                <select id="rumpun" name="rumpun" class="form-control" required="">
+                                                    <option selected disabled>Pilih Rumpun Matakuliah</option>
+                                                    @foreach($rumpun as $r)
+                                                        <option value="{{ $r['id'] }}">{{ $r['nama_rumpun'] }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="prodi" class="form-label">Program Studi</label>
+                                                <select id="prodi" name="prodi" class="form-control" required="">
+                                                    <option selected disabled>Pilih Program Studi</option>
+                                                    @foreach($prodi as $p)
+                                                        <option value="{{ $p['id'] }}">{{ $p['jenjang'] }} - {{ $p['nama_prodi'] }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="status" class="form-label">Status Matakuliah</label>
+                                                <select id="status" name="status" class="form-control" required="">
+                                                    <option selected disabled>Pilih Status Matakuliah</option>
+                                                    <option value="Aktif">Aktif</option>
+                                                    <option value="Tidak Aktif">Tidak Aktif</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -75,9 +124,15 @@
                                     <tr>
                                         <th></th>
                                         <th>ID</th>
-                                        <th>Kode TA</th>
-                                        <th>Tanggal Awal</th>
-                                        <th>Tanggal Akhir</th>
+                                        <th>Kode Matakuliah</th>
+                                        <th>Nama Matakuliah</th>
+                                        <th>Nama Matakuliah English</th>
+                                        <th>SKS</th>
+                                        <th>Smt.</th>
+                                        <th>T/P</th>
+                                        <th>Kel. Matakuliah</th>
+                                        <th>Rumpun</th>
+                                        <th>Program Studi</th>
                                         <th>Status</th>
                                         <th>Actions</th>
                                     </tr>

@@ -4,31 +4,35 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\TahunAjaran;
+use App\Models\Sesi;
+use App\Models\Waktu;
+use App\Models\MasterRuang;
 
-class TahunAjaranController extends Controller
+
+class SesiController extends Controller
 {
-    public $indexed = ['', 'id', 'kode_ta', 'tgl_awal', 'tgl_akhir', 'status'];
+    public $indexed = ['', 'id', 'kode_sesi', 'id_ruang', 'id_waktu', 'status'];
     public function index(Request $request)
     {
         //
         if (empty($request->input('length'))) {
-            $title = "Tahun Ajaran";
-            $url = "ta";
+            $title = "Sesi";
             $indexed = $this->indexed;
-            return view('admin.master.tahun_ajaran.index', compact('title','indexed', 'url'));
+            $data_waktu = Waktu::orderBy('id')->get();
+            $data_ruang = MasterRuang::orderBy('id')->get();
+            return view('admin.master.sesi.index', compact('title','indexed', 'data_waktu', 'data_ruang'));
         }else{
             $columns = [
                 1 => 'id',
-                2 => 'kode_ta',
-                3 => 'tgl_awal',
-                4 => 'tgl_akhir',
+                2 => 'kode_sesi',
+                3 => 'id_ruang',
+                4 => 'id_waktu',
                 5 => 'status'
             ];
 
             $search = [];
 
-            $totalData = TahunAjaran::count();
+            $totalData = Sesi::count();
 
             $totalFiltered = $totalData;
 
@@ -39,43 +43,49 @@ class TahunAjaranController extends Controller
 
 
             if (empty($request->input('search.value'))) {
-                $ta = TahunAjaran::offset($start)
+                $sesi = Sesi::offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
                     ->get();
             } else {
                 $search = $request->input('search.value');
 
-                $ta = TahunAjaran::where('id', 'LIKE', "%{$search}%")
-                    ->orWhere('kode_ta', 'LIKE', "%{$search}%")
-                    ->orWhere('tgl_awal', 'LIKE', "%{$search}%")
-                    ->orWhere('tgl_akhir', 'LIKE', "%{$search}%")
-                    ->orWhere('status', 'LIKE', "%{$search}%")
+                $sesi = Sesi::select('sesis.id', 'sesis.kode_sesi','waktus.nama_sesi','master_ruang.nama_ruang','sesis.status')
+                    ->leftJoin('waktus', 'waktus.id', '=', 'sesis.id_waktu')
+                    ->leftJoin('master_ruang', 'master_ruang.id', '=', 'sesis.id_ruang')
+                    ->where('sesis.id', 'LIKE', "%{$search}%")
+                    ->orWhere('sesis.kode_sesi', 'LIKE', "%{$search}%")
+                    ->orWhere('waktus.nama_sesi', 'LIKE', "%{$search}%")
+                    ->orWhere('master_ruang.nama_ruang', 'LIKE', "%{$search}%")
+                    ->orWhere('sesis.status', 'LIKE', "%{$search}%")
                     ->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
                     ->get();
 
-                $totalFiltered = TahunAjaran::where('id', 'LIKE', "%{$search}%")
-                ->orWhere('kode_ta', 'LIKE', "%{$search}%")
-                ->orWhere('tgl_awal', 'LIKE', "%{$search}%")
-                ->orWhere('tgl_akhir', 'LIKE', "%{$search}%")
-                ->orWhere('status', 'LIKE', "%{$search}%")
+                $totalFiltered = Sesi::select('sesis.*', 'waktus.nama_sesi','master_ruang.nama_ruang')
+                ->leftJoin('waktus', 'waktus.id', '=', 'sesis.id_waktu')
+                ->leftJoin('master_ruang', 'master_ruang.id', '=', 'sesis.id_ruang')
+                ->where('sesis.id', 'LIKE', "%{$search}%")
+                ->orWhere('sesis.kode_sesi', 'LIKE', "%{$search}%")
+                ->orWhere('waktus.nama_sesi', 'LIKE', "%{$search}%")
+                ->orWhere('master_ruang.nama_ruang', 'LIKE', "%{$search}%")
+                ->orWhere('sesis.status', 'LIKE', "%{$search}%")
                 ->count();
             }
 
             $data = [];
 
-            if (!empty($ta)) {
+            if (!empty($sesi)) {
             // providing a dummy id instead of database ids
                 $ids = $start;
 
-                foreach ($ta as $row) {
+                foreach ($sesi as $row) {
                     $nestedData['id'] = $row->id;
                     $nestedData['fake_id'] = ++$ids;
-                    $nestedData['kode_ta'] = $row->kode_ta;
-                    $nestedData['tgl_awal'] = $row->tgl_awal;
-                    $nestedData['tgl_akhir'] = $row->tgl_akhir;
+                    $nestedData['kode_sesi'] = $row->kode_sesi;
+                    $nestedData['nama_sesi'] = $row->nama_sesi;
+                    $nestedData['nama_ruang'] = $row->nama_ruang;
                     $nestedData['status'] = $row->status;
                     $data[] = $nestedData;
                 }
@@ -104,28 +114,28 @@ class TahunAjaranController extends Controller
         $id = $request->id;
 
         if ($id) {
-            $ta = TahunAjaran::updateOrCreate(
+            $sesi = Sesi::updateOrCreate(
                 ['id' => $id],
                 [
-                    'kode_ta' => $request->kode_ta,
-                    'tgl_awal' => $request->tgl_awal,
-                    'tgl_akhir' => $request->tgl_akhir,
+                    'kode_sesi' => $request->kode_sesi,
+                    'id_waktu' => $request->id_waktu,
+                    'id_ruang' => $request->id_ruang,
                     'status' => $request->status
                 ]
             );
 
             return response()->json('Updated');
         } else {
-            $ta = TahunAjaran::updateOrCreate(
+            $sesi = Sesi::updateOrCreate(
                 ['id' => $id],
                 [
-                    'kode_ta' => $request->kode_ta,
-                    'tgl_awal' => $request->tgl_awal,
-                    'tgl_akhir' => $request->tgl_akhir,
+                    'kode_sesi' => $request->kode_sesi,
+                    'id_waktu' => $request->id_waktu,
+                    'id_ruang' => $request->id_ruang,
                     'status' => $request->status
                 ]
             );
-            if ($ta) {
+            if ($sesi) {
                 return response()->json('Created');
             } else {
                 return response()->json('Failed Create Academic');
@@ -137,13 +147,14 @@ class TahunAjaranController extends Controller
         //
         $where = ['id' => $id];
 
-        $ta = TahunAjaran::where($where)->first();
+        $sesi = Sesi::where($where)->first();
 
-        return response()->json($ta);
+        return response()->json($sesi);
     }
     public function destroy(string $id)
     {
         //
-        $ta = TahunAjaran::where('id', $id)->delete();
+        $sesi = Sesi::where('id', $id)->delete();
     }
+    
 }
