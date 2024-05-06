@@ -4,31 +4,30 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\TahunAjaran;
+use App\Models\KelompokMataKuliah;
 
-class TahunAjaranController extends Controller
+class KelompokMatkulController extends Controller
 {
-    public $indexed = ['', 'id', 'kode_ta', 'tgl_awal', 'tgl_akhir', 'status'];
+    public $indexed = ['', 'id', 'nama_kelompok', 'nama_kelompok_eng', 'kode'];
     public function index(Request $request)
     {
         //
         if (empty($request->input('length'))) {
-            $title = "Tahun Ajaran";
-            $url = "ta";
+            $title = "Kelompok Mata Kuliah";
+            $url = "kelompok-mk";
             $indexed = $this->indexed;
-            return view('admin.master.tahun_ajaran.index', compact('title','indexed', 'url'));
+            return view('admin.akademik.kelompokMatakuliah.index', compact('title','indexed', 'url'));
         }else{
             $columns = [
                 1 => 'id',
-                2 => 'kode_ta',
-                3 => 'tgl_awal',
-                4 => 'tgl_akhir',
-                5 => 'status'
+                2 => 'nama_kelompok',
+                3 => 'nama_kelompok_eng',
+                4 => 'kode'
             ];
 
             $search = [];
 
-            $totalData = TahunAjaran::count();
+            $totalData = KelompokMataKuliah::count();
 
             $totalFiltered = $totalData;
 
@@ -39,44 +38,41 @@ class TahunAjaranController extends Controller
 
 
             if (empty($request->input('search.value'))) {
-                $ta = TahunAjaran::offset($start)
+                $kelmk = KelompokMataKuliah::offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
                     ->get();
             } else {
                 $search = $request->input('search.value');
 
-                $ta = TahunAjaran::where('id', 'LIKE', "%{$search}%")
-                    ->orWhere('kode_ta', 'LIKE', "%{$search}%")
-                    ->orWhere('tgl_awal', 'LIKE', "%{$search}%")
-                    ->orWhere('tgl_akhir', 'LIKE', "%{$search}%")
-                    ->orWhere('status', 'LIKE', "%{$search}%")
+                $kelmk = KelompokMataKuliah::where('id', 'LIKE', "%{$search}%")
+                    ->orWhere('nama_kelompok', 'LIKE', "%{$search}%")
+                    ->orWhere('nama_kelompok_eng', 'LIKE', "%{$search}%")
+                    ->orWhere('kode', 'LIKE', "%{$search}%")
                     ->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
                     ->get();
 
-                $totalFiltered = TahunAjaran::where('id', 'LIKE', "%{$search}%")
-                ->orWhere('kode_ta', 'LIKE', "%{$search}%")
-                ->orWhere('tgl_awal', 'LIKE', "%{$search}%")
-                ->orWhere('tgl_akhir', 'LIKE', "%{$search}%")
-                ->orWhere('status', 'LIKE', "%{$search}%")
+                $totalFiltered = KelompokMataKuliah::where('id', 'LIKE', "%{$search}%")
+                ->orWhere('nama_kelompok', 'LIKE', "%{$search}%")
+                ->orWhere('nama_kelompok_eng', 'LIKE', "%{$search}%")
+                ->orWhere('kode', 'LIKE', "%{$search}%")
                 ->count();
             }
 
             $data = [];
 
-            if (!empty($ta)) {
+            if (!empty($kelmk)) {
             // providing a dummy id instead of database ids
                 $ids = $start;
 
-                foreach ($ta as $row) {
+                foreach ($kelmk as $row) {
                     $nestedData['id'] = $row->id;
                     $nestedData['fake_id'] = ++$ids;
-                    $nestedData['kode_ta'] = $row->kode_ta;
-                    $nestedData['tgl_awal'] = $row->tgl_awal;
-                    $nestedData['tgl_akhir'] = $row->tgl_akhir;
-                    $nestedData['status'] = $row->status;
+                    $nestedData['nama_kelompok'] = $row->nama_kelompok;
+                    $nestedData['nama_kelompok_eng'] = $row->nama_kelompok_eng;
+                    $nestedData['kode'] = $row->kode;
                     $data[] = $nestedData;
                 }
             }
@@ -104,28 +100,26 @@ class TahunAjaranController extends Controller
         $id = $request->id;
 
         if ($id) {
-            $ta = TahunAjaran::updateOrCreate(
+            $kelmk = KelompokMataKuliah::updateOrCreate(
                 ['id' => $id],
                 [
-                    'kode_ta' => $request->kode_ta,
-                    'tgl_awal' => $request->tgl_awal,
-                    'tgl_akhir' => $request->tgl_akhir,
-                    'status' => $request->status
+                    'nama_kelompok' => $request->nama_kelompok,
+                    'nama_kelompok_eng' => $request->nama_kelompok_eng,
+                    'kode' => $request->kode
                 ]
             );
 
             return response()->json('Updated');
         } else {
-            $ta = TahunAjaran::updateOrCreate(
+            $kelmk = KelompokMataKuliah::updateOrCreate(
                 ['id' => $id],
                 [
-                    'kode_ta' => $request->kode_ta,
-                    'tgl_awal' => $request->tgl_awal,
-                    'tgl_akhir' => $request->tgl_akhir,
-                    'status' => $request->status
+                    'nama_kelompok' => $request->nama_kelompok,
+                    'nama_kelompok_eng' => $request->nama_kelompok_eng,
+                    'kode' => $request->kode
                 ]
             );
-            if ($ta) {
+            if ($kelmk) {
                 return response()->json('Created');
             } else {
                 return response()->json('Failed Create Academic');
@@ -137,13 +131,13 @@ class TahunAjaranController extends Controller
         //
         $where = ['id' => $id];
 
-        $ta = TahunAjaran::where($where)->first();
+        $kelmk = KelompokMataKuliah::where($where)->first();
 
-        return response()->json($ta);
+        return response()->json($kelmk);
     }
     public function destroy(string $id)
     {
         //
-        $ta = TahunAjaran::where('id', $id)->delete();
+        $kelmk = KelompokMataKuliah::where('id', $id)->delete();
     }
 }

@@ -4,35 +4,35 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Sesi;
-use App\Models\Waktu;
-use App\Models\MasterRuang;
+use App\Models\Kurikulum;
+use App\Models\Prodi;
+use App\Models\TahunAjaran;
 
-
-class SesiController extends Controller
+class KurikulumController extends Controller
 {
-    public $indexed = ['', 'id', 'kode_sesi', 'id_ruang', 'id_waktu', 'status'];
+    public $indexed = ['', 'id', 'kode_kurikulum', 'progdi', 'thn_ajar', 'angkatan', 'status'];
     public function index(Request $request)
     {
         //
         if (empty($request->input('length'))) {
-            $title = "Sesi";
+            $title = "Kurikulum";
             $indexed = $this->indexed;
-            $data_waktu = Waktu::orderBy('id')->get();
-            $data_ruang = MasterRuang::orderBy('id')->get();
-            return view('admin.master.sesi.index', compact('title','indexed', 'data_waktu', 'data_ruang'));
+            $data_prodi = Prodi::orderBy('id')->get();
+            $data_ta = TahunAjaran::orderBy('id')->get();
+            return view('admin.master.kurikulum.index', compact('title','indexed', 'data_prodi', 'data_ta'));
         }else{
             $columns = [
                 1 => 'id',
-                2 => 'kode_sesi',
-                3 => 'id_ruang',
-                4 => 'id_waktu',
-                5 => 'status'
+                2 => 'kode_kurikulum',
+                3 => 'progdi',
+                4 => 'thn_ajar',
+                5 => 'angkatan',
+                6 => 'status',
             ];
 
             $search = [];
 
-            $totalData = Sesi::count();
+            $totalData = Kurikulum::count();
 
             $totalFiltered = $totalData;
 
@@ -43,49 +43,46 @@ class SesiController extends Controller
 
 
             if (empty($request->input('search.value'))) {
-                $sesi = Sesi::offset($start)
+                $kurikulum = Kurikulum::offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
                     ->get();
             } else {
                 $search = $request->input('search.value');
 
-                $sesi = Sesi::select('sesis.id', 'sesis.kode_sesi','waktus.nama_sesi','master_ruang.nama_ruang','sesis.status')
-                    ->leftJoin('waktus', 'waktus.id', '=', 'sesis.id_waktu')
-                    ->leftJoin('master_ruang', 'master_ruang.id', '=', 'sesis.id_ruang')
-                    ->where('sesis.id', 'LIKE', "%{$search}%")
-                    ->orWhere('sesis.kode_sesi', 'LIKE', "%{$search}%")
-                    ->orWhere('waktus.nama_sesi', 'LIKE', "%{$search}%")
-                    ->orWhere('master_ruang.nama_ruang', 'LIKE', "%{$search}%")
-                    ->orWhere('sesis.status', 'LIKE', "%{$search}%")
+                $kurikulum = Kurikulum::where('id', 'LIKE', "%{$search}%")
+                    ->orWhere('kode_kurikulum', 'LIKE', "%{$search}%")
+                    ->orWhere('progdi', 'LIKE', "%{$search}%")
+                    ->orWhere('thn_ajar', 'LIKE', "%{$search}%")
+                    ->orWhere('angkatan', 'LIKE', "%{$search}%")
+                    ->orWhere('status', 'LIKE', "%{$search}%")
                     ->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
                     ->get();
 
-                $totalFiltered = Sesi::select('sesis.*', 'waktus.nama_sesi','master_ruang.nama_ruang')
-                ->leftJoin('waktus', 'waktus.id', '=', 'sesis.id_waktu')
-                ->leftJoin('master_ruang', 'master_ruang.id', '=', 'sesis.id_ruang')
-                ->where('sesis.id', 'LIKE', "%{$search}%")
-                ->orWhere('sesis.kode_sesi', 'LIKE', "%{$search}%")
-                ->orWhere('waktus.nama_sesi', 'LIKE', "%{$search}%")
-                ->orWhere('master_ruang.nama_ruang', 'LIKE', "%{$search}%")
-                ->orWhere('sesis.status', 'LIKE', "%{$search}%")
+                $totalFiltered = Kurikulum::where('id', 'LIKE', "%{$search}%")
+                ->orWhere('kode_kurikulum', 'LIKE', "%{$search}%")
+                ->orWhere('progdi', 'LIKE', "%{$search}%")
+                ->orWhere('thn_ajar', 'LIKE', "%{$search}%")
+                ->orWhere('angkatan', 'LIKE', "%{$search}%")
+                ->orWhere('status', 'LIKE', "%{$search}%")
                 ->count();
             }
 
             $data = [];
 
-            if (!empty($sesi)) {
+            if (!empty($kurikulum)) {
             // providing a dummy id instead of database ids
                 $ids = $start;
 
-                foreach ($sesi as $row) {
+                foreach ($kurikulum as $row) {
                     $nestedData['id'] = $row->id;
                     $nestedData['fake_id'] = ++$ids;
-                    $nestedData['kode_sesi'] = $row->kode_sesi;
-                    $nestedData['nama_sesi'] = $row->nama_sesi;
-                    $nestedData['nama_ruang'] = $row->nama_ruang;
+                    $nestedData['kode_kurikulum'] = $row->kode_kurikulum;
+                    $nestedData['progdi'] = $row->progdi;
+                    $nestedData['thn_ajar'] = $row->thn_ajar;
+                    $nestedData['angkatan'] = $row->angkatan;
                     $nestedData['status'] = $row->status;
                     $data[] = $nestedData;
                 }
@@ -114,28 +111,30 @@ class SesiController extends Controller
         $id = $request->id;
 
         if ($id) {
-            $sesi = Sesi::updateOrCreate(
+            $kurikulum = Kurikulum::updateOrCreate(
                 ['id' => $id],
                 [
-                    'kode_sesi' => $request->kode_sesi,
-                    'id_waktu' => $request->id_waktu,
-                    'id_ruang' => $request->id_ruang,
+                    'kode_kurikulum' => $request->kode_kurikulum,
+                    'progdi' => $request->progdi,
+                    'thn_ajar' => $request->thn_ajar,
+                    'angkatan' => $request->angkatan,
                     'status' => $request->status
                 ]
             );
 
             return response()->json('Updated');
         } else {
-            $sesi = Sesi::updateOrCreate(
+            $kurikulum = Kurikulum::updateOrCreate(
                 ['id' => $id],
                 [
-                    'kode_sesi' => $request->kode_sesi,
-                    'id_waktu' => $request->id_waktu,
-                    'id_ruang' => $request->id_ruang,
+                    'kode_kurikulum' => $request->kode_kurikulum,
+                    'progdi' => $request->progdi,
+                    'thn_ajar' => $request->thn_ajar,
+                    'angkatan' => $request->angkatan,
                     'status' => $request->status
                 ]
             );
-            if ($sesi) {
+            if ($kurikulum) {
                 return response()->json('Created');
             } else {
                 return response()->json('Failed Create Academic');
@@ -147,14 +146,13 @@ class SesiController extends Controller
         //
         $where = ['id' => $id];
 
-        $sesi = Sesi::where($where)->first();
+        $kurikulum = Kurikulum::where($where)->first();
 
-        return response()->json($sesi);
+        return response()->json($kurikulum);
     }
     public function destroy(string $id)
     {
         //
-        $sesi = Sesi::where('id', $id)->delete();
+        $kurikulum = Kurikulum::where('id', $id)->delete();
     }
-    
 }

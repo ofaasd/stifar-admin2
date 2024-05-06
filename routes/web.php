@@ -9,6 +9,10 @@ use App\Http\Controllers\admin\FakultasController;
 use App\Http\Controllers\admin\RumpunController;
 use App\Http\Controllers\admin\TahunAjaranController;
 use App\Http\Controllers\admin\SesiController;
+use App\Http\Controllers\admin\ProdiController;
+use App\Http\Controllers\admin\KurikulumController;
+use App\Http\Controllers\admin\KelompokMatkulController;
+use App\Http\Controllers\admin\MatkulController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,3 +38,7 @@ Route::resource('admin/masterdata/fakultas', FakultasController::class)->name('i
 Route::resource('admin/masterdata/rumpun', RumpunController::class)->name('index','rumpun');
 Route::resource('admin/masterdata/ta', TahunAjaranController::class)->name('index','ta');
 Route::resource('admin/masterdata/sesi', SesiController::class)->name('index', 'sesi');
+Route::resource('admin/masterdata/kurikulum', KurikulumController::class)->name('index', 'kurikulum');
+Route::resource('admin/masterdata/program-studi', ProdiController::class)->name('index', 'program-studi');
+Route::resource('admin/masterdata/kelompok-mk', KelompokMatkulController::class)->name('index', 'kelompok-mk');
+Route::resource('admin/masterdata/matakuliah', MatkulController::class)->name('index', 'matakuliah');
