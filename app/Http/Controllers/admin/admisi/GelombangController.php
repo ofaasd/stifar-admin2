@@ -1,29 +1,32 @@
 <?php
 
-namespace App\Http\Controllers\admin;
+namespace App\Http\Controllers\admin\admisi;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Gelombang;
+use App\Models\PmbJalur as Jalur;
 
 class GelombangController extends Controller
 {
-    public $indexed = ['', 'id', 'no_gel', 'nama_gel', 'tgl_mulai', 'tgl_akhir', 'ujian'];
+    public $indexed = ['', 'id', 'no_gel', 'nama_gel', 'nama_gel_long', 'tgl_mulai', 'tgl_akhir','jalur'];
     public function index(Request $request)
     {
         //
         if (empty($request->input('length'))) {
             $title = "Gelombang";
             $indexed = $this->indexed;
-            return view('admin.master.gelombang.index', compact('title','indexed'));
+            $jalur = Jalur::all();
+            return view('admin.admisi.gelombang.index', compact('title','indexed','jalur'));
         }else{
             $columns = [
                 1 => 'id',
                 2 => 'no_gel',
                 3 => 'nama_gel',
-                4 => 'tgl_mulai',
-                5 => 'tgl_akhir',
-                6 => 'ujian',
+                4 => 'nama_gel_long',
+                5 => 'tgl_mulai',
+                6 => 'tgl_akhir',
+                7 => 'jalur',
             ];
 
             $search = [];
@@ -39,14 +42,14 @@ class GelombangController extends Controller
 
 
             if (empty($request->input('search.value'))) {
-                $ruang = Gelombang::offset($start)
+                $gelombang = Gelombang::offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
                     ->get();
             } else {
                 $search = $request->input('search.value');
 
-                $ruang = Gelombang::where('id', 'LIKE', "%{$search}%")
+                $gelombang = Gelombang::where('id', 'LIKE', "%{$search}%")
                     ->orWhere('no_gel', 'LIKE', "%{$search}%")
                     ->orWhere('nama_gel', 'LIKE', "%{$search}%")
                     ->orWhere('tgl_mulai', 'LIKE', "%{$search}%")
@@ -68,18 +71,19 @@ class GelombangController extends Controller
 
             $data = [];
 
-            if (!empty($ruang)) {
+            if (!empty($gelombang)) {
             // providing a dummy id instead of database ids
                 $ids = $start;
 
-                foreach ($ruang as $row) {
+                foreach ($gelombang as $row) {
                     $nestedData['id'] = $row->id;
                     $nestedData['fake_id'] = ++$ids;
                     $nestedData['no_gel'] = $row->no_gel;
                     $nestedData['nama_gel'] = $row->nama_gel;
+                    $nestedData['nama_gel_long'] = substr($row->nama_gel_long,0,40) . "...";
                     $nestedData['tgl_mulai'] = $row->tgl_mulai;
                     $nestedData['tgl_akhir'] = $row->tgl_akhir;
-                    $nestedData['ujian'] = $row->ujian;
+                    $nestedData['jalur'] = $row->jalur->nama ?? '';
                     $data[] = $nestedData;
                 }
             }
@@ -110,11 +114,13 @@ class GelombangController extends Controller
             $gel = Gelombang::updateOrCreate(
                 ['id' => $id],
                 [
-                    'no_gel' => $request->no_gel, 
-                    'nama_gel' => $request->nama_gel, 
-                    'tgl_mulai' => $request->tgl_mulai, 
-                    'tgl_akhir' => $request->tgl_akhir, 
-                    'ujian' => $request->ujian
+                    'no_gel' => $request->no_gel,
+                    'nama_gel' => $request->nama_gel,
+                    'nama_gel_long' => $request->nama_gel_long,
+                    'tgl_mulai' => $request->tgl_mulai,
+                    'tgl_akhir' => $request->tgl_akhir,
+                    'ujian' => $request->ujian,
+                    'id_jalur' => $request->id_jalur
                 ]
             );
 
@@ -123,11 +129,13 @@ class GelombangController extends Controller
             $gel = Gelombang::updateOrCreate(
                 ['id' => $id],
                 [
-                    'no_gel' => $request->no_gel, 
-                    'nama_gel' => $request->nama_gel, 
-                    'tgl_mulai' => $request->tgl_mulai, 
-                    'tgl_akhir' => $request->tgl_akhir, 
-                    'ujian' => $request->ujian
+                    'no_gel' => $request->no_gel,
+                    'nama_gel' => $request->nama_gel,
+                    'nama_gel_long' => $request->nama_gel_long,
+                    'tgl_mulai' => $request->tgl_mulai,
+                    'tgl_akhir' => $request->tgl_akhir,
+                    'ujian' => $request->ujian,
+                    'id_jalur' => $request->id_jalur
                 ]
             );
             if ($gel) {

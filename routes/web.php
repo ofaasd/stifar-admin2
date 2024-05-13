@@ -5,7 +5,8 @@ use App\Http\Controllers\admin\RuangController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\admin\AsalSekolahController;
-use App\Http\Controllers\admin\GelombangController;
+use App\Http\Controllers\admin\admisi\GelombangController;
+use App\Http\Controllers\admin\admisi\PmbPesertaController;
 use App\Http\Controllers\admin\WaktuController;
 use App\Http\Controllers\admin\FakultasController;
 use App\Http\Controllers\admin\RumpunController;
@@ -38,16 +39,29 @@ Route::get('/logout', [LoginController::class, 'logout'])->name('logout')->middl
 
 Route::middleware('auth')->group(function(){
     Route::get('/dashboard',[DashboardController::class, 'index'] )->name('dashboard');
+
+    Route::post('admin/admisi/peserta/daftar_kota',[PmbPesertaController::class, 'daftar_kota'] )->name('daftar_kota');
+    Route::post('admin/admisi/peserta/get_gelombang',[PmbPesertaController::class, 'get_gelombang'] )->name('get_gelombang');
+    Route::post('admin/admisi/peserta/get_jurusan',[PmbPesertaController::class, 'get_jurusan'] )->name('get_jurusan');
+    Route::get('admin/admisi/peserta/{id}/edit_gelombang', [PmbPesertaController::class, 'edit_gelombang'])->name('edit_gelombang');
+    Route::get('admin/admisi/peserta/{id}/edit_asal_sekolah', [PmbPesertaController::class, 'edit_asal_sekolah'])->name('edit_asal_sekolah');
+    Route::get('admin/admisi/peserta/{id}/edit_file_pendukung', [PmbPesertaController::class, 'edit_file_pendukung'])->name('edit_file_pendukung');
+
+    Route::resource('admin/masterdata/ruang', RuangController::class)->name('index','ruang');
+    Route::resource('admin/masterdata/sekolah', AsalSekolahController::class)->name('index','sekolah');
+    Route::resource('admin/masterdata/waktu', WaktuController::class)->name('index','waktu');
+    Route::resource('admin/masterdata/fakultas', FakultasController::class)->name('index','fakultas');
+    Route::resource('admin/masterdata/rumpun', RumpunController::class)->name('index','rumpun');
+    Route::resource('admin/masterdata/ta', TahunAjaranController::class)->name('index','ta');
+    Route::resource('admin/masterdata/sesi', SesiController::class)->name('index', 'sesi');
+    Route::resource('admin/masterdata/kurikulum', KurikulumController::class)->name('index', 'kurikulum');
+    Route::resource('admin/masterdata/program-studi', ProdiController::class)->name('index', 'program-studi');
+    Route::resource('admin/masterdata/kelompok-mk', KelompokMatkulController::class)->name('index', 'kelompok-mk');
+    Route::resource('admin/masterdata/matakuliah', MatkulController::class)->name('index', 'matakuliah');
+
+    Route::resource('admin/admisi/gelombang', GelombangController::class)->name('index','gelombang');
+    Route::resource('admin/admisi/peserta', PmbPesertaController::class)->name('index','peserta');
 });
-Route::resource('admin/masterdata/ruang', RuangController::class)->name('index','ruang');
-Route::resource('admin/masterdata/sekolah', AsalSekolahController::class)->name('index','sekolah');
-Route::resource('admin/masterdata/gelombang', GelombangController::class)->name('index','gelombang');
-Route::resource('admin/masterdata/waktu', WaktuController::class)->name('index','waktu');
-Route::resource('admin/masterdata/fakultas', FakultasController::class)->name('index','fakultas');
-Route::resource('admin/masterdata/rumpun', RumpunController::class)->name('index','rumpun');
-Route::resource('admin/masterdata/ta', TahunAjaranController::class)->name('index','ta');
-Route::resource('admin/masterdata/sesi', SesiController::class)->name('index', 'sesi');
-Route::resource('admin/masterdata/kurikulum', KurikulumController::class)->name('index', 'kurikulum');
-Route::resource('admin/masterdata/program-studi', ProdiController::class)->name('index', 'program-studi');
-Route::resource('admin/masterdata/kelompok-mk', KelompokMatkulController::class)->name('index', 'kelompok-mk');
-Route::resource('admin/masterdata/matakuliah', MatkulController::class)->name('index', 'matakuliah');
+
+
+

@@ -15,8 +15,8 @@
 @endsection
 
 @section('breadcrumb-items')
-    <li class="breadcrumb-item">Master Data</li>
-    <li class="breadcrumb-item active">Asal Sekolah PMB</li>
+    <li class="breadcrumb-item">Admisi</li>
+    <li class="breadcrumb-item active">Gelombang Pendaftaran</li>
 @endsection
 
 @section('content')
@@ -47,6 +47,10 @@
                                                 <input type="text" name="nama_gel" id="nama_gel" class="form-control">
                                             </div>
                                             <div class="mb-3">
+                                                <label for="nama_gel_long" class="form-label">Keterangan</label>
+                                                <textarea name="nama_gel_long" id="nama_gel_long" class="form-control"></textarea>
+                                            </div>
+                                            <div class="mb-3">
                                                 <label for="tgl_mulai" class="form-label">Tanggal Mulai</label>
                                                 <input type="date" name="tgl_mulai" id="tgl_mulai" class="form-control">
                                             </div>
@@ -58,6 +62,15 @@
                                                 <label for="ujian" class="form-label">Tanggal Ujian</label>
                                                 <input type="date" name="ujian" id="ujian" class="form-control">
                                             </div>
+                                            <div class="mb-3">
+                                                <label for="id_jalur" class="form-label">Jalur PMB</label>
+                                                <select name="id_jalur" id="id_jalur" class="form-control">
+                                                @foreach($jalur as $row)
+                                                    <option value="{{$row->id}}">{{$row->nama}}</option>
+                                                @endforeach
+                                                </select>
+                                            </div>
+
                                         </div>
                                         <div class="modal-footer">
                                             <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
@@ -76,11 +89,12 @@
                                     <tr>
                                         <th></th>
                                         <th>ID</th>
-                                        <th>Nomor Gelombang</th>
+                                        <th>No. Gel.</th>
                                         <th>Nama Gelombang</th>
+                                        <th>Keterangan</th>
                                         <th>Tanggal Mulai</th>
                                         <th>Tanggal Akhir</th>
-                                        <th>Tanggal Ujian</th>
+                                        <th>Jalur</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -106,7 +120,7 @@
 
             const baseUrl = {!! json_encode(url('/')) !!};
             const title = "{{strtolower($title)}}";
-            const page = '/'.concat("admin/masterdata/").concat(title);
+            const page = '/'.concat("admin/admisi/").concat(title);
             var my_column = $('#my_column').val();
             const pecah = my_column.split('\n');
             let my_data = [];

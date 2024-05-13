@@ -67,8 +67,8 @@
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
                 <span><i class="fa fa-file-text"></i> Admisi</span></a>
                 <ul class="sidebar-submenu">
-                    <li><a href="/admin/masterdata/gelombang">Gelombang</a></li>
-                    <li><a href="#">Pendaftaran Mahasiswa</a></li>
+                    <li><a href="{{URL::to('admin/admisi/gelombang')}}">Gelombang</a></li>
+                    <li><a href="{{URL::to('admin/admisi/peserta')}}">Pendaftaran Mahasiswa Baru</a></li>
                     <li><a href="#">Pengaturan Ujian PMB</a></li>
                     <li><a href="#">Surat Pengumuman</a></li>
                     <li><a href="#">Peringkat PMDP</a></li>  {{--  Ada menu untuk toggle krs sedang dibuka atau ditutup--}}
