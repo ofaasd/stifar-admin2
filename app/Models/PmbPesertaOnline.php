@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class PmbPesertaOnline
- * 
+ *
  * @property int $id
  * @property int $user_id
  * @property string|null $nisn
@@ -97,6 +97,7 @@ class PmbPesertaOnline extends Model
 
 	protected $fillable = [
 		'user_id',
+		'nopen',
 		'nisn',
 		'nim',
 		'gelombang',

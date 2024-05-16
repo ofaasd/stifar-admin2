@@ -7,6 +7,9 @@ use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\admin\AsalSekolahController;
 use App\Http\Controllers\admin\admisi\GelombangController;
 use App\Http\Controllers\admin\admisi\PmbPesertaController;
+use App\Http\Controllers\admin\admisi\PeringkatPmdpController;
+use App\Http\Controllers\admin\admisi\PmbNilaiTambahanController;
+use App\Http\Controllers\admin\admisi\DaftarSoalController;
 use App\Http\Controllers\admin\WaktuController;
 use App\Http\Controllers\admin\FakultasController;
 use App\Http\Controllers\admin\RumpunController;
@@ -47,6 +50,16 @@ Route::middleware('auth')->group(function(){
     Route::get('admin/admisi/peserta/{id}/edit_asal_sekolah', [PmbPesertaController::class, 'edit_asal_sekolah'])->name('edit_asal_sekolah');
     Route::get('admin/admisi/peserta/{id}/edit_file_pendukung', [PmbPesertaController::class, 'edit_file_pendukung'])->name('edit_file_pendukung');
 
+    Route::get('admin/admisi/peringkat', [PeringkatPmdpController::class, 'index'])->name('peringkat');
+    Route::get('admin/admisi/peringkat/table', [PeringkatPmdpController::class, 'table'])->name('table_tambahan');
+    Route::post('admin/admisi/peringkat/add_nilai_tambahan', [PeringkatPmdpController::class, 'add_nilai_tambahan'])->name('add_nilai_tambahan');
+
+    Route::get('admin/admisi/nilai_tambahan/{id}', [PmbNilaiTambahanController::class, 'index'])->name('nilai_tambahan');
+    Route::get('admin/admisi/nilai_tambahan/{id}/table', [PmbNilaiTambahanController::class, 'table'])->name('table_nilai_tambahan');
+    Route::get('admin/admisi/nilai_tambahan/{id}/edit', [PmbNilaiTambahanController::class, 'edit'])->name('edit_nilai_tambahan');
+    Route::post('admin/admisi/nilai_tambahan/{id}', [PmbNilaiTambahanController::class, 'store'])->name('store_nilai_tambahan');
+    Route::delete('admin/admisi/nilai_tambahan/{id}/delete', [PmbNilaiTambahanController::class, 'destroy'])->name('delete_nilai_tambahan');
+
     Route::resource('admin/masterdata/ruang', RuangController::class)->name('index','ruang');
     Route::resource('admin/masterdata/sekolah', AsalSekolahController::class)->name('index','sekolah');
     Route::resource('admin/masterdata/waktu', WaktuController::class)->name('index','waktu');
@@ -61,6 +74,7 @@ Route::middleware('auth')->group(function(){
 
     Route::resource('admin/admisi/gelombang', GelombangController::class)->name('index','gelombang');
     Route::resource('admin/admisi/peserta', PmbPesertaController::class)->name('index','peserta');
+    Route::resource('admin/admisi/daftar_soal', DaftarSoalController::class)->name('index','daftar_soal');
 });
 
 

@@ -69,17 +69,17 @@
                 <ul class="sidebar-submenu">
                     <li><a href="{{URL::to('admin/admisi/gelombang')}}">Gelombang</a></li>
                     <li><a href="{{URL::to('admin/admisi/peserta')}}">Pendaftaran Mahasiswa Baru</a></li>
-                    <li><a href="#">Pengaturan Ujian PMB</a></li>
-                    <li><a href="#">Surat Pengumuman</a></li>
-                    <li><a href="#">Peringkat PMDP</a></li>  {{--  Ada menu untuk toggle krs sedang dibuka atau ditutup--}}
-                    <li><a href="#">Daftar PMB Online</a></li> {{-- Daftar User pmb online--}}
+                    <li><a href="{{URL::to('admin/admisi/daftar_soal')}}">Pengaturan Ujian PMB</a></li>
+                    <li><a href="#">Surat Pengumuman</a></li> {{-- Butuh format surat pengumuman resmi dari pihak kampus --}}
+                    <li><a href="{{URL::to('admin/admisi/peringkat')}}">Peringkat PMDP</a></li>  {{--  Ada menu untuk toggle krs sedang dibuka atau ditutup--}}
+                    <li><a href="#">User PMB Online</a></li> {{-- Daftar User pmb online--}}
                     <li><a href="#">KTM (s)</a></li>
                     <li><a href="#">Statistik</a></li>
                     <li><a href="#">Verifikasi Pendaftaran</a></li>
                     <li><a href="#">Verifikasi Pembayaran Daftar</a></li>
                     <li><a href="#">Verifikasi Pembayaran Registrasi</a></li>
                     <li><a href="#">History PMB</a></li>
-                    <li><a href="#">Berita Pendaftaran</a></li>
+                    {{-- <li><a href="#">Berita Pendaftaran</a></li> --}}
                     <li><a href="#">Berita Gambar/Slideshow</a></li>
                 </ul>
             </li>

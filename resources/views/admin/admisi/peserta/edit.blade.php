@@ -40,6 +40,10 @@
                         <div class="row">
                             <div class="col-md-6 mb-4">
                                 <div class="mb-2">
+                                    <label for="nopen">No. Pendaftaran</label>
+                                    <input class="form-control" id="nopen" type="text" name="nopen" placeholder="No. Pendaftaran" required="" value="{{$peserta->nopen}}">
+                                </div>
+                                <div class="mb-2">
                                     <label for="ktp">No. KTP</label>
                                     <input class="form-control" id="ktp" type="text" name="ktp" placeholder="No. KTP" required="" value="{{$peserta->noktp}}">
                                 </div>

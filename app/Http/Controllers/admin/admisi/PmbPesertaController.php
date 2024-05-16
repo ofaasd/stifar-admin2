@@ -332,6 +332,7 @@ class PmbPesertaController extends Controller
         if($action == "edit"){
 
             $data = array(
+                'nopen' => $request->input('nopen'),
                 'noktp' => $request->input('ktp'),
                 'nama' => $request->input('nama'),
                 'jk' => $request->input('jk'),
