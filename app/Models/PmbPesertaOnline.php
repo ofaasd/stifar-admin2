@@ -145,6 +145,8 @@ class PmbPesertaOnline extends Model
 		'is_delete',
 		'is_mundur',
 		'ipk',
-		'toefl'
+		'toefl',
+        'is_verifikasi',
+        'no_refrensi',
 	];
 }

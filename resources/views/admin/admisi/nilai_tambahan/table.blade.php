@@ -123,7 +123,7 @@
                         confirmButton: 'btn btn-success'
                     }
                     });
-                    
+
                 } else {
                     swal({
                     title: 'Cancelled',
