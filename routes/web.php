@@ -11,6 +11,7 @@ use App\Http\Controllers\admin\admisi\PeringkatPmdpController;
 use App\Http\Controllers\admin\admisi\PmbNilaiTambahanController;
 use App\Http\Controllers\admin\admisi\DaftarSoalController;
 use App\Http\Controllers\admin\admisi\VerifikasiController;
+use App\Http\Controllers\admin\admisi\PengumumanController;
 use App\Http\Controllers\admin\WaktuController;
 use App\Http\Controllers\admin\FakultasController;
 use App\Http\Controllers\admin\RumpunController;
@@ -67,6 +68,11 @@ Route::middleware('auth')->group(function(){
     Route::get('admin/admisi/verifikasi/pembayaran', [VerifikasiController::class, 'pembayaran'])->name('verifikasi_pembayaran');
     Route::get('admin/admisi/verifikasi/pembayaran/{id}/edit', [VerifikasiController::class, 'edit_verifikasi'])->name('edit_verifikasi');
     Route::post('admin/admisi/verifikasi/pembayaran', [VerifikasiController::class, 'update_pembayaran'])->name('update_pembayaran');
+
+    Route::get('admin/admisi/pengumuman', [PengumumanController::class, 'index'])->name('pengumuman');
+    Route::get('admin/admisi/pengumuman/{id}/peserta', [PengumumanController::class, 'peserta'])->name('pengumuman_peserta');
+    Route::get('admin/admisi/pengumuman/{id}/edit_peserta', [PengumumanController::class, 'edit_peserta'])->name('edit_peserta');
+    Route::post('admin/admisi/pengumuman/{id}/edit_peserta', [PengumumanController::class, 'simpan_peserta'])->name('simpan_peserta');
 
     Route::resource('admin/masterdata/ruang', RuangController::class)->name('index','ruang');
     Route::resource('admin/masterdata/sekolah', AsalSekolahController::class)->name('index','sekolah');
