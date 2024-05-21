@@ -12,6 +12,7 @@ use App\Http\Controllers\admin\admisi\PmbNilaiTambahanController;
 use App\Http\Controllers\admin\admisi\DaftarSoalController;
 use App\Http\Controllers\admin\admisi\VerifikasiController;
 use App\Http\Controllers\admin\admisi\PengumumanController;
+use App\Http\Controllers\admin\kepegawaian\PegawaiController;
 use App\Http\Controllers\admin\WaktuController;
 use App\Http\Controllers\admin\FakultasController;
 use App\Http\Controllers\admin\RumpunController;
@@ -89,6 +90,10 @@ Route::middleware('auth')->group(function(){
     Route::resource('admin/admisi/gelombang', GelombangController::class)->name('index','gelombang');
     Route::resource('admin/admisi/peserta', PmbPesertaController::class)->name('index','peserta');
     Route::resource('admin/admisi/daftar_soal', DaftarSoalController::class)->name('index','daftar_soal');
+
+    Route::resource('admin/kepegawaian/pegawai', PegawaiController::class)->name('index','pegawai');
+
+
 });
 
 

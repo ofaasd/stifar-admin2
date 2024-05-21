@@ -180,7 +180,7 @@
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
                 <span><i class="fa fa-users"></i> Kepegawaian</span></a>
                 <ul class="sidebar-submenu">
-                    <li><a href="#">Data Pegawai</a></li>
+                    <li><a href="{{URL::to('admin/kepegawaian/pegawai')}}">Data Pegawai</a></li>
                     <li><a href="#">Profil Pegawai</a></li>
                     <li><a href="#">Absensi</a></li>
                     <li><a href="#">Jam Kerja Dosen</a></li>
