@@ -11,7 +11,7 @@
 @endsection
 
 @section('breadcrumb-title')
-    <h3>{{$title}}</h3>
+    <h3>{{$title2}}</h3>
 @endsection
 
 @section('breadcrumb-items')
@@ -26,7 +26,7 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header pb-0 card-no-border">
-                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal" id="add-record">+ {{$title}}</button>
+                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal" id="add-record">+ {{$title2}}</button>
                         <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
@@ -34,43 +34,43 @@
                                         @csrf
                                         <input type="hidden" name="id" id="id">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="ModalLabel">Tambah {{$title}}</h5>
+                                            <h5 class="modal-title" id="ModalLabel">Tambah {{$title2}}</h5>
                                             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
                                             <div class="mb-3">
-                                                <label for="no_gel" class="form-label">Nomor Gelombang</label>
-                                                <input type="text" name="no_gel" id="no_gel" class="form-control">
+                                                <label for="nama" class="form-label">Nama Perguruan Tinggi</label>
+                                                <input type="text" name="nama" id="nama" class="form-control">
                                             </div>
                                             <div class="mb-3">
-                                                <label for="nama_gel" class="form-label">Nama Gelombang</label>
-                                                <input type="text" name="nama_gel" id="nama_gel" class="form-control">
+                                                <label for="nama_gel" class="form-label">Alamat</label>
+                                                <textarea name="alamat" class="form-control" id="alamat" cols="30" rows="10"></textarea>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="nama_gel_long" class="form-label">Keterangan</label>
-                                                <textarea name="nama_gel_long" id="nama_gel_long" class="form-control"></textarea>
+                                                <label for="lat" class="form-label">Latitude</label>
+                                                <input type="text" name="lat" id="lat" class="form-control">
                                             </div>
                                             <div class="mb-3">
-                                                <label for="tgl_mulai" class="form-label">Tanggal Mulai</label>
-                                                <input type="date" name="tgl_mulai" id="tgl_mulai" class="form-control">
+                                                <label for="lng" class="form-label">Longitude</label>
+                                                <input type="text" name="lng" id="lng" class="form-control">
                                             </div>
                                             <div class="mb-3">
-                                                <label for="tgl_akhir" class="form-label">Tanggal Akhir</label>
-                                                <input type="date" name="tgl_akhir" id="tgl_akhir" class="form-control">
+                                                <label for="notelp" class="form-label">No. Telp</label>
+                                                <input type="notelp" name="notelp" id="notelp" class="form-control">
                                             </div>
                                             <div class="mb-3">
-                                                <label for="ujian" class="form-label">Tanggal Ujian</label>
-                                                <input type="date" name="ujian" id="ujian" class="form-control">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="id_jalur" class="form-label">Jalur PMB</label>
-                                                <select name="id_jalur" id="id_jalur" class="form-control">
-                                                @foreach($jalur as $row)
-                                                    <option value="{{$row->id}}">{{$row->nama}}</option>
-                                                @endforeach
-                                                </select>
+                                                <label for="ujian" class="form-label">Email</label>
+                                                <input type="email" name="email" id="email" class="form-control">
                                             </div>
 
+                                            <div class="mb-3">
+                                                <label for="deskripsi" class="form-label">Deskripsi</label>
+                                                <textarea name="deskripsi" id="deskripsi" cols="30" rows="10" class="form-control"></textarea>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="logo" class="form-label">Logo</label>
+                                                <input type="file" name="logo" id="logos" class="form-control">
+                                            </div>
                                         </div>
                                         <div class="modal-footer">
                                             <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
@@ -89,12 +89,11 @@
                                     <tr>
                                         <th></th>
                                         <th>ID</th>
-                                        <th>No. Gel.</th>
-                                        <th>Nama Gelombang</th>
-                                        <th>Keterangan</th>
-                                        <th>Tanggal Mulai</th>
-                                        <th>Tanggal Akhir</th>
-                                        <th>Jalur</th>
+                                        <th>Logo</th>
+                                        <th>Nama</th>
+                                        <th>Alamat</th>
+                                        <th>No. Telp</th>
+                                        <th>Email</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -120,7 +119,7 @@
 
             const baseUrl = {!! json_encode(url('/')) !!};
             const title = "{{strtolower($title)}}";
-            const page = '/'.concat("admin/admisi/").concat(title);
+            const page = '/'.concat("admin/masterdata/").concat(title);
             var my_column = $('#my_column').val();
             const pecah = my_column.split('\n');
             let my_data = [];
@@ -199,13 +198,12 @@
             $('#tambahModal').on('hidden.bs.modal', function () {
                 $('#formAdd').trigger("reset");
             });
-
+            //Edit Record
             $(document).on('click', '#add-record', function () {
                 $('#ModalLabel').html('Tambah ' + title);
                 $("#id").val('');
                 $('#formAdd').trigger("reset");
             });
-            //Edit Record
             $(document).on('click', '.edit-record', function () {
                 const id = $(this).data('id');
 
@@ -225,10 +223,13 @@
             //save record
             $('#formAdd').on('submit',function(e){
                 e.preventDefault();
+                const myFormData = new FormData(document.getElementById('formAdd'));
                 $.ajax({
-                    data: $('#formAdd').serialize(),
+                    data: myFormData,
                     url: ''.concat(baseUrl).concat(page),
                     type: 'POST',
+                    processData: false,
+                    contentType: false,
                     success: function success(status) {
                         dt.draw();
                         $("#tambahModal").modal('hide');

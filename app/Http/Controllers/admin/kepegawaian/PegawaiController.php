@@ -7,8 +7,12 @@ use Illuminate\Http\Request;
 use App\Models\Pegawai;
 use App\Models\PegawaiBiodatum;
 use App\Models\PegawaiGolongan;
+use App\Models\PegawaiJeni as PegawaiJenis;
 use App\Models\PegawaiJabatanStruktural;
 use App\Models\PegawaiJabatanFungsional;
+use App\Models\PegawaiPosisi;
+use App\Models\Wilayah;
+
 use App\Models\Prodi;
 
 class PegawaiController extends Controller
@@ -25,18 +29,18 @@ class PegawaiController extends Controller
             if($pegawai){
                 $new_pegawai = PegawaiBiodatum::find($row->id);
                 $new_pegawai->id_pegawai = $pegawai->id;
-                $new_pegawai->Save();
+                $new_pegawai->save();
             }
         }
-        // $title = "Data Pegawai";
-        // $pegawai = PegawaiBiodatum::all();
-        // $programStudi = Prodi::all();
-        // $homebase = [];
-        // foreach($programStudi as $row){
-        //     $homebase[$row->id] = $row->nama_jurusan;
-        // }
-        // $fake_id = 0;
-        // return view('admin/kepegawaian/pegawai/index', compact('title','pegawai','homebase','fake_id'));
+        $title = "Data Pegawai";
+        $pegawai = PegawaiBiodatum::all();
+        $programStudi = Prodi::all();
+        $homebase = [];
+        foreach($programStudi as $row){
+            $homebase[$row->id] = $row->nama_jurusan;
+        }
+        $fake_id = 0;
+        return view('admin/kepegawaian/pegawai/index', compact('title','pegawai','homebase','fake_id'));
     }
 
     /**
@@ -45,6 +49,17 @@ class PegawaiController extends Controller
     public function create()
     {
         //
+        $title = "Tambah Pegawai";
+        $jenis_kelamin = [
+            'L' => 'Laki-laki',
+            'P' => 'Perempuan',
+        ];
+        $progdi = Prodi::all();
+        $jenis_pegawai = PegawaiJenis::all();
+        $wilayah = Wilayah::where('id_induk_wilayah','000000')->get();
+        $status = array('aktif','cuti','keluar','meninggal');
+        $status_kawin = array("Lajang","Kawin");
+        return view("admin/kepegawaian/pegawai/create2", compact('title','jenis_kelamin','progdi','jenis_pegawai','wilayah','status','status_kawin'));
     }
 
     /**
@@ -86,5 +101,11 @@ class PegawaiController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function get_status(Request $request){
+        $id = $request->id;
+        $status = PegawaiPosisi::where('id_jenis_pegawai',$id)->get();
+        return response()->json($status);
     }
 }

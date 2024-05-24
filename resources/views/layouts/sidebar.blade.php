@@ -26,9 +26,9 @@
                             <span>PT (Perguruan Tinggi)</span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
-                            <li><a href="#">Profile</a></li>
-                            <li><a href="#">Atribut</a></li>
-                            <li><a href="#">Renstra</a></li>
+                            <li><a href="{{URL::to('admin/masterdata/pt')}}">Profile</a></li>
+                            <li><a href="{{URL::to('admin/masterdata/pt/atribut')}}">Atribut</a></li>
+                            <li><a href="{{URL::to('admin/masterdata/pt/renstra')}}">Renstra</a></li>
                         </ul>
                     </li>
                     <li>

@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class PegawaiBiodatum
- * 
+ *
  * @property int $id
  * @property int|null $id_pegawai
  * @property int $id_posisi
@@ -68,8 +68,7 @@ class PegawaiBiodatum extends Model
 
 	protected $casts = [
 		'id_pegawai' => 'int',
-		'id_posisi' => 'int',
-		'id_posisi_detail' => 'int',
+		'id_posisi_pegawai' => 'int',
 		'id_progdi' => 'int',
 		'expired_ktp' => 'datetime',
 		'tanggal_lahir' => 'datetime',
@@ -82,8 +81,7 @@ class PegawaiBiodatum extends Model
 
 	protected $fillable = [
 		'id_pegawai',
-		'id_posisi',
-		'id_posisi_detail',
+		'id_posisi_pegawai',
 		'id_progdi',
 		'ktp',
 		'expired_ktp',
