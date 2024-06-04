@@ -105,8 +105,148 @@
                     <div class="card-body">
 
 
+                        <div class="form-group row">
+                            <label class="col-sm-10 col-form-label">Alamat Tempat Tinggal : </label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control" name="alamat" value="" id="alamat" required></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-10 col-form-label">Nama Provinsi :</label>
+                            <div class="col-sm-10">
+                                <p>
+                                    <select name="provinsi" id="provinsi" class="form-control" required="">
+                                        <option selected="" disabled="">Pilih Provinsi</option>
+                                        <?php foreach($wilayah as $w){?>
+                                        <option value="<?php echo $w->id_wil ?>"><?php echo $w->nm_wil ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-10 col-form-label">Nama Kota/Kabupaten :</label>
+                            <div class="col-sm-10">
+                                <p>
+                                    <select name="kotakab" id="kotakab" class="form-control" required="">
+                                        <option selected="" disabled="">Pilih Kota/Kabupaten</option>
+                                    </select>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-10 col-form-label">Nama Kecamatan :</label>
+                            <div class="col-sm-10">
+                                <p>
+                                    <select name="kecamatan" id="kecamatan" class="form-control" required="">
+                                        <option selected="" disabled="">Daftar Kecamatan</option>
+                                    </select>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-10 col-form-label">Nama Kelurahan :</label>
+                            <div class="col-sm-10">
+                                <p><input type="text" class="form-control" placeholder="Nama Kelurahan" oninput="this.className = ''" name="kelurahan" required=""></p>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-10 col-form-label">Golongan Darah :</label>
+                            <div class="col-sm-10">
+                                <select name="golongan_darah" id="goldar" class="form-control">
+                                        <option selected="" disabled="">Pilih Golongan Darah</option>
+                                        <?php
+                                            $golongan = array("A","B","AB","O");
+                                            foreach($golongan as $value){?>
+                                            <option value="<?php echo $value ?>"><?php echo $value ?></option>
+                                        <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">No. KTP : </label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="no_ktp" value="" >
+                            </div>
+                        </div>
 
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">No. KK : </label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="no_kk" value="" >
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-10 col-form-label">No. BPJS Kesehatan : </label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="no_bpjs_kesehatan" value="" >
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label">No. BPJS ketenagakerjaan : </label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="no_bpjs_ketenagakerjaan" value="" >
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-10 col-form-label">Status Kepegawaian : </label>
+                            <div class="col-sm-10">
+                                <select class="form-control" name="status">
+                                    <?php
+                                        foreach($status as $row){
+                                            echo "<option value='" . $row . "''>" . $row . "</option>";
+                                        }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">Status Perkawinan : </label>
+                            <div class="col-sm-10">
+                                <select class="form-control" name="status_nikah" id="status_nikah">
+                                    <?php
+                                        foreach($status_kawin as $row){
+                                            echo "<option value='" . $row . "''>" . $row . "</option>";
+                                        }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="detail_status">
+                            <div class="menikah">
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label">Nama Pasangan : </label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" name="nama_pasangan" value="" >
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label">Tgl Lahir Pasangan : </label>
+                                    <div class="col-sm-10">
+                                        <input type="date" class="form-control" name="tgl_lahir_pasangan" value="" id="datepicker2">
+                                    </div>
 
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-8 col-form-label">Pekerjaan Pasangan : </label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" name="pekerjaan_pasangan" value="" >
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-form-label">Jumlah Anak : </label>
+                                    <div class="col-sm-4">
+                                        <input type="number" class="form-control" name="jumlah_anak" value="" >
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label">Nama Pasangan : </label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" name="nama_pasangan" value="" >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div >
                 </div>
             </div>

@@ -200,11 +200,7 @@
                 $('#formAdd').trigger("reset");
             });
 
-            $(document).on('click', '#add-record', function () {
-                $('#ModalLabel').html('Tambah ' + title);
-                $("#id").val('');
-                $('#formAdd').trigger("reset");
-            });
+
             //Edit Record
             $(document).on('click', '.edit-record', function () {
                 const id = $(this).data('id');
