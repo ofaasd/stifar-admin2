@@ -15,7 +15,9 @@ define('LARAVEL_START', microtime(true));
 | instead of starting the framework, which could cause an exception.
 |
 */
-
+header("Access-Control-Allow-Origin: *");
+//header("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS");
+header("Access-Control-Allow-Headers:*");
 if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
     require $maintenance;
 }
