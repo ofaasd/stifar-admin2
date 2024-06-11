@@ -13,6 +13,8 @@ use App\Http\Controllers\admin\ProdiController;
 use App\Http\Controllers\admin\KurikulumController;
 use App\Http\Controllers\admin\KelompokMatkulController;
 use App\Http\Controllers\admin\MatkulController;
+use App\Http\Controllers\admin\JadwalController;
+use App\Http\Controllers\admin\MkKurikulum;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,4 +43,22 @@ Route::resource('admin/masterdata/sesi', SesiController::class)->name('index', '
 Route::resource('admin/masterdata/kurikulum', KurikulumController::class)->name('index', 'kurikulum');
 Route::resource('admin/masterdata/program-studi', ProdiController::class)->name('index', 'program-studi');
 Route::resource('admin/masterdata/kelompok-mk', KelompokMatkulController::class)->name('index', 'kelompok-mk');
-Route::resource('admin/masterdata/matakuliah', MatkulController::class)->name('index', 'matakuliah');
+
+// route Matakuliah
+Route::get('/admin/masterdata/matakuliah', [MatkulController::class, 'index']);
+Route::post('/admin/masterdata/matakuliah/save', [MatkulController::class, 'simpanMK']);
+Route::post('/admin/masterdata/matakuliah/update', [MatkulController::class, 'updateMK']);
+Route::get('/admin/masterdata/matakuliah/delete/{id}', [MatkulController::class, 'destroy']);
+
+
+// route jadwal
+Route::get('/admin/masterdata/jadwal', [JadwalController::class, 'index']);
+Route::get('/admin/masterdata/jadwal/create/{id}', [JadwalController::class, 'daftarJadwal']);
+Route::post('/admin/masterdata/jadwal/create', [JadwalController::class, 'createJadwal']);
+
+// route mkKurikulum
+Route::get('/admin/masterdata/matakuliah-kurikulum', [MkKurikulum::class, 'index']);
+Route::post('/admin/masterdata/matakuliah-kurikulum/get', [MkKurikulum::class, 'daftarKur']);
+Route::post('/admin/masterdata/matakuliah-kurikulum/save', [MkKurikulum::class, 'simpandaftarKur']);
+Route::post('/admin/masterdata/matakuliah-kurikulum/update', [MkKurikulum::class, 'updateMK']);
+Route::get('/admin/masterdata/matakuliah-kurikulum/delete/{id}', [MkKurikulum::class, 'destroy']);
