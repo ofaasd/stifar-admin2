@@ -72,7 +72,6 @@ class PegawaiBiodatum extends Model
 		'id_progdi' => 'int',
 		'expired_ktp' => 'datetime',
 		'tanggal_lahir' => 'datetime',
-		'jenis_kelamin' => 'int',
 		'jumlah_anak' => 'int',
 		'tgl_lahir_pasangan' => 'datetime',
 		'status_nikah' => 'int',
@@ -119,6 +118,7 @@ class PegawaiBiodatum extends Model
 		'provinsi',
 		'kotakab',
 		'kecamatan',
-		'kelurahan'
+		'kelurahan',
+        'user_id'
 	];
 }

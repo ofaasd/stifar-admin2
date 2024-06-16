@@ -67,6 +67,7 @@ class GelombangController extends Controller
                 ->orWhere('tgl_akhir', 'LIKE', "%{$search}%")
                 ->orWhere('ujian', 'LIKE', "%{$search}%")
                 ->count();
+
             }
 
             $data = [];

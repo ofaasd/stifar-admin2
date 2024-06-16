@@ -26,52 +26,32 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header pb-0 card-no-border">
-                        @if(empty($link))
+
                         <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal" id="add-record">+ {{$title2}}</button>
-                        @endif
+
                         <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <form action="javascript:void(0)" id="formAdd">
                                         @csrf
                                         <input type="hidden" name="id" id="id">
+                                        <input type="hidden" name="id_pt" value="{{$id}}">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="ModalLabel">Tambah {{$title2}}</h5>
                                             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
                                             <div class="mb-3">
-                                                <label for="nama" class="form-label">Nama Perguruan Tinggi</label>
-                                                <input type="text" name="nama" id="nama" class="form-control">
+                                                <label for="nama" class="form-label">Nama</label>
+                                                <input type="text" name="nama" id="nama" class="form-control" placeholder="cth : SK Pendirian">
                                             </div>
                                             <div class="mb-3">
-                                                <label for="nama_gel" class="form-label">Alamat</label>
-                                                <textarea name="alamat" class="form-control" id="alamat" cols="30" rows="10"></textarea>
+                                                <label for="nama_gel" class="form-label">Upload File <small>*Abaikan Jika Menggunakan URL</small></label>
+                                                <input type="file" name="file" id="file" class="form-control">
                                             </div>
                                             <div class="mb-3">
-                                                <label for="lat" class="form-label">Latitude</label>
-                                                <input type="text" name="lat" id="lat" class="form-control">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="lng" class="form-label">Longitude</label>
-                                                <input type="text" name="lng" id="lng" class="form-control">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="notelp" class="form-label">No. Telp</label>
-                                                <input type="notelp" name="notelp" id="notelp" class="form-control">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="ujian" class="form-label">Email</label>
-                                                <input type="email" name="email" id="email" class="form-control">
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label for="deskripsi" class="form-label">Deskripsi</label>
-                                                <textarea name="deskripsi" id="deskripsi" cols="30" rows="10" class="form-control"></textarea>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="logo" class="form-label">Logo</label>
-                                                <input type="file" name="logo" id="logos" class="form-control">
+                                                <label for="lat" class="form-label">URL File <small>*Abaikan Jika Menggunakan upload file</small></label>
+                                                <input type="text" name="url" id="url" class="form-control">
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -91,11 +71,9 @@
                                     <tr>
                                         <th></th>
                                         <th>ID</th>
-                                        <th>Logo</th>
                                         <th>Nama</th>
-                                        <th>Alamat</th>
-                                        <th>No. Telp</th>
-                                        <th>Email</th>
+                                        <th>File</th>
+                                        <th>URL</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -121,7 +99,7 @@
 
             const baseUrl = {!! json_encode(url('/')) !!};
             const title = "{{strtolower($title)}}";
-            const page = '/'.concat("admin/masterdata/").concat(title);
+            const page = '/'.concat("admin/masterdata/pt/atribut/detail");
             var my_column = $('#my_column').val();
             const pecah = my_column.split('\n');
             let my_data = [];
@@ -138,7 +116,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: baseUrl.concat(page),
+                    url: baseUrl.concat(page).concat("/{{$id}}"),
                 },
                 columns: my_data,
                 columnDefs: [
@@ -162,31 +140,30 @@
                     }
                     },
                     {
+                        targets:3,
+                        render:function render(data, type, full, meta){
+                            return (`<a target='_blank' href="${baseUrl}/assets/file/atribut/${full['file']}" class='btn btn-primary btn-sm'>File</a>`);
+                        }
+                    },
+                    {
                     // Actions
                     targets: -1,
                     title: 'Actions',
                     searchable: false,
                     orderable: false,
                     render: function render(data, type, full, meta) {
-                        if(!full['url']){
-                            return (
-                            '<div class="d-inline-block text-nowrap">' +
-                            '<button class="btn btn-sm btn-icon edit-record text-primary" data-id="'
-                                .concat(full['id'], '" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal"')
-                                .concat(title, '"><i class="fa fa-pencil"></i></button>') +
-                            '<button class="btn btn-sm btn-icon delete-record text-primary" data-id="'.concat(
-                                full['id'],
-                                '"><i class="fa fa-trash"></i></button>'
-                            )
-                            );
-                        }else{
-                            return (
-                                '<div class="d-inline-block text-nowrap">' +
-                                '<a class="btn btn-sm btn-icon edit-record text-primary" href="'
-                                    .concat(full['url'], '"><i class="fa fa-pencil"></i></a>')
-                                    .concat('</div>')
-                            );
-                        }
+
+                        return (
+                        '<div class="d-inline-block text-nowrap">' +
+                        '<button class="btn btn-sm btn-icon edit-record text-primary" data-id="'
+                            .concat(full['id'], '" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal"')
+                            .concat(title, '"><i class="fa fa-pencil"></i></button>') +
+                        '<button class="btn btn-sm btn-icon delete-record text-primary" data-id="'.concat(
+                            full['id'],
+                            '"><i class="fa fa-trash"></i></button>'
+                        )
+                        );
+
                     }
                     }
                 ],
@@ -225,10 +202,13 @@
                 $.get(''.concat(baseUrl).concat(page, '/').concat(id, '/edit'), function (data) {
                 Object.keys(data).forEach(key => {
                     //console.log(key);
-                    $('#' + key)
-                        .val(data[key])
-                        .trigger('change');
+                    if(key != 'file'){
+                         $('#' + key)
+                            .val(data[key])
+                            .trigger('change');
+                    }
                 });
+
                 });
             });
             //save record
@@ -244,6 +224,7 @@
                     success: function success(status) {
                         dt.draw();
                         $("#tambahModal").modal('hide');
+
                         // sweetalert
                         swal({
                         icon: 'success',

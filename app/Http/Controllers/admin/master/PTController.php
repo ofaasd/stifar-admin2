@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin\master;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\MasterPt;
+use URL;
 
 class PTController extends Controller
 {
@@ -12,6 +13,7 @@ class PTController extends Controller
      * Display a listing of the resource.
      */
     public $indexed = ['', 'id', 'logo','nama', 'alamat', 'notelp', 'email'];
+    public $indexed2 = ['', 'id', 'nama','file', 'url'];
     public function index(Request $request)
     {
         if (empty($request->input('length'))) {
@@ -77,6 +79,7 @@ class PTController extends Controller
                     $nestedData['logo'] = $row->logo;
                     $nestedData['notelp'] = $row->notelp;
                     $nestedData['email'] = $row->email;
+                    $nestedData['url'] = '';
                     $data[] = $nestedData;
                 }
             }
@@ -215,7 +218,7 @@ class PTController extends Controller
 
     public function atribut(Request $request){
         if (empty($request->input('length'))) {
-            $title = "pt";
+            $title = "pt/atribut";
             $title2 = "Perguruan Tinggi";
             $indexed = $this->indexed;
             $link = 'atribut';
@@ -278,6 +281,7 @@ class PTController extends Controller
                     $nestedData['logo'] = $row->logo;
                     $nestedData['notelp'] = $row->notelp;
                     $nestedData['email'] = $row->email;
+                    $nestedData['url'] = URL::to('admin/masterdata/pt/atribut/detail/' . $row->id);
                     $data[] = $nestedData;
                 }
             }
@@ -363,6 +367,7 @@ class PTController extends Controller
                     $nestedData['logo'] = $row->logo;
                     $nestedData['notelp'] = $row->notelp;
                     $nestedData['email'] = $row->email;
+                    $nestedData['url'] = URL::to('masterdata/pt/renstra/' . $row->id);
                     $data[] = $nestedData;
                 }
             }

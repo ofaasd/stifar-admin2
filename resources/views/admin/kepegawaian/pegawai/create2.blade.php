@@ -28,47 +28,37 @@
 			<h5>{{$title}}</h5>
 		  </div>
 		  <div class="card-body">
-			<form class="f1" method="post" action="{{URL::to('admin/admisi/peserta')}}" enctype="multipart/form-data">
+			<form class="f1" id="formPegawai" method="post" action="javascript:void(0)" enctype="multipart/form-data">
                 @csrf
-			  <div class="f1-steps">
-				<div class="f1-progress">
-				  <div class="f1-progress-line" data-now-value="16.66" data-number-of-steps="3"></div>
-				</div>
-				<div class="f1-step active">
-				  <div class="f1-step-icon"><i class="fa fa-user"></i></div>
-				  <p>Data Pegawai</p>
-				</div>
-				<div class="f1-step">
-				  <div class="f1-step-icon"><i class="fa fa-clipboard"></i></div>
-				  <p>Pendidikan</p>
-				</div>
-				<div class="f1-step">
-				  <div class="f1-step-icon"><i class="fa fa-file"></i></div>
-				  <p>Golongan dan Jabatan</p>
-				</div>
-			  </div>
+                <input type="hidden" name="id" value="">
 			  <fieldset>
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="mb-2">
-                            <label class="col-sm-12 col-form-label">Jenis Pegawai : </label>
-                            <div class="col-sm-12">
-                                <select class="form-control" name="jenis_pegawai" id="jenis_pegawai" required>
-                                <option value="0">--- Pilih Jenis Pegawai --- </option>
-                                <?php
-                                    foreach($jenis_pegawai as $row){
-                                        echo "<option value='" . $row->id . "''>" . $row->nama . "</option>";
-                                    }
-                                ?>
-                                </select>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-2">
+                                    <label class="col-sm-12 col-form-label">Jenis Pegawai : </label>
+                                    <div class="col-sm-12">
+                                        <select class="form-control" name="jenis_pegawai" id="jenis_pegawai" required>
+                                        <option value="0">--- Pilih Jenis Pegawai --- </option>
+                                        <?php
+                                            foreach($jenis_pegawai as $row){
+                                                echo "<option value='" . $row->id . "''>" . $row->nama . "</option>";
+                                            }
+                                        ?>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="mb-2">
-                            <label class="col-sm-4 col-form-label"></label>
-                            <div class="col-sm-12">
-                                <select class="form-control" name="posisi_pegawai" id="status_pegawai" required>
+                            <div class="col-md-6">
+                                <div class="mb-2">
+                                    <label class="col-sm-12 col-form-label">Posisi Pegawai</label>
+                                    <div class="col-sm-12">
+                                        <select class="form-control" name="posisi_pegawai" id="status_pegawai" required>
 
-                                </select>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="mb-2">
@@ -81,13 +71,19 @@
                             </div>
                         </div>
                         <div class="mb-2">
+                            <label class="col-sm-12 col-form-label">Homebase: </label>
                             <div id="homebase">
-
+                                <select name="homebase" class="form-control">
+                                    <option value="0">Tidak Ada</option>
+                                    @foreach($progdi as $pro)
+                                        <option value="{{$pro->id}}">{{$pro->nama_jurusan}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label">NIDN : </label>
-                            <div class="col-sm-10">
+                            <div class="col-sm-12">
                                 <input type="text" class="form-control" name="nidn" value="" >
                             </div>
                         </div>
@@ -127,6 +123,14 @@
                                 </select>
                             </div>
                         </div>
+
+                        <div class="mb-2">
+                            <label class="col-sm-4 col-form-label">Email : </label>
+                            <div class="col-sm-12">
+                                <input type="email" class="form-control" name="email" id="email" required>
+                            </div>
+                        </div>
+
                         <div class="mb-2">
                             <label class="col-sm-4 col-form-label">Password : </label>
                             <div class="col-sm-12">
@@ -236,8 +240,8 @@
                             <div class="col-sm-12">
                                 <select class="form-control" name="status_nikah" id="status_nikah">
                                     <?php
-                                        foreach($status_kawin as $row){
-                                            echo "<option value='" . $row . "''>" . $row . "</option>";
+                                        foreach($status_kawin as $key=>$row){
+                                            echo "<option value='" . $key . "''>" . $row . "</option>";
                                         }
                                     ?>
                                 </select>
@@ -270,47 +274,17 @@
                                         <input type="number" class="form-control" name="jumlah_anak" value="" >
                                     </div>
                                 </div>
-                                <div class="form-group row">
-                                    <label class="col-sm-4 col-form-label">Nama Pasangan : </label>
-                                    <div class="col-sm-12">
-                                        <input type="text" class="form-control" name="nama_pasangan" value="" >
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <br>
 				<div class="f1-buttons">
-				  <button class="btn btn-primary btn-next" type="button">Next</button>
+                    <button class="btn btn-secondary" type="reset">Reset</button>
+                    <button class="btn btn-primary btn-submit" type="submit">Submit</button>
 				</div>
 			  </fieldset>
-			  <fieldset>
-                <div class="row">
-                    <div class="col-md-6">
 
-                    </div>
-                    <div class="col-md-6" id="nilai_mapel">
-
-                    </div>
-                </div>
-
-				<div class="f1-buttons">
-				  <button class="btn btn-primary btn-previous" type="button">Previous</button>
-				  <button class="btn btn-primary btn-next" type="button">Next</button>
-				</div>
-			  </fieldset>
-			  <fieldset>
-                <div class="row">
-                    <div class="col-md-6">
-
-                    </div>
-                </div>
-				<div class="f1-buttons">
-				  <button class="btn btn-primary btn-previous" type="button">Previous</button>
-				  <button class="btn btn-primary btn-submit" type="submit">Submit</button>
-				</div>
-			  </fieldset>
 			</form>
 		  </div>
 		</div>
@@ -321,43 +295,47 @@
 @section('script')
 <script src="{{asset('assets/js/form-wizard/form-wizard-three.js')}}"></script>
 <script src="{{asset('assets/js/form-wizard/jquery.backstretch.min.js')}}"></script>
+<script src="{{asset('assets/js/sweet-alert/sweetalert.min.js')}}"></script>
 <script>
+$(document.body).on("submit","#formPegawai",function(){
+    const form = $(this).serialize();
+    $.ajax({
+        url:'{{URL::to('admin/kepegawaian/pegawai')}}',
+        method:'POST',
+        data:form,
+        success:function(status){
+            swal({
+                icon: 'success',
+                title: 'Successfully '.concat(status, '!'),
+                text: ''.concat(status, ' Successfully.'),
+                customClass: {
+                    confirmButton: 'btn btn-success'
+                }
+            }).then(function() {
+                window.location = "{{URL::to('admin/kepegawaian/pegawai')}}";
+            });;
+        },
+        error: function error(err) {
+            offCanvasForm.offcanvas('hide');
+            swal({
+            title: 'Duplicate Entry!',
+            text: 'Data Not Saved !',
+            icon: 'error',
+            customClass: {
+                confirmButton: 'btn btn-success'
+            }
+            });
+        }
+    });
+});
 $("#detail_status").css({"display":"none"});
 $(document.body).on("change","#status_nikah",function(){
-    if($(this).val() == "Lajang"){
+    if($(this).val() == 0){
         $("#detail_status").css({"display":"none"});
     }else{
         $("#detail_status").css({"display":"block"});
     }
 });
-$(document).on("change","#univ1",function(){
-    universitas("univ1");
-});
-$(document).on("change","#univ2",function(){
-    universitas("univ2");
-});
-$(document).on("change","#univ3",function(){
-    universitas("univ3");
-});
-$(document).on("change","#jurusan1",function(){
-    universitas("jurusan1");
-});
-$(document).on("change","#jurusan2",function(){
-    universitas("jurusan2");
-});
-$(document).on("change","#jurusan3",function(){
-    universitas("jurusan3");
-});
-
-function universitas(univ){
-    if($("#" + univ).val() == 999999){
-        //alert("lainnya");
-        $("." + univ + "-text input").attr({type:"text"});
-    }else{
-        $("." + univ + "-text input").attr({type:"hidden"});
-    }
-    //alert("asdasd");
-}
 $(document.body).on("change","#jenis_pegawai",function(){
     var id=$("#jenis_pegawai").val();
     $.ajax({
@@ -369,9 +347,9 @@ $(document.body).on("change","#jenis_pegawai",function(){
         success: function(data){
             var html = '';
             var i;
-            html += '<option value="0">--- Pilih Jenis Pegawai --- </option>';
+            html += '<option value="0">--- Pilih Posisi Pegawai --- </option>';
             for(i=0; i<data.length; i++){
-                html += '<option value="'+ data[i].kode +'">'+data[i].nama+'</option>';
+                html += '<option value="'+ data[i].id +'">'+data[i].nama+'</option>';
             }
             $('#status_pegawai').html(html);
 
@@ -447,63 +425,6 @@ $('#kotakab').change(function(){
         }
     });
 });
-$('#jalur').change(function(){
-    const jalur = $(this).val();
-    if(jalur == 1 || jalur == 2){
-        $("#nilai_mapel").show();
-    }else{
-        $("#nilai_mapel").hide();
-    }
 
-    if(jalur == 5 || jalur == 6){
-        $("#area_pasca").show();
-    }else{
-        $("#area_pasca").hide();
-    }
-    $.ajax({
-        url : "{{URL::to('admin/admisi/peserta/get_gelombang')}}",
-        method: "POST",
-        data:{"_token": "{{ csrf_token() }}",id:jalur},
-        async: false,
-        dataType: "json",
-        success: function(data){
-            $("#gelombang").html("<option value=''>Plih Gelombang</option>");
-            let i;
-            for (i = 0; i < data.length; i++) {
-                $("#gelombang").append('<option value="'+ data[i].id +'">'+data[i].nama_gel+'</option>');
-            }
-        }
-    });
-});
-$('#gelombang').change(function(){
-    get_jurusan();
-})
-const get_jurusan = () =>
-{
-    const gelombang = $("#gelombang").val();
-    $.ajax({
-        url : "{{URL::to('admin/admisi/peserta/get_jurusan')}}",
-        method: "POST",
-        data:{"_token": "{{ csrf_token() }}",id:gelombang},
-        async: false,
-        dataType: "json",
-        success: function(data){
-            //alert(data);
-            //alert(data);
-            temp = "";
-
-            data.forEach((item, index) => {
-                temp += `<div class="mb-2"> <label for='prodi'>Program Studi ${index + 1}</label>
-                <select name='prodi[]' class="form-control">`;
-                item.forEach((item2, index2) => {
-                    temp += `<option value='${item2.id}'>${item2.nama_jurusan} ${item2.keterangan}</option>`;
-                });
-                temp += `</select></div>`;
-            });
-
-            $("#jurusan").html(temp);
-        }
-    });
-}
 </script>
 @endsection

@@ -23,6 +23,7 @@ use App\Http\Controllers\admin\KurikulumController;
 use App\Http\Controllers\admin\KelompokMatkulController;
 use App\Http\Controllers\admin\MatkulController;
 use App\Http\Controllers\admin\master\PTController;
+use App\Http\Controllers\admin\master\AtributPTController;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,11 +78,15 @@ Route::middleware('auth')->group(function(){
     Route::post('admin/admisi/pengumuman/{id}/edit_peserta', [PengumumanController::class, 'simpan_peserta'])->name('simpan_peserta');
 
     Route::post('admin/kepegawaian/pegawai/get_status', [PegawaiController::class, 'get_status'])->name('get_status');
+    Route::post('admin/kepegawaian/pegawai/user_update', [PegawaiController::class, 'user_update'])->name('user_update');
+    Route::post('admin/kepegawaian/pegawai/foto_update', [PegawaiController::class, 'foto_update'])->name('foto_update');
 
     Route::get('admin/masterdata/pt/atribut', [PTController::class, 'atribut'])->name('atribut');
+    Route::get('admin/masterdata/pt/atribut/detail/{id}', [AtributPTController::class, 'index'])->name('atribut_detail');
     Route::get('admin/masterdata/pt/renstra', [PTController::class, 'renstra'])->name('renstra');
 
     Route::resource('admin/masterdata/pt', PTController::class)->name('index','pt');
+    Route::resource('admin/masterdata/pt/atribut/detail', AtributPTController::class)->name('index','pt');
     Route::resource('admin/masterdata/ruang', RuangController::class)->name('index','ruang');
     Route::resource('admin/masterdata/sekolah', AsalSekolahController::class)->name('index','sekolah');
     Route::resource('admin/masterdata/waktu', WaktuController::class)->name('index','waktu');
