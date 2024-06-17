@@ -5,7 +5,7 @@ namespace App\Http\Controllers\admin\master;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\JabatanStruktural;
-use App\Models\PegawaiUnitkerja;
+use App\Models\PegawaiUnitKerja;
 use App\Models\Prodi;
 
 class JabatanStrukturalController extends Controller
