@@ -13,6 +13,7 @@ use App\Http\Controllers\admin\admisi\DaftarSoalController;
 use App\Http\Controllers\admin\admisi\VerifikasiController;
 use App\Http\Controllers\admin\admisi\PengumumanController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiController;
+use App\Http\Controllers\admin\kepegawaian\PegawaiJabatanStrukturalController;
 use App\Http\Controllers\admin\WaktuController;
 use App\Http\Controllers\admin\FakultasController;
 use App\Http\Controllers\admin\RumpunController;
@@ -24,6 +25,7 @@ use App\Http\Controllers\admin\KelompokMatkulController;
 use App\Http\Controllers\admin\MatkulController;
 use App\Http\Controllers\admin\master\PTController;
 use App\Http\Controllers\admin\master\AtributPTController;
+use App\Http\Controllers\admin\master\JabatanStrukturalController;
 
 /*
 |--------------------------------------------------------------------------
@@ -98,12 +100,14 @@ Route::middleware('auth')->group(function(){
     Route::resource('admin/masterdata/program-studi', ProdiController::class)->name('index', 'program-studi');
     Route::resource('admin/masterdata/kelompok-mk', KelompokMatkulController::class)->name('index', 'kelompok-mk');
     Route::resource('admin/masterdata/matakuliah', MatkulController::class)->name('index', 'matakuliah');
+    Route::resource('admin/masterdata/jabatan_struktural', JabatanStrukturalController::class)->name('index', 'jabatan_struktural');
 
     Route::resource('admin/admisi/gelombang', GelombangController::class)->name('index','gelombang');
     Route::resource('admin/admisi/peserta', PmbPesertaController::class)->name('index','peserta');
     Route::resource('admin/admisi/daftar_soal', DaftarSoalController::class)->name('index','daftar_soal');
 
     Route::resource('admin/kepegawaian/pegawai', PegawaiController::class)->name('index','pegawai');
+    Route::resource('admin/kepegawaian/struktural', PegawaiJabatanStrukturalController::class)->name('index','struktural');
 
 
 });

@@ -15,8 +15,8 @@
 @endsection
 
 @section('breadcrumb-items')
-    <li class="breadcrumb-item">Master Data</li>
-    <li class="breadcrumb-item active">Perguruan Tinggi</li>
+    <li class="breadcrumb-item">Master</li>
+    <li class="breadcrumb-item active">Jabatan Struktural</li>
 @endsection
 
 @section('content')
@@ -41,37 +41,28 @@
                                         </div>
                                         <div class="modal-body">
                                             <div class="mb-3">
-                                                <label for="nama" class="form-label">Nama Perguruan Tinggi</label>
-                                                <input type="text" name="nama" id="nama" class="form-control">
+                                                <label for="nama" class="form-label">Unit Kerja</label>
+                                                <select name="unit_kerja" id="unit_kerja_id" class="form-control">
+                                                    @foreach($unit_kerja as $row)
+                                                        <option value="{{$row->id}}">{{$row->unit_kerja}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="mb-3" id="field_bagian">
+                                                <label for="nama_gel" class="form-label">Bagian</label>
+                                                <input type="text" class="form-control" name="bagian" id="bagian" placeholder="Cth: Akademik">
+                                            </div>
+                                            <div class="mb-3" id="field_prodi">
+                                                <label for="prodi" class="form-label">Prodi</label>
+                                                <select name="prodi_id" id="prodi_id" class="form-control">
+                                                    @foreach($progdi as $row)
+                                                        <option value='{{$row->id}}'>{{$row->nama_jurusan}}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="nama_gel" class="form-label">Alamat</label>
-                                                <textarea name="alamat" class="form-control" id="alamat" cols="30" rows="10"></textarea>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="lat" class="form-label">Latitude</label>
-                                                <input type="text" name="lat" id="lat" class="form-control">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="lng" class="form-label">Longitude</label>
-                                                <input type="text" name="lng" id="lng" class="form-control">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="notelp" class="form-label">No. Telp</label>
-                                                <input type="notelp" name="notelp" id="notelp" class="form-control">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="ujian" class="form-label">Email</label>
-                                                <input type="email" name="email" id="email" class="form-control">
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label for="deskripsi" class="form-label">Deskripsi</label>
-                                                <textarea name="deskripsi" id="deskripsi" cols="30" rows="10" class="form-control"></textarea>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="logo" class="form-label">Logo</label>
-                                                <input type="file" name="logo" id="logos" class="form-control">
+                                                <label for="jabatan" class="form-label">Jabatan</label>
+                                                <input type="text" class="form-control" name="jabatan" id="jabatan" placeholder="cth : Kepala">
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -91,11 +82,10 @@
                                     <tr>
                                         <th></th>
                                         <th>ID</th>
-                                        <th>Logo</th>
-                                        <th>Nama</th>
-                                        <th>Alamat</th>
-                                        <th>No. Telp</th>
-                                        <th>Email</th>
+                                        <th>Unit Kerja</th>
+                                        <th>Bagian</th>
+                                        <th>Program Studi</th>
+                                        <th>Jabatan</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -118,6 +108,16 @@
 
     <script>
         $(function () {
+            $("#field_prodi").hide();
+            $("#unit_kerja_id").change(function(){
+                if($(this).val() == 1){
+                    $("#field_prodi").hide();
+                    $("#field_bagian").show();
+                }else{
+                    $("#field_prodi").show();
+                    $("#field_bagian").hide();
+                }
+            });
 
             const baseUrl = {!! json_encode(url('/')) !!};
             const title = "{{strtolower($title)}}";

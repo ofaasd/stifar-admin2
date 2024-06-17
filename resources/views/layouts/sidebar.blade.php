@@ -44,7 +44,7 @@
                     </li>
                     <li><a href="/admin/masterdata/ta">Tahun Ajaran</a></li>
                     <li><a href="#">Jenjang</a></li>
-                    <li><a href="#">Jabatan</a></li>
+                    <li><a href="{{URL::to('admin/masterdata/jabatan_struktural')}}">Jabatan</a></li>
                     <li>
                         <a class="submenu-title" href="#">
                             <span>User</span>

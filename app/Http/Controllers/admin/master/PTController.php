@@ -181,7 +181,7 @@ class PTController extends Controller
             if ($pt) {
                 return response()->json('Created');
             } else {
-                return response()->json('Failed Create Academic');
+                return response()->json('Failed Create PT');
             }
         }
     }
