@@ -11,12 +11,15 @@ class MataKuliah extends Model
         'kode_matkul',
         'nama_matkul',
         'nama_matkul_eng',
-        'jumlah_sks',
-        'semester',
-        'tp',
         'kel_mk',
+        'tp',
+        'ruang_teori',
+        'ruang_praktek',
+        'sks_teori',
+        'sks_praktek',
+        'semester',
+        'status_mk',
         'rumpun',
-        'id_prodi',
         'status'
     ];
 }

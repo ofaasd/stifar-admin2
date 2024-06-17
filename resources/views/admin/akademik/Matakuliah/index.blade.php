@@ -20,127 +20,167 @@
 @endsection
 
 @section('content')
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
     <div class="container-fluid">
         <div class="row">
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
                 <div class="card">
-                    <div class="card-header pb-0 card-no-border">
-                        <a href="/admin/masterdata/kurikulum" class="btn btn-warning"> > Kurikulum</a>
-                        <a href="/admin/masterdata/kelompok-mk" class="btn btn-success"> > Kelompok Matakuliah</a>
-                        <br>
-                        <br>
-                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal">+ {{$title}}</button>
-                        <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <form action="javascript:void(0)" id="formAdd">
-                                        @csrf
-                                        <input type="hidden" name="id" id="id">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="ModalLabel">Tambah {{$title}}</h5>
-                                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="mb-3">
-                                                <label for="kode_matkul" class="form-label">Kode Matakuliah</label>
-                                                <input type="text" name="kode_matkul" id="kode_matkul" class="form-control">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="nama_matkul" class="form-label">Nama Matakuliah</label>
-                                                <input type="text" name="nama_matkul" id="nama_matkul" class="form-control">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="nama_matkul_eng" class="form-label">Nama Matakuliah Eng</label>
-                                                <input type="text" name="nama_matkul_eng" id="nama_matkul_eng" class="form-control">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="jumlah_sks" class="form-label">Jumlah SKS</label>
-                                                <input type="number" name="jumlah_sks" id="jumlah_sks" class="form-control">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="semester" class="form-label">Semester</label>
-                                                <input type="number" name="semester" id="semester" class="form-control">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="tp" class="form-label">Teori/Praktek</label>
-                                                <select id="tp" name="tp" class="form-control" required="">
-                                                    <option selected disabled>Pilih Jenis Matakuliah</option>
-                                                    <option value="T">Teori</option>
-                                                    <option value="P">Praktik</option>
-                                                    <option value="TP">Teori & Praktik</option>
-                                                </select>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="kel_mk" class="form-label">Kelompok Matakuliah</label>
-                                                <select id="kel_mk" name="kel_mk" class="form-control" required="">
-                                                    <option selected disabled>Pilih Kelompok Matakuliah</option>
-                                                    @foreach($kelmk as $kelmk)
-                                                        <option value="{{ $kelmk['id'] }}">{{ $kelmk['nama_kelompok'] }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="rumpun" class="form-label">Rumpun Matakuliah</label>
-                                                <select id="rumpun" name="rumpun" class="form-control" required="">
-                                                    <option selected disabled>Pilih Rumpun Matakuliah</option>
-                                                    @foreach($rumpun as $r)
-                                                        <option value="{{ $r['id'] }}">{{ $r['nama_rumpun'] }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="prodi" class="form-label">Program Studi</label>
-                                                <select id="prodi" name="prodi" class="form-control" required="">
-                                                    <option selected disabled>Pilih Program Studi</option>
-                                                    @foreach($prodi as $p)
-                                                        <option value="{{ $p['id'] }}">{{ $p['jenjang'] }} - {{ $p['nama_prodi'] }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="status" class="form-label">Status Matakuliah</label>
-                                                <select id="status" name="status" class="form-control" required="">
-                                                    <option selected disabled>Pilih Status Matakuliah</option>
-                                                    <option value="Aktif">Aktif</option>
-                                                    <option value="Tidak Aktif">Tidak Aktif</option>
-                                                </select>
+                    <div class="card-body">
+                        <ul class="simple-wrapper nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation"><a class="nav-link txt-default active" id="masterMK-tab" data-bs-toggle="tab" href="#masterMK" role="tab" aria-controls="masterMK" aria-selected="true">Master Matakuliah</a></li>
+                            <li class="nav-item" role="presentation"><a class="nav-link txt-default" id="kelMK-tab" href="{{ url('admin/masterdata/kelompok-mk') }}" role="tab" aria-controls="kelMK" aria-selected="true">Kelompok Matakuliah</a></li>
+                            <li class="nav-item" role="presentation"><a class="nav-link txt-default" id="masterKur-tabs" href="{{ url('admin/masterdata/kurikulum') }}" role="tab" aria-controls="masterKur" aria-selected="false" tabindex="-1">Master Kurikulum</a></li>
+                            <li class="nav-item" role="presentation"><a class="nav-link txt-default" id="MkKur-tab" href="{{ url('admin/masterdata/matakuliah-kurikulum') }}" role="tab" aria-controls="MkKur" aria-selected="false" tabindex="-1">Matakuliah Kurikulum</a></li>
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade active show" id="masterMK" role="tabpanel" aria-labelledby="masterMK-tab">
+                                <div class="mt-4">
+                                    <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahMK"><i class="fa fa-plus"></i> Tambah Matakuliah</button>
+                                    <div class="modal fade" id="tambahMK" tabindex="-1" aria-labelledby="tambahMK" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-body">
+                                                    <div class="modal-toggle-wrapper">
+                                                        <h5 style="text-align: center">Tambah Matakuliah</h5>
+                                                        @csrf
+                                                        <div class="form-group mt-2">
+                                                            <label for="kode_matkul">Kode Matakuliah :</label>
+                                                            <input type="text" class="form-control" name="kode_matkul" id="kode_matkul" placeholder="Kode Matakuliah" required=""/>
+                                                        </div>
+                                                        <div class="form-group mt-2">
+                                                            <label for="nama_matkul">Nama Matakuliah :</label>
+                                                            <input type="text" class="form-control" name="nama_matkul" id="nama_matkul" placeholder="Nama Matakuliah" required=""/>
+                                                        </div>
+                                                        <div class="form-group mt-2">
+                                                            <label for="nama_inggris">Nama Inggris :</label>
+                                                            <input type="text" class="form-control" name="nama_inggris" id="nama_inggris" placeholder="Nama Inggris" required=""/>
+                                                        </div>
+                                                        <div class="form-group mt-2">
+                                                            <label for="kelompok">Nama Kelompok :</label>
+                                                            <select name="kelompok" id="kelompok" class="form-control" required="">
+                                                                <option value="" selected disabled>Pilih Kelompok</option>
+                                                                @foreach($kelompok as $kelompok_row)
+                                                                <option value="{{ $kelompok_row['id'] }}">{{ $kelompok_row['nama_kelompok'] }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group mt-2">
+                                                            <label for="rumpun">Rumpun :</label>
+                                                            <select name="rumpun" id="rumpun" class="form-control" required="">
+                                                                <option value="" selected disabled>Pilih Rumpun</option>
+                                                                @foreach($rumpun as $rumpun_row)
+                                                                <option value="{{ $rumpun_row['id'] }}">{{ $rumpun_row['nama_rumpun'] }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group mt-2">
+                                                            <label for="status">Status :</label>
+                                                            <select class="form-control" name="status" id="status" required="">
+                                                                <option disabled selected>Pilih Status</option>
+                                                                <option value="Aktif">Aktif</option>
+                                                                <option value="Tidak Aktif">Tidak Aktif</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="mt-2"></div>
+                                                        <button type="button" onclick="simpanMK()" class="btn btn-primary btn-sm"><i class="fa fa-save"></i> Tambah Matakuliah</button>
+                                                        <button class="btn bg-danger d-flex align-items-center gap-2 text-light ms-auto" type="button" data-bs-dismiss="modal">Tutup More<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="modal-footer">
-                                            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
-                                            <button class="btn btn-primary" type="submit">Simpan</button>
-                                        </div>
-                                    </form>
+                                    </div>
+                                </div>
+                                <div class="table-responsive mt-2">
+                                    <table class="display" id="tableMK">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>Kode</th>
+                                                <th>Nama</th>
+                                                <th>Nama Inggris</th>
+                                                <th>Kelompok</th>
+                                                <th>Rumpun</th>
+                                                <th>Status</th>
+                                                <th>Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($mk as $mk)
+                                                <tr>
+                                                    <td>{{ $no++ }}</td>
+                                                    <td>{{ $mk['kode_matkul'] }}</td>
+                                                    <td>{{ $mk['nama_matkul'] }}</td>
+                                                    <td>{{ $mk['nama_matkul_eng'] }}</td>
+                                                    <td>{{ $mk['nama_kelompok'] }}</td>
+                                                    <td>{{ $mk['nama_rumpun'] }}</td>
+                                                    <td>{{ $mk['status'] }}</td>
+                                                    <td>
+                                                        <a href="#" class="btn btn-warning btn-sm btn-icon edit-record" data-bs-toggle="modal" data-original-title="test" data-bs-target="#editMK{{ $mk['kode_matkul'] }}">
+                                                            <i class="fa fa-edit"></i> Edit
+                                                        </a>
+                                                        <div class="modal fade" id="editMK{{ $mk['kode_matkul'] }}" tabindex="-1" aria-labelledby="editMK{{ $mk['kode_matkul'] }}" aria-hidden="true">
+                                                            <div class="modal-dialog" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-body">
+                                                                        <div class="modal-toggle-wrapper">
+                                                                            <h5 style="text-align: center">Tambah Matakuliah</h5>
+                                                                            @csrf
+                                                                            <div class="form-group mt-2">
+                                                                                <label for="kode_matkul">Kode Matakuliah :</label>
+                                                                                <input type="text" class="form-control" name="kode_matkul" id="kode_matkul_{{ $mk['kode_matkul'] }}" value="{{ $mk['kode_matkul'] }}" required="" readonly=""/>
+                                                                            </div>
+                                                                            <div class="form-group mt-2">
+                                                                                <label for="nama_matkul">Nama Matakuliah :</label>
+                                                                                <input type="text" class="form-control" name="nama_matkul" id="nama_matkul_{{ $mk['kode_matkul'] }}" value="{{ $mk['nama_matkul'] }}" required=""/>
+                                                                            </div>
+                                                                            <div class="form-group mt-2">
+                                                                                <label for="nama_inggris">Nama Inggris :</label>
+                                                                                <input type="text" class="form-control" name="nama_inggris" id="nama_inggris_{{ $mk['kode_matkul'] }}" value="{{ $mk['nama_matkul_eng'] }}" required=""/>
+                                                                            </div>
+                                                                            <div class="form-group mt-2">
+                                                                                <label for="kelompok">Nama Kelompok :</label>
+                                                                                <select name="kelompok" id="kelompok_{{ $mk['kode_matkul'] }}" class="form-control" required="">
+                                                                                    @foreach($kelompok as $kelompoks)
+                                                                                    <option value="{{ $kelompoks['id'] }}">{{ $kelompoks['nama_kelompok'] }}</option>
+                                                                                    @endforeach
+                                                                                </select>
+                                                                            </div>
+                                                                            <div class="form-group mt-2">
+                                                                                <label for="rumpun">Rumpun :</label>
+                                                                                <select name="rumpun" id="rumpun_{{ $mk['kode_matkul'] }}" class="form-control" required="">
+                                                                                    
+                                                                                    @foreach($rumpun as $rumpuns)
+                                                                                    <option value="{{ $rumpuns['id'] }}">{{ $rumpuns['nama_rumpun'] }}</option>
+                                                                                    @endforeach
+                                                                                </select>
+                                                                            </div>
+                                                                            <div class="form-group mt-2">
+                                                                                <label for="status">Status :</label>
+                                                                                <select class="form-control" name="status" id="status_{{ $mk['kode_matkul'] }}" required="">
+                                                                                
+                                                                                    <option value="Aktif">Aktif</option>
+                                                                                    <option value="Tidak Aktif">Tidak Aktif</option>
+                                                                                </select>
+                                                                            </div>
+                                                                            <div class="mt-2"></div>
+                                                                            <button type="button" onclick="updateMK('{{ $mk['kode_matkul'] }}')" class="btn btn-primary btn-sm"><i class="fa fa-save"></i> Tambah Matakuliah</button>
+                                                                            <button class="btn bg-danger d-flex align-items-center gap-2 text-light ms-auto" type="button" data-bs-dismiss="modal">Tutup More<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <a href="{{ url('admin/masterdata/matakuliah/delete/'. $mk['id']) }}" class="btn btn-danger btn-sm btn-icon edit-record">
+                                                            <i class="fa fa-trash"></i> Delete
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
-                        <div class="table-responsive">
-                            <table class="display" id="basic-1">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>ID</th>
-                                        <th>Kode Matakuliah</th>
-                                        <th>Nama Matakuliah</th>
-                                        <th>Nama Matakuliah English</th>
-                                        <th>SKS</th>
-                                        <th>Smt.</th>
-                                        <th>T/P</th>
-                                        <th>Kel. Matakuliah</th>
-                                        <th>Rumpun</th>
-                                        <th>Program Studi</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-
-                                </tbody>
-                            </table>
                         </div>
                     </div>
                 </div>
@@ -155,198 +195,90 @@
     <script src="{{asset('assets/js/sweet-alert/sweetalert.min.js')}}"></script>
 
     <script>
-        $(function () {
-
+        $(function() {
+            $("#tableMK").DataTable({
+                responsive: true
+            })
+        })
+        function simpanMK(){
             const baseUrl = {!! json_encode(url('/')) !!};
-            const title = "{{strtolower($url)}}";
-            const page = '/'.concat("admin/masterdata/").concat(title);
-            var my_column = $('#my_column').val();
-            const pecah = my_column.split('\n');
-            let my_data = [];
-            pecah.forEach((item, index) => {
-                let temp = item.replace(/ /g, '');
-                let data_obj = { data: temp };
-                //alert(data_obj.data);
-                my_data.push(data_obj);
-            });
-
-            console.log(my_data);
-
-            const dt = $("#basic-1").DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: {
-                    url: baseUrl.concat(page),
+            $.ajax({
+                url: baseUrl+'/admin/masterdata/matakuliah/save',
+                type: 'post',
+                dataType: 'json',
+                data: {
+                    kode_matkul: $('#kode_matkul').val(),
+                    nama_matkul: $('#nama_matkul').val(),
+                    nama_inggris: $('#nama_inggris').val(),
+                    kelompok: $('#kelompok').val(),
+                    rumpun: $('#rumpun').val(),
+                    status: $('#status').val()
                 },
-                columns: my_data,
-                columnDefs: [
-                    {
-                    // For Responsive
-                    className: 'control',
-                    searchable: false,
-                    orderable: false,
-                    responsivePriority: 2,
-                    targets: 0,
-                    render: function render(data, type, full, meta) {
-                        return '';
-                    }
-                    },
-                    {
-                    searchable: false,
-                    orderable: false,
-                    targets: 1,
-                    render: function render(data, type, full, meta) {
-                        return '<span>'.concat(full.fake_id, '</span>');
-                    }
-                    },
-                    {
-                    // Actions
-                    targets: -1,
-                    title: 'Actions',
-                    searchable: false,
-                    orderable: false,
-                    render: function render(data, type, full, meta) {
-                        return (
-                        '<div class="d-inline-block text-nowrap">' +
-                        '<button class="btn btn-sm btn-icon edit-record text-primary" data-id="'
-                            .concat(full['id'], '" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal"')
-                            .concat(title, '"><i class="fa fa-pencil"></i></button>') +
-                        '<button class="btn btn-sm btn-icon delete-record text-primary" data-id="'.concat(
-                            full['id'],
-                            '"><i class="fa fa-trash"></i></button>'
-                        )
-                        );
-                    }
-                    }
-                ],
-                order: [[2, 'desc']],
-                dom:
-                    '<"row mx-2"' +
-                    '<"col-md-2"<"me-3"l>>' +
-                    '<"col-md-10"<"dt-action-buttons text-xl-end text-lg-start text-md-end text-start d-flex align-items-center justify-content-end flex-md-row flex-column mb-3 mb-md-0"fB>>' +
-                    '>t' +
-                    '<"row mx-2"' +
-                    '<"col-sm-12 col-md-6"i>' +
-                    '<"col-sm-12 col-md-6"p>' +
-                    '>',
-                language: {
-                    sLengthMenu: '_MENU_',
-                    search: '',
-                    searchPlaceholder: 'Search..'
-                },
-            });
-            $('#tambahModal').on('hidden.bs.modal', function () {
-                $('#formAdd').trigger("reset");
-            });
-            //Edit Record
-            $(document).on('click', '.edit-record', function () {
-                const id = $(this).data('id');
-
-                // changing the title of offcanvas
-                $('#ModalLabel').html('Edit ' + title);
-
-                // get data
-                $.get(''.concat(baseUrl).concat(page, '/').concat(id, '/edit'), function (data) {
-                Object.keys(data).forEach(key => {
-                    //console.log(key);
-                    $('#' + key)
-                        .val(data[key])
-                        .trigger('change');
-                });
-                });
-            });
-            //save record
-            $('#formAdd').on('submit',function(e){
-                e.preventDefault();
-                $.ajax({
-                    data: $('#formAdd').serialize(),
-                    url: ''.concat(baseUrl).concat(page),
-                    type: 'POST',
-                    success: function success(status) {
-                        dt.draw();
-                        $("#tambahModal").modal('hide');
-
-                        // sweetalert
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                success: function(res){
+                    if(res.kode == 200){
                         swal({
-                        icon: 'success',
-                        title: 'Successfully '.concat(status, '!'),
-                        text: ''.concat(title, ' ').concat(status, ' Successfully.'),
-                        customClass: {
-                            confirmButton: 'btn btn-success'
-                        }
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: 'Matakuliah Berhasil ditambahkan!',
+                            customClass: {
+                                confirmButton: 'btn btn-danger'
+                            }
                         });
-                    },
-                    error: function error(err) {
-                        offCanvasForm.offcanvas('hide');
+                        window.location.href = baseUrl+'/admin/masterdata/matakuliah';
+                    }else{
                         swal({
-                        title: 'Duplicate Entry!',
-                        text: title + ' Not Saved !',
-                        icon: 'error',
-                        customClass: {
-                            confirmButton: 'btn btn-success'
-                        }
+                            icon: 'error',
+                            title: 'Gagal!',
+                            text: 'Matakuliah Gagal ditambahkan!',
+                            customClass: {
+                                confirmButton: 'btn btn-danger'
+                            }
                         });
+                        window.location.href = baseUrl+'/admin/masterdata/matakuliah';
                     }
-                });
-            });
-            //delete record
-            $(document).on('click', '.delete-record', function () {
-                const id = $(this).data('id');
-                // sweetalert for confirmation of delete
-                swal({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                buttons: true,
-                dangerMode: true,
-                showCancelButton: true,
-                confirmButtonText: 'Yes, delete it!',
-                customClass: {
-                    confirmButton: 'btn btn-primary me-3',
-                    cancelButton: 'btn btn-label-secondary'
-                },
-                buttonsStyling: false
-                }).then(function (result) {
-                if (result) {
-
-                    // delete the data
-                    $.ajax({
-                    type: 'DELETE',
-                    url: ''.concat(baseUrl).concat(page, '/').concat(id),
-                    data:{
-                        'id': id,
-                        '_token': '{{ csrf_token() }}',
-                    },
-                    success: function success() {
-                        dt.draw();
-                    },
-                    error: function error(_error) {
-                        console.log(_error);
-                    }
-                    });
-
-                    // success sweetalert
-                    swal({
-                    icon: 'success',
-                    title: 'Deleted!',
-                    text: 'The Record has been deleted!',
-                    customClass: {
-                        confirmButton: 'btn btn-success'
-                    }
-                    });
-                } else {
-                    swal({
-                    title: 'Cancelled',
-                    text: 'The record is not deleted!',
-                    icon: 'error',
-                    customClass: {
-                        confirmButton: 'btn btn-success'
-                    }
-                    });
                 }
-                });
-            });
-        });
-
+            })
+        }
+        function updateMK(kode){
+            const baseUrl = {!! json_encode(url('/')) !!};
+            $.ajax({
+                url: baseUrl+'/admin/masterdata/matakuliah/update',
+                type: 'post',
+                dataType: 'json',
+                data: {
+                    kode_matkul: $('#kode_matkul_'+kode).val(),
+                    nama_matkul: $('#nama_matkul_'+kode).val(),
+                    nama_inggris: $('#nama_inggris_'+kode).val(),
+                    kelompok: $('#kelompok_'+kode).val(),
+                    rumpun: $('#rumpun_'+kode).val(),
+                    status: $('#status_'+kode).val()
+                },
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                success: function(res){
+                    if(res.kode == 200){
+                        swal({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: 'Matakuliah Berhasil ditambahkan!',
+                            customClass: {
+                                confirmButton: 'btn btn-danger'
+                            }
+                        });
+                        window.location.href = baseUrl+'/admin/masterdata/matakuliah';
+                    }else{
+                        swal({
+                            icon: 'error',
+                            title: 'Gagal!',
+                            text: 'Matakuliah Gagal ditambahkan!',
+                            customClass: {
+                                confirmButton: 'btn btn-danger'
+                            }
+                        });
+                        window.location.href = baseUrl+'/admin/masterdata/matakuliah';
+                    }
+                }
+            })
+        }
     </script>
 @endsection

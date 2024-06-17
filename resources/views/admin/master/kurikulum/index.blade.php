@@ -26,84 +26,91 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header pb-0 card-no-border">
-                        <a href="/admin/masterdata/matakuliah" class="btn btn-warning"> > Matakuliah</a>
-                        <a href="/admin/masterdata/kelompok-mk" class="btn btn-success"> > Kelompok Matakuliah</a>
-                        <br>
-                        <br>
-                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal">+ {{$title}}</button>
-                        <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <form action="javascript:void(0)" id="formAdd">
-                                        @csrf
-                                        <input type="hidden" name="id" id="id">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="ModalLabel">Tambah {{$title}}</h5>
-                                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <ul class="simple-wrapper nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation"><a class="nav-link txt-default" id="masterMK-tab" href="{{ url('admin/masterdata/matakuliah') }}" role="tab" aria-controls="masterMK" aria-selected="true">Master Matakuliah</a></li>
+                            <li class="nav-item" role="presentation"><a class="nav-link txt-default" id="kelMK-tab" href="{{ url('admin/masterdata/kelompok-mk') }}" role="tab" aria-controls="kelMK" aria-selected="true">Kelompok Matakuliah</a></li>
+                            <li class="nav-item" role="presentation"><a class="nav-link txt-default active" id="masterKur-tabs" data-bs-toggle="tab" href="#masterKur" role="tab" aria-controls="masterKur" aria-selected="false" tabindex="-1">Master Kurikulum</a></li>
+                            <li class="nav-item" role="presentation"><a class="nav-link txt-default" id="MkKur-tab" href="{{ url('admin/masterdata/matakuliah-kurikulum') }}" role="tab" aria-controls="MkKur" aria-selected="false" tabindex="-1">Matakuliah Kurikulum</a></li>
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade active show" id="masterKur" role="tabpanel" aria-labelledby="masterKur-tab">
+                                <div class="mt-4">
+                                    <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal">+ {{$title}}</button>
+                                    <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <form action="javascript:void(0)" id="formAdd">
+                                                    @csrf
+                                                    <input type="hidden" name="id" id="id">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="ModalLabel">Tambah {{$title}}</h5>
+                                                        <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="mb-3">
+                                                            <label for="kode_prodi" class="form-label">Kode Kurikulum</label>
+                                                            <input type="text" name="kode_prodi" id="kode_prodi" class="form-control">
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="progdi" class="form-label">Kode Program Studi</label>
+                                                                <select name="progdi" id="progdi" class="form-control" required="">
+                                                                    <option selected disabled>Pilih Kode Program Studi</option>
+                                                                    @foreach($data_prodi as $dp)
+                                                                        <option value="{{ $dp['kode_prodi'] }}">{{ $dp['nama_prodi'] }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="thn_ajar" class="form-label">Tahun Ajaran</label>
+                                                            <select name="thn_ajar" id="thn_ajar" class="form-control" required="">
+                                                                    <option selected disabled>Pilih Tahun Ajaran </option>
+                                                                    @foreach($data_ta as $da)
+                                                                        <option value="{{ $da['id'] }}">{{ $da['kode_ta'] }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="angkatan" class="form-label">Angkatan</label>
+                                                            <input type="number" name="angkatan" id="angkatan" class="form-control">
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="status" class="form-label">Status Kurikulum</label>
+                                                            <select name="status" id="status" class="form-control">
+                                                                    <option value="Aktif">Aktif</option>
+                                                                    <option value="Tidak Aktif">Tidak Aktif</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <input class="btn btn-primary" type="submit" value="simpan" /> 
+                                                        <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                                                    </div>
+                                                </form>
+                                            </div>
                                         </div>
-                                        <div class="modal-body">
-                                            <div class="mb-3">
-                                                <label for="kode_prodi" class="form-label">Kode Kurikulum</label>
-                                                <input type="text" name="kode_prodi" id="kode_prodi" class="form-control">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="progdi" class="form-label">Kode Program Studi</label>
-                                                    <select name="progdi" id="progdi" class="form-control" required="">
-                                                        <option selected disabled>Pilih Kode Program Studi</option>
-                                                        @foreach($data_prodi as $dp)
-                                                            <option value="{{ $dp['kode_prodi'] }}">{{ $dp['nama_prodi'] }}</option>
-                                                        @endforeach
-                                                    </select>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="thn_ajar" class="form-label">Tahun Ajaran</label>
-                                                <select name="thn_ajar" id="thn_ajar" class="form-control" required="">
-                                                        <option selected disabled>Pilih Tahun Ajaran </option>
-                                                        @foreach($data_ta as $da)
-                                                            <option value="{{ $da['kode_ta'] }}">{{ $da['tgl_awal'] }} s/d {{ $da['tgl_akhir'] }}</option>
-                                                        @endforeach
-                                                    </select>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="angkatan" class="form-label">Angkatan</label>
-                                                <input type="number" name="angkatan" id="angkatan" class="form-control">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="status" class="form-label">Status Kurikulum</label>
-                                                <select name="status" id="status" class="form-control">
-                                                        <option value="Aktif">Aktif</option>
-                                                        <option value="Tidak Aktif">Tidak Aktif</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
-                                            <button class="btn btn-primary" type="submit">Simpan</button>
-                                        </div>
-                                    </form>
+                                    </div>
+                                    <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
+                                    <div class="table-responsive mt-4">
+                                        <table class="display" id="basic-1">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>ID</th>
+                                                    <th>Kode Kurikulum</th>
+                                                    <th>Kode Prodi</th>
+                                                    <th>Tahun Ajaran</th>
+                                                    <th>Angkatan</th>
+                                                    <th>Status</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
-                        <div class="table-responsive">
-                            <table class="display" id="basic-1">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>ID</th>
-                                        <th>Kode Kurikulum</th>
-                                        <th>Kode Prodi</th>
-                                        <th>Angkatan</th>
-                                        <th>Tahun Ajaran</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-
-                                </tbody>
-                            </table>
                         </div>
                     </div>
                 </div>
@@ -129,11 +136,11 @@
             pecah.forEach((item, index) => {
                 let temp = item.replace(/ /g, '');
                 let data_obj = { data: temp };
-                //alert(data_obj.data);
+                // alert(data_obj.data);
                 my_data.push(data_obj);
             });
             //alert(data_obj);
-            console.log(my_data);
+            // console.log(my_data);
 
             const dt = $("#basic-1").DataTable({
                 processing: true,

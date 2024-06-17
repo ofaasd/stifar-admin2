@@ -27,7 +27,7 @@ class KurikulumController extends Controller
                 3 => 'progdi',
                 4 => 'thn_ajar',
                 5 => 'angkatan',
-                6 => 'status',
+                6 => 'status'
             ];
 
             $search = [];
@@ -43,30 +43,36 @@ class KurikulumController extends Controller
 
 
             if (empty($request->input('search.value'))) {
-                $kurikulum = Kurikulum::offset($start)
+                $kurikulum = Kurikulum::leftJoin('prodis', 'kurikulums.prodi', '=', 'prodis.id')
+                    ->leftJoin('tahun_ajarans', 'tahun_ajarans.id', '=', 'kurikulums.thn_ajar')
+                    ->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
                     ->get();
             } else {
                 $search = $request->input('search.value');
 
-                $kurikulum = Kurikulum::where('id', 'LIKE', "%{$search}%")
-                    ->orWhere('kode_kurikulum', 'LIKE', "%{$search}%")
-                    ->orWhere('progdi', 'LIKE', "%{$search}%")
-                    ->orWhere('thn_ajar', 'LIKE', "%{$search}%")
-                    ->orWhere('angkatan', 'LIKE', "%{$search}%")
-                    ->orWhere('status', 'LIKE', "%{$search}%")
+                $kurikulum = Kurikulum::leftJoin('prodis', 'kurikulums.prodi', '=', 'prodis.id')
+                    ->leftJoin('tahun_ajarans', 'tahun_ajarans.id', '=', 'kurikulums.thn_ajar')
+                    ->where('kurikulums.id', 'LIKE', "%{$search}%")
+                    ->orWhere('kurikulums.kode_kurikulum', 'LIKE', "%{$search}%")
+                    ->orWhere('kurikulums.progdi', 'LIKE', "%{$search}%")
+                    ->orWhere('kurikulums.thn_ajar', 'LIKE', "%{$search}%")
+                    ->orWhere('kurikulums.angkatan', 'LIKE', "%{$search}%")
+                    ->orWhere('kurikulums.status', 'LIKE', "%{$search}%")
                     ->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
                     ->get();
 
-                $totalFiltered = Kurikulum::where('id', 'LIKE', "%{$search}%")
-                ->orWhere('kode_kurikulum', 'LIKE', "%{$search}%")
-                ->orWhere('progdi', 'LIKE', "%{$search}%")
-                ->orWhere('thn_ajar', 'LIKE', "%{$search}%")
-                ->orWhere('angkatan', 'LIKE', "%{$search}%")
-                ->orWhere('status', 'LIKE', "%{$search}%")
+                $totalFiltered = Kurikulum::leftJoin('prodis', 'kurikulums.prodi', '=', 'prodis.id')
+                ->leftJoin('tahun_ajarans', 'tahun_ajarans.id', '=', 'kurikulums.thn_ajar')
+                ->where('kurikulums.id', 'LIKE', "%{$search}%")
+                ->orWhere('kurikulums.kode_kurikulum', 'LIKE', "%{$search}%")
+                ->orWhere('kurikulums.progdi', 'LIKE', "%{$search}%")
+                ->orWhere('kurikulums.thn_ajar', 'LIKE', "%{$search}%")
+                ->orWhere('kurikulums.angkatan', 'LIKE', "%{$search}%")
+                ->orWhere('kurikulums.status', 'LIKE', "%{$search}%")
                 ->count();
             }
 
@@ -80,8 +86,8 @@ class KurikulumController extends Controller
                     $nestedData['id'] = $row->id;
                     $nestedData['fake_id'] = ++$ids;
                     $nestedData['kode_kurikulum'] = $row->kode_kurikulum;
-                    $nestedData['progdi'] = $row->progdi;
-                    $nestedData['thn_ajar'] = $row->thn_ajar;
+                    $nestedData['progdi'] = $row->nama_prodi;
+                    $nestedData['thn_ajar'] = $row->kode_ta;
                     $nestedData['angkatan'] = $row->angkatan;
                     $nestedData['status'] = $row->status;
                     $data[] = $nestedData;
