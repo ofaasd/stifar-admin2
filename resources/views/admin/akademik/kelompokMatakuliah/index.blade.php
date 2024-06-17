@@ -22,66 +22,73 @@
 @section('content')
     <div class="container-fluid">
         <div class="row">
+            
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
                 <div class="card">
-                    <div class="card-header pb-0 card-no-border">
-                        <a href="/admin/masterdata/kurikulum" class="btn btn-warning"> > Kurikulum</a>
-                        <a href="/admin/masterdata/matakuliah" class="btn btn-success"> > Matakuliah</a>
-                        <br>
-                        <br>
-                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal">+ {{$title}}</button>
-                        <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <form action="javascript:void(0)" id="formAdd">
-                                        @csrf
-                                        <input type="hidden" name="id" id="id">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="ModalLabel">Tambah {{$title}}</h5>
-                                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="mb-3">
-                                                <label for="nama_kelompok" class="form-label">Nama Kelompok</label>
-                                                <input type="text" name="nama_kelompok" id="nama_kelompok" class="form-control">
+                    <div class="card-body">
+                        <ul class="simple-wrapper nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation"><a class="nav-link txt-default" id="masterMK-tab" href="{{ url('admin/masterdata/matakuliah') }}" role="tab" aria-controls="masterMK" aria-selected="true">Master Matakuliah</a></li>
+                            <li class="nav-item" role="presentation"><a class="nav-link txt-default active" id="kelMK-tab" data-bs-toggle="tab" href="#kelMK" role="tab" aria-controls="kelMK" aria-selected="true">Kelompok Matakuliah</a></li>
+                            <li class="nav-item" role="presentation"><a class="nav-link txt-default" id="masterKur-tabs" href="{{ url('admin/masterdata/kurikulum') }}" role="tab" aria-controls="masterKur" aria-selected="false" tabindex="-1">Master Kurikulum</a></li>
+                            <li class="nav-item" role="presentation"><a class="nav-link txt-default" id="MkKur-tab" href="{{ url('admin/masterdata/matakuliah-kurikulum') }}" role="tab" aria-controls="MkKur" aria-selected="false" tabindex="-1">Matakuliah Kurikulum</a></li>
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade active show" id="kelMK" role="tabpanel" aria-labelledby="kelMK-tab">
+                                <div class="mt-4">
+                                    <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal">+ {{$title}}</button>
+                                    <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <form action="javascript:void(0)" id="formAdd">
+                                                    @csrf
+                                                    <input type="hidden" name="id" id="id">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="ModalLabel">Tambah {{$title}}</h5>
+                                                        <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="mb-3">
+                                                            <label for="nama_kelompok" class="form-label">Nama Kelompok</label>
+                                                            <input type="text" name="nama_kelompok" id="nama_kelompok" class="form-control">
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="nama_kelompok_eng" class="form-label">Nama Kelompok Eng</label>
+                                                            <input type="text" name="nama_kelompok_eng" id="nama_kelompok_eng" class="form-control">
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="kode" class="form-label">Kode Kelompok</label>
+                                                            <input type="text" name="kode" id="kode" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                                                        <button class="btn btn-primary" type="submit">Simpan</button>
+                                                    </div>
+                                                </form>
                                             </div>
-                                            <div class="mb-3">
-                                                <label for="nama_kelompok_eng" class="form-label">Nama Kelompok Eng</label>
-                                                <input type="text" name="nama_kelompok_eng" id="nama_kelompok_eng" class="form-control">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="kode" class="form-label">Kode Kelompok</label>
-                                                <input type="text" name="kode" id="kode" class="form-control">
-                                            </div>
                                         </div>
-                                        <div class="modal-footer">
-                                            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
-                                            <button class="btn btn-primary" type="submit">Simpan</button>
-                                        </div>
-                                    </form>
+                                    </div>
+                                    <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
+                                    <div class="table-responsive mt-2">
+                                        <table class="display" id="basic-1">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>ID</th>
+                                                    <th>Nama Kelompok</th>
+                                                    <th>Nama Kelompok English</th>
+                                                    <th>Kode Kelompok</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
-                        <div class="table-responsive">
-                            <table class="display" id="basic-1">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>ID</th>
-                                        <th>Nama Kelompok</th>
-                                        <th>Nama Kelompok English</th>
-                                        <th>Kode Kelompok</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-
-                                </tbody>
-                            </table>
                         </div>
                     </div>
                 </div>

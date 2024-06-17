@@ -26,6 +26,8 @@ use App\Http\Controllers\admin\MatkulController;
 use App\Http\Controllers\admin\master\PTController;
 use App\Http\Controllers\admin\master\AtributPTController;
 use App\Http\Controllers\admin\master\JabatanStrukturalController;
+use App\Http\Controllers\admin\JadwalController;
+use App\Http\Controllers\admin\MkKurikulum;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,14 +40,11 @@ use App\Http\Controllers\admin\master\JabatanStrukturalController;
 |
 */
 
-
-
 Route::get('/', [LoginController::class, 'login'])->name('login');
 Route::post('/actionLogin', [LoginController::class, 'actionLogin'])->name('actionLogin');
 Route::get('/register', [LoginController::class, 'register'])->name('register');
 Route::post('/actionRegister', [LoginController::class, 'actionRegister'])->name('actionRegister');
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
-
 
 Route::middleware('auth')->group(function(){
     Route::get('/dashboard',[DashboardController::class, 'index'] )->name('dashboard');
@@ -91,6 +90,14 @@ Route::middleware('auth')->group(function(){
     Route::resource('admin/masterdata/pt/atribut/detail', AtributPTController::class)->name('index','pt');
     Route::resource('admin/masterdata/ruang', RuangController::class)->name('index','ruang');
     Route::resource('admin/masterdata/sekolah', AsalSekolahController::class)->name('index','sekolah');
+
+    Route::get('admin/masterdata/pt/atribut', [PTController::class, 'atribut'])->name('atribut');
+    Route::get('admin/masterdata/pt/renstra', [PTController::class, 'renstra'])->name('renstra');
+
+    Route::resource('admin/masterdata/pt', PTController::class)->name('index','pt');
+    Route::resource('admin/masterdata/ruang', RuangController::class)->name('index','ruang');
+    Route::resource('admin/masterdata/sekolah', AsalSekolahController::class)->name('index','sekolah');
+    Route::resource('admin/masterdata/gelombang', GelombangController::class)->name('index','gelombang');
     Route::resource('admin/masterdata/waktu', WaktuController::class)->name('index','waktu');
     Route::resource('admin/masterdata/fakultas', FakultasController::class)->name('index','fakultas');
     Route::resource('admin/masterdata/rumpun', RumpunController::class)->name('index','rumpun');
@@ -102,6 +109,25 @@ Route::middleware('auth')->group(function(){
     Route::resource('admin/masterdata/matakuliah', MatkulController::class)->name('index', 'matakuliah');
     Route::resource('admin/masterdata/jabatan_struktural', JabatanStrukturalController::class)->name('index', 'jabatan_struktural');
 
+    // route Matakuliah
+    Route::get('/admin/masterdata/matakuliah', [MatkulController::class, 'index']);
+    Route::post('/admin/masterdata/matakuliah/save', [MatkulController::class, 'simpanMK']);
+    Route::post('/admin/masterdata/matakuliah/update', [MatkulController::class, 'updateMK']);
+    Route::get('/admin/masterdata/matakuliah/delete/{id}', [MatkulController::class, 'destroy']);
+
+    // route jadwal
+    Route::get('/admin/masterdata/jadwal', [JadwalController::class, 'index']);
+    Route::get('/admin/masterdata/jadwal/create/{id}', [JadwalController::class, 'daftarJadwal']);
+    Route::post('/admin/masterdata/jadwal/create', [JadwalController::class, 'createJadwal']);
+
+    // route mkKurikulum
+    Route::get('/admin/masterdata/matakuliah-kurikulum', [MkKurikulum::class, 'index']);
+    Route::post('/admin/masterdata/matakuliah-kurikulum/get', [MkKurikulum::class, 'daftarKur']);
+    Route::post('/admin/masterdata/matakuliah-kurikulum/save', [MkKurikulum::class, 'simpandaftarKur']);
+    Route::post('/admin/masterdata/matakuliah-kurikulum/update', [MkKurikulum::class, 'updateMK']);
+    Route::get('/admin/masterdata/matakuliah-kurikulum/delete/{id}', [MkKurikulum::class, 'destroy']);
+
+
     Route::resource('admin/admisi/gelombang', GelombangController::class)->name('index','gelombang');
     Route::resource('admin/admisi/peserta', PmbPesertaController::class)->name('index','peserta');
     Route::resource('admin/admisi/daftar_soal', DaftarSoalController::class)->name('index','daftar_soal');
@@ -111,6 +137,3 @@ Route::middleware('auth')->group(function(){
 
 
 });
-
-
-
