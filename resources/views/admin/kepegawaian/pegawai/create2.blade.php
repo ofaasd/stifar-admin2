@@ -316,9 +316,9 @@ $(document.body).on("submit","#formPegawai",function(){
             });;
         },
         error: function error(err) {
-            offCanvasForm.offcanvas('hide');
+
             swal({
-            title: 'Duplicate Entry!',
+            title: 'Error Input Data',
             text: 'Data Not Saved !',
             icon: 'error',
             customClass: {

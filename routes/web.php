@@ -94,6 +94,8 @@ Route::middleware('auth')->group(function(){
     Route::get('admin/masterdata/pt/atribut', [PTController::class, 'atribut'])->name('atribut');
     Route::get('admin/masterdata/pt/renstra', [PTController::class, 'renstra'])->name('renstra');
 
+    Route::get('admin/kepegawaian/struktural/get_jabatan', [PegawaiJabatanStrukturalController::class, 'get_jabatan'])->name('get_jabatan');
+
     Route::resource('admin/masterdata/pt', PTController::class)->name('index','pt');
     Route::resource('admin/masterdata/ruang', RuangController::class)->name('index','ruang');
     Route::resource('admin/masterdata/sekolah', AsalSekolahController::class)->name('index','sekolah');
