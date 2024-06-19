@@ -1,4 +1,4 @@
-@extends('layouts.authentication.master')
+@extends('layouts.authentication.master2')
 @section('title', 'Login')
 
 @section('css')
