@@ -86,7 +86,7 @@ class PegawaiJabatanStrukturalController extends Controller
             $filename = '';
             if ($request->file('dokumen') != null) {
                 $dokumen = $request->file('dokumen');
-                $filename = date('YmdHi') . $photo->getClientOriginalName();
+                $filename = date('YmdHi') . $dokumen->getClientOriginalName();
                 $tujuan_upload = 'assets/file/struktural';
                 $dokumen->move($tujuan_upload,$filename);
             }
@@ -125,7 +125,7 @@ class PegawaiJabatanStrukturalController extends Controller
             $filename = '';
             if ($request->file('dokumen')) {
                 $dokumen = $request->file('dokumen');
-                $filename = date('YmdHi') . $photo->getClientOriginalName();
+                $filename = date('YmdHi') . $dokumen->getClientOriginalName();
                 $tujuan_upload = 'assets/file/struktural';
                 $dokumen->move($tujuan_upload,$filename);
             }

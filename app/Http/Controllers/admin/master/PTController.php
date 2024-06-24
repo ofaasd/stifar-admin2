@@ -304,7 +304,7 @@ class PTController extends Controller
     }
     public function renstra(Request $request){
         if (empty($request->input('length'))) {
-            $title = "pt";
+            $title = "pt/renstra";
             $title2 = "Perguruan Tinggi";
             $indexed = $this->indexed;
             $link = 'renstra';
@@ -367,7 +367,7 @@ class PTController extends Controller
                     $nestedData['logo'] = $row->logo;
                     $nestedData['notelp'] = $row->notelp;
                     $nestedData['email'] = $row->email;
-                    $nestedData['url'] = URL::to('masterdata/pt/renstra/' . $row->id);
+                    $nestedData['url'] = URL::to('admin/masterdata/pt/renstra/detail/' . $row->id);
                     $data[] = $nestedData;
                 }
             }

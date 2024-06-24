@@ -108,21 +108,65 @@
                                 <a class="nav-link" id="v-pills-fungsional-tab" data-bs-toggle="pill" href="#v-pills-fungsional" role="tab" aria-controls="v-pills-fungsional" aria-selected="false">Jabatan Fungsional</a>
                                 <a class="nav-link" id="v-pills-mengajar-tab" data-bs-toggle="pill" href="#v-pills-mengajar" role="tab" aria-controls="v-pills-mengajar" aria-selected="false">Mengajar</a>
                                 <a class="nav-link" id="v-pills-penelitian-tab" data-bs-toggle="pill" href="#v-pills-penelitian" role="tab" aria-controls="v-pills-penelitian" aria-selected="false">Penelitian</a>
+                                <a class="nav-link" id="v-pills-pengabdian-tab" data-bs-toggle="pill" href="#v-pills-pengabdian" role="tab" aria-controls="v-pills-pengabdian" aria-selected="false">Pengabdian</a>
+                                <a class="nav-link" id="v-pills-karya-tab" data-bs-toggle="pill" href="#v-pills-karya" role="tab" aria-controls="v-pills-karya" aria-selected="false">karya Ilmiah</a>
+                                <a class="nav-link" id="v-pills-organisasi-tab" data-bs-toggle="pill" href="#v-pills-organisasi" role="tab" aria-controls="v-pills-organisasi" aria-selected="false">Organisasi</a>
+                                <a class="nav-link" id="v-pills-repository-tab" data-bs-toggle="pill" href="#v-pills-repository" role="tab" aria-controls="v-pills-repository" aria-selected="false">Repository</a>
+                                <a class="nav-link" id="v-pills-pekerjaan-tab" data-bs-toggle="pill" href="#v-pills-pekerjaan" role="tab" aria-controls="v-pills-pekerjaan" aria-selected="false">Pekerjaan</a>
+                                <a class="nav-link" id="v-pills-pendidikan-tab" data-bs-toggle="pill" href="#v-pills-pendidikan" role="tab" aria-controls="v-pills-pendidikan" aria-selected="false">Pendidikan</a>
                             </div>
                           </div>
-                          <div class="col-sm-9">
+                          <div class="col-sm-9" style="overflow-x:scroll">
                             <div class="tab-content" id="v-pills-tabContent">
                               <div class="tab-pane fade show active" id="v-pills-struktural" role="tabpanel" aria-labelledby="v-pills-struktural-tab">
-                                @include('admin.kepegawaian.pegawai.struktural')
+                                <div class="loader-box">
+                                    <div class="loader-2"></div>
+                                </div>
                               </div>
                               <div class="tab-pane fade" id="v-pills-fungsional" role="tabpanel" aria-labelledby="v-pills-fungsional-tab">
-                                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum</p>
+                                <div class="loader-box">
+                                    <div class="loader-2"></div>
+                                </div>
                               </div>
                               <div class="tab-pane fade" id="v-pills-mengajar" role="tabpanel" aria-labelledby="v-pills-mengajar-tab">
-                                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum</p>
+                                <div class="loader-box">
+                                    <div class="loader-2"></div>
+                                </div>
                               </div>
                               <div class="tab-pane fade" id="v-pills-penelitian" role="tabpanel" aria-labelledby="v-pills-penelitian-tab">
-                                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum</p>
+                                <div class="loader-box">
+                                    <div class="loader-2"></div>
+                                </div>
+                              </div>
+                              <div class="tab-pane fade" id="v-pills-pengabdian" role="tabpanel" aria-labelledby="v-pills-pengabdian-tab">
+                                <div class="loader-box">
+                                    <div class="loader-2"></div>
+                                </div>
+                              </div>
+                              <div class="tab-pane fade" id="v-pills-karya" role="tabpanel" aria-labelledby="v-pills-karya-tab">
+                                <div class="loader-box">
+                                    <div class="loader-2"></div>
+                                </div>
+                              </div>
+                              <div class="tab-pane fade" id="v-pills-organisasi" role="tabpanel" aria-labelledby="v-pills-organisasi-tab">
+                                <div class="loader-box">
+                                    <div class="loader-2"></div>
+                                </div>
+                              </div>
+                              <div class="tab-pane fade" id="v-pills-repository" role="tabpanel" aria-labelledby="v-pills-repository-tab">
+                                <div class="loader-box">
+                                    <div class="loader-2"></div>
+                                </div>
+                              </div>
+                              <div class="tab-pane fade" id="v-pills-pekerjaan" role="tabpanel" aria-labelledby="v-pills-pekerjaan-tab">
+                                <div class="loader-box">
+                                    <div class="loader-2"></div>
+                                </div>
+                              </div>
+                              <div class="tab-pane fade" id="v-pills-pendidikan" role="tabpanel" aria-labelledby="v-pills-pendidikan-tab">
+                                <div class="loader-box">
+                                    <div class="loader-2"></div>
+                                </div>
                               </div>
                             </div>
                           </div>
@@ -141,131 +185,16 @@
 @include('admin.kepegawaian.pegawai._script_profile')
 @include('admin.kepegawaian.pegawai._script_user_update')
 @include('admin.kepegawaian.pegawai._script_foto_update')
-<script>
-    function refresh_struktural() {
-        const id = {{$id}};
-        $.ajax({
-            url:'{{URL::to('admin/kepegawaian/struktural')}}',
-            method:'GET',
-            data:{id : id},
-            success:function(data){
-                $("#v-pills-struktural").html(data);
-            },
-            error: function error(err) {
-                offCanvasForm.offcanvas('hide');
-                swal({
-                title: 'Duplicate Entry!',
-                text: 'Data Not Saved !',
-                icon: 'error',
-                customClass: {
-                    confirmButton: 'btn btn-success'
-                }
-                });
-            }
-        });
-    }
-    $(document).ready(function(){
-        refresh_struktural();
-        const baseUrl = {!! json_encode(url('/')) !!};
+@include('admin.kepegawaian.pegawai.struktural._script')
+@include('admin.kepegawaian.pegawai.fungsional._script')
+@include('admin.kepegawaian.pegawai.mengajar._script')
+@include('admin.kepegawaian.pegawai.penelitian._script')
+@include('admin.kepegawaian.pegawai.pengabdian._script')
+@include('admin.kepegawaian.pegawai.karya._script')
+@include('admin.kepegawaian.pegawai.organisasi._script')
+@include('admin.kepegawaian.pegawai.repository._script')
+@include('admin.kepegawaian.pegawai.pekerjaan._script')
+@include('admin.kepegawaian.pegawai.pendidikan._script')
 
-
-        $(document).on('submit', '#formAddStruktural', function (e){
-            const myFormData = new FormData(document.getElementById("formAddStruktural"));
-
-            e.preventDefault();
-            $.ajax({
-                data: myFormData,
-                url: ''.concat(baseUrl).concat('/admin/kepegawaian/struktural'),
-                type: 'POST',
-                processData: false,
-                contentType: false,
-                success: function success(status) {
-
-
-
-                    // sweetalert
-                    swal({
-                    icon: 'success',
-                    title: 'Successfully '.concat(status, '!'),
-                    text: ''.concat(status, 'Created Successfully.'),
-                    customClass: {
-                        confirmButton: 'btn btn-success'
-                    }
-                    });
-                    $("#modalStruktural").modal('hide');
-                    refresh_struktural();
-                },
-                error: function error(err) {
-
-                    swal({
-                    title: 'Error Saving Data',
-                    text: title + ' Not Saved !',
-                    icon: 'error',
-                    customClass: {
-                        confirmButton: 'btn btn-success'
-                    }
-                    });
-                    $("#modalStruktural").modal('hide');
-                }
-            });
-        });
-        $(document).on('click', '.delete-record-struktural', function () {
-            const id = $(this).data('id');
-            // sweetalert for confirmation of delete
-            swal({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            buttons: true,
-            dangerMode: true,
-            showCancelButton: true,
-            confirmButtonText: 'Yes, delete it!',
-            customClass: {
-                confirmButton: 'btn btn-primary me-3',
-                cancelButton: 'btn btn-label-secondary'
-            },
-            buttonsStyling: false
-            }).then(function (result) {
-            if (result) {
-
-                // delete the data
-                $.ajax({
-                type: 'DELETE',
-                url: ''.concat(baseUrl).concat('/admin/kepegawaian/struktural/').concat(id),
-                data:{
-                    'id': id,
-                    '_token': '{{ csrf_token() }}',
-                },
-                success: function success() {
-                    refresh_struktural();
-                },
-                error: function error(_error) {
-                    console.log(_error);
-                }
-                });
-
-                // success sweetalert
-                swal({
-                icon: 'success',
-                title: 'Deleted!',
-                text: 'The Record has been deleted!',
-                customClass: {
-                    confirmButton: 'btn btn-success'
-                }
-                });
-            } else {
-                swal({
-                title: 'Cancelled',
-                text: 'The record is not deleted!',
-                icon: 'error',
-                customClass: {
-                    confirmButton: 'btn btn-success'
-                }
-                });
-            }
-            });
-        });
-    });
-</script>
 
 @endsection

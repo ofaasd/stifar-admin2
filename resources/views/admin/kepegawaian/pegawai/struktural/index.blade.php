@@ -6,8 +6,8 @@
                 <div class="modal-content">
                     <form action="javascript:void(0)" id="formAddStruktural">
                         @csrf
-                        <input type="hidden" name="id" id="id">
-                        <input type="hidden" name="id_pegawai" id="id_pegawai" value="{{$id_pegawai}}">
+                        <input type="hidden" name="id" id="id_struktural">
+                        <input type="hidden" name="id_pegawai" value="{{$id_pegawai}}">
                         <div class="modal-header">
                             <h5 class="modal-title" id="ModalLabelStruktural">Tambah Jabatan Struktural</h5>
                             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -15,7 +15,7 @@
                         <div class="modal-body">
                             <div class="mb-3">
                                 <label for="no_gel" class="form-label">Unit Kerja</label>
-                                <select name="unit_kerja" id="unit_kerja" class="form-control">
+                                <select name="unit_kerja" id="unit_kerja_struktural" class="form-control">
                                     <option value="0">--Pilih Unit Kerja--</option>
                                     @foreach($list_unit as $key=>$value)
                                         <option value="{{$key}}">{{$value}}</option>
@@ -42,7 +42,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="status" class="form-label">Status</label>
-                                <select name="status" id="status" class="form-control">
+                                <select name="status" id="status_struktural" class="form-control">
                                     <option value="0">Tidak Aktif</option>
                                     <option value="1">Aktif</option>
                                 </select>
@@ -50,6 +50,9 @@
                             <div class="mb-3">
                                 <label for="dokumen" class="form-label">Dokumen</label>
                                 <input type="file" name="dokumen" id="dokumen_struktural" class="form-control">
+                                <div id="dokumen_exist">
+
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -101,12 +104,12 @@
         $(document).ready(function(){
             const baseUrl = {!! json_encode(url('/')) !!};
             $("#struktural-table").DataTable();
-            $("#unit_kerja").change(function(){
+            $("#unit_kerja_struktural").change(function(){
 
                 $.ajax({
                     url:'{{URL::to('admin/kepegawaian/struktural/get_jabatan')}}',
                     method:'GET',
-                    data:{id : $("#unit_kerja").val()},
+                    data:{id : $("#unit_kerja_struktural").val()},
                     success:function(data){
                         //console.log(data);
                         $("#id_jabatan_struktural").html('');
@@ -146,6 +149,27 @@
                             $('#' + key)
                             .val(data['tmt_sk'])
                             .trigger('change');
+                        }else if(key == 'id'){
+                            $('#id_struktural')
+                            .val(data[0][key])
+                            .trigger('change');
+                        }else if(key == 'unit_kerja'){
+                            $('#unit_kerja_struktural')
+                            .val(data[0][key])
+                            .trigger('change');
+                        }else if(key == 'status'){
+                            $('#status_struktural')
+                            .val(data[0][key])
+                            .trigger('change');
+                        }else if(key == 'dokumen'){
+                            if(data[0][key]){
+                                const url = baseUrl.concat('/assets/file/fungsional/',data[0][key]);
+                                $('#dokumen_exist')
+                                .html(`<a href="${url}" target="_blank" class="btn btn-info" style="margin-top:20px">Lihat File</a>`);
+                            }else{
+                                $('#dokumen_exist')
+                                .html('');
+                            }
                         }else{
                             $('#' + key)
                                 .val(data[0][key])
@@ -156,6 +180,7 @@
             });
             $('#modalStruktural').on('hidden.bs.modal', function () {
                 $('#formAddStruktural').trigger("reset");
+                $('#dokumen_exist').html('');
             });
         });
     </script>

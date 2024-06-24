@@ -8,7 +8,7 @@ use App\Models\MasterPt;
 use App\Models\MasterPtAtribut;
 use URL;
 
-class AtributPTController extends Controller
+class RenstraPTController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,10 +19,10 @@ class AtributPTController extends Controller
         //
         if (empty($request->input('length'))) {
             $title = "detail";
-            $title2 = "Atribut Perguruan Tinggi";
+            $title2 = "Renstra Perguruan Tinggi";
             $indexed = $this->indexed;
             $link = '';
-            return view('admin.master.pt.atribut.index', compact('title','indexed','title2','link','id'));
+            return view('admin.master.pt.renstra.index', compact('title','indexed','title2','link','id'));
         }else{
             $columns = [
                 1 => 'id',
@@ -33,7 +33,7 @@ class AtributPTController extends Controller
 
             $search = [];
 
-            $totalData = MasterPtAtribut::where('id_pt',$id)->where('keterangan',1)->count();
+            $totalData = MasterPtAtribut::where('id_pt',$id)->where('keterangan',2)->count();
 
             $totalFiltered = $totalData;
 
@@ -45,7 +45,7 @@ class AtributPTController extends Controller
 
             if (empty($request->input('search.value'))) {
                 $pt = MasterPtAtribut::where('id_pt',$id)
-                    ->where('keterangan',1)
+                    ->where('keterangan',2)
                     ->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
@@ -53,14 +53,14 @@ class AtributPTController extends Controller
             } else {
                 $search = $request->input('search.value');
 
-                $pt = MasterPtAtribut::where(['id_pt'=>$id,'keterangan'=>1])
+                $pt = MasterPtAtribut::where(['id_pt'=>$id,'keterangan'=>2])
                     ->orWhere('nama', 'LIKE', "%{$search}%")
                     ->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
                     ->get();
 
-                $totalFiltered = MasterPtAtribut::where(['id_pt'=>$id,'keterangan'=>1])
+                $totalFiltered = MasterPtAtribut::where(['id_pt'=>$id,'keterangan'=>2])
                 ->orWhere('nama', 'LIKE', "%{$search}%")
                 ->count();
             }
@@ -130,7 +130,7 @@ class AtributPTController extends Controller
                         'nama' => $request->nama,
                         'file' => $filename,
                         'url' => $request->url,
-                        'keterangan' => 1,
+                        'keterangan' => 2,
                     ]
                 );
             }else{
@@ -140,7 +140,7 @@ class AtributPTController extends Controller
                         'id_pt' => $request->id_pt,
                         'nama' => $request->nama,
                         'url' => $request->url,
-                        'keterangan' => 1,
+                        'keterangan' => 2,
                     ]
                 );
             }
@@ -162,7 +162,7 @@ class AtributPTController extends Controller
                     'nama' => $request->nama,
                     'file' => $filename,
                     'url' => $request->url,
-                    'keterangan' => 1,
+                    'keterangan' => 2,
                 ]
             );
 

@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class MasterPt
- * 
+ *
  * @property int $id
  * @property string $nama
  * @property string $deskripsi
@@ -41,6 +41,6 @@ class MasterPt extends Model
 		'alamat',
 		'logo',
 		'notelp',
-		'email'
+		'email',
 	];
 }

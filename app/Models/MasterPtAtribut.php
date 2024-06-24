@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class MasterPtAtribut
- * 
+ *
  * @property int $id
  * @property int $id_pt
  * @property string $nama
@@ -40,6 +40,7 @@ class MasterPtAtribut extends Model
 		'nama',
 		'file',
 		'url',
+        'keterangan',
 		'update_at'
 	];
 }

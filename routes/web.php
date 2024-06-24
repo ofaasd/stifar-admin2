@@ -14,6 +14,15 @@ use App\Http\Controllers\admin\admisi\VerifikasiController;
 use App\Http\Controllers\admin\admisi\PengumumanController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiJabatanStrukturalController;
+use App\Http\Controllers\admin\kepegawaian\PegawaiJabatanFungsionalController;
+use App\Http\Controllers\admin\kepegawaian\PegawaiMengajarController;
+use App\Http\Controllers\admin\kepegawaian\PegawaiPenelitianController;
+use App\Http\Controllers\admin\kepegawaian\PegawaiPengabdianController;
+use App\Http\Controllers\admin\kepegawaian\PegawaiKaryaController;
+use App\Http\Controllers\admin\kepegawaian\PegawaiOrganisasiController;
+use App\Http\Controllers\admin\kepegawaian\PegawaiRepositoryController;
+use App\Http\Controllers\admin\kepegawaian\PegawaiPekerjaanController;
+use App\Http\Controllers\admin\kepegawaian\PegawaiPendidikanController;
 use App\Http\Controllers\admin\WaktuController;
 use App\Http\Controllers\admin\FakultasController;
 use App\Http\Controllers\admin\RumpunController;
@@ -25,6 +34,7 @@ use App\Http\Controllers\admin\KelompokMatkulController;
 use App\Http\Controllers\admin\MatkulController;
 use App\Http\Controllers\admin\master\PTController;
 use App\Http\Controllers\admin\master\AtributPTController;
+use App\Http\Controllers\admin\master\RenstraPTController;
 use App\Http\Controllers\admin\master\JabatanStrukturalController;
 use App\Http\Controllers\admin\JadwalController;
 use App\Http\Controllers\admin\MkKurikulum;
@@ -85,14 +95,14 @@ Route::middleware('auth')->group(function(){
     Route::get('admin/masterdata/pt/atribut', [PTController::class, 'atribut'])->name('atribut');
     Route::get('admin/masterdata/pt/atribut/detail/{id}', [AtributPTController::class, 'index'])->name('atribut_detail');
     Route::get('admin/masterdata/pt/renstra', [PTController::class, 'renstra'])->name('renstra');
+    Route::get('admin/masterdata/pt/renstra/detail/{id}', [RenstraPTController::class, 'index'])->name('renstra_detail');
+
 
     Route::resource('admin/masterdata/pt', PTController::class)->name('index','pt');
-    Route::resource('admin/masterdata/pt/atribut/detail', AtributPTController::class)->name('index','pt');
+    Route::resource('admin/masterdata/pt/atribut/detail', AtributPTController::class)->name('index','atribut');
+    Route::resource('admin/masterdata/pt/renstra/detail', RenstraPTController::class)->name('index','renstra');
     Route::resource('admin/masterdata/ruang', RuangController::class)->name('index','ruang');
     Route::resource('admin/masterdata/sekolah', AsalSekolahController::class)->name('index','sekolah');
-
-    Route::get('admin/masterdata/pt/atribut', [PTController::class, 'atribut'])->name('atribut');
-    Route::get('admin/masterdata/pt/renstra', [PTController::class, 'renstra'])->name('renstra');
 
     Route::get('admin/kepegawaian/struktural/get_jabatan', [PegawaiJabatanStrukturalController::class, 'get_jabatan'])->name('get_jabatan');
 
@@ -136,6 +146,16 @@ Route::middleware('auth')->group(function(){
 
     Route::resource('admin/kepegawaian/pegawai', PegawaiController::class)->name('index','pegawai');
     Route::resource('admin/kepegawaian/struktural', PegawaiJabatanStrukturalController::class)->name('index','struktural');
+    Route::resource('admin/kepegawaian/fungsional', PegawaiJabatanFungsionalController::class)->name('index','fungsional');
+    Route::resource('admin/kepegawaian/mengajar', PegawaiMengajarController::class)->name('index','mengajar');
+    Route::resource('admin/kepegawaian/penelitian', PegawaiPenelitianController::class)->name('index','penelitian');
+    Route::resource('admin/kepegawaian/pengabdian', PegawaiPengabdianController::class)->name('index','pengabdian');
+    Route::resource('admin/kepegawaian/karya', PegawaiKaryaController::class)->name('index','karya');
+    Route::resource('admin/kepegawaian/organisasi', PegawaiOrganisasiController::class)->name('index','organisasi');
+    Route::resource('admin/kepegawaian/repository', PegawaiRepositoryController::class)->name('index','repository');
+    Route::resource('admin/kepegawaian/pekerjaan', PegawaiPekerjaanController::class)->name('index','pekerjaan');
+    Route::resource('admin/kepegawaian/pendidikan', PegawaiPendidikanController::class)->name('index','pendidikan');
+
 
 
 });
