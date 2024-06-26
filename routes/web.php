@@ -38,6 +38,7 @@ use App\Http\Controllers\admin\master\PTController;
 use App\Http\Controllers\admin\master\AtributPTController;
 use App\Http\Controllers\admin\master\RenstraPTController;
 use App\Http\Controllers\admin\master\JabatanStrukturalController;
+use App\Http\Controllers\admin\master\UserController;
 use App\Http\Controllers\admin\JadwalController;
 use App\Http\Controllers\admin\MkKurikulum;
 
@@ -122,6 +123,7 @@ Route::middleware('auth')->group(function(){
     Route::resource('admin/masterdata/kelompok-mk', KelompokMatkulController::class)->name('index', 'kelompok-mk');
     Route::resource('admin/masterdata/matakuliah', MatkulController::class)->name('index', 'matakuliah');
     Route::resource('admin/masterdata/jabatan_struktural', JabatanStrukturalController::class)->name('index', 'jabatan_struktural');
+    Route::resource('admin/masterdata/user', UserController::class)->name('index', 'user');
 
     // route Matakuliah
     Route::get('/admin/masterdata/matakuliah', [MatkulController::class, 'index']);

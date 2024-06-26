@@ -45,15 +45,7 @@
                     <li><a href="/admin/masterdata/ta">Tahun Ajaran</a></li>
                     <li><a href="#">Jenjang</a></li>
                     <li><a href="{{URL::to('admin/masterdata/jabatan_struktural')}}">Jabatan</a></li>
-                    <li>
-                        <a class="submenu-title" href="#">
-                            <span>User</span>
-                        </a>
-                        <ul class="nav-sub-childmenu submenu-content">
-                            <li><a href="#">Manajemen</a></li>
-                            <li><a href="#">Hak Akses</a></li>
-                        </ul>
-                    </li>
+                    <li><a href="{{URL::to('admin/masterdata/user')}}">User Manajemen</a></li>
                     {{-- <li><a href="{{ route('ruang/')}}">Ruang</a></li> --}}
                     <li><a href="/admin/masterdata/sesi">Sesi</a></li>
                     <li><a href="/admin/masterdata/asal-sekolah">Sekolah</a></li>
