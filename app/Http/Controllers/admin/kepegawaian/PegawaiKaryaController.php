@@ -4,7 +4,7 @@ namespace App\Http\Controllers\admin\kepegawaian;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\PegawaikaryaIlmiah;
+use App\Models\PegawaiKaryaIlmiah;
 
 class PegawaiKaryaController extends Controller
 {
@@ -13,7 +13,7 @@ class PegawaiKaryaController extends Controller
     {
         //
         $id_pegawai = $request->id;
-        $pegawai_karya = PegawaikaryaIlmiah::where('id_pegawai',$id_pegawai)->get();
+        $pegawai_karya = PegawaiKaryaIlmiah::where('id_pegawai',$id_pegawai)->get();
         $bulan = array('1'=>'Januari', '2'=>'Februari', '3'=>'Maret', '4'=>'April', '5'=>'Mei', '6'=>'Juni', '7'=>'Juli', '8'=>'Agustus', '9'=>'September', '10'=>'Oktober', '11'=>'November', '12'=>'Desember');
 
         foreach($pegawai_karya as $row){
@@ -60,7 +60,7 @@ class PegawaiKaryaController extends Controller
                 $dokumen->move($tujuan_upload,$filename);
                 $data['dokumen'] = $filename;
             }
-            $pegawai = PegawaikaryaIlmiah::updateOrCreate(
+            $pegawai = PegawaiKaryaIlmiah::updateOrCreate(
                 ['id' => $id],
                 $data,
             );
@@ -76,7 +76,7 @@ class PegawaiKaryaController extends Controller
                 $dokumen->move($tujuan_upload,$filename);
             }
 
-            $pegawai = PegawaikaryaIlmiah::updateOrCreate(
+            $pegawai = PegawaiKaryaIlmiah::updateOrCreate(
                 ['id' => $id],
                 [
                     'id_pegawai' => $request->id_pegawai,
@@ -115,7 +115,7 @@ class PegawaiKaryaController extends Controller
         //
         $where = ['id' => $id];
 
-        $pegawai[0] = PegawaikaryaIlmiah::where($where)->first();
+        $pegawai[0] = PegawaiKaryaIlmiah::where($where)->first();
         return response()->json($pegawai);
     }
 
@@ -133,6 +133,6 @@ class PegawaiKaryaController extends Controller
     public function destroy(string $id)
     {
         //
-        $pegawai = PegawaikaryaIlmiah::where('id', $id)->delete();
+        $pegawai = PegawaiKaryaIlmiah::where('id', $id)->delete();
     }
 }
