@@ -1,5 +1,8 @@
 <script>
     $(document.body).on("submit","#formPegawai",function(){
+        $(".update-btn").prop('disabled', true);
+        $(".update-btn").html('<div class="loader-2"></div> Please Wait');
+
         const form = $(this).serialize();
         $.ajax({
             url:'{{URL::to('admin/kepegawaian/pegawai')}}',
@@ -14,6 +17,8 @@
                         confirmButton: 'btn btn-success'
                     }
                 })
+                $(".update-btn").prop('disabled', false);
+                $(".update-btn").html('Update Profile');
             },
             error: function error(err) {
                 offCanvasForm.offcanvas('hide');
@@ -25,6 +30,8 @@
                     confirmButton: 'btn btn-success'
                 }
                 });
+                $(".update-btn").prop('disabled', false);
+                $(".update-btn").html('Update Profile');
             }
         });
     });

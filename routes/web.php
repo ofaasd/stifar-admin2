@@ -23,6 +23,8 @@ use App\Http\Controllers\admin\kepegawaian\PegawaiOrganisasiController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiRepositoryController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiPekerjaanController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiPendidikanController;
+use App\Http\Controllers\pegawai\UserPegawaiController;
+use App\Http\Controllers\pegawai\RiwayatPegawaiController;
 use App\Http\Controllers\admin\WaktuController;
 use App\Http\Controllers\admin\FakultasController;
 use App\Http\Controllers\admin\RumpunController;
@@ -156,6 +158,7 @@ Route::middleware('auth')->group(function(){
     Route::resource('admin/kepegawaian/pekerjaan', PegawaiPekerjaanController::class)->name('index','pekerjaan');
     Route::resource('admin/kepegawaian/pendidikan', PegawaiPendidikanController::class)->name('index','pendidikan');
 
-
+    Route::resource('pegawai', UserPegawaiController::class)->name('index','pegawai');
+    Route::resource('riwayat', RiwayatPegawaiController::class)->name('index','pegawai');
 
 });

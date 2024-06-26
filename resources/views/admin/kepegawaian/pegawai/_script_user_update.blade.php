@@ -1,6 +1,9 @@
 <script>
     $(document.body).on("submit","#userForm",function(e){
         e.preventDefault();
+        $(".update-password").prop('disabled', true);
+        $(".update-password").html('<div class="loader-2"></div> Please Wait');
+
         const form = $(this).serialize();
         $.ajax({
             url:'{{URL::to('admin/kepegawaian/pegawai/user_update')}}',
@@ -16,6 +19,9 @@
                     }
                 }).then(function(){
                     $('#ubahPasswordModal').modal('toggle');
+                    $(".update-password").prop('disabled', false);
+                    $(".update-password").html('Save Changes');
+                    location.reload();
                 });
             },
             error: function error(err) {

@@ -207,6 +207,8 @@ class PegawaiController extends Controller
     }
     public function user_update(Request $request){
         $id = $request->id;
+        $id_pegawai = $request->id_pegawai;
+
         if($id){
             $user = User::updateOrCreate(
                 ['id' => $id,],
@@ -234,6 +236,10 @@ class PegawaiController extends Controller
                     'model_id' => $user_id,
                 ]
             );
+            $pegawai = PegawaiBiodatum::find($id_pegawai);
+            $pegawai->user_id = $user_id;
+            $pegawai->email1 = $request->email;
+            $pegawai->save();
             return response()->json('User Created');
         }
     }
@@ -275,7 +281,11 @@ class PegawaiController extends Controller
                     'foto' => $filename,
                 ]
             );
-            return response()->json('updated');
+            $data = [
+                'status' => 'updated',
+                'pegawai' => PegawaiBiodatum::find($id),
+            ];
+            return response()->json($data);
         }else{
             return response()->json('Failed');
         }

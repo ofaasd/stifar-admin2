@@ -21,6 +21,7 @@
                             @else
                                 <div class="alert alert-info">Anda Belum Terdaftar Sebagai User Harap daftarkan dengan mengisi Form Di Bawah ini</div>
                                 <input type="hidden" name="nama_lengkap" value="{{$pegawai->nama_lengkap}}">
+                                <input type="hidden" name="id_pegawai" value="{{$pegawai->id}}">
                                 <div class="col-md-12 mb-4">
                                     <label class="col-sm-10 col-form-label">Email :</label>
                                     <div class="col-sm-12">
@@ -40,7 +41,7 @@
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button"
                         data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" type="button">Save changes</button>
+                    <button type="submit" class="btn btn-primary update-password" type="button">Save changes</button>
                 </div>
             </div>
         </form>

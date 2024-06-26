@@ -33,7 +33,9 @@
                         <div class="row mb-2">
                           <div class="profile-title">
                             <div class="media">
-                                <img class="img-70 rounded-circle" alt="" src="{{ (!empty($pegawai->foto))?asset('assets/images/pegawai/' . $pegawai->foto):asset('assets/images/user/7.jpg') }}">
+                                <div class="photo-profile">
+                                    <img class="img-70 rounded-circle" alt="" src="{{ (!empty($pegawai->foto))?asset('assets/images/pegawai/' . $pegawai->foto):asset('assets/images/user/7.jpg') }}">
+                                </div>
                               <div class="media-body">
                                 <h5 class="mb-1">{{$pegawai->nama_lengkap}}</h5>
                                 <p>{{$posisi[$pegawai->id_posisi_pegawai]}}</p>
@@ -90,7 +92,7 @@
                         @include('admin.kepegawaian.pegawai._form_profile')
                     </div>
                     <div class="card-footer text-end">
-                      <button class="btn btn-primary" type="submit">Update Profile</button>
+                      <button class="btn btn-primary update-btn" type="submit">Update Profile</button>
                     </div>
                   </form>
                 </div>
