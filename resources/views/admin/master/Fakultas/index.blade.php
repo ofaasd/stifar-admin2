@@ -39,6 +39,14 @@
                                         </div>
                                         <div class="modal-body">
                                             <div class="mb-3">
+                                                <label for="id_universitas" class="form-label">Universitas</label>
+                                                <select  name="id_universitas" id="id_universitas" class="form-control">
+                                                    @foreach($universitas as $row)
+                                                        <option value="{{$row->id}}">{{$row->nama}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
                                                 <label for="kode_fak" class="form-label">Kode Fakultas</label>
                                                 <input type="text" name="kode_fak" id="kode_fak" class="form-control">
                                             </div>
@@ -57,8 +65,8 @@
                                             <div class="mb-3">
                                                 <label for="status" class="form-label">Status Waktu / Sesi</label>
                                                 <select name="status" id="status" class="form-control">
-                                                        <option value="Aktif">Aktif</option>
-                                                        <option value="Tidak Aktif">Tidak Aktif</option>
+                                                        <option value="1">Aktif</option>
+                                                        <option value="0">Tidak Aktif</option>
                                                 </select>
                                             </div>
                                         </div>

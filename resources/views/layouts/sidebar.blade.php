@@ -36,22 +36,22 @@
                             <span>PRODI</span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
-                            <li><a href="/admin/masterdata/program-studi">Daftar Prodi</a></li>
+                            <li><a href="{{URL::to('admin/masterdata/program-studi')}}">Daftar Prodi</a></li>
                             <li><a href="#">Atribut Prodi</a></li>
                             <li><a href="#">Akreditasi</a></li>
                             <li><a href="#">Renstra</a></li>
                         </ul>
                     </li>
-                    <li><a href="/admin/masterdata/ta">Tahun Ajaran</a></li>
+                    <li><a href="{{URL::to('admin/masterdata/ta')}}">Tahun Ajaran</a></li>
                     <li><a href="#">Jenjang</a></li>
                     <li><a href="{{URL::to('admin/masterdata/jabatan_struktural')}}">Jabatan</a></li>
                     <li><a href="{{URL::to('admin/masterdata/user')}}">User Manajemen</a></li>
                     {{-- <li><a href="{{ route('ruang/')}}">Ruang</a></li> --}}
-                    <li><a href="/admin/masterdata/sesi">Sesi</a></li>
-                    <li><a href="/admin/masterdata/asal-sekolah">Sekolah</a></li>
-                    <li><a href="/admin/masterdata/waktu">Waktu</a></li>
-                    <li><a href="/admin/masterdata/rumpun">Rumpun</a></li>
-                    <li><a href="/admin/masterdata/fakultas">Fakultas</a></li>
+                    <li><a href="{{URL::to('admin/masterdata/sesi')}}">Sesi</a></li>
+                    <li><a href="{{URL::to('admin/masterdata/asal-sekolah')}}">Sekolah</a></li>
+                    <li><a href="{{URL::to('admin/masterdata/waktu')}}">Waktu</a></li>
+                    <li><a href="{{URL::to('admin/masterdata/rumpun')}}">Rumpun</a></li>
+                    <li><a href="{{URL::to('admin/masterdata/fakultas')}}">Fakultas</a></li>
                 </ul>
             </li>
 
@@ -78,7 +78,7 @@
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
                 <span><i class="fa fa-university"></i> Akademik</span></a>
                 <ul class="sidebar-submenu">
-                     <li><a href="/admin/masterdata/matakuliah">Matakuliah</a></li>
+                     <li><a href="{{URL::to('admin/masterdata/matakuliah')}}">Matakuliah</a></li>
                      <li><a href="#">Jadwal</a></li>
                      <li><a href="#">Plot Jadwal Ajar</a></li>
                      <li><a href="#">Kontrol Jadwal</a></li>
@@ -215,7 +215,7 @@
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#">
                 <span><i class="fa fa-support"></i> Aset</span></a>
                 <ul class="sidebar-submenu">
-                    <li><a href="#">Ruang</a></li>
+                    <li><a href="{{URL::to('admin/masterdata/ruang')}}">Ruang</a></li>
                     <li><a href="#">Kendaraan</a></li>
                     <li><a href="#">Tanah & Bangunan</a></li>
                     <li><a href="#">Elektronik</a></li>
