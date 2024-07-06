@@ -79,7 +79,7 @@
                 <span><i class="fa fa-university"></i> Akademik</span></a>
                 <ul class="sidebar-submenu">
                      <li><a href="{{URL::to('admin/masterdata/matakuliah')}}">Matakuliah</a></li>
-                     <li><a href="#">Jadwal</a></li>
+                     <li><a href="{{URL::to('admin/masterdata/jadwal')}}">Jadwal</a></li>
                      <li><a href="#">Plot Jadwal Ajar</a></li>
                      <li><a href="#">Kontrol Jadwal</a></li>
                      <li>
