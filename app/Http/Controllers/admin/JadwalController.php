@@ -36,7 +36,7 @@ class JadwalController extends Controller
                   ->leftJoin('sesis', 'sesis.id', '=', 'jadwals.id_sesi')
                   ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
                   ->where(['jadwals.id_mk' => $id, 'jadwals.status' => 'Aktif'])->get();
-        
+
         return view('admin.akademik.jadwal.input', compact('id_mk','title','nama_mk', 'days', 'jadwal', 'id', 'ruang', 'sesi'));
     }
     public function createJadwal(Request $request){
@@ -54,7 +54,7 @@ class JadwalController extends Controller
         if($cekJadwal){
             return json_encode(['status' => 'bentrok', 'kode' => 203, 'kode_jadwal' => $cekJadwal['kode_jadwal']]);
         }
-        for ($i=0; $i < count($dsn); $i++) { 
+        for ($i=0; $i < count($dsn); $i++) {
             $cekDosen = Jadwal::leftJoin('pengajars', 'pengajars.id_jadwal','=','jadwals.id')
                             ->where(['pengajars.id_dsn' => $dsn[$i],'jadwals.hari' => $hari, 'jadwals.id_tahun' => $taAktif['id'], 'jadwals.id_sesi' => $sesi])
                             ->first();
@@ -64,11 +64,11 @@ class JadwalController extends Controller
         }
         $id_jadwal = Jadwal::create(
                                 [
-                                    'kode_jadwal' => $kode_jadwal, 
-                                    'id_mk' => $id_mk, 
-                                    'hari' => $hari, 
-                                    'id_tahun' => $taAktif['id'], 
-                                    'id_ruang' => $ruang, 
+                                    'kode_jadwal' => $kode_jadwal,
+                                    'id_mk' => $id_mk,
+                                    'hari' => $hari,
+                                    'id_tahun' => $taAktif['id'],
+                                    'id_ruang' => $ruang,
                                     'id_sesi' => $sesi,
                                     'kel' => $kel,
                                     'kuota' => $kuota,

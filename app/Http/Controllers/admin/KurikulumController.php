@@ -86,7 +86,7 @@ class KurikulumController extends Controller
                     $nestedData['id'] = $row->id;
                     $nestedData['fake_id'] = ++$ids;
                     $nestedData['kode_kurikulum'] = $row->kode_kurikulum;
-                    $nestedData['progdi'] = $row->nama_prodi;
+                    $nestedData['progdi'] = $row->progdi;
                     $nestedData['thn_ajar'] = $row->kode_ta;
                     $nestedData['angkatan'] = $row->angkatan;
                     $nestedData['status'] = $row->status;
