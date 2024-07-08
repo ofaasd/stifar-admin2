@@ -49,7 +49,7 @@
                                                     <div class="modal-body">
                                                         <div class="mb-3">
                                                             <label for="kode_prodi" class="form-label">Kode Kurikulum</label>
-                                                            <input type="text" name="kode_prodi" id="kode_prodi" class="form-control">
+                                                            <input type="text" name="kode_kurikulum" id="kode_kurikulum" class="form-control">
                                                         </div>
                                                         <div class="mb-3">
                                                             <label for="progdi" class="form-label">Kode Program Studi</label>
@@ -82,7 +82,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <input class="btn btn-primary" type="submit" value="simpan" /> 
+                                                        <input class="btn btn-primary" type="submit" value="simpan" />
                                                         <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
                                                     </div>
                                                 </form>

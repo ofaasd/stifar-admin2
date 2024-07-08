@@ -55,6 +55,14 @@
                 </ul>
             </li>
 
+            <li class="sidebar-list">
+                <a class="sidebar-link sidebar-title" href="#">
+                    <span><i class="fa fa-users"></i> Mahasiswa</span>
+                </a>
+                <ul class="sidebar-submenu">
+                    <li><a href="/mahasiswa/daftar">Data Mahasiswa</a></li>
+                </ul>
+            </li>
 
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
                 <span><i class="fa fa-file-text"></i> Admisi</span></a>
