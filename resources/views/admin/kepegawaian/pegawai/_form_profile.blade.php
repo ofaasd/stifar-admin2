@@ -28,7 +28,7 @@
             </div>
         </div>
         <div class="mb-2">
-            <label class="col-sm-12 col-form-label">Nomor Induk pegawai(NIP): </label>
+            <label class="col-sm-12 col-form-label">Nomor Induk Yayasan(NIY): </label>
             <div class="col-sm-12">
                 <input type="hidden" class="form-control" name="nip" id="initial_npp" value="">
                 <div class="input-group">

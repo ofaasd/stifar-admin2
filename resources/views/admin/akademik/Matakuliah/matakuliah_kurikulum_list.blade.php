@@ -116,7 +116,7 @@
                                             <div class="form-group mt-2">
                                                 <label for="status">Status Penawaran :</label>
                                                 <select class="form-control" name="status" id="status_{{ $mk['id'] }}" required="">
-                                                
+
                                                     <option value="Aktif" {{ $mk['status'] == 'Aktif' ? 'selected=""':'' }}>Aktif</option>
                                                     <option value="Tidak Aktif" {{ $mk['status'] == 'Tidak Aktif' ? 'selected=""':'' }}>Tidak Aktif</option>
                                                 </select>
@@ -129,7 +129,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <a href="{{ url('admin/masterdata/matakuliah-kurikulum/delete/'. $mk['id'].'-'.$id_kur) }}" onclick="return confirm('Apakah anda yakin ingin menghapus data ini?');" class="btn btn-danger btn-sm btn-icon edit-record">
                             <i class="fa fa-trash"></i> Delete
                         </a>
