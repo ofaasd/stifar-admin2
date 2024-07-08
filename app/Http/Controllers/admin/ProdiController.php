@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Prodi;
+use App\Models\Fakultas;
 
 class ProdiController extends Controller
 {
@@ -16,7 +17,8 @@ class ProdiController extends Controller
             $title = "Program Studi";
             $url = "Program-Studi";
             $indexed = $this->indexed;
-            return view('admin.master.prodi.index', compact('title','indexed', 'url'));
+            $fakultas = Fakultas::all();
+            return view('admin.master.prodi.index', compact('title','indexed', 'url', 'fakultas'));
         }else{
             $columns = [
                 1 => 'id',
@@ -127,8 +129,9 @@ class ProdiController extends Controller
             $prodi = Prodi::updateOrCreate(
                 ['id' => $id],
                 [
-                    'kode_prodi' => $request->kode_prodi, 
-                    'kode_nim' => $request->kode_nim, 
+                    'id_fakultas' => $request->id_fakultas,
+                    'kode_prodi' => $request->kode_prodi,
+                    'kode_nim' => $request->kode_nim,
                     'jenjang' => $request->jenjang,
                     'nama_prodi' => $request->nama_prodi,
                     'tgl_pendirian' => $request->tgl_pendirian,
@@ -145,8 +148,9 @@ class ProdiController extends Controller
             $prodi = Prodi::updateOrCreate(
                 ['id' => $id],
                 [
-                    'kode_prodi' => $request->kode_prodi, 
-                    'kode_nim' => $request->kode_nim, 
+                    'id_fakultas' => $request->id_fakultas,
+                    'kode_prodi' => $request->kode_prodi,
+                    'kode_nim' => $request->kode_nim,
                     'jenjang' => $request->jenjang,
                     'nama_prodi' => $request->nama_prodi,
                     'tgl_pendirian' => $request->tgl_pendirian,
@@ -180,7 +184,7 @@ class ProdiController extends Controller
 
         $prodi = Prodi::where($where)->first();
 
-        return response()->json($ruang);
+        return response()->json($prodi);
     }
 
     /**

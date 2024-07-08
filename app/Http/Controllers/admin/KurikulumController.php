@@ -43,7 +43,7 @@ class KurikulumController extends Controller
 
 
             if (empty($request->input('search.value'))) {
-                $kurikulum = Kurikulum::leftJoin('prodis', 'kurikulums.prodi', '=', 'prodis.id')
+                $kurikulum = Kurikulum::leftJoin('prodis', 'kurikulums.progdi', '=', 'prodis.id')
                     ->leftJoin('tahun_ajarans', 'tahun_ajarans.id', '=', 'kurikulums.thn_ajar')
                     ->offset($start)
                     ->limit($limit)
@@ -52,7 +52,7 @@ class KurikulumController extends Controller
             } else {
                 $search = $request->input('search.value');
 
-                $kurikulum = Kurikulum::leftJoin('prodis', 'kurikulums.prodi', '=', 'prodis.id')
+                $kurikulum = Kurikulum::leftJoin('prodis', 'kurikulums.progdi', '=', 'prodis.id')
                     ->leftJoin('tahun_ajarans', 'tahun_ajarans.id', '=', 'kurikulums.thn_ajar')
                     ->where('kurikulums.id', 'LIKE', "%{$search}%")
                     ->orWhere('kurikulums.kode_kurikulum', 'LIKE', "%{$search}%")
@@ -65,7 +65,7 @@ class KurikulumController extends Controller
                     ->orderBy($order, $dir)
                     ->get();
 
-                $totalFiltered = Kurikulum::leftJoin('prodis', 'kurikulums.prodi', '=', 'prodis.id')
+                $totalFiltered = Kurikulum::leftJoin('prodis', 'kurikulums.progdi', '=', 'prodis.id')
                 ->leftJoin('tahun_ajarans', 'tahun_ajarans.id', '=', 'kurikulums.thn_ajar')
                 ->where('kurikulums.id', 'LIKE', "%{$search}%")
                 ->orWhere('kurikulums.kode_kurikulum', 'LIKE', "%{$search}%")
@@ -86,7 +86,7 @@ class KurikulumController extends Controller
                     $nestedData['id'] = $row->id;
                     $nestedData['fake_id'] = ++$ids;
                     $nestedData['kode_kurikulum'] = $row->kode_kurikulum;
-                    $nestedData['progdi'] = $row->nama_prodi;
+                    $nestedData['progdi'] = $row->progdi;
                     $nestedData['thn_ajar'] = $row->kode_ta;
                     $nestedData['angkatan'] = $row->angkatan;
                     $nestedData['status'] = $row->status;

@@ -34,7 +34,7 @@
                                 <thead>
                                     <tr>
                                         <th>ID</th>
-                                        <th>NIP - NIDN</th>
+                                        <th>NIY - NIDN</th>
                                         <th>Nama Pegawai</th>
                                         <th>Status Homebase</th>
                                         <th>Golongan</th>

@@ -39,7 +39,7 @@
                                         </div>
                                         <div class="modal-body">
                                             <div class="mb-3">
-                                                <label for="nama_sesi" class="form-label">Nama Sesi</label>
+                                                <label for="nama_sesi" class="form-label">Nama Waktu</label>
                                                 <input type="text" name="nama_sesi" id="nama_sesi" class="form-control">
                                             </div>
                                             <div class="mb-3">
@@ -79,7 +79,7 @@
                                     <tr>
                                         <th></th>
                                         <th>ID</th>
-                                        <th>Nama Sesi</th>
+                                        <th>Nama Waktu</th>
                                         <th>Waktu Mulai</th>
                                         <th>Waktu Selesai</th>
                                         <th>Jumlah SKS</th>

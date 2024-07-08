@@ -29,7 +29,7 @@
                     <div class="card-body">
                         <ul class="simple-wrapper nav nav-tabs" id="myTab" role="tablist">
                             <li class="nav-item" role="presentation"><a class="nav-link txt-default active" id="masterMK-tab" data-bs-toggle="tab" href="#masterMK" role="tab" aria-controls="masterMK" aria-selected="true">Master Matakuliah</a></li>
-                            <li class="nav-item" role="presentation"><a class="nav-link txt-default" id="kelMK-tab" href="{{ url('admin/masterdata/kelompok-mk') }}" role="tab" aria-controls="kelMK" aria-selected="true">Kelompok Matakuliah</a></li>
+                            {{-- <li class="nav-item" role="presentation"><a class="nav-link txt-default" id="kelMK-tab" href="{{ url('admin/masterdata/kelompok-mk') }}" role="tab" aria-controls="kelMK" aria-selected="true">Kelompok Matakuliah</a></li> --}}
                             <li class="nav-item" role="presentation"><a class="nav-link txt-default" id="masterKur-tabs" href="{{ url('admin/masterdata/kurikulum') }}" role="tab" aria-controls="masterKur" aria-selected="false" tabindex="-1">Master Kurikulum</a></li>
                             <li class="nav-item" role="presentation"><a class="nav-link txt-default" id="MkKur-tab" href="{{ url('admin/masterdata/matakuliah-kurikulum') }}" role="tab" aria-controls="MkKur" aria-selected="false" tabindex="-1">Matakuliah Kurikulum</a></li>
                         </ul>
@@ -56,7 +56,7 @@
                                                             <label for="nama_inggris">Nama Inggris :</label>
                                                             <input type="text" class="form-control" name="nama_inggris" id="nama_inggris" placeholder="Nama Inggris" required=""/>
                                                         </div>
-                                                        <div class="form-group mt-2">
+                                                        {{-- <div class="form-group mt-2">
                                                             <label for="kelompok">Nama Kelompok :</label>
                                                             <select name="kelompok" id="kelompok" class="form-control" required="">
                                                                 <option value="" selected disabled>Pilih Kelompok</option>
@@ -73,7 +73,7 @@
                                                                 <option value="{{ $rumpun_row['id'] }}">{{ $rumpun_row['nama_rumpun'] }}</option>
                                                                 @endforeach
                                                             </select>
-                                                        </div>
+                                                        </div> --}}
                                                         <div class="form-group mt-2">
                                                             <label for="status">Status :</label>
                                                             <select class="form-control" name="status" id="status" required="">
@@ -99,8 +99,8 @@
                                                 <th>Kode</th>
                                                 <th>Nama</th>
                                                 <th>Nama Inggris</th>
-                                                <th>Kelompok</th>
-                                                <th>Rumpun</th>
+                                                {{-- <th>Kelompok</th>
+                                                <th>Rumpun</th> --}}
                                                 <th>Status</th>
                                                 <th>Aksi</th>
                                             </tr>
@@ -112,8 +112,8 @@
                                                     <td>{{ $mk['kode_matkul'] }}</td>
                                                     <td>{{ $mk['nama_matkul'] }}</td>
                                                     <td>{{ $mk['nama_matkul_eng'] }}</td>
-                                                    <td>{{ $mk['nama_kelompok'] }}</td>
-                                                    <td>{{ $mk['nama_rumpun'] }}</td>
+                                                    {{-- <td>{{ $mk['nama_kelompok'] }}</td>
+                                                    <td>{{ $mk['nama_rumpun'] }}</td> --}}
                                                     <td>{{ $mk['status'] }}</td>
                                                     <td>
                                                         <a href="#" class="btn btn-warning btn-sm btn-icon edit-record" data-bs-toggle="modal" data-original-title="test" data-bs-target="#editMK{{ $mk['kode_matkul'] }}">
@@ -149,7 +149,7 @@
                                                                             <div class="form-group mt-2">
                                                                                 <label for="rumpun">Rumpun :</label>
                                                                                 <select name="rumpun" id="rumpun_{{ $mk['kode_matkul'] }}" class="form-control" required="">
-                                                                                    
+
                                                                                     @foreach($rumpun as $rumpuns)
                                                                                     <option value="{{ $rumpuns['id'] }}">{{ $rumpuns['nama_rumpun'] }}</option>
                                                                                     @endforeach
@@ -158,7 +158,7 @@
                                                                             <div class="form-group mt-2">
                                                                                 <label for="status">Status :</label>
                                                                                 <select class="form-control" name="status" id="status_{{ $mk['kode_matkul'] }}" required="">
-                                                                                
+
                                                                                     <option value="Aktif">Aktif</option>
                                                                                     <option value="Tidak Aktif">Tidak Aktif</option>
                                                                                 </select>

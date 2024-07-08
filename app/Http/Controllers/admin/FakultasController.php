@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Fakultas;
+use App\Models\MasterPt;
 
 class FakultasController extends Controller
 {
@@ -15,7 +16,8 @@ class FakultasController extends Controller
         if (empty($request->input('length'))) {
             $title = "Fakultas";
             $indexed = $this->indexed;
-            return view('admin.master.fakultas.index', compact('title','indexed'));
+            $universitas = MasterPt::all();
+            return view('admin.master.fakultas.index', compact('title','indexed','universitas'));
         }else{
             $columns = [
                 1 => 'id',
@@ -79,7 +81,7 @@ class FakultasController extends Controller
                     $nestedData['nama_fak'] = $row->nama_fak;
                     $nestedData['tgl_berdiri'] = $row->tgl_berdiri;
                     $nestedData['no_sk'] = $row->no_sk;
-                    $nestedData['status'] = $row->status;
+                    $nestedData['status'] = ($row->status == 1)?"Aktif":"Tidak Aktif";
                     $data[] = $nestedData;
                 }
             }
@@ -110,10 +112,11 @@ class FakultasController extends Controller
             $fakultas = Fakultas::updateOrCreate(
                 ['id' => $id],
                 [
-                    'kode_fak' => $request->kode_fak, 
-                    'nama_fak' => $request->nama_fak, 
-                    'tgl_berdiri' => $request->tgl_berdiri, 
-                    'no_sk' => $request->no_sk, 
+                    'id_universitas' => $request->id_universitas,
+                    'kode_fak' => $request->kode_fak,
+                    'nama_fak' => $request->nama_fak,
+                    'tgl_berdiri' => $request->tgl_berdiri,
+                    'no_sk' => $request->no_sk,
                     'status' => $request->status
                 ]
             );
@@ -123,10 +126,11 @@ class FakultasController extends Controller
             $fakultas = Fakultas::updateOrCreate(
                 ['id' => $id],
                 [
-                    'kode_fak' => $request->kode_fak, 
-                    'nama_fak' => $request->nama_fak, 
-                    'tgl_berdiri' => $request->tgl_berdiri, 
-                    'no_sk' => $request->no_sk, 
+                    'id_universitas' => $request->id_universitas,
+                    'kode_fak' => $request->kode_fak,
+                    'nama_fak' => $request->nama_fak,
+                    'tgl_berdiri' => $request->tgl_berdiri,
+                    'no_sk' => $request->no_sk,
                     'status' => $request->status
                 ]
             );

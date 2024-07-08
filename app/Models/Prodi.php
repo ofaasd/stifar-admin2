@@ -9,6 +9,7 @@ class Prodi extends Model
 {
     protected $table = 'program_studi';
     protected $fillable = [
+        'id_fakultas',
         'kode_prodi',
         'kode_nim',
         'jenjang',

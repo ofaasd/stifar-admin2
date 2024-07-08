@@ -28,7 +28,7 @@
                     <div class="card-header pb-0 card-no-border">
                         <ul class="simple-wrapper nav nav-tabs" id="myTab" role="tablist">
                             <li class="nav-item" role="presentation"><a class="nav-link txt-default" id="masterMK-tab" href="{{ url('admin/masterdata/matakuliah') }}" role="tab" aria-controls="masterMK" aria-selected="true">Master Matakuliah</a></li>
-                            <li class="nav-item" role="presentation"><a class="nav-link txt-default" id="kelMK-tab" href="{{ url('admin/masterdata/kelompok-mk') }}" role="tab" aria-controls="kelMK" aria-selected="true">Kelompok Matakuliah</a></li>
+                            {{-- <li class="nav-item" role="presentation"><a class="nav-link txt-default" id="kelMK-tab" href="{{ url('admin/masterdata/kelompok-mk') }}" role="tab" aria-controls="kelMK" aria-selected="true">Kelompok Matakuliah</a></li> --}}
                             <li class="nav-item" role="presentation"><a class="nav-link txt-default active" id="masterKur-tabs" data-bs-toggle="tab" href="#masterKur" role="tab" aria-controls="masterKur" aria-selected="false" tabindex="-1">Master Kurikulum</a></li>
                             <li class="nav-item" role="presentation"><a class="nav-link txt-default" id="MkKur-tab" href="{{ url('admin/masterdata/matakuliah-kurikulum') }}" role="tab" aria-controls="MkKur" aria-selected="false" tabindex="-1">Matakuliah Kurikulum</a></li>
                         </ul>
@@ -48,7 +48,11 @@
                                                     </div>
                                                     <div class="modal-body">
                                                         <div class="mb-3">
+<<<<<<< HEAD
                                                             <label for="kode_prodi" class="form-label">Kode Kurikulum</label>
+=======
+                                                            <label for="kode_kurikulum" class="form-label">Kode Kurikulum</label>
+>>>>>>> b05a04a305d6602fa14ea2d047a3c744b2e357d1
                                                             <input type="text" name="kode_kurikulum" id="kode_kurikulum" class="form-control">
                                                         </div>
                                                         <div class="mb-3">
