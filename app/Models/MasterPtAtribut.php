@@ -41,6 +41,7 @@ class MasterPtAtribut extends Model
 		'file',
 		'url',
         'keterangan',
-		'update_at'
+		'update_at',
+        'tahun',
 	];
 }

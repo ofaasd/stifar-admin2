@@ -14,15 +14,17 @@ class AtributPTController extends Controller
      * Display a listing of the resource.
      */
     public $indexed = ['', 'id', 'nama','file', 'url'];
-    public function index(Request $request, $id)
+    public function index(Request $request)
     {
-        //
+        //default id karena yang dipakai hanya 1 pt saja
+        $id = 1;
         if (empty($request->input('length'))) {
             $title = "detail";
             $title2 = "Atribut Perguruan Tinggi";
+            $pt = MasterPt::all();
             $indexed = $this->indexed;
             $link = '';
-            return view('admin.master.pt.atribut.index', compact('title','indexed','title2','link','id'));
+            return view('admin.master.pt.atribut.index', compact('pt','title','indexed','title2','link','id'));
         }else{
             $columns = [
                 1 => 'id',

@@ -13,22 +13,25 @@ class RenstraPTController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public $indexed = ['', 'id', 'nama','file', 'url'];
-    public function index(Request $request, $id)
+    public $indexed = ['', 'id', 'nama','file', 'url','tahun'];
+    public function index(Request $request)
     {
         //
+        $id = 1;
         if (empty($request->input('length'))) {
             $title = "detail";
             $title2 = "Renstra Perguruan Tinggi";
             $indexed = $this->indexed;
+            $pt = MasterPt::all();
             $link = '';
-            return view('admin.master.pt.renstra.index', compact('title','indexed','title2','link','id'));
+            return view('admin.master.pt.renstra.index', compact('pt','title','indexed','title2','link','id'));
         }else{
             $columns = [
                 1 => 'id',
                 2 => 'nama',
                 3 => 'file',
                 4 => 'url',
+                5 => 'tahun',
             ];
 
             $search = [];
@@ -77,6 +80,7 @@ class RenstraPTController extends Controller
                     $nestedData['nama'] = $row->nama;
                     $nestedData['file'] = $row->file;
                     $nestedData['url'] = $row->url;
+                    $nestedData['tahun'] = $row->tahun;
                     $data[] = $nestedData;
                 }
             }
@@ -130,6 +134,7 @@ class RenstraPTController extends Controller
                         'nama' => $request->nama,
                         'file' => $filename,
                         'url' => $request->url,
+                        'tahun' => $request->tahun,
                         'keterangan' => 2,
                     ]
                 );
@@ -140,6 +145,7 @@ class RenstraPTController extends Controller
                         'id_pt' => $request->id_pt,
                         'nama' => $request->nama,
                         'url' => $request->url,
+                        'tahun' => $request->tahun,
                         'keterangan' => 2,
                     ]
                 );
@@ -162,6 +168,7 @@ class RenstraPTController extends Controller
                     'nama' => $request->nama,
                     'file' => $filename,
                     'url' => $request->url,
+                    'tahun' => $request->tahun,
                     'keterangan' => 2,
                 ]
             );

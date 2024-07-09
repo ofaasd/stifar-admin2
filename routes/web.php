@@ -23,6 +23,7 @@ use App\Http\Controllers\admin\kepegawaian\PegawaiOrganisasiController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiRepositoryController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiPekerjaanController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiPendidikanController;
+use App\Http\Controllers\admin\kepegawaian\JamkerjaController;
 use App\Http\Controllers\pegawai\UserPegawaiController;
 use App\Http\Controllers\pegawai\RiwayatPegawaiController;
 use App\Http\Controllers\admin\WaktuController;
@@ -96,15 +97,15 @@ Route::middleware('auth')->group(function(){
     Route::post('admin/kepegawaian/pegawai/user_update', [PegawaiController::class, 'user_update'])->name('user_update');
     Route::post('admin/kepegawaian/pegawai/foto_update', [PegawaiController::class, 'foto_update'])->name('foto_update');
 
-    Route::get('admin/masterdata/pt/atribut', [PTController::class, 'atribut'])->name('atribut');
-    Route::get('admin/masterdata/pt/atribut/detail/{id}', [AtributPTController::class, 'index'])->name('atribut_detail');
-    Route::get('admin/masterdata/pt/renstra', [PTController::class, 'renstra'])->name('renstra');
-    Route::get('admin/masterdata/pt/renstra/detail/{id}', [RenstraPTController::class, 'index'])->name('renstra_detail');
+    Route::get('admin/masterdata/pt/atribut', [AtributPTController::class, 'index'])->name('atribut');
+    //Route::get('admin/masterdata/pt/atribut/detail/{id}', [AtributPTController::class, 'index'])->name('atribut_detail');
+    Route::get('admin/masterdata/pt/renstra', [RenstraPTController::class, 'index'])->name('renstra');
+    //Route::get('admin/masterdata/pt/renstra/detail/{id}', [RenstraPTController::class, 'index'])->name('renstra_detail');
 
 
     Route::resource('admin/masterdata/pt', PTController::class)->name('index','pt');
-    Route::resource('admin/masterdata/pt/atribut/detail', AtributPTController::class)->name('index','atribut');
-    Route::resource('admin/masterdata/pt/renstra/detail', RenstraPTController::class)->name('index','renstra');
+    Route::resource('admin/masterdata/pt/atribut', AtributPTController::class)->name('index','atribut');
+    Route::resource('admin/masterdata/pt/renstra', RenstraPTController::class)->name('index','renstra');
     Route::resource('admin/masterdata/ruang', RuangController::class)->name('index','ruang');
     Route::resource('admin/masterdata/sekolah', AsalSekolahController::class)->name('index','sekolah');
 
@@ -163,6 +164,7 @@ Route::middleware('auth')->group(function(){
     Route::resource('admin/kepegawaian/repository', PegawaiRepositoryController::class)->name('index','repository');
     Route::resource('admin/kepegawaian/pekerjaan', PegawaiPekerjaanController::class)->name('index','pekerjaan');
     Route::resource('admin/kepegawaian/pendidikan', PegawaiPendidikanController::class)->name('index','pendidikan');
+    Route::resource('admin/kepegawaian/jamkerja', JamkerjaController::class)->name('index','jamkerja');
 
     Route::resource('pegawai', UserPegawaiController::class)->name('index','pegawai');
     Route::resource('riwayat', RiwayatPegawaiController::class)->name('index','pegawai');
