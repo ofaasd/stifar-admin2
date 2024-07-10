@@ -138,7 +138,7 @@
                                                                                 <label for="nama_inggris">Nama Inggris :</label>
                                                                                 <input type="text" class="form-control" name="nama_inggris" id="nama_inggris_{{ $mk['kode_matkul'] }}" value="{{ $mk['nama_matkul_eng'] }}" required=""/>
                                                                             </div>
-                                                                            <div class="form-group mt-2">
+                                                                            {{-- <div class="form-group mt-2">
                                                                                 <label for="kelompok">Nama Kelompok :</label>
                                                                                 <select name="kelompok" id="kelompok_{{ $mk['kode_matkul'] }}" class="form-control" required="">
                                                                                     @foreach($kelompok as $kelompoks)
@@ -154,7 +154,7 @@
                                                                                     <option value="{{ $rumpuns['id'] }}">{{ $rumpuns['nama_rumpun'] }}</option>
                                                                                     @endforeach
                                                                                 </select>
-                                                                            </div>
+                                                                            </div> --}}
                                                                             <div class="form-group mt-2">
                                                                                 <label for="status">Status :</label>
                                                                                 <select class="form-control" name="status" id="status_{{ $mk['kode_matkul'] }}" required="">
