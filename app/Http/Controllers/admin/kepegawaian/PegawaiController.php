@@ -63,7 +63,7 @@ class PegawaiController extends Controller
         $progdi = Prodi::all();
         $jenis_pegawai = PegawaiJenis::all();
         $wilayah = Wilayah::where('id_induk_wilayah','000000')->get();
-        $status = array('aktif','cuti','keluar','meninggal');
+        $status = array('aktif','izin belajar','cuti','keluar','meninggal');
         $status_kawin = array("Lajang","Kawin");
         return view("admin/kepegawaian/pegawai/create2", compact('title','jenis_kelamin','progdi','jenis_pegawai','wilayah','status','status_kawin'));
     }
@@ -184,7 +184,7 @@ class PegawaiController extends Controller
         $progdi = Prodi::all();
         $jenis_pegawai = PegawaiJenis::all();
         $wilayah = Wilayah::where('id_induk_wilayah','000000')->get();
-        $status = array('aktif','cuti','keluar','meninggal');
+        $status = array('aktif','izin belajar','cuti','keluar','meninggal');
         $status_kawin = array("Lajang","Kawin");
         $posisi = [];
         $pos = PegawaiPosisi::all();

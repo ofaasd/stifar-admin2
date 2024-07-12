@@ -26,44 +26,58 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header pb-0 card-no-border">
+                        <div class="row">
 
-                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal" id="add-record">+ {{$title2}}</button>
-
-                        <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <form action="javascript:void(0)" id="formAdd">
-                                        @csrf
-                                        <input type="hidden" name="id" id="id">
-                                        <input type="hidden" name="id_pt" value="{{$id}}">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="ModalLabel">Tambah {{$title2}}</h5>
-                                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="mb-3">
-                                                <label for="nama" class="form-label">Nama</label>
-                                                <input type="text" name="nama" id="nama" class="form-control" placeholder="cth : SK Pendirian">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="nama_gel" class="form-label">Upload File <small>*Abaikan Jika Menggunakan URL</small></label>
-                                                <input type="file" name="file" id="file" class="form-control">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="lat" class="form-label">URL File <small>*Abaikan Jika Menggunakan upload file</small></label>
-                                                <input type="text" name="url" id="url" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
-                                            <button class="btn btn-primary" type="submit">Simpan</button>
-                                        </div>
-                                    </form>
-                                </div>
+                            <div class="col-md-4">
+                                <select name="list-pt" id="list-pt" class="form-control">
+                                    @foreach($pt as $row)
+                                        <option value="{{$row->id}}">{{$row->nama}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                     </div>
                     <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12 mb-4">
+                                <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal" id="add-record">+ {{$title2}}</button>
+
+                                <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <form action="javascript:void(0)" id="formAdd">
+                                                @csrf
+                                                <input type="hidden" name="id" id="id">
+                                                <input type="hidden" name="id_pt" value="{{$id}}">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="ModalLabel">Tambah {{$title2}}</h5>
+                                                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="mb-3">
+                                                        <label for="nama" class="form-label">Nama</label>
+                                                        <input type="text" name="nama" id="nama" class="form-control" placeholder="cth : SK Pendirian">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="nama_gel" class="form-label">Upload File <small>*Abaikan Jika Menggunakan URL</small></label>
+                                                        <input type="file" name="file" id="file" class="form-control">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="lat" class="form-label">URL File <small>*Abaikan Jika Menggunakan upload file</small></label>
+                                                        <input type="text" name="url" id="url" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                                                    <button class="btn btn-primary" type="submit">Simpan</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
                         <div class="table-responsive">
                             <table class="display" id="basic-1">
@@ -99,7 +113,7 @@
 
             const baseUrl = {!! json_encode(url('/')) !!};
             const title = "{{strtolower($title)}}";
-            const page = '/'.concat("admin/masterdata/pt/atribut/detail");
+            const page = '/'.concat("admin/masterdata/pt/atribut");
             var my_column = $('#my_column').val();
             const pecah = my_column.split('\n');
             let my_data = [];
@@ -116,7 +130,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: baseUrl.concat(page).concat("/{{$id}}"),
+                    url: baseUrl.concat(page),
                 },
                 columns: my_data,
                 columnDefs: [

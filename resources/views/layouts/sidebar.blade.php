@@ -180,9 +180,9 @@
                 <span><i class="fa fa-users"></i> Kepegawaian</span></a>
                 <ul class="sidebar-submenu">
                     <li><a href="{{URL::to('admin/kepegawaian/pegawai')}}">Data Pegawai</a></li>
-                    <li><a href="#">Profil Pegawai</a></li>
+                    {{-- <li><a href="#">Profil Pegawai</a></li> --}}
                     <li><a href="#">Absensi</a></li>
-                    <li><a href="#">Jam Kerja Dosen</a></li>
+                    <li><a href="{{URL::to('admin/kepegawaian/jamkerja')}}">Jam Kerja Dosen</a></li>
                     <li><a href="#">Keterlambatan</a></li>
                     <li><a href="#">Statistik</a></li>
                     <li><a href="#">Struktur</a></li>

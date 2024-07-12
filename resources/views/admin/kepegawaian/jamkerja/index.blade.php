@@ -15,8 +15,8 @@
 @endsection
 
 @section('breadcrumb-items')
-    <li class="breadcrumb-item">Admisi</li>
-    <li class="breadcrumb-item active">Gelombang Pendaftaran</li>
+    <li class="breadcrumb-item">Master Data</li>
+    <li class="breadcrumb-item active">Jam Kerja Dosen</li>
 @endsection
 
 @section('content')
@@ -26,62 +26,57 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header pb-0 card-no-border">
-                        <div class="row">
-
-                            <div class="col-md-4">
-                                <select name="list-pt" id="list-pt" class="form-control">
-                                    @foreach($pt as $row)
-                                        <option value="{{$row->id}}">{{$row->nama}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-12 mb-4">
-                                <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal" id="add-record">+ {{$title2}}</button>
-
-                                <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <form action="javascript:void(0)" id="formAdd">
-                                                @csrf
-                                                <input type="hidden" name="id" id="id">
-                                                <input type="hidden" name="id_pt" value="{{$id}}">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="ModalLabel">Tambah {{$title2}}</h5>
-                                                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="mb-3">
-                                                        <label for="nama" class="form-label">Nama</label>
-                                                        <input type="text" name="nama" id="nama" class="form-control" placeholder="cth : SK Pendirian">
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="file" class="form-label">Upload File <small>*Abaikan Jika Menggunakan URL</small></label>
-                                                        <input type="file" name="file" id="file" class="form-control">
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="url" class="form-label">URL File <small>*Abaikan Jika Menggunakan upload file</small></label>
-                                                        <input type="text" name="url" id="url" class="form-control">
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="tahun" class="form-label">Tahun</label>
-                                                        <input type="number" name="tahun" id="tahun" class="form-control">
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
-                                                    <button class="btn btn-primary" type="submit">Simpan</button>
-                                                </div>
-                                            </form>
+                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal">+ {{$title2}}</button>
+                        <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <form action="javascript:void(0)" id="formAdd">
+                                        @csrf
+                                        <input type="hidden" name="id" id="id">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="ModalLabel">Tambah {{$title2}}</h5>
+                                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
-                                    </div>
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                <label for="id_pegawai" class="form-label">Pegawai</label>
+                                                <select  name="id_pegawai" id="id_pegawai" class="form-control">
+                                                    @foreach($pegawai as $row)
+                                                        <option value="{{$row->id}}">{{$row->nama_lengkap}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="jam_masuk" class="form-label">Jam Masuk</label>
+                                                <input type="time" name="jam_masuk" id="jam_masuk" class="form-control">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="jam_keluar" class="form-label">Jam Keluar</label>
+                                                <input type="time" name="jam_keluar" id="jam_keluar" class="form-control">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="id_fingerprint" class="form-label">ID Fingerprint</label>
+                                                <input type="text" name="id_fingerprint" id="id_fingerprint" class="form-control">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="id_ta" class="form-label">Tahun Ajaran</label>
+                                                <select  name="id_ta" id="id_ta" class="form-control">
+                                                    @foreach($ta as $row)
+                                                        <option value="{{$row->id}}">{{$row->kode_ta}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                                            <button class="btn btn-primary" type="submit">Simpan</button>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="card-body">
                         <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
                         <div class="table-responsive">
                             <table class="display" id="basic-1">
@@ -89,10 +84,9 @@
                                     <tr>
                                         <th></th>
                                         <th>ID</th>
-                                        <th>Nama</th>
-                                        <th>File</th>
-                                        <th>URL</th>
-                                        <th>Tahun</th>
+                                        <th>Nama Pegawai</th>
+                                        <th>Jam Masuk</th>
+                                        <th>Jam Keluar</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -118,7 +112,7 @@
 
             const baseUrl = {!! json_encode(url('/')) !!};
             const title = "{{strtolower($title)}}";
-            const page = '/'.concat("admin/masterdata/pt/renstra");
+            const page = '/'.concat("admin/kepegawaian/").concat(title);
             var my_column = $('#my_column').val();
             const pecah = my_column.split('\n');
             let my_data = [];
@@ -128,7 +122,7 @@
                 //alert(data_obj.data);
                 my_data.push(data_obj);
             });
-            //alert(data_obj);
+
             console.log(my_data);
 
             const dt = $("#basic-1").DataTable({
@@ -159,19 +153,12 @@
                     }
                     },
                     {
-                        targets:3,
-                        render:function render(data, type, full, meta){
-                            return (`<a target='_blank' href="${baseUrl}/assets/file/atribut/${full['file']}" class='btn btn-primary btn-sm'>File</a>`);
-                        }
-                    },
-                    {
                     // Actions
                     targets: -1,
                     title: 'Actions',
                     searchable: false,
                     orderable: false,
                     render: function render(data, type, full, meta) {
-
                         return (
                         '<div class="d-inline-block text-nowrap">' +
                         '<button class="btn btn-sm btn-icon edit-record text-primary" data-id="'
@@ -182,7 +169,6 @@
                             '"><i class="fa fa-trash"></i></button>'
                         )
                         );
-
                     }
                     }
                 ],
@@ -204,13 +190,9 @@
             });
             $('#tambahModal').on('hidden.bs.modal', function () {
                 $('#formAdd').trigger("reset");
+                $("#id").val("");
             });
             //Edit Record
-            $(document).on('click', '#add-record', function () {
-                $('#ModalLabel').html('Tambah ' + title);
-                $("#id").val('');
-                $('#formAdd').trigger("reset");
-            });
             $(document).on('click', '.edit-record', function () {
                 const id = $(this).data('id');
 
@@ -221,25 +203,19 @@
                 $.get(''.concat(baseUrl).concat(page, '/').concat(id, '/edit'), function (data) {
                 Object.keys(data).forEach(key => {
                     //console.log(key);
-                    if(key != 'file'){
-                         $('#' + key)
-                            .val(data[key])
-                            .trigger('change');
-                    }
+                    $('#' + key)
+                        .val(data[key])
+                        .trigger('change');
                 });
-
                 });
             });
             //save record
             $('#formAdd').on('submit',function(e){
                 e.preventDefault();
-                const myFormData = new FormData(document.getElementById('formAdd'));
                 $.ajax({
-                    data: myFormData,
+                    data: $('#formAdd').serialize(),
                     url: ''.concat(baseUrl).concat(page),
                     type: 'POST',
-                    processData: false,
-                    contentType: false,
                     success: function success(status) {
                         dt.draw();
                         $("#tambahModal").modal('hide');
