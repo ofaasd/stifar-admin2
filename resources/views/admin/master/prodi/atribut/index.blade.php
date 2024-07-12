@@ -16,7 +16,7 @@
 
 @section('breadcrumb-items')
     <li class="breadcrumb-item">Admisi</li>
-    <li class="breadcrumb-item active">Renstra PT</li>
+    <li class="breadcrumb-item active">Atribut Prodi</li>
 @endsection
 
 @section('content')
@@ -29,14 +29,13 @@
                         <div class="row">
 
                             <div class="col-md-4">
-                                <select name="list-pt" id="list-pt" class="form-control">
-                                    @foreach($pt as $row)
-                                        <option value="{{$row->id}}">{{$row->nama}}</option>
+                                <select name="prodi" id="prodi" class="form-control">
+                                    @foreach($prodi as $row)
+                                        <option value="{{$row->id}}" {{($id_prodi == $row->id)?"selected":""}}>{{$row->nama_prodi}}</option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
-
                     </div>
                     <div class="card-body">
                         <div class="row">
@@ -49,7 +48,7 @@
                                             <form action="javascript:void(0)" id="formAdd">
                                                 @csrf
                                                 <input type="hidden" name="id" id="id">
-                                                <input type="hidden" name="id_pt" value="{{$id}}">
+                                                <input type="hidden" name="id_prodi" value="{{$id_prodi}}">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title" id="ModalLabel">Tambah {{$title2}}</h5>
                                                     <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -60,16 +59,12 @@
                                                         <input type="text" name="nama" id="nama" class="form-control" placeholder="cth : SK Pendirian">
                                                     </div>
                                                     <div class="mb-3">
-                                                        <label for="file" class="form-label">Upload File <small>*Abaikan Jika Menggunakan URL</small></label>
+                                                        <label for="nama_gel" class="form-label">Upload File <small>*Abaikan Jika Menggunakan URL</small></label>
                                                         <input type="file" name="file" id="file" class="form-control">
                                                     </div>
                                                     <div class="mb-3">
-                                                        <label for="url" class="form-label">URL File <small>*Abaikan Jika Menggunakan upload file</small></label>
+                                                        <label for="lat" class="form-label">URL File <small>*Abaikan Jika Menggunakan upload file</small></label>
                                                         <input type="text" name="url" id="url" class="form-control">
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="tahun" class="form-label">Tahun</label>
-                                                        <input type="number" name="tahun" id="tahun" class="form-control">
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -82,6 +77,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
                         <div class="table-responsive">
                             <table class="display" id="basic-1">
@@ -92,7 +88,6 @@
                                         <th>Nama</th>
                                         <th>File</th>
                                         <th>URL</th>
-                                        <th>Tahun</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -114,11 +109,17 @@
     <script src="{{asset('assets/js/sweet-alert/sweetalert.min.js')}}"></script>
 
     <script>
-        $(function () {
 
+        $(function () {
             const baseUrl = {!! json_encode(url('/')) !!};
+            const page = '/'.concat("admin/masterdata/prodi/atribut");
+            $("#prodi").change(function(){
+                window.location.href = baseUrl.concat(page,"/").concat($(this).val());
+            });
+
+
             const title = "{{strtolower($title)}}";
-            const page = '/'.concat("admin/masterdata/pt/renstra");
+
             var my_column = $('#my_column').val();
             const pecah = my_column.split('\n');
             let my_data = [];
@@ -128,6 +129,8 @@
                 //alert(data_obj.data);
                 my_data.push(data_obj);
             });
+
+
             //alert(data_obj);
             console.log(my_data);
 
@@ -135,7 +138,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: baseUrl.concat(page),
+                    url: baseUrl.concat(page).concat('/',$("#prodi").val()),
                 },
                 columns: my_data,
                 columnDefs: [

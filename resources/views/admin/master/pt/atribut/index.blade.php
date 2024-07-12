@@ -16,7 +16,7 @@
 
 @section('breadcrumb-items')
     <li class="breadcrumb-item">Admisi</li>
-    <li class="breadcrumb-item active">Gelombang Pendaftaran</li>
+    <li class="breadcrumb-item active">Atribut PT</li>
 @endsection
 
 @section('content')

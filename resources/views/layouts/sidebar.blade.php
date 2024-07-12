@@ -37,9 +37,9 @@
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
                             <li><a href="{{URL::to('admin/masterdata/program-studi')}}">Daftar Prodi</a></li>
-                            <li><a href="#">Atribut Prodi</a></li>
+                            <li><a href="{{URL::to('admin/masterdata/prodi/atribut/1')}}">Atribut Prodi</a></li>
                             <li><a href="#">Akreditasi</a></li>
-                            <li><a href="#">Renstra</a></li>
+                            <li><a href="{{URL::to('admin/masterdata/prodi/renstra/1')}}">Renstra</a></li>
                         </ul>
                     </li>
                     <li><a href="{{URL::to('admin/masterdata/ta')}}">Tahun Ajaran</a></li>

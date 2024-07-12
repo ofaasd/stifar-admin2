@@ -42,6 +42,8 @@ use App\Http\Controllers\admin\master\AtributPTController;
 use App\Http\Controllers\admin\master\RenstraPTController;
 use App\Http\Controllers\admin\master\JabatanStrukturalController;
 use App\Http\Controllers\admin\master\UserController;
+use App\Http\Controllers\admin\master\AtributProdiController;
+use App\Http\Controllers\admin\master\RenstraProdiController;
 use App\Http\Controllers\admin\JadwalController;
 use App\Http\Controllers\admin\MkKurikulum;
 use App\Http\Controllers\mahasiswa\MahasiswaController;
@@ -100,14 +102,18 @@ Route::middleware('auth')->group(function(){
     Route::post('admin/kepegawaian/pegawai/foto_update', [PegawaiController::class, 'foto_update'])->name('foto_update');
 
     Route::get('admin/masterdata/pt/atribut', [AtributPTController::class, 'index'])->name('atribut');
+    Route::get('admin/masterdata/prodi/atribut/{id}', [AtributProdiController::class, 'index'])->name('atribut_prodi');
     //Route::get('admin/masterdata/pt/atribut/detail/{id}', [AtributPTController::class, 'index'])->name('atribut_detail');
     Route::get('admin/masterdata/pt/renstra', [RenstraPTController::class, 'index'])->name('renstra');
+    Route::get('admin/masterdata/prodi/renstra/{id}', [RenstraProdiController::class, 'index'])->name('renstra_prodi');
     //Route::get('admin/masterdata/pt/renstra/detail/{id}', [RenstraPTController::class, 'index'])->name('renstra_detail');
 
 
     Route::resource('admin/masterdata/pt', PTController::class)->name('index','pt');
     Route::resource('admin/masterdata/pt/atribut', AtributPTController::class)->name('index','atribut');
     Route::resource('admin/masterdata/pt/renstra', RenstraPTController::class)->name('index','renstra');
+    Route::resource('admin/masterdata/prodi/atribut', AtributProdiController::class)->name('index','atribut_prodi');
+    Route::resource('admin/masterdata/prodi/renstra', RenstraProdiController::class)->name('index','renstra_prodi');
     Route::resource('admin/masterdata/ruang', RuangController::class)->name('index','ruang');
     Route::resource('admin/masterdata/sekolah', AsalSekolahController::class)->name('index','sekolah');
 
