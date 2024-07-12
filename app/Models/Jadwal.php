@@ -17,7 +17,8 @@ class Jadwal extends Model
         'id_ruang',
         'kel',
         'kuota',
-        'status'
+        'status',
+        'tp'
     ];
 
     public function pengajar(){
