@@ -186,7 +186,7 @@
                     <li><a href="#">Keterlambatan</a></li>
                     <li><a href="#">Statistik</a></li>
                     <li><a href="#">Struktur</a></li>
-                    <li>
+                    {{-- <li>
                         <a class="submenu-title" href="#">
                             <span>Riwayat</span>
                         </a>
@@ -202,8 +202,8 @@
                             <li><a href="#">Pekerjaan</a></li>
                             <li><a href="#">Pendidikan</a></li>
                         </ul>
-                    </li>
-                    <li><a href="#">Surat Izin</a></li>
+                    </li> --}}
+                    <li><a href="{{URL::to('admin/kepegawaian/surat_izin')}}">Surat Izin</a></li>
                 </ul>
             </li>
 

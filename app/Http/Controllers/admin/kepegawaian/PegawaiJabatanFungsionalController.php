@@ -153,6 +153,6 @@ class PegawaiJabatanFungsionalController extends Controller
     public function destroy(string $id)
     {
         //
-        $jaatan = PegawaiJabatanFungsional::where('id', $id)->delete();
+        $jabatan = PegawaiJabatanFungsional::where('id', $id)->delete();
     }
 }
