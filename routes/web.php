@@ -41,7 +41,7 @@ use App\Http\Controllers\admin\master\JabatanStrukturalController;
 use App\Http\Controllers\admin\master\UserController;
 use App\Http\Controllers\admin\JadwalController;
 use App\Http\Controllers\admin\MkKurikulum;
-use App\Http\Controllers\mahasiswa\Mahasiswa;
+use App\Http\Controllers\mahasiswa\MahasiswaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -127,7 +127,8 @@ Route::middleware('auth')->group(function(){
     Route::resource('admin/masterdata/user', UserController::class)->name('index', 'user');
 
     // route MahasiswaModel
-    Route::get('/mahasiswa/daftar', [Mahasiswa::class, 'index']);
+    Route::get('/mahasiswa/daftar', [MahasiswaController::class, 'index']);
+    Route::get('/mahasiswa/detail/{nim}', [MahasiswaController::class, 'detail']);
 
     // route Matakuliah
     Route::get('/admin/masterdata/matakuliah', [MatkulController::class, 'index']);
@@ -136,8 +137,19 @@ Route::middleware('auth')->group(function(){
     Route::get('/admin/masterdata/matakuliah/delete/{id}', [MatkulController::class, 'destroy']);
 
     // route jadwal
+    Route::post('/jadwal/save-koordinator', [JadwalController::class, 'simpanKoor']);
+    Route::post('/jadwal/save-anggota', [JadwalController::class, 'simpanAnggota']);
+    Route::post('/jadwal/pengampu', [JadwalController::class, 'jadwalPengampu']);
+    Route::post('/jadwal/tambah-pegampu', [JadwalController::class, 'tambahPengampu']);
+    Route::post('/admin/masterdata/jadwal/update', [JadwalController::class, 'updateJadwal']);
+    Route::get('/jadwal/hapus-pengampu/{id}', [JadwalController::class, 'hapusPengampu']);
     Route::get('/admin/masterdata/jadwal', [JadwalController::class, 'index']);
+    Route::get('/admin/masterdata/koordinator-mk/{id}', [JadwalController::class, 'koordinatorMK']);
+    Route::get('/admin/masterdata/anggota-mk/{id}', [JadwalController::class, 'anggotaMK']);
     Route::get('/admin/masterdata/jadwal/create/{id}', [JadwalController::class, 'daftarJadwal']);
+    Route::get('/jadwal/hapus-koor/{id}', [JadwalController::class, 'hapusKoor']);
+    Route::get('/jadwal/hapus/{id}', [JadwalController::class, 'hapusJadwal']);
+    Route::get('/jadwal/hapus-anggota/{id}', [JadwalController::class, 'hapusAnggota']);
     Route::post('/admin/masterdata/jadwal/create', [JadwalController::class, 'createJadwal']);
 
     // route mkKurikulum

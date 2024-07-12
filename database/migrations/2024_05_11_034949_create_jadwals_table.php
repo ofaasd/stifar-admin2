@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('id_sesi');
             $table->integer('id_ruang');
             $table->string('kel');
+            $table->string('tp');
             $table->integer('kuota');
             $table->enum('status', ['Aktif', 'Tidak Aktif']);
             $table->timestamps();
