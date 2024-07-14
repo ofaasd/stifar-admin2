@@ -173,7 +173,30 @@
                                                     <td>{{ $row['kuota'] }}</td>
                                                     <td>{{ $row['status'] }}</td>
                                                     <td>{{ $row['kode_ta'] }}</td>
-                                                    <td><a href="#" class="btn btn-success btn-xs"> Set Pertemuan</a></td>
+                                                    <td>
+                                                        <a href="#" class="btn btn-success btn-xs" onclick="setPertemuan({{ $row['id'] }})" class="btn btn-primary btn-sm btn-icon edit-record" data-bs-toggle="modal" data-original-title="test" data-bs-target="#modalPertemuan{{ $row['id'] }}"><i class="fa fa-gear"></i> Set Pertemuan</a>
+                                                        <div class="modal fade" id="modalPertemuan{{ $row['id'] }}" tabindex="-1" aria-labelledby="tambahbaru" aria-hidden="true">
+                                                            <div class="modal-dialog" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-body">
+                                                                        <div class="modal-toggle-wrapper">
+                                                                            <h5 style="text-align: center">Daftar Pertemuan</h5>
+                                                                            <div class="form-group mt-2">
+                                                                                <label for="kelompok">Tambah Pertemuan :</label>
+                                                                                <input type="text" hidden value="<?= $row['id']?>" id="idjadwal">
+                                                                                <input type="date" id="tgl_pertemuan<?= $row['id']?>" class="form-control" />
+                                                                            </div>
+                                                                            <div class="mt-2"></div>
+                                                                            <button type="button" onclick="simpanPertemuan(<?=$row['id']?>)" class="btn btn-primary btn-sm"><i class="fa fa-save"></i> Tambah Pertemuan</button>
+                                                                            <hr>
+                                                                            <div id="tablePertemuan{{ $row['id'] }}"></div>
+                                                                            <button class="btn bg-danger d-flex align-items-center gap-2 text-light ms-auto btn-sm" type="button" data-bs-dismiss="modal">Tutup</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
                                                     <td>
                                                         <a href="#" onclick="lihatPengampu({{ $id_mk }}, {{ $row['id'] }})" class="btn btn-primary btn-sm btn-icon edit-record" data-bs-toggle="modal" data-original-title="test" data-bs-target="#modalDsn{{ $row['id'] }}">
                                                                                     <i class="fa fa-eye"></i> Dosen Pengampu
@@ -195,7 +218,7 @@
                                                                                 </select>
                                                                             </div>
                                                                             <div class="mt-2"></div>
-                                                                            <button type="button" onclick="simpanPengampu(<?=$row['id']?>)" class="btn btn-primary btn-sm"><i class="fa fa-save"></i> Tambah Pengampu</button>
+                                                                            <button type="button" onclick="simpanPengampu(<?=$row['id']?>)" class="btn btn-primary btn-sm"><i class="fa fa-save"></i> Tambah Pertemuan</button>
                                                                             <hr>
                                                                             <div id="tablePengampu{{ $row['id'] }}"></div>
                                                                             <button class="btn bg-danger d-flex align-items-center gap-2 text-light ms-auto btn-sm" type="button" data-bs-dismiss="modal">Tutup</button>
@@ -346,6 +369,86 @@
                         <div id="input${counterNext}"></div>`;
             document.getElementById("input"+counter).innerHTML = dosen;
             counter++;
+        }
+        function setPertemuan(idjadwal){
+            $.ajax({
+                url: baseUrl+'/jadwal/daftar-pertemuan',
+                type: 'post',
+                data: {
+                    id_jadwal: idjadwal
+                },
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                dataType: 'json',
+                success: function(res){
+                    var result = res.kode
+                    var list = res.pertemuan
+
+                    if(result == 200){
+                        var table = `
+                                        <table class="table">
+                                            <tr>
+                                                <td>Tanggal Pertemuan</td>
+                                                <td>Aksi</td>
+                                            </tr>
+                                    `;
+                        for (let i = 0; i < list.length; i++) {
+                            table += `
+                                        <tr>
+                                            <td>${ list[i].tgl_pertemuan }</td>
+                                            <td>
+                                                <a href="{{ url('jadwal/hapus-pertemuan') }}/${ list[i].id }" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i> Hapus</a>
+                                            </td>
+                                        </tr>
+                                    `                            
+                        }
+                        table += '</table>'
+                        $('#tablePertemuan'+idjadwal).html(table);
+                    }else{
+                        alert('server error');
+                    }
+                }
+            })
+        }
+        function simpanPertemuan(idjadwal){
+            var tgl_pertemuan = $('#tgl_pertemuan'+idjadwal).val();
+            $.ajax({
+                url: baseUrl+'/jadwal/tambah-pertemuan',
+                type: 'post',
+                data: {
+                    id_jadwal: idjadwal,
+                    tgl_pertemuan: tgl_pertemuan
+                },
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                dataType: 'json',
+                success: function(res){
+                    var result = res.kode
+                    var list = res.pertemuan
+
+                    if(result == 200){
+                        var table = `
+                                        <table class="table">
+                                            <tr>
+                                                <td>Tanggal Pertemuan</td>
+                                                <td>Aksi</td>
+                                            </tr>
+                                    `;
+                        for (let i = 0; i < list.length; i++) {
+                            table += `
+                                        <tr>
+                                            <td>${ list[i].tgl_pertemuan }</td>
+                                            <td>
+                                                <a href="{{ url('jadwal/hapus-pertemuan') }}/${ list[i].id }" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i> Hapus</a>
+                                            </td>
+                                        </tr>
+                                    `                            
+                        }
+                        table += '</table>'
+                        $('#tablePertemuan'+idjadwal).html(table);
+                    }else{
+                        alert('server error');
+                    }
+                }
+            })
         }
         function simpanPengampu(idjadwal){
             var dsn = $('#dosenPengampu'+idjadwal).val();

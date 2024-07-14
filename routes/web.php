@@ -33,6 +33,7 @@ use App\Http\Controllers\admin\FakultasController;
 use App\Http\Controllers\admin\RumpunController;
 use App\Http\Controllers\admin\TahunAjaranController;
 use App\Http\Controllers\admin\SesiController;
+use App\Http\Controllers\admin\krs\KrsController;
 use App\Http\Controllers\admin\ProdiController;
 use App\Http\Controllers\admin\KurikulumController;
 use App\Http\Controllers\admin\KelompokMatkulController;
@@ -150,6 +151,9 @@ Route::middleware('auth')->group(function(){
     Route::post('/jadwal/save-anggota', [JadwalController::class, 'simpanAnggota']);
     Route::post('/jadwal/pengampu', [JadwalController::class, 'jadwalPengampu']);
     Route::post('/jadwal/tambah-pegampu', [JadwalController::class, 'tambahPengampu']);
+    Route::post('/jadwal/tambah-pertemuan', [JadwalController::class, 'tambahPertemuan']);
+    Route::get('/jadwal/hapus-pertemuan/{id}', [JadwalController::class, 'hapusPertemuan']);
+    Route::post('/jadwal/daftar-pertemuan', [JadwalController::class, 'daftarPertemuan']);
     Route::post('/admin/masterdata/jadwal/update', [JadwalController::class, 'updateJadwal']);
     Route::get('/jadwal/hapus-pengampu/{id}', [JadwalController::class, 'hapusPengampu']);
     Route::get('/admin/masterdata/jadwal', [JadwalController::class, 'index']);
@@ -160,6 +164,16 @@ Route::middleware('auth')->group(function(){
     Route::get('/jadwal/hapus/{id}', [JadwalController::class, 'hapusJadwal']);
     Route::get('/jadwal/hapus-anggota/{id}', [JadwalController::class, 'hapusAnggota']);
     Route::post('/admin/masterdata/jadwal/create', [JadwalController::class, 'createJadwal']);
+
+    // route KRS
+    Route::get('/admin/masterdata/krs', [KrsController::class, 'index']);
+    Route::post('/admin/masterdata/krs/list-mhs', [KrsController::class, 'listMhs']);
+    Route::post('/admin/masterdata/krs/ganti-status-krs', [KrsController::class, 'gantiStatus']);
+    Route::get('/admin/masterdata/krs/admin/input/{id}/{ta}', [KrsController::class, 'inputadminKRS']);
+    Route::get('/admin/masterdata/krs/admin/hapus/{id}', [KrsController::class, 'hapusadminKRS']);
+    Route::get('/admin/masterdata/krs/input/{id}/{mhs}', [KrsController::class, 'tambahadminKRS']);
+    Route::post('/admin/masterdata/krs/list-jadwal', [KrsController::class, 'showJadwal']);
+
 
     // route mkKurikulum
     Route::get('/admin/masterdata/matakuliah-kurikulum', [MkKurikulum::class, 'index']);

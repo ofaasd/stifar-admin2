@@ -60,7 +60,7 @@
                     <span><i class="fa fa-users"></i> Mahasiswa</span>
                 </a>
                 <ul class="sidebar-submenu">
-                    <li><a href="/mahasiswa/daftar">Data Mahasiswa</a></li>
+                    <li><a href="{{ URL::to('mahasiswa/daftar') }}">Data Mahasiswa</a></li>
                 </ul>
             </li>
 
@@ -95,7 +95,7 @@
                             <span>KRS</span>  {{--  Ada menu untuk toggle krs sedang dibuka atau ditutup--}}
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
-                            <li><a href="#">Input KRS</a></li>
+                            <li><a href="{{ URL::to('admin/masterdata/krs') }}">Input KRS</a></li>
                             <li><a href="#">Statistik KRS</a></li>
                             <li><a href="#">Monitoring KRS</a></li>
                         </ul>

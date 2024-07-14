@@ -14,6 +14,7 @@ use App\Models\pengajar;
 use App\Models\PegawaiBiodatum;
 use App\Models\koordinator_mk;
 use App\Models\anggota_mk;
+use App\Models\Pertemuan;
 
 class JadwalController extends Controller
 {
@@ -43,12 +44,32 @@ class JadwalController extends Controller
                   ->where(['anggota_mks.idmk' => $id_mk])->get();
         return view('admin.akademik.jadwal.input', compact('anggota', 'ta', 'id_mk','title','nama_mk', 'days', 'jadwal', 'id', 'ruang', 'sesi'));
     }
+    public function daftarPertemuan(Request $request){
+        $id_jadwal = $request->id_jadwal;
+
+        return json_encode(['kode' => 200, 'pertemuan' => Pertemuan::where(['id_jadwal' => $id_jadwal])->get()]);
+        
+    }
+    public function hapusPertemuan($id){
+        Pertemuan::where('id', $id)->delete();
+        return back();
+    }
+    public function tambahPertemuan(Request $request){
+        $id_jadwal = $request->id_jadwal;
+        $tgl_pertemuan = $request->tgl_pertemuan;
+
+        $qr = Pertemuan::create(['id_jadwal' => $id_jadwal, 'tgl_pertemuan' => $tgl_pertemuan]);
+        if ($qr) {
+            return json_encode(['kode' => 200, 'pertemuan' => Pertemuan::where(['id_jadwal' => $id_jadwal])->get()]);
+        }
+        return json_encode(['kode' => 204]);
+    }
     public function jadwalPengampu(Request $request){
         $id_jadwal = $request->idjadwal;
         $qr = Pengajar::select('pengajars.*', 'pegawai_biodata.nama_lengkap', 'pegawai_biodata.gelar_belakang', 'pegawai_biodata.npp')
                         ->leftJoin('pegawai_biodata', 'pengajars.id_dsn','=','pegawai_biodata.id')
                         ->where('pengajars.id_jadwal', $id_jadwal)->get();
-        return json_encode(['status' => 200, 'daftar' => $qr]);
+        return json_encode(['kode' => 200, 'daftar' => $qr]);
     }
     public function tambahPengampu(Request $request){
         $id_jadwal = $request->id_jadwal;
