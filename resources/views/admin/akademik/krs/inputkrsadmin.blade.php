@@ -44,6 +44,12 @@
                             <div class="mt-4">
                                 <div id="showJadwal"></div>
                             </div>
+                            <?php
+                                if(!is_null(Session::get('krs'))){
+                                    echo Session::get('krs');
+                                    Session::forget('krs');
+                                }
+                            ?>
                             <div class="mt-4">
                                 <h3>KRS diinputkan : </h3>
                                 <table class="table" id="tablekrs">
