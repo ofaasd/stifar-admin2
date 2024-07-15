@@ -8,7 +8,7 @@ use App\Models\hari;
 use App\Models\Jadwal;
 use App\Models\MataKuliah;
 use App\Models\MasterRuang;
-use App\Models\Sesi;
+use App\Models\Waktu as Sesi;
 use App\Models\TahunAjaran;
 use App\Models\pengajar;
 use App\Models\PegawaiBiodatum;
@@ -48,7 +48,7 @@ class JadwalController extends Controller
         $id_jadwal = $request->id_jadwal;
 
         return json_encode(['kode' => 200, 'pertemuan' => Pertemuan::where(['id_jadwal' => $id_jadwal])->get()]);
-        
+
     }
     public function hapusPertemuan($id){
         Pertemuan::where('id', $id)->delete();
@@ -175,8 +175,10 @@ class JadwalController extends Controller
             return json_encode(['status' => 'ok', 'kode' => 200]);
     }
     public function createJadwal(Request $request){
-        $kode_jadwal = $request->kjadwal;
+
         $id_mk = $request->id_mk;
+        $matakuliah = MataKuliah::find($id_mk);
+        $kode_jadwal = $matakuliah->kode_matkul . $request->kel;
         $hari = $request->hari;
         $ruang = $request->ruang;
         $sesi = $request->sesi;

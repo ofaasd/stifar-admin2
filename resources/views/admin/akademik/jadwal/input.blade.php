@@ -27,7 +27,7 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header pb-0 card-no-border">
-                            
+
                     </div>
                     <div class="card-body">
                     <ul class="simple-wrapper nav nav-tabs" id="myTab" role="tablist">
@@ -43,7 +43,7 @@
                                     <div class="col-sm-6">
                                         <div class="mb-3">
                                             <label for="kode_jadwal" class="form-label">Kode Jadwal</label>
-                                            <input type="text" name="kode_jadwal" id="kode_jadwal" class="form-control">
+                                            <input type="text" name="kode_jadwal" id="kode_jadwal" class="form-control" readonly>
                                             <input type="text" name="id_mk" id="id_mk" value="{{ $id_mk }}" hidden="" readonly="">
                                         </div>
                                         <div class="mb-3">
@@ -66,7 +66,7 @@
                                             <label for="sesi" class="form-label">Sesi</label>
                                             <select name="sesi" id="sesi" class="form-control">
                                                 @foreach($sesi as $s)
-                                                    <option value="{{ $s['id'] }}">{{ $s['kode_sesi'] }}</option>
+                                                    <option value="{{ $s['id'] }}">{{ $s['nama_sesi'] }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -103,7 +103,7 @@
                                         </div>
                                         <div class="mb-3">
                                             <label for="kuota" class="form-label">Kuota</label>
-                                            <input type="text" name="kuota" id="kuota" class="form-control">
+                                            <input type="number" name="kuota" id="kuota" class="form-control">
                                         </div>
                                         <div class="mb-3">
                                             <label for="status" class="form-label">Status</label>
@@ -114,7 +114,7 @@
                                         </div>
                                         <div class="mb-3">
                                             <label for="tahun_ajaran" class="form-label">Tahun Ajaran</label>
-                                            <select name="tahun_ajaran" id="tahun_ajaran" class="form-control">
+                                            <select name="tahun_ajaran" id="tahun_ajaran" class="form-control" required>
                                                 <option value="" selected disabled>Tahun Ajaran</option>
                                                 @foreach ($ta as $t)
                                                     <option value="{{ $t['id'] }}">{{ $t['kode_ta'] }}</option>
@@ -279,7 +279,6 @@
                                                                             </div>
                                                                             <div class="mb-3">
                                                                                 <label for="kel" class="form-label">Kelompok/Kelas</label>
-                                                                                <input type="text" name="kel" id="kel{{ $row['id'] }}" value="{{ $row['kel'] }}" class="form-control">
                                                                                 <select name="kel" id="kel{{ $row['id'] }}" class="form-control">
                                                                                     <option value="A" {{ $row['kel'] == 'A' ? 'selected=""':'' }}>A</option>
                                                                                     <option value="B" {{ $row['kel'] == 'B' ? 'selected=""':'' }}>B</option>
@@ -318,7 +317,7 @@
                                                                                 </select>
                                                                             </div>
                                                                             <button type="button" onclick="editJadwal(<?=$row['id']?>)" class="btn btn-primary btn-sm"><i class="fa fa-save"></i> Edit Jadwal</button>
-                                                                            
+
                                                                             <button class="btn bg-danger d-flex align-items-center gap-2 text-light ms-auto btn-sm" type="button" data-bs-dismiss="modal">Tutup</button>
                                                                         </div>
                                                                     </div>
@@ -364,7 +363,7 @@
                                     }
                                 ?>
                             `;
-            
+
             dosen += `</select>
                         <div id="input${counterNext}"></div>`;
             document.getElementById("input"+counter).innerHTML = dosen;
@@ -399,7 +398,7 @@
                                                 <a href="{{ url('jadwal/hapus-pertemuan') }}/${ list[i].id }" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i> Hapus</a>
                                             </td>
                                         </tr>
-                                    `                            
+                                    `
                         }
                         table += '</table>'
                         $('#tablePertemuan'+idjadwal).html(table);
@@ -440,7 +439,7 @@
                                                 <a href="{{ url('jadwal/hapus-pertemuan') }}/${ list[i].id }" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i> Hapus</a>
                                             </td>
                                         </tr>
-                                    `                            
+                                    `
                         }
                         table += '</table>'
                         $('#tablePertemuan'+idjadwal).html(table);
@@ -496,7 +495,7 @@
                                             <a class="btn btn-danger btn-sm" href="{{ url('jadwal/hapus-pengampu') }}/${ data[i].id }"><i class="fa fa-trash"></i></a>
                                         </td>
                                     </tr>
-                                `   
+                                `
                     }
                     table += '</table>'
                     $('#tablePengampu'+idjadwal).html(table);
@@ -514,7 +513,7 @@
             var status = $('#status'+id).val();
             var id_mk = $('#id_mk'+id).val();
             var tahun_ajaran = $('#tahun_ajaran'+id).val();
-            
+
             if(kjadwal == ''){
                 // sweetalert
                 swal({
@@ -612,18 +611,7 @@
             var status = $('#status').val();
             var id_mk = $('#id_mk').val();
             var tahun_ajaran = $('#tahun_ajaran').val();
-            
-            if(kjadwal == ''){
-                // sweetalert
-                swal({
-                        icon: 'warning',
-                        title: 'Galat!',
-                        text: 'Kode Jadwal Harus Isi.',
-                        customClass: {
-                            confirmButton: 'btn btn-danger'
-                        }
-                    });
-            }
+
             if(kel == ''){
                 // sweetalert
                 swal({

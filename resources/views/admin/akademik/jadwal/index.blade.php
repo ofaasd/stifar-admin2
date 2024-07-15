@@ -26,7 +26,7 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header pb-0 card-no-border">
-                        
+
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -48,7 +48,17 @@
                                             <td>{{ $no++ }}</td>
                                             <td>{{ $mk['kode_matkul'] }}</td>
                                             <td>{{ $mk['nama_matkul'] }}</td>
-                                            <td>{{ $mk['sks_teori'] }} T / {{ $mk['sks_praktek'] }} P</td>
+                                            <td>
+                                                @if(empty($mk['sks_praktek']) && !empty($mk['sks_teori']))
+                                                    {{ $mk['sks_teori'] }} T
+                                                @elseif(empty($mk['sks_teori']) && !empty($mk['sks_praktek']))
+                                                    {{ $mk['sks_praktek'] }} P
+                                                @elseif(!empty($mk['sks_teori']) && !empty($mk['sks_praktek']))
+                                                    {{ $mk['sks_teori'] }} T / {{ $mk['sks_praktek'] }} P
+                                                @else
+                                                    T / P
+                                                @endif
+                                            </td>
                                             <td>{{ $mk['semester'] }}</td>
                                             <td>{{ $mk['status_mk'] }}</td>
                                             <td>

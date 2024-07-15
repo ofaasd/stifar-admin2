@@ -40,7 +40,7 @@
                 <th>Nama</th>
                 <th>Nama Inggris</th>
                 <th>Jenis Mata Kuliah</th>
-                <th>T/P</th>
+                {{-- <th>T/P</th> --}}
                 <th>Kredit</th>
                 <th>Smt</th>
                 <th>Status</th>
@@ -55,8 +55,19 @@
                     <td>{{ $mk['nama_matkul'] }}</td>
                     <td>{{ $mk['nama_matkul_eng'] }}</td>
                     <td>{{ $mk['status_mk'] }}</td>
-                    <td>{{ $mk['tp'] }}</td>
-                    <td>{{ $mk['sks_teori'] }} T / {{ $mk['sks_praktek'] }} P</td>
+                    {{-- <td>{{ $mk['tp'] }}</td> --}}
+
+                    <td>
+                        @if(empty($mk['sks_praktek']) && !empty($mk['sks_teori']))
+                            {{ $mk['sks_teori'] }} T
+                        @elseif(empty($mk['sks_teori']) && !empty($mk['sks_praktek']))
+                            {{ $mk['sks_praktek'] }} P
+                        @elseif(!empty($mk['sks_teori']) && !empty($mk['sks_praktek']))
+                            {{ $mk['sks_teori'] }} T / {{ $mk['sks_praktek'] }} P
+                        @else
+                            T / P
+                        @endif
+                    </td>
                     <td>{{ $mk['semester'] }}</td>
                     <td>{{ $mk['status'] }}</td>
                     <td>
@@ -82,14 +93,14 @@
                                                 <label for="nama_inggris">Nama Inggris :</label>
                                                 <input type="text" class="form-control" name="nama_inggris" id="nama_inggris_{{ $mk['id'] }}" value="{{ $mk['nama_matkul_eng'] }}" required=""/>
                                             </div>
-                                            <div class="form-group mt-2">
+                                            {{-- <div class="form-group mt-2">
                                                 <label for="kelompok">Teori/Praktek :</label>
                                                 <select name="tp" id="tp_{{ $mk['id'] }}" class="form-control" required="">
                                                     <option value="T" {{ $mk['tp'] == 'T' ? 'selected=""':'' }}>T</option>
                                                     <option value="P" {{ $mk['tp'] == 'P' ? 'selected=""':'' }}>P</option>
                                                     <option value="TP" {{ $mk['tp'] == 'TP' ? 'selected=""':'' }}>TP</option>
                                                 </select>
-                                            </div>
+                                            </div> --}}
                                             <div class="form-group mt-2">
                                                 <label for="nama_inggris">Semester :</label>
                                                 <input type="number" class="form-control" name="semester" id="semester_{{ $mk['id'] }}" value="{{ $mk['semester'] }}" required=""/>

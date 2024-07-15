@@ -48,11 +48,7 @@
                                                     </div>
                                                     <div class="modal-body">
                                                         <div class="mb-3">
-<<<<<<< HEAD
-                                                            <label for="kode_prodi" class="form-label">Kode Kurikulum</label>
-=======
                                                             <label for="kode_kurikulum" class="form-label">Kode Kurikulum</label>
->>>>>>> b05a04a305d6602fa14ea2d047a3c744b2e357d1
                                                             <input type="text" name="kode_kurikulum" id="kode_kurikulum" class="form-control">
                                                         </div>
                                                         <div class="mb-3">
