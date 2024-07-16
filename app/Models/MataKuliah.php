@@ -20,6 +20,9 @@ class MataKuliah extends Model
         'semester',
         'status_mk',
         'rumpun',
-        'status'
+        'status',
+        'prasyarat1',
+        'prasyarat2',
+        'prasyarat3'
     ];
 }

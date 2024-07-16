@@ -168,7 +168,7 @@
                                                     <td>{{ $row['kode_jadwal'] }}</td>
                                                     <td>{{ $row['hari'] }}</td>
                                                     <td>{{ $row['nama_ruang'] }}</td>
-                                                    <td>{{ $row['kode_sesi'] }}</td>
+                                                    <td>{{ $row['nama_sesi'] }}</td>
                                                     <td>{{ $row['kel'] }}</td>
                                                     <td>{{ $row['kuota'] }}</td>
                                                     <td>{{ $row['status'] }}</td>

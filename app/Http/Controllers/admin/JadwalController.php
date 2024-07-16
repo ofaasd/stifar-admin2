@@ -35,9 +35,9 @@ class JadwalController extends Controller
         $sesi = Sesi::get();
         $ta = TahunAjaran::get();
         $id = 1;
-        $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'sesis.kode_sesi', 'ruang.nama_ruang')
+        $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang')
                   ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
-                  ->leftJoin('sesis', 'sesis.id', '=', 'jadwals.id_sesi')
+                  ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
                   ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
                   ->where(['jadwals.id_mk' => $mk['id'], 'jadwals.status' => 'Aktif'])->get();
         $anggota = anggota_mk::leftJoin('pegawai_biodata', 'anggota_mks.id_pegawai_bio', '=', 'pegawai_biodata.id')
