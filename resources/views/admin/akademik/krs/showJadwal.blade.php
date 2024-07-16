@@ -19,7 +19,7 @@
                 <td>{{ $j['kel'] }}</td>
                 <td>{{ $j['nama_matkul'] }}</td>
                 <!-- <td>{{ $j['sks_teori'] }}</td> -->
-                <td>{{ $j['hari'] }}, {{ $j['kode_sesi'] }}</td>
+                <td>{{ $j['hari'] }}, {{ $j['nama_sesi'] }}</td>
                 <td>{{ $j['nama_ruang'] }}</td>
                 <td>{{ $j['kuota'] }}</td>
                 <td>
