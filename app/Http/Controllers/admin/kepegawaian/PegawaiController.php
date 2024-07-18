@@ -43,7 +43,7 @@ class PegawaiController extends Controller
         $homebase = [];
         $homebase[0] = "Tidak Ada";
         foreach($programStudi as $row){
-            $homebase[$row->id] = $row->nama_jurusan;
+            $homebase[$row->id] = $row->nama_prodi;
         }
         $fake_id = 0;
         return view('admin/kepegawaian/pegawai/index', compact('title','pegawai','homebase','fake_id'));

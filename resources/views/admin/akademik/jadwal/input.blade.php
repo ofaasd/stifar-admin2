@@ -127,6 +127,9 @@
                                                 <div class="col-sm-8">
                                                     <select name="dosen0" id="dosen0" class="form-control">
                                                         <option value="Pilih Dosen Pengampu">Pilih Dosen Pengampu</option>
+                                                        @foreach ($anggota2 as $dsn)
+                                                            <option value="{{ $dsn['id_pegawai_bio'] }}">{{ $dsn['nama_lengkap'] }}, {{ $dsn['gelar_belakang'] }}</option>
+                                                        @endforeach
                                                         @foreach ($anggota as $dsn)
                                                             <option value="{{ $dsn['id_pegawai_bio'] }}">{{ $dsn['nama_lengkap'] }}, {{ $dsn['gelar_belakang'] }}</option>
                                                         @endforeach
@@ -143,6 +146,11 @@
                                     </div>
                                 </div>
                                 <hr>
+                                @foreach($warning as $value)
+                                <div class="alert alert-warning">
+                                    {{$value}}
+                                </div>
+                                @endforeach
                                 <div class="table-responsive">
                                     <table class="display" id="myTable">
                                         <thead>
@@ -212,6 +220,9 @@
                                                                                 <input type="text" hidden value="<?= $row['id']?>" id="idjadwal">
                                                                                 <select name="dosenPengampu<?=$row['id']?>" id="dosenPengampu<?=$row['id']?>" class="form-control">
                                                                                     <option value="Pilih Dosen Pengampu">Pilih Dosen Pengampu</option>
+                                                                                    @foreach ($anggota2 as $dsn)
+                                                                                        <option value="{{ $dsn['id_pegawai_bio'] }}">{{ $dsn['nama_lengkap'] }}, {{ $dsn['gelar_belakang'] }}</option>
+                                                                                    @endforeach
                                                                                     @foreach ($anggota as $dsn)
                                                                                         <option value="{{ $dsn['id_pegawai_bio'] }}">{{ $dsn['nama_lengkap'] }}, {{ $dsn['gelar_belakang'] }}</option>
                                                                                     @endforeach
@@ -358,6 +369,9 @@
                             <select name="dosen${counterNext}" id="dosen${counterNext}" class="form-control">
                                 <option value="" selected disabled>Pilih Dosen Pengampu</option>
                                 <?php
+                                    foreach($anggota2 as $dosen){
+                                        echo '<option value="'. $dosen['id_pegawai_bio'] .'">'. $dosen['nama_lengkap'] .','. $dosen['gelar_belakang'] .'</option>';
+                                    }
                                     foreach($anggota as $dosen){
                                         echo '<option value="'. $dosen['id_pegawai_bio'] .'">'. $dosen['nama_lengkap'] .','. $dosen['gelar_belakang'] .'</option>';
                                     }
