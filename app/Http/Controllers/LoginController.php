@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\PegawaiBiodatum;
 use App\Models\ModelHasRole;
+use App\Models\Mahasiswa;
 
 class LoginController extends Controller
 {
@@ -41,29 +42,74 @@ class LoginController extends Controller
         $pegawai = PegawaiBiodatum::where('npp',$npp);
         if($pegawai->count() > 0){
             $new_pegawai = $pegawai->first();
-            $cek_user = User::where('id',$new_pegawai->user_id);
-            if($cek_user->count() == 0){
-                $user = User::create([
-                    'name' => $new_pegawai->nama_lengkap,
-                    'email' => $request->email,
-                    'password' => Hash::make($request->password)
-                ]);
-                $id = $user->id;
-                $update_pegawai = PegawaiBiodatum::find($new_pegawai->id);
-                $update_pegawai->user_id = $id;
-                $update_pegawai->save();
-
-                $role = ModelHasRole::create(
-                    [
-                        'role_id' => 3,
-                        'model_type' => 'App\Models\User',
-                        'model_id' => $id,
-                    ]
-                );
-
-                Session::flash('message', 'Register Berhasil. Akun Anda sudah Aktif silahkan Login menggunakan email dan password.');
+            $cek_email = User::where('email',$request->email);
+            if($cek_email->count() > 0){
+                Session::flash('message_error', 'Email Sudah pernah di daftarkan');
             }else{
-                Session::flash('message_error', 'User Sudah Pernah di daftarkan. Hubungi Admin untuk merubah password');
+                $cek_user = User::where('id',$new_pegawai->user_id);
+                if($cek_user->count() == 0){
+                    $user = User::create([
+                        'name' => $new_pegawai->nama_lengkap,
+                        'email' => $request->email,
+                        'password' => Hash::make($request->password)
+                    ]);
+                    $id = $user->id;
+                    $update_pegawai = PegawaiBiodatum::find($new_pegawai->id);
+                    $update_pegawai->user_id = $id;
+                    $update_pegawai->save();
+
+                    $role = ModelHasRole::create(
+                        [
+                            'role_id' => 3,
+                            'model_type' => 'App\Models\User',
+                            'model_id' => $id,
+                        ]
+                    );
+
+                    Session::flash('message', 'Register Berhasil. Akun Anda sudah Aktif silahkan Login menggunakan email dan password.');
+                }else{
+                    Session::flash('message_error', 'User Sudah Pernah di daftarkan. Hubungi Admin untuk merubah password');
+                }
+            }
+        }else{
+            Session::flash('message_error', 'NIP pegawai tidak ditemukan');
+        }
+
+        return redirect('register');
+    }
+    public function actionRegisterMhs(Request $request){
+        $nim = $request->nim;
+        $mhs = Mahasiswa::where('nim',$nim);
+        if($mhs->count() > 0){
+            $new_mhs = $mhs->first();
+            $cek_email = User::where('email',$request->email);
+            if($cek_email->count() > 0){
+                Session::flash('message_error', 'Email Sudah pernah di daftarkan');
+            }else{
+                $cek_user = User::where('id',$new_pegawai->user_id);
+                if($cek_user->count() == 0){
+                    $user = User::create([
+                        'name' => $new_pegawai->nama_lengkap,
+                        'email' => $request->email,
+                        'password' => Hash::make($request->password)
+                    ]);
+                    $id = $user->id;
+                    $update_pegawai = PegawaiBiodatum::find($new_pegawai->id);
+                    $update_pegawai->user_id = $id;
+                    $update_pegawai->save();
+
+                    $role = ModelHasRole::create(
+                        [
+                            'role_id' => 3,
+                            'model_type' => 'App\Models\User',
+                            'model_id' => $id,
+                        ]
+                    );
+
+                    Session::flash('message', 'Register Berhasil. Akun Anda sudah Aktif silahkan Login menggunakan email dan password.');
+                }else{
+                    Session::flash('message_error', 'User Sudah Pernah di daftarkan. Hubungi Admin untuk merubah password');
+                }
             }
         }else{
             Session::flash('message_error', 'NIP pegawai tidak ditemukan');

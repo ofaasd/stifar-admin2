@@ -63,6 +63,7 @@ use App\Http\Controllers\mahasiswa\MahasiswaController;
 Route::get('/', [LoginController::class, 'login'])->name('login');
 Route::post('/actionLogin', [LoginController::class, 'actionLogin'])->name('actionLogin');
 Route::get('/register', [LoginController::class, 'register'])->name('register');
+Route::get('/register_mahasiswa', [LoginController::class, 'register_mahasiswa'])->name('register_mahasiswa');
 Route::post('/actionRegister', [LoginController::class, 'actionRegister'])->name('actionRegister');
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 

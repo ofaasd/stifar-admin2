@@ -42,6 +42,9 @@
         @role('pegawai')
             @include('layouts.sidebar_pegawai')
         @endrole
+        @role('mhs')
+            @include('layouts.sidebar_mhs')
+        @endrole
         @role('admin-pmb')
             @include('layouts.sidebar_pmb')
         @endrole
