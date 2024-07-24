@@ -140,6 +140,7 @@ Route::middleware('auth')->group(function(){
     // route MahasiswaModel
     Route::get('/mahasiswa/daftar', [MahasiswaController::class, 'index']);
     Route::get('/mahasiswa/detail/{nim}', [MahasiswaController::class, 'detail']);
+    Route::get('/mahasiswa/{nim}/edit', [MahasiswaController::class, 'edit']);
 
     // route Matakuliah
     Route::get('/admin/masterdata/matakuliah', [MatkulController::class, 'index']);

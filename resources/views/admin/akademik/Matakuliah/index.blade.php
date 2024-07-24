@@ -75,8 +75,31 @@
                                                             </select>
                                                         </div> --}}
                                                         <div class="form-group mt-2">
+                                                            <label for="nama_inggris">Semester :</label>
+                                                            <input type="number" class="form-control" name="semester" id="semester"/>
+                                                        </div>
+                                                        <div class="form-group mt-2">
+                                                            <label for="nama_inggris">Jumlah SKS (Kredit) :</label>
+                                                            <div class="row">
+                                                                <div class="col-sm-4 mr-2">Teori
+                                                                    <input type="number" name="sks_teori" class="form-control" id="sks_teori"/>
+                                                                </div>,
+                                                                <div class="col-sm-4" style="margin-left: 15px;">Praktek
+                                                                    <input type="number" name="sks_praktek" class="form-control" id="sks_praktek"/>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group mt-2">
+                                                            <label for="kelompok">Status Mata Kuliah :</label>
+                                                            <select name="status_mk" id="status_mk" class="form-control">
+                                                                <option value="Wajib">Wajib</option>
+                                                                <option value="Pilihan">Pilihan</option>
+                                                                <option value="Lainnya">Lainnya</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group mt-2">
                                                             <label for="status">Status :</label>
-                                                            <select class="form-control" name="status" id="status" required="">
+                                                            <select class="form-control" name="status" id="status">
                                                                 <option disabled selected>Pilih Status</option>
                                                                 <option value="Aktif">Aktif</option>
                                                                 <option value="Tidak Aktif">Tidak Aktif</option>
@@ -156,6 +179,29 @@
                                                                                 </select>
                                                                             </div> --}}
                                                                             <div class="form-group mt-2">
+                                                                                <label for="nama_inggris">Semester :</label>
+                                                                                <input type="number" class="form-control" name="semester" id="semester_{{ $mk['kode_matkul'] }}" value="{{ $mk['semester'] }}" required=""/>
+                                                                            </div>
+                                                                            <div class="form-group mt-2">
+                                                                                <label for="nama_inggris">Jumlah SKS (Kredit) :</label>
+                                                                                <div class="row">
+                                                                                    <div class="col-sm-4">Teori
+                                                                                        <input type="number" name="sks_teori" id="sks_teori_{{ $mk['kode_matkul'] }}" value="{{ $mk['sks_teori'] }}" required=""/>
+                                                                                    </div>,
+                                                                                    <div class="col-sm-4" style="margin-left: 15px;">Praktek
+                                                                                        <input type="number" name="sks_praktek" id="sks_praktek_{{ $mk['kode_matkul'] }}" value="{{ $mk['sks_praktek'] }}" required=""/>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group mt-2">
+                                                                                <label for="kelompok">Status Mata Kuliah :</label>
+                                                                                <select name="status_mk" id="status_mk_{{ $mk['kode_matkul'] }}" class="form-control" required="">
+                                                                                    <option value="Wajib" {{ $mk['status_mk'] == 'Wajib' ? 'selected=""':'' }}>Wajib</option>
+                                                                                    <option value="Pilihan" {{ $mk['status_mk'] == 'Pilihan' ? 'selected=""':'' }}>Pilihan</option>
+                                                                                    <option value="Lainnya" {{ $mk['status_mk'] == 'Lainnya' ? 'selected=""':'' }}>Lainnya</option>
+                                                                                </select>
+                                                                            </div>
+                                                                            <div class="form-group mt-2">
                                                                                 <label for="status">Status :</label>
                                                                                 <select class="form-control" name="status" id="status_{{ $mk['kode_matkul'] }}" required="">
 
@@ -163,9 +209,16 @@
                                                                                     <option value="Tidak Aktif">Tidak Aktif</option>
                                                                                 </select>
                                                                             </div>
-                                                                            <div class="mt-2"></div>
-                                                                            <button type="button" onclick="updateMK('{{ $mk['kode_matkul'] }}')" class="btn btn-primary btn-sm"><i class="fa fa-save"></i> Tambah Matakuliah</button>
-                                                                            <button class="btn bg-danger d-flex align-items-center gap-2 text-light ms-auto" type="button" data-bs-dismiss="modal">Tutup More<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></button>
+                                                                            <div class="mt-2 mb-2"></div>
+                                                                            <hr>
+                                                                            <div class="row">
+                                                                                <div class="col-md-6">
+                                                                                    <button type="button" onclick="updateMK('{{ $mk['kode_matkul'] }}')" class="btn btn-primary btn-sm"><i class="fa fa-save"></i> Update Matakuliah</button>
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <button class="btn bg-danger d-flex align-items-center gap-2 text-light ms-auto" type="button" data-bs-dismiss="modal">Tutup More<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></button>
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -212,6 +265,10 @@
                     nama_inggris: $('#nama_inggris').val(),
                     kelompok: $('#kelompok').val(),
                     rumpun: $('#rumpun').val(),
+                    semester: $('#semester').val(),
+                    sks_teori: $('#sks_teori').val(),
+                    sks_praktek: $('#sks_praktek').val(),
+                    status_mk: $('#status_mk').val(),
                     status: $('#status').val()
                 },
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
@@ -252,6 +309,10 @@
                     nama_inggris: $('#nama_inggris_'+kode).val(),
                     kelompok: $('#kelompok_'+kode).val(),
                     rumpun: $('#rumpun_'+kode).val(),
+                    semester: $('#semester_'+kode).val(),
+                    sks_teori: $('#sks_teori_'+kode).val(),
+                    sks_praktek: $('#sks_praktek_'+kode).val(),
+                    status_mk: $('#status_mk_'+kode).val(),
                     status: $('#status_'+kode).val()
                 },
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},

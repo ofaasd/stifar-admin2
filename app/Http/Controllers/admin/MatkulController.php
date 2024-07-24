@@ -32,6 +32,10 @@ class MatkulController extends Controller
                 'nama_matkul' => $request->nama_matkul,
                 'nama_matkul_eng' => $request->nama_inggris,
                 'kel_mk' => $request->kelompok,
+                'semester' => $request->semester,
+                'sks_teori' => $request->sks_teori,
+                'sks_praktek' => $request->sks_praktek,
+                'status_mk' => $request->status_mk,
                 'rumpun' => $request->rumpun,
                 'status' => $request->status
             ]
@@ -48,6 +52,10 @@ class MatkulController extends Controller
             'nama_matkul' => $request->nama_matkul,
             'nama_matkul_eng' => $request->nama_inggris,
             'kel_mk' => $request->kelompok,
+            'semester' => $request->semester,
+            'sks_teori' => $request->sks_teori,
+            'sks_praktek' => $request->sks_praktek,
+            'status_mk' => $request->status_mk,
             'rumpun' => $request->rumpun,
             'status' => $request->status
         ]);

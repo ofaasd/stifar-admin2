@@ -26,7 +26,7 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header pb-0 card-no-border">
-                      <a href="/mahasiswa/tambah-data">
+                      <a href="{{URL::to('mahasiswa/tambah-data')}}" class="btn btn-primary">
                         <i class="fa fa-plus"></i>
                         Tambah Data Mahasiswa
                       </a>
@@ -54,9 +54,13 @@
                                     <td>{{ $row_mhs['email'] }}</td>
                                     <td>{{ $row_mhs['status'] == 1? 'Aktif':'Tidak Aktif' }}</td>
                                     <td>
-                                        <a href="/mahasiswa/detail/{{ $row_mhs['nim'] }}" class="btn btn-warning btn-xs">
+                                        <a href="{{ URL::to('/mahasiswa/detail/' . $row_mhs['nim']) }}" class="btn btn-warning btn-xs">
+                                          <i class="fa fa-eye"></i>
+
+                                        </a>
+                                        <a href="{{ URL::to('/mahasiswa/' . $row_mhs['nim']) . "/edit/" }}" class="btn btn-info btn-xs">
                                           <i class="fa fa-edit"></i>
-                                          Edit/Lihat
+
                                         </a>
                                     </td>
                                   </tr>
