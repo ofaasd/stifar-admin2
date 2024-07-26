@@ -60,7 +60,7 @@
                     <span><i class="fa fa-users"></i> Mahasiswa</span>
                 </a>
                 <ul class="sidebar-submenu">
-                    <li><a href="{{ URL::to('mahasiswa/daftar') }}">Data Mahasiswa</a></li>
+                    <li><a href="{{ URL::to('mahasiswa') }}">Data Mahasiswa</a></li>
                 </ul>
             </li>
 
@@ -211,6 +211,7 @@
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#">
                 <span><i class="fa fa-money"></i> Keuangan</span></a>
                 <ul class="sidebar-submenu">
+                    <li><a href="{{URL::to('admin/keuangan')}}">Buka Tutup KRS</a></li> {{-- Menu dasar untuk buka tutup krs --}}
                     <li><a href="#">Setting SKS - UKT</a></li> {{-- Untuk setting pembayaran sks dalam bentuk paket --}}
                     <li><a href="#">Input Laporan Pembayaran</a></li>
                     <li><a href="#">Buat Tagihan</a></li> {{--Buat dan Publish Tagihan --}}

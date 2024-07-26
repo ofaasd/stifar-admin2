@@ -47,6 +47,7 @@ use App\Http\Controllers\admin\master\AtributProdiController;
 use App\Http\Controllers\admin\master\RenstraProdiController;
 use App\Http\Controllers\admin\JadwalController;
 use App\Http\Controllers\admin\MkKurikulum;
+use App\Http\Controllers\admin\keuangan\KeuanganController;
 use App\Http\Controllers\mahasiswa\MahasiswaController;
 
 /*
@@ -121,6 +122,10 @@ Route::middleware('auth')->group(function(){
 
     Route::get('admin/kepegawaian/struktural/get_jabatan', [PegawaiJabatanStrukturalController::class, 'get_jabatan'])->name('get_jabatan');
 
+    Route::get('/mahasiswa/detail/{nim}', [MahasiswaController::class, 'detail']);
+    Route::post('mahasiswa/user_update', [MahasiswaController::class, 'user_update'])->name('user_update');
+    Route::post('mahasiswa/foto_update', [MahasiswaController::class, 'foto_update'])->name('foto_update');
+
     Route::resource('admin/masterdata/pt', PTController::class)->name('index','pt');
     Route::resource('admin/masterdata/ruang', RuangController::class)->name('index','ruang');
     Route::resource('admin/masterdata/sekolah', AsalSekolahController::class)->name('index','sekolah');
@@ -138,9 +143,7 @@ Route::middleware('auth')->group(function(){
     Route::resource('admin/masterdata/user', UserController::class)->name('index', 'user');
 
     // route MahasiswaModel
-    Route::get('/mahasiswa/daftar', [MahasiswaController::class, 'index']);
-    Route::get('/mahasiswa/detail/{nim}', [MahasiswaController::class, 'detail']);
-    Route::get('/mahasiswa/{nim}/edit', [MahasiswaController::class, 'edit']);
+    Route::resource('/mahasiswa', MahasiswaController::class)->name('index', 'mahasiswa');
 
     // route Matakuliah
     Route::get('/admin/masterdata/matakuliah', [MatkulController::class, 'index']);
@@ -203,6 +206,8 @@ Route::middleware('auth')->group(function(){
     Route::resource('admin/kepegawaian/berkas', PegawaiBerkasController::class)->name('index','berkas');
     Route::resource('admin/kepegawaian/jamkerja', JamkerjaController::class)->name('index','jamkerja');
     Route::resource('admin/kepegawaian/surat_izin', SuratIzinController::class)->name('index','surat_izin');
+
+    Route::resource('admin/keuangan', KeuanganController::class)->name('index','keuangan');
 
     Route::resource('pegawai', UserPegawaiController::class)->name('index','pegawai');
     Route::resource('riwayat', RiwayatPegawaiController::class)->name('index','pegawai');

@@ -9,6 +9,7 @@ use App\Models\Prodi;
 use App\Models\Wilayah;
 use App\Models\PegawaiBiodatum;
 use App\Models\ModelHasRole;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -44,16 +45,17 @@ class MahasiswaController extends Controller
     }
 
     $status = array(
-      1 => 'aktif', 
-      2 => 'cuti', 
+      1 => 'aktif',
+      2 => 'cuti',
       3 => 'Keluar',
-      4 => 'lulus', 
-      5 => 'meninggal', 
+      4 => 'lulus',
+      5 => 'meninggal',
       6 => 'DO'
     );
     $dosen = PegawaiBiodatum::where('id_posisi_pegawai',1)->get();
+    $user = User::where('id',$mahasiswa->user_id)->first();
 
-    return view('mahasiswa.edit', compact('status','dosen','kecamatan','wilayah','kota','title', 'mahasiswa','prodi','agama'));
+    return view('mahasiswa.edit', compact('user','status','dosen','kecamatan','wilayah','kota','title', 'mahasiswa','prodi','agama'));
   }
   public function detail($nim){
     $title = "Detail Mahasiswa";
@@ -80,39 +82,130 @@ class MahasiswaController extends Controller
             'model_id' => $user_id,
         ]
       );
-      $mahasiswa = Mahasiswa::updateOrCreate(
-        ['id' => $id],
-        [
-            'id_posisi_pegawai' => $request->posisi_pegawai,
-            'id_progdi' => $request->homebase,
-            'ktp' => $request->no_ktp,
-            'npp' => $request->npp,
-            'nidn' => $request->nidn,
-            'nama_lengkap' => $request->nama_lengkap,
-            'gelar_depan' => $request->gelar_depan,
-            'gelar_belakang' => $request->gelar_belakang,
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'email1' => $request->email,
-            'no_kk' => $request->no_kk,
-            'no_bpjs_kesehatan' => $request->no_bpjs_kesehatan,
-            'no_bpjs_ketenagakerjaan' => $request->no_bpjs_ketenagakerjaan,
-            'alamat' => $request->alamat,
-            'provinsi' => $request->provinsi,
-            'kotakab' => $request->kotakab,
-            'kecamatan' => $request->kecamatan,
-            'kelurahan' => $request->kelurahan,
-            'golongan_darah' => $request->golongan_darah,
-            'status_pegawai' => $request->status,
-            'status_nikah' => $request->status_nikah,
-            'nama_pasangan' => $request->nama_pasangan,
-            'jumlah_anak' => $request->junmlah_anak,
-            'pekerjaan_pasangan' => $request->pekerjaan_pasangan,
-            'user_id'=>$user_id,
-        ]
-    );
+        $mahasiswa = Mahasiswa::updateOrCreate(
+            ['id' => $id],
+            [
+                'id_program_studi' => $request->id_program_studi,
+                'nim' => $request->nim,
+                'nama' => $request->nama,
+                'no_ktp' => $request->no_ktp,
+                'jk' => $request->jenis_kelamin,
+                'agama' => $request->agama,
+                'tempat_lahir' => $request->tempat_lahir,
+                'tgl_lahir' => $request->tgl_lahir,
+                'nama_ibu' => $request->nama_ibu,
+                'nama_ayah' => $request->nama_ayah,
+                'hp_ortu' => $request->hp_ortu,
+                'angkatan' => $request->angkatan,
+                'alamat' => $request->alamat,
+                'alamat_semarang' => $request->alamat_semarang,
+                'provinsi' => $request->provinsi,
+                'kotakab' => $request->kotakab,
+                'kecamatan' => $request->kecamatan,
+                'kelurahan' => $request->kelurahan,
+                'rt' => $request->rt,
+                'rw' => $request->rw,
+                'email' => $request->email,
+                'hp' => $request->hp,
+                'id_dsn_wali' => $request->id_dsn_wali,
+                'user_id'=>$user_id,
+            ]
+        );
+        return response()->json('created');
     }else{
       //update user
-
+        $mahasiswa = Mahasiswa::updateOrCreate(
+            ['id' => $id],
+            [
+                'id_program_studi' => $request->id_program_studi,
+                'nim' => $request->nim,
+                'nama' => $request->nama,
+                'no_ktp' => $request->no_ktp,
+                'jk' => $request->jenis_kelamin,
+                'agama' => $request->agama,
+                'tempat_lahir' => $request->tempat_lahir,
+                'tgl_lahir' => $request->tgl_lahir,
+                'nama_ibu' => $request->nama_ibu,
+                'nama_ayah' => $request->nama_ayah,
+                'hp_ortu' => $request->hp_ortu,
+                'angkatan' => $request->angkatan,
+                'alamat' => $request->alamat,
+                'alamat_semarang' => $request->alamat_semarang,
+                'provinsi' => $request->provinsi,
+                'kotakab' => $request->kotakab,
+                'kecamatan' => $request->kecamatan,
+                'kelurahan' => $request->kelurahan,
+                'rt' => $request->rt,
+                'rw' => $request->rw,
+                'email' => $request->email,
+                'hp' => $request->hp,
+                'id_dsn_wali' => $request->id_dsn_wali,
+            ]
+        );
+        return response()->json('updated');
     }
   }
+  public function user_update(Request $request){
+        $id = $request->id;
+        $id_mahasiswa = $request->id_mahasiswa;
+
+        if($id){
+            $user = User::updateOrCreate(
+                ['id' => $id,],
+                [
+                    'password' => Hash::make($request->password),
+                ]
+            );
+            return response()->json('Password updated');
+        }else{
+            $user = User::updateOrCreate(
+                [
+                    'id' => $id,
+                ],
+                [
+                    'name'=>$request->nama_lengkap,
+                    'email' => $request->email,
+                    'password' => Hash::make($request->password),
+                ]
+            );
+            $user_id = $user->id;
+            $role = ModelHasRole::create(
+                [
+                    'role_id' => 4,
+                    'model_type' => 'App\Models\User',
+                    'model_id' => $user_id,
+                ]
+            );
+            $pegawai = Mahasiswa::find($id_mahasiswa);
+            $pegawai->user_id = $user_id;
+            $pegawai->email = $request->email;
+            $pegawai->save();
+            return response()->json('User Created');
+        }
+    }
+    public function foto_update(Request $request){
+        $id = $request->id;
+        if ($request->file('foto')) {
+
+            $photo = $request->file('foto');
+            $filename = date('YmdHi') . $photo->getClientOriginalName();
+            $tujuan_upload = 'assets/images/mahasiswa';
+            $photo->move($tujuan_upload,$filename);
+            $mahasiswa = Mahasiswa::updateOrCreate(
+                [
+                    'id' => $id
+                ],
+                [
+                    'foto_mhs' => $filename,
+                ]
+            );
+            $data = [
+                'status' => 'updated',
+                'pegawai' => Mahasiswa::find($id),
+            ];
+            return response()->json($data);
+        }else{
+            return response()->json('Failed');
+        }
+    }
 }

@@ -3,7 +3,7 @@
         <div class="mb-2">
             <label class="col-sm-12 col-form-label">Program Studi : </label>
             <div class="col-sm-12">
-                <select class="form-control" name="jenis_pegawai" id="jenis_pegawai" >
+                <select class="form-control" name="id_program_studi" id="id_program_studi" >
                 <option value="0">--- Pilih Program Studi --- </option>
                     @foreach($prodi as $key=>$value)
                         <option value='{{$key}}' {{($mahasiswa->id_program_studi == $key)?"selected" : "" }}>{{$value }}</option>
@@ -103,7 +103,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="mb-2">
             <label class="col-sm-12 col-form-label">Angkatan: </label>
             <div class="col-sm-12">
@@ -134,7 +134,7 @@
             <label class="col-sm-10 col-form-label">Nama Provinsi :</label>
             <div class="col-sm-12">
                 <p>
-                    <select name="provinsi" id="provinsi" class="form-control" required="">
+                    <select name="provinsi" id="provinsi" class="form-control" >
                         <option selected="" disabled="">Pilih Provinsi</option>
                         @foreach($wilayah as $w)
                             <option value="{{ $w->id_wil }}" {{(!empty($mahasiswa->provinsi) && $mahasiswa->provinsi == $w->id_wil)?"selected":""}}>{{$w->nm_wil}}</option>
@@ -147,7 +147,7 @@
             <label class="col-sm-10 col-form-label">Nama Kota/Kabupaten :</label>
             <div class="col-sm-12">
                 <p>
-                    <select name="kotakab" id="kotakab" class="form-control" required="">
+                    <select name="kotakab" id="kotakab" class="form-control" >
                         <option selected="" disabled="">Pilih Kota/Kabupaten</option>
                         @foreach($kota as $w)
                             <option value="{{ $w->id_wil }}" {{(!empty($mahasiswa->kotakab) && $mahasiswa->kotakab == $w->id_wil)?"selected":""}}>{{$w->nm_wil}}</option>
@@ -160,7 +160,7 @@
             <label class="col-sm-10 col-form-label">Nama Kecamatan :</label>
             <div class="col-sm-12">
                 <p>
-                    <select name="kecamatan" id="kecamatan" class="form-control" required="">
+                    <select name="kecamatan" id="kecamatan" class="form-control" >
                         <option selected="" disabled="">Daftar Kecamatan</option>
                         @foreach($kecamatan as $w)
                             <option value="{{ $w->id_wil }}" {{(!empty($mahasiswa->kecamatan) && $mahasiswa->kecamatan == $w->id_wil)?"selected":""}}>{{$w->nm_wil}}</option>
@@ -172,7 +172,7 @@
         <div class="mb-2">
             <label class="col-sm-10 col-form-label">Nama Kelurahan :</label>
             <div class="col-sm-12">
-                <p><input type="text" class="form-control" placeholder="Nama Kelurahan" name="kelurahan" required="" value="{{$mahasiswa->kelurahan}}"></p>
+                <p><input type="text" class="form-control" placeholder="Nama Kelurahan" name="kelurahan"  value="{{$mahasiswa->kelurahan}}"></p>
             </div>
         </div>
         <div class="mb-2">
@@ -180,14 +180,14 @@
                 <div class="col-md-6">
                     <label class="col-sm-10 col-form-label">RT :</label>
                     <div class="col-sm-12">
-                        <p><input type="text" class="form-control" placeholder="" name="rt" required="" value="{{$mahasiswa->rt}}"></p>
-                    </div>    
+                        <p><input type="text" class="form-control" placeholder="" name="rt"  value="{{$mahasiswa->rt}}"></p>
+                    </div>
                 </div>
                 <div class="col-md-6">
                     <label class="col-sm-10 col-form-label">RW :</label>
                     <div class="col-sm-12">
-                        <p><input type="text" class="form-control" placeholder="" name="rw" required="" value="{{$mahasiswa->rw}}"></p>
-                    </div>    
+                        <p><input type="text" class="form-control" placeholder="" name="rw"  value="{{$mahasiswa->rw}}"></p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -211,7 +211,7 @@
             <label class="col-sm-10 col-form-label">Dosen Wali :</label>
             <div class="col-sm-12">
                 <p>
-                    <select name="provinsi" id="provinsi" class="form-control" required="">
+                    <select name="id_dsn_wali" id="id_dsn_wali" class="form-control" >
                         <option selected="" disabled="">Pilih Dosen</option>
                         @foreach($dosen as $row)
                             <option value="{{ $row->id }}" {{(!empty($mahasiswa->id_dsn_wali) && $mahasiswa->id_dsn_wali == $row->id)?"selected":""}}>{{$row->nama_lengkap}}</option>

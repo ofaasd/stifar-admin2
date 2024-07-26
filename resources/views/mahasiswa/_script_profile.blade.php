@@ -1,4 +1,40 @@
 <script>
+    $(document.body).on("submit","#formMahasiswa",function(){
+        $(".update-btn").prop('disabled', true);
+        $(".update-btn").html('<div class="loader-2"></div> Please Wait');
+
+        const form = $(this).serialize();
+        $.ajax({
+            url:'{{URL::to('mahasiswa')}}',
+            method:'POST',
+            data:form,
+            success:function(status){
+                swal({
+                    icon: 'success',
+                    title: 'Successfully '.concat(status, '!'),
+                    text: ''.concat(status, ' Successfully.'),
+                    customClass: {
+                        confirmButton: 'btn btn-success'
+                    }
+                })
+                $(".update-btn").prop('disabled', false);
+                $(".update-btn").html('Update Profile');
+            },
+            error: function error(err) {
+                offCanvasForm.offcanvas('hide');
+                swal({
+                title: 'Duplicate Entry!',
+                text: 'Data Not Saved !',
+                icon: 'error',
+                customClass: {
+                    confirmButton: 'btn btn-success'
+                }
+                });
+                $(".update-btn").prop('disabled', false);
+                $(".update-btn").html('Update Profile');
+            }
+        });
+    });
     $('#provinsi').change(function(){
         //alert("asdasd");
         var id=$(this).val();

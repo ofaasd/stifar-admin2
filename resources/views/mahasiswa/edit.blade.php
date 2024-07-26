@@ -11,7 +11,7 @@
 @endsection
 
 @section('breadcrumb-title')
-    <h3>{{$title}}</h3>
+    <h3><a href="{{URL::to('mahasiswa')}}"><i class="fa fa-arrow-left"></i></a> {{$title}}</h3>
 @endsection
 
 @section('breadcrumb-items')
@@ -35,7 +35,7 @@
                     <div class="profile-title">
                       <div class="media">
                           <div class="photo-profile">
-                              <img class="img-70 rounded-circle" alt="" src="{{ (!empty($mahasiswa->foto))?asset('assets/images/pegawai/' . $mahasiswa->foto):asset('assets/images/user/7.jpg') }}">
+                              <img class="img-70 rounded-circle" alt="" src="{{ (!empty($mahasiswa->foto_mhs))?asset('assets/images/mahasiswa/' . $mahasiswa->foto_mhs):asset('assets/images/user/7.jpg') }}">
                           </div>
                         <div class="media-body">
                           <h5 class="mb-1">{{$mahasiswa->nama}}</h5>
@@ -76,7 +76,7 @@
             </div>
           </div>
           <div class="col-xl-8">
-            <form class="card" id="formPegawai" action="javascript:void(0)">
+            <form class="card" id="formMahasiswa" action="javascript:void(0)">
               @csrf
               <div class="card-header">
                 <h4 class="card-title mb-0">Edit Profile</h4>
