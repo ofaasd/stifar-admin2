@@ -179,6 +179,8 @@ Route::middleware('auth')->group(function(){
     Route::get('/admin/masterdata/krs/input/{id}/{mhs}', [KrsController::class, 'tambahadminKRS']);
     Route::post('/admin/masterdata/krs/list-jadwal', [KrsController::class, 'showJadwal']);
 
+    Route::get('/admin/keuangan/generate_mhs', [KeuanganController::class, 'generate_mhs']);
+
 
     // route mkKurikulum
     Route::get('/admin/masterdata/matakuliah-kurikulum', [MkKurikulum::class, 'index']);

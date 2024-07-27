@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin\keuangan;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\TahunAjaran;
+use App\Models\Mahasiswa;
 use App\Models\MasterKeuanganMh;
 
 class KeuanganController extends Controller
@@ -22,7 +23,19 @@ class KeuanganController extends Controller
         $title = "Keuangan Mahasiswa";
         return view('admin.keuangan.index', compact('title','ta', 'list_keuangan', 'jumlah_keuangan'));
     }
-
+    public function generate_mhs(){
+        $ta = TahunAjaran::where('status','Aktif')->first();
+        $mhs = Mahasiswa::all();
+        foreach($mhs as $row){
+            MasterKeuanganMh::create([
+                'id_mahasiswa' => $row->id,
+                'id_tahun_ajaran' => $ta->id,
+                'krs' => 1,
+                'uts' => 1,
+                'uas' => 1,
+            ]);
+        } 
+    }
     /**
      * Show the form for creating a new resource.
      */

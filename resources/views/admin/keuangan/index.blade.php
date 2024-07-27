@@ -31,7 +31,7 @@
                     <div class="card-body">
                         @if($jumlah_keuangan == 0)
                         <div class="alert alert-warning">Data Keuangan Mahasiswa TA {{$ta->kode_ta}} Belum tersedia klik tombol di bawah untuk generate keuangan mahasiswa</div>
-                        <a href="{{URL::to('mahasiswa/tambah-data')}}" class="btn btn-primary">
+                        <a href="{{URL::to('admin/keuangan/generate_mhs')}}" class="btn btn-primary">
                             <i class="fa fa-plus"></i>
                             Generate keuangan Mahasiswa
                           </a>
