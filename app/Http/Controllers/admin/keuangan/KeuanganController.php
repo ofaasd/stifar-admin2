@@ -18,10 +18,21 @@ class KeuanganController extends Controller
         //
         $ta = TahunAjaran::where('status','Aktif')->first();
         $keuangan = MasterKeuanganMh::where('id_tahun_ajaran',$ta->id);
+        $mhs = Mahasiswa::all();
+        $list_mhs = [];
+        foreach($mhs as $row){
+            $list_mhs[$row->id] = $row->nama;
+        }
+        $ta_all = TahunAjaran::all();
+        $list_ta = [];
+        foreach($ta_all as $row){
+            $list_ta[$row->id] = $row->kode_ta;
+        }
         $jumlah_keuangan = $keuangan->count();
         $list_keuangan = $keuangan->get();
         $title = "Keuangan Mahasiswa";
-        return view('admin.keuangan.index', compact('title','ta', 'list_keuangan', 'jumlah_keuangan'));
+        $no = 1;
+        return view('admin.keuangan.index', compact('no','title','ta','list_ta', 'list_mhs','list_keuangan', 'jumlah_keuangan'));
     }
     public function generate_mhs(){
         $ta = TahunAjaran::where('status','Aktif')->first();

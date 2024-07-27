@@ -41,30 +41,25 @@
                                 <thead>
                                     <tr>
                                         <th></th>
-                                        <th>NIM</th>
                                         <th>Nama Mahasiswa</th>
-                                        <th>HP</th>
-                                        <th>Email</th>
-                                        <th>Status Mahasiswa</th>
+                                        <th>Tahun AJaran</th>
+                                        <th>KRS</th>
+                                        <th>UTS</th>
+                                        <th>UAS</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
-                                @foreach($mhs as $row_mhs)
+                                @foreach($list_keuangan as $row)
                                   <tr>
                                     <td>{{ $no++ }}</td>
-                                    <td>{{ $row_mhs['nim'] }}</td>
-                                    <td>{{ $row_mhs['nama'] }}</td>
-                                    <td>{{ $row_mhs['hp'] }}</td>
-                                    <td>{{ $row_mhs['email'] }}</td>
-                                    <td>{{ $row_mhs['status'] == 1? 'Aktif':'Tidak Aktif' }}</td>
+                                    <td>{{ $list_mhs[$row->id_mahasiswa] }}</td>
+                                    <td>{{ $list_ta[$row->id_tahun_ajaran]}}</td>
+                                    <td>{!! ($row->krs == 1)?'<i class="fa fa-check"></i>':'<i class="fa fa-times"></i>' !!}</td>
+                                    <td>{!! ($row->uts == 1)?'<i class="fa fa-check"></i>':'<i class="fa fa-times"></i>' !!}</td>
+                                    <td>{!! ($row->uas == 1)?'<i class="fa fa-check"></i>':'<i class="fa fa-times"></i>' !!}</td>
                                     <td>
-                                        <a href="{{ URL::to('/mahasiswa/detail/' . $row_mhs['nim']) }}" class="btn btn-warning btn-xs">
-                                          <i class="fa fa-eye"></i>
-
-                                        </a>
-                                        <a href="{{ URL::to('/mahasiswa/' . $row_mhs['nim']) . "/edit/" }}" class="btn btn-info btn-xs">
+                                        <a href="{{ URL::to('/keuangan/' . $row->id) . "/edit/" }}" class="btn btn-info btn-xs">
                                           <i class="fa fa-edit"></i>
-
                                         </a>
                                     </td>
                                   </tr>
