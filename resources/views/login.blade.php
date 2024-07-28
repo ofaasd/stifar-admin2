@@ -52,7 +52,7 @@
                             <a class="btn btn-info" href="{{  route('register') }}">Aktivasi Dosen</a>
                         </div>
                         <div class="col-md-6">
-                            <a class="btn btn-success" href="{{  route('register_mahasiswa') }}">Aktivasi Mhs</a>
+                            {{-- <a class="btn btn-success" href="{{  route('register_mahasiswa') }}">Aktivasi Mhs</a> --}}
                         </div>
                      </div>
                   </form>

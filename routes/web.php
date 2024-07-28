@@ -49,6 +49,7 @@ use App\Http\Controllers\admin\JadwalController;
 use App\Http\Controllers\admin\MkKurikulum;
 use App\Http\Controllers\admin\keuangan\KeuanganController;
 use App\Http\Controllers\mahasiswa\MahasiswaController;
+use App\Http\Controllers\mahasiswa\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -126,6 +127,8 @@ Route::middleware('auth')->group(function(){
     Route::post('mahasiswa/user_update', [MahasiswaController::class, 'user_update'])->name('user_update');
     Route::post('mahasiswa/foto_update', [MahasiswaController::class, 'foto_update'])->name('foto_update');
 
+    Route::get('mhs/profile', [ProfileController::class, 'index'])->name('index');
+
     Route::resource('admin/masterdata/pt', PTController::class)->name('index','pt');
     Route::resource('admin/masterdata/ruang', RuangController::class)->name('index','ruang');
     Route::resource('admin/masterdata/sekolah', AsalSekolahController::class)->name('index','sekolah');
@@ -180,6 +183,7 @@ Route::middleware('auth')->group(function(){
     Route::post('/admin/masterdata/krs/list-jadwal', [KrsController::class, 'showJadwal']);
 
     Route::get('/admin/keuangan/generate_mhs', [KeuanganController::class, 'generate_mhs']);
+    Route::get('/admin/keuangan/generate_user_mhs', [KeuanganController::class, 'generate_user_mhs']);
 
 
     // route mkKurikulum
