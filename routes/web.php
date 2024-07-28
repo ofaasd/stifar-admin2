@@ -50,6 +50,7 @@ use App\Http\Controllers\admin\MkKurikulum;
 use App\Http\Controllers\admin\keuangan\KeuanganController;
 use App\Http\Controllers\mahasiswa\MahasiswaController;
 use App\Http\Controllers\mahasiswa\ProfileController;
+use App\Http\Controllers\mahasiswa\KrsController as mhsKrsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -128,6 +129,8 @@ Route::middleware('auth')->group(function(){
     Route::post('mahasiswa/foto_update', [MahasiswaController::class, 'foto_update'])->name('foto_update');
 
     Route::get('mhs/profile', [ProfileController::class, 'index'])->name('index');
+
+    Route::get('mhs/input_krs', [mhsKrsController::class, 'input'])->name('input');
 
     Route::resource('admin/masterdata/pt', PTController::class)->name('index','pt');
     Route::resource('admin/masterdata/ruang', RuangController::class)->name('index','ruang');
