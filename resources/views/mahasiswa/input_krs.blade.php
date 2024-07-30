@@ -28,6 +28,9 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="mt-4">
+                            @if($permission->krs == 0)
+                                <div class="alert alert-danger">Anda belum diizinkan untuk melakukan input krs harap hubungi admin sistem</div>
+                            @else
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label for="matakuliah">Pilih Matakuliah</label>
@@ -79,6 +82,7 @@
                                     </tbody>
                                 </table>
                             </div>
+                            @endif
                         </div>
                     </div>
                 </div>

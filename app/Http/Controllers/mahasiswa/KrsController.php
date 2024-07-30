@@ -9,6 +9,7 @@ use App\Models\MataKuliah;
 use App\Models\Krs;
 use App\Models\TahunAjaran;
 use App\Models\Mahasiswa;
+use App\Models\MasterKeuanganMh;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
 
@@ -32,7 +33,8 @@ class KrsController extends Controller
                     ->where('krs.id_tahun', $ta)
                     ->get();
         $no = 1;
+        $permission = MasterKeuanganMh::where('id_mahasiswa',$idmhs)->first();
         //return view('admin.akademik.krs.inputkrsadmin', compact('title', 'mk', 'krs', 'no', 'ta', 'idmhs'));
-        return view('mahasiswa.input_krs', compact('title', 'mk', 'krs', 'no', 'ta', 'idmhs'));
+        return view('mahasiswa.input_krs', compact('title', 'permission','mk', 'krs', 'no', 'ta', 'idmhs'));
     }
 }
