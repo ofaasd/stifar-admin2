@@ -45,6 +45,7 @@ use App\Http\Controllers\admin\master\JabatanStrukturalController;
 use App\Http\Controllers\admin\master\UserController;
 use App\Http\Controllers\admin\master\AtributProdiController;
 use App\Http\Controllers\admin\master\RenstraProdiController;
+use App\Http\Controllers\admin\master\ProdiAkreditasiController;
 use App\Http\Controllers\admin\JadwalController;
 use App\Http\Controllers\admin\MkKurikulum;
 use App\Http\Controllers\admin\keuangan\KeuanganController;
@@ -111,6 +112,7 @@ Route::middleware('auth')->group(function(){
     //Route::get('admin/masterdata/pt/atribut/detail/{id}', [AtributPTController::class, 'index'])->name('atribut_detail');
     Route::get('admin/masterdata/pt/renstra', [RenstraPTController::class, 'index'])->name('renstra');
     Route::get('admin/masterdata/prodi/renstra/{id}', [RenstraProdiController::class, 'index'])->name('renstra_prodi');
+    Route::get('admin/masterdata/prodi/akreditasi/{id}', [ProdiAkreditasiController::class, 'index'])->name('akreditasi_prodi');
     //Route::get('admin/masterdata/pt/renstra/detail/{id}', [RenstraPTController::class, 'index'])->name('renstra_detail');
 
 
@@ -119,6 +121,7 @@ Route::middleware('auth')->group(function(){
     Route::resource('admin/masterdata/pt/renstra', RenstraPTController::class)->name('index','renstra');
     Route::resource('admin/masterdata/prodi/atribut', AtributProdiController::class)->name('index','atribut_prodi');
     Route::resource('admin/masterdata/prodi/renstra', RenstraProdiController::class)->name('index','renstra_prodi');
+    Route::resource('admin/masterdata/prodi/akreditasi', ProdiAkreditasiController::class)->name('index','akreditasi_prodi');
     Route::resource('admin/masterdata/ruang', RuangController::class)->name('index','ruang');
     Route::resource('admin/masterdata/sekolah', AsalSekolahController::class)->name('index','sekolah');
 

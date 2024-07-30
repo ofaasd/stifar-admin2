@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class MasterProdiAkreditasi
- * 
+ *
  * @property int $id
  * @property int $id_prodi
  * @property float $nilai
@@ -43,6 +43,8 @@ class MasterProdiAkreditasi extends Model
 		'status',
 		'capaian',
 		'dokumen',
-		'tahun'
+		'tahun',
+        'lembaga',
+        'file'
 	];
 }
