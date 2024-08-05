@@ -8,6 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class anggota_mk extends Model
 {
     protected $fillable = [
-        'idmk', 'id_pegawai_bio'
+        'idmk', 'id_pegawai_bio', 'status'
     ];
 }

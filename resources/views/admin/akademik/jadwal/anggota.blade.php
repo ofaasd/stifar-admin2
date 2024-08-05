@@ -30,11 +30,9 @@
                             
                     </div>
                     <div class="card-body">
-                    <ul class="simple-wrapper nav nav-tabs" id="myTab" role="tablist">
+                        <ul class="simple-wrapper nav nav-tabs" id="myTab" role="tablist">
                             <li class="nav-item" role="presentation"><a class="nav-link txt-default" id="masterJadwal-tab" href="{{ url('/admin/masterdata/jadwal/create/'.$idmk) }}" role="tab" aria-controls="masterJadwal" aria-selected="true">Master Jadwal</a></li>
-                            <li class="nav-item" role="presentation"><a class="nav-link txt-default" id="koorMK-tabs" href="{{ url('/admin/masterdata/koordinator-mk/'.$idmk) }}" role="tab" aria-controls="koorMK" aria-selected="false" tabindex="-1">Koordinator Matakuliah</a></li>
-                            <li class="nav-item" role="presentation"><a class="nav-link txt-default active" id="DsnMK-tab" data-bs-toggle="tab" href="#DsnMK" role="tab" aria-controls="DsnMK" aria-selected="false" tabindex="-1">Anggota Matakuliah</a></li>
-                            <!-- <li class="nav-item" role="presentation"><a class="nav-link txt-default" id="Pertemuan-tab" href="{{ url('/admin/masterdata/pertemuan-mk/'.$idmk) }}" role="tab" aria-controls="Pertemuan" aria-selected="false" tabindex="-1">Pertemuan Matakuliah</a></li> -->
+                            <li class="nav-item" role="presentation"><a class="nav-link txt-default active" id="DsnMK-tab" data-bs-toggle="tab" href="#DsnMK" role="tab" aria-controls="DsnMK" aria-selected="false" tabindex="-1">Koordinator & Anggota Matakuliah</a></li>
                         </ul>
                         <div class="tab-content" id="myTabContent">
                             <div class="tab-pane fade active show" id="DsnMK" role="tabpanel" aria-labelledby="DsnMK-tab">
@@ -49,6 +47,14 @@
                                                 @foreach($pegawai as $dsn)
                                                     <option value="{{ $dsn['id'] }}">{{ $dsn['nama_lengkap'] }}, {{ $dsn['gelar_belakang'] }}</option>
                                                 @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="kode_jadwal" class="form-label">Status</label>
+                                            <select name="status" id="status" class="form-control" required>
+                                                <option value="" selected disabled>Pilih Status</option>
+                                                <option value="1">Koordinator</option>
+                                                <option value="2">Anggota</option>
                                             </select>
                                         </div>
                                         <button class="btn btn-primary" onclick="simpanAnggota()"><i class="fa fa-save"></i> Tambahkan</button>
@@ -71,6 +77,7 @@
                                                     <td>{{ $no++ }}</td>
                                                     <td>{{ $row['npp'] }}</td>
                                                     <td>{{ $row['nama_lengkap'] }}, {{ $row['gelar_belakang'] }}</td>
+                                                    <td>{{ $row['status'] == 1 ? 'Koordinator':'Anggota' }}</td>
                                                     <td><a href="{{ url('jadwal/hapus-anggota/'.$row['id']) }}" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Hapus</a></td>
                                                 </tr>
                                             @endforeach
@@ -99,6 +106,7 @@
         })
         function simpanAnggota(){
             var id_pegawai_bio = $('#nama_anggota').val();
+            var status = $('#status').val();
             var idmk = $('#idmk').val();
             const baseUrl = {!! json_encode(url('/')) !!};
             $.ajax({
@@ -107,7 +115,8 @@
                 dataType: 'json',
                 data: {
                     id_pegawai_bio:id_pegawai_bio,
-                    idmk:idmk
+                    idmk:idmk,
+                    status:status
                 },
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 success: function(res){

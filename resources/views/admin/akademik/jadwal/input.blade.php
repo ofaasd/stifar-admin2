@@ -32,8 +32,8 @@
                     <div class="card-body">
                     <ul class="simple-wrapper nav nav-tabs" id="myTab" role="tablist">
                             <li class="nav-item" role="presentation"><a class="nav-link txt-default active" id="masterJadwal-tab" data-bs-toggle="tab" href="#masterJadwal" role="tab" aria-controls="masterJadwal" aria-selected="true">Master Jadwal</a></li>
-                            <li class="nav-item" role="presentation"><a class="nav-link txt-default" id="koorMK-tabs" href="{{ url('/admin/masterdata/koordinator-mk/'.$id_mk) }}" role="tab" aria-controls="koorMK" aria-selected="false" tabindex="-1">Koordinator Matakuliah</a></li>
-                            <li class="nav-item" role="presentation"><a class="nav-link txt-default" id="DsnMK-tab" href="{{ url('/admin/masterdata/anggota-mk/'.$id_mk) }}" role="tab" aria-controls="DsnMK" aria-selected="false" tabindex="-1">Anggota Matakuliah</a></li>
+                            <!-- <li class="nav-item" role="presentation"><a class="nav-link txt-default" id="koorMK-tabs" href="{{ url('/admin/masterdata/koordinator-mk/'.$id_mk) }}" role="tab" aria-controls="koorMK" aria-selected="false" tabindex="-1">Koordinator Matakuliah</a></li> -->
+                            <li class="nav-item" role="presentation"><a class="nav-link txt-default" id="DsnMK-tab" href="{{ url('/admin/masterdata/anggota-mk/'.$id_mk) }}" role="tab" aria-controls="DsnMK" aria-selected="false" tabindex="-1">Koordinator & Anggota Matakuliah</a></li>
                             <!-- <li class="nav-item" role="presentation"><a class="nav-link txt-default" id="Pertemuan-tab" href="{{ url('/admin/masterdata/pertemuan-mk/'.$id_mk) }}" role="tab" aria-controls="Pertemuan" aria-selected="false" tabindex="-1">Pertemuan Matakuliah</a></li> -->
                         </ul>
                         <div class="tab-content" id="myTabContent">
@@ -127,9 +127,6 @@
                                                 <div class="col-sm-8">
                                                     <select name="dosen0" id="dosen0" class="form-control">
                                                         <option value="Pilih Dosen Pengampu">Pilih Dosen Pengampu</option>
-                                                        @foreach ($anggota2 as $dsn)
-                                                            <option value="{{ $dsn['id_pegawai_bio'] }}">{{ $dsn['nama_lengkap'] }}, {{ $dsn['gelar_belakang'] }}</option>
-                                                        @endforeach
                                                         @foreach ($anggota as $dsn)
                                                             <option value="{{ $dsn['id_pegawai_bio'] }}">{{ $dsn['nama_lengkap'] }}, {{ $dsn['gelar_belakang'] }}</option>
                                                         @endforeach
@@ -193,6 +190,14 @@
                                                                                 <label for="kelompok">Tambah Pertemuan :</label>
                                                                                 <input type="text" hidden value="<?= $row['id']?>" id="idjadwal">
                                                                                 <input type="date" id="tgl_pertemuan<?= $row['id']?>" class="form-control" />
+                                                                                <br>
+                                                                                <label for="kelompok">Dosen Pengampu :</label>
+                                                                                <select name="nama_anggota" id="nama_anggota<?= $row['id']?>" class="form-control" required>
+                                                                                    <option value="" selected disabled>Pilih Dosen</option>
+                                                                                    @foreach($anggota as $dsn)
+                                                                                        <option value="{{ $dsn['id'] }}">{{ $dsn['nama_lengkap'] }}, {{ $dsn['gelar_belakang'] }}</option>
+                                                                                    @endforeach
+                                                                                </select>
                                                                             </div>
                                                                             <div class="mt-2"></div>
                                                                             <button type="button" onclick="simpanPertemuan(<?=$row['id']?>)" class="btn btn-primary btn-sm"><i class="fa fa-save"></i> Tambah Pertemuan</button>
@@ -220,9 +225,6 @@
                                                                                 <input type="text" hidden value="<?= $row['id']?>" id="idjadwal">
                                                                                 <select name="dosenPengampu<?=$row['id']?>" id="dosenPengampu<?=$row['id']?>" class="form-control">
                                                                                     <option value="Pilih Dosen Pengampu">Pilih Dosen Pengampu</option>
-                                                                                    @foreach ($anggota2 as $dsn)
-                                                                                        <option value="{{ $dsn['id_pegawai_bio'] }}">{{ $dsn['nama_lengkap'] }}, {{ $dsn['gelar_belakang'] }}</option>
-                                                                                    @endforeach
                                                                                     @foreach ($anggota as $dsn)
                                                                                         <option value="{{ $dsn['id_pegawai_bio'] }}">{{ $dsn['nama_lengkap'] }}, {{ $dsn['gelar_belakang'] }}</option>
                                                                                     @endforeach
@@ -369,9 +371,6 @@
                             <select name="dosen${counterNext}" id="dosen${counterNext}" class="form-control">
                                 <option value="" selected disabled>Pilih Dosen Pengampu</option>
                                 <?php
-                                    foreach($anggota2 as $dosen){
-                                        echo '<option value="'. $dosen['id_pegawai_bio'] .'">'. $dosen['nama_lengkap'] .','. $dosen['gelar_belakang'] .'</option>';
-                                    }
                                     foreach($anggota as $dosen){
                                         echo '<option value="'. $dosen['id_pegawai_bio'] .'">'. $dosen['nama_lengkap'] .','. $dosen['gelar_belakang'] .'</option>';
                                     }
@@ -401,6 +400,7 @@
                                         <table class="table">
                                             <tr>
                                                 <td>Tanggal Pertemuan</td>
+                                                <td>Dosen Pengampu</td>
                                                 <td>Aksi</td>
                                             </tr>
                                     `;
@@ -408,6 +408,7 @@
                             table += `
                                         <tr>
                                             <td>${ list[i].tgl_pertemuan }</td>
+                                            <td>${ list[i].nama_lengkap }</td>
                                             <td>
                                                 <a href="{{ url('jadwal/hapus-pertemuan') }}/${ list[i].id }" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i> Hapus</a>
                                             </td>
@@ -424,12 +425,14 @@
         }
         function simpanPertemuan(idjadwal){
             var tgl_pertemuan = $('#tgl_pertemuan'+idjadwal).val();
+            var nama_anggota = $('#nama_anggota'+idjadwal).val();
             $.ajax({
                 url: baseUrl+'/jadwal/tambah-pertemuan',
                 type: 'post',
                 data: {
                     id_jadwal: idjadwal,
-                    tgl_pertemuan: tgl_pertemuan
+                    tgl_pertemuan: tgl_pertemuan,
+                    nama_pengampu:nama_anggota
                 },
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 dataType: 'json',
@@ -442,6 +445,7 @@
                                         <table class="table">
                                             <tr>
                                                 <td>Tanggal Pertemuan</td>
+                                                <td>Dosen Pengampu</td>
                                                 <td>Aksi</td>
                                             </tr>
                                     `;
@@ -449,6 +453,7 @@
                             table += `
                                         <tr>
                                             <td>${ list[i].tgl_pertemuan }</td>
+                                            <td>${ list[i].nama_lengkap }, ${ list[i].gelar_belakang }</td>
                                             <td>
                                                 <a href="{{ url('jadwal/hapus-pertemuan') }}/${ list[i].id }" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i> Hapus</a>
                                             </td>

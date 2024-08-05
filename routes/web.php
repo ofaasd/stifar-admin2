@@ -165,12 +165,14 @@ Route::middleware('auth')->group(function(){
     Route::post('/jadwal/save-anggota', [JadwalController::class, 'simpanAnggota']);
     Route::post('/jadwal/pengampu', [JadwalController::class, 'jadwalPengampu']);
     Route::post('/jadwal/tambah-pegampu', [JadwalController::class, 'tambahPengampu']);
+    Route::post('/jadwal/daftar-jadwal-harian', [JadwalController::class, 'reqJadwalHarian']);
     Route::post('/jadwal/tambah-pertemuan', [JadwalController::class, 'tambahPertemuan']);
     Route::get('/jadwal/hapus-pertemuan/{id}', [JadwalController::class, 'hapusPertemuan']);
     Route::post('/jadwal/daftar-pertemuan', [JadwalController::class, 'daftarPertemuan']);
     Route::post('/admin/masterdata/jadwal/update', [JadwalController::class, 'updateJadwal']);
     Route::get('/jadwal/hapus-pengampu/{id}', [JadwalController::class, 'hapusPengampu']);
     Route::get('/admin/masterdata/jadwal', [JadwalController::class, 'index']);
+    Route::get('/admin/masterdata/jadwal-harian', [JadwalController::class, 'daftarJadwalHarian']);
     Route::get('/admin/masterdata/koordinator-mk/{id}', [JadwalController::class, 'koordinatorMK']);
     Route::get('/admin/masterdata/anggota-mk/{id}', [JadwalController::class, 'anggotaMK']);
     Route::get('/admin/masterdata/jadwal/create/{id}', [JadwalController::class, 'daftarJadwal']);
