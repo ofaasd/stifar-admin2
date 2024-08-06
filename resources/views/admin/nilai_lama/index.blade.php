@@ -26,45 +26,91 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header pb-0 card-no-border">
-                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal">+ {{$title}}</button>
-                        <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <form action="javascript:void(0)" id="formAdd">
-                                        @csrf
-                                        <input type="hidden" name="id" id="id">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="ModalLabel">Tambah {{$title}}</h5>
-                                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <select name="prodi" id="prodi" class="form-control">
+                                    @foreach($prodi as $row)
+                                        <option value="{{$row->id}}" {{($id_prodi == $row->id)?"selected":""}}>{{$row->nama_prodi}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-8 text-right">
+                                <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal">+ {{$title}}</button>
+                                <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <form action="javascript:void(0)" id="formAdd">
+                                                @csrf
+                                                <input type="hidden" name="id" id="id">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="ModalLabel">Tambah {{$title}}</h5>
+                                                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="mb-3">
+                                                        <label for="ta_id" class="form-label">Tahun Ajaran</label>
+                                                        <select name="ta_id" id="ta_id" class="form-control" required="">
+                                                                <option selected disabled>Tahun Ajaran</option>
+                                                            @foreach($ta as $row)
+                                                                <option value="{{ $row['id'] }}">{{ $row['kode_ta'] }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="id_prodi" class="form-label">Prodi</label>
+                                                        <select name="id_prodi" id="id_prodi" class="form-control" required="">
+                                                                <option selected disabled>Program Studi</option>
+                                                            @foreach($prodi as $row)
+                                                                <option value="{{ $row['id'] }}">{{ $row['nama_jurusan'] }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="kode_mk" class="form-label">Kode MK</label>
+                                                        <select name="kode_mk" id="kode_mk" class="form-control" required="">
+                                                                <option selected disabled>Mata Kuliah</option>
+                                                            @foreach($matakuliah as $row)
+                                                                <option value="{{ $row['kode_mata_kuliah'] }}">{{ $row['nama_mata_kuliah'] }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="nim" class="form-label">Mahasiswa</label>
+                                                        <select name="nim" id="nim" class="form-control" required="">
+                                                                <option selected disabled>Nama Mahasiswa</option>
+                                                            @foreach($nim as $row)
+                                                                <option value="{{ $row['nim'] }}">{{ $row['nama'] }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="uts" class="form-label">Nilai UTS</label>
+                                                        <input type="number" step=".01" placeholder="Nilai UTS" name="uts" id="uts" class="form-control" required="">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="uas" class="form-label">Nilai UAS</label>
+                                                        <input type="number" step=".01" placeholder="Nilai uas" name="uas" id="uas" class="form-control" required="">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="tugas" class="form-label">Nilai Tugas</label>
+                                                        <input type="number" step=".01" placeholder="Nilai tugas" name="tugas" id="tugas" class="form-control" required="">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="nilai" class="form-label">Nilai Akhir</label>
+                                                        <input type="number" step=".01" placeholder="Nilai tugas" name="nilai" id="nilai" class="form-control" required="">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="nilai_huruf" class="form-label">Nilai Huruf</label>
+                                                        <input type="text" placeholder="Nilai tugas" name="nilai_huruf" id="nilai_huruf" class="form-control" required="">
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                                                    <button class="btn btn-primary" type="submit">Simpan</button>
+                                                </div>
+                                            </form>
                                         </div>
-                                        <div class="modal-body">
-                                            <div class="mb-3">
-                                                <label for="kode_sesi" class="form-label">Kode Sesi</label>
-                                                <input type="text" placeholder="Kode Sesi" name="kode_sesi" id="kode_sesi" class="form-control" required="">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="id_ruang" class="form-label">Pilih Ruang Sesi</label>
-                                                <select name="id_ruang" id="id_ruang" class="form-control" required="">
-                                                        <option selected disabled>Pilih Ruang</option>
-                                                    @foreach($data_ruang as $dr)
-                                                        <option value="{{ $dr['id'] }}">{{ $dr['nama_ruang'] }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="status" class="form-label">Status Tahun Ajaran</label>
-                                                <select name="status" id="status" class="form-control">
-                                                        <option value="Aktif" selected="">Aktif</option>
-                                                        <option value="Tidak Aktif">Tidak Aktif</option>
-                                                </select>
-                                            </div>
-
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
-                                            <button class="btn btn-primary" type="submit">Simpan</button>
-                                        </div>
-                                    </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -77,10 +123,14 @@
                                     <tr>
                                         <th></th>
                                         <th>ID</th>
-                                        <th>Kode Sesi</th>
-                                        <th>Nama Sesi</th>
-                                        <th>Nama Ruang</th>
-                                        <th>Status</th>
+                                        <th>TA</th>
+                                        <th>Kd Matakuliah</th>
+                                        <th>NIM</th>
+                                        <th>Nama</th>
+                                        <th>UTS</th>
+                                        <th>UAS</th>
+                                        <th>Nilai</th>
+                                        <th>Nilah Huruf</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
