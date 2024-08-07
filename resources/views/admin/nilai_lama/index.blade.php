@@ -11,12 +11,12 @@
 @endsection
 
 @section('breadcrumb-title')
-    <h3>{{$title}}</h3>
+    <h3>{{$title2}}</h3>
 @endsection
 
 @section('breadcrumb-items')
     <li class="breadcrumb-item">Master Data</li>
-    <li class="breadcrumb-item active">{{$title}}</li>
+    <li class="breadcrumb-item active">{{$title2}}</li>
 @endsection
 
 @section('content')
@@ -35,7 +35,7 @@
                                 </select>
                             </div>
                             <div class="col-md-8 text-right">
-                                <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal">+ {{$title}}</button>
+                                <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal">+ {{$title2}}</button>
                                 <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
@@ -59,9 +59,9 @@
                                                     <div class="mb-3">
                                                         <label for="id_prodi" class="form-label">Prodi</label>
                                                         <select name="id_prodi" id="id_prodi" class="form-control" required="">
-                                                                <option selected disabled>Program Studi</option>
+                                                                <option selected>Program Studi</option>
                                                             @foreach($prodi as $row)
-                                                                <option value="{{ $row['id'] }}">{{ $row['nama_jurusan'] }}</option>
+                                                                <option value="{{ $row['id'] }}" {{($id_prodi == $row->id)?"selected":""}}>{{ $row['nama_prodi'] }}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>
@@ -156,7 +156,7 @@
 
             const baseUrl = {!! json_encode(url('/')) !!};
             const title = "{{strtolower($title)}}";
-            const page = '/'.concat("admin/masterdata/").concat(title);
+            const page = '/'.concat("admin/").concat(title);
             var my_column = $('#my_column').val();
             const pecah = my_column.split('\n');
             let my_data = [];

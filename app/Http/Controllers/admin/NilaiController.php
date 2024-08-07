@@ -17,16 +17,7 @@ class NilaiController extends Controller
     public function index()
     {
         //
-        $prodi = Prodi::all();
-        $nilai = NilaiLama::all();
-        $ta = TahunAjaran::all();
-        $matakuliah = MataKuliah::all();
-        $list_ta = [];
-        foreach($ta as $row){
-            $list_ta[$row->id] = $row->kode_ta;
-        }
 
-        return view('admin.nilai_lama.index',compact('title','matakuliah','prodi','ta','nilai'));
     }
 
     /**
@@ -75,5 +66,21 @@ class NilaiController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function nilai_lama(Request $request){
+        $id_prodi = 1;
+        $prodi = Prodi::all();
+        $nilai = NilaiLama::all();
+        $ta = TahunAjaran::all();
+        $matakuliah = MataKuliah::all();
+        $list_ta = [];
+        foreach($ta as $row){
+            $list_ta[$row->id] = $row->kode_ta;
+        }
+
+        $title = "Import Nilai Lama";
+
+        return view('admin.nilai_lama.index',compact('title','matakuliah','prodi','ta','nilai'));
     }
 }

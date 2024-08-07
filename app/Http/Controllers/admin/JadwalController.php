@@ -97,7 +97,7 @@ class JadwalController extends Controller
             ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
             ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
             ->where(['jadwals.hari' => $hari])
-            ->get(); 
+            ->get();
         }
         if (($hari == 0) && ($matakuliah != 0)) {
             $q = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
@@ -106,7 +106,7 @@ class JadwalController extends Controller
             ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
             ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
             ->where(['jadwals.id_mk' => $matakuliah])
-            ->get(); 
+            ->get();
         }
         if (($hari != 0) && ($matakuliah != 0)) {
             $q = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
@@ -115,7 +115,7 @@ class JadwalController extends Controller
             ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
             ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
             ->where(['jadwals.hari' => $hari, 'jadwals.id_mk' => $matakuliah])
-            ->get(); 
+            ->get();
         }
         return json_encode(['data' => $q]);
     }
@@ -182,13 +182,18 @@ class JadwalController extends Controller
         $idmk = $request->idmk;
         $id_pegawai_bio = $request->id_pegawai_bio;
         $status = $request->status;
+        $cek_qr = anggota_mk::where(['idmk' => $idmk, 'id_pegawai_bio' => $id_pegawai_bio])->count();
+        if($cek_qr == 0){
+           $qr = anggota_mk::create(['idmk' => $idmk, 'id_pegawai_bio' => $id_pegawai_bio, 'status' => $status]);
 
-        $qr = anggota_mk::create(['idmk' => $idmk, 'id_pegawai_bio' => $id_pegawai_bio, 'status' => $status]);
-
-        if($qr){
-            return json_encode(['status' => 'ok', 'kode' => 200]);
+            if($qr){
+                return json_encode(['status' => 'ok', 'kode' => 200]);
+            }
+            return json_encode(['status' => 'error', 'kode' => 204]);
+        }else{
+            return json_encode(['status' => 'error', 'kode' => 205]);
         }
-        return json_encode(['status' => 'ok', 'kode' => 204]);
+
     }
     public function hapusAnggota($id){
         $qr = anggota_mk::where('id', $id)->first();
@@ -301,5 +306,13 @@ class JadwalController extends Controller
             pengajar::create(['id_jadwal' => $id_jadwal, 'id_dsn' => $dsn[$i]]);
         }
         return json_encode(['status' => 'ok', 'kode' => 200]);
+    }
+    public function tableAnggota(Request $request){
+        $idmk = $request->idmk;
+        $anggota = anggota_mk::select('anggota_mks.*', 'pegawai_biodata.npp', 'pegawai_biodata.nama_lengkap', 'pegawai_biodata.gelar_belakang')
+                        ->leftJoin('pegawai_biodata', 'anggota_mks.id_pegawai_bio', '=', 'pegawai_biodata.id')
+                        ->where(['anggota_mks.idmk' => $idmk])->get();
+        $no = 1;
+        return view('admin.akademik.jadwal.tableAnggota', compact('idmk', 'anggota', 'no'));
     }
 }

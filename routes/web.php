@@ -38,6 +38,8 @@ use App\Http\Controllers\admin\ProdiController;
 use App\Http\Controllers\admin\KurikulumController;
 use App\Http\Controllers\admin\KelompokMatkulController;
 use App\Http\Controllers\admin\MatkulController;
+use App\Http\Controllers\admin\NilaiController;
+use App\Http\Controllers\admin\NilaiLamaController;
 use App\Http\Controllers\admin\master\PTController;
 use App\Http\Controllers\admin\master\AtributPTController;
 use App\Http\Controllers\admin\master\RenstraPTController;
@@ -115,6 +117,8 @@ Route::middleware('auth')->group(function(){
     Route::get('admin/masterdata/prodi/akreditasi/{id}', [ProdiAkreditasiController::class, 'index'])->name('akreditasi_prodi');
     //Route::get('admin/masterdata/pt/renstra/detail/{id}', [RenstraPTController::class, 'index'])->name('renstra_detail');
 
+    Route::get('admin/nilai_lama/{id}/{id_ta}', [NilaiLamaCOntroller::class, 'index'])->name('nilai_lama');
+
 
     Route::resource('admin/masterdata/pt', PTController::class)->name('index','pt');
     Route::resource('admin/masterdata/pt/atribut', AtributPTController::class)->name('index','atribut');
@@ -179,7 +183,10 @@ Route::middleware('auth')->group(function(){
     Route::get('/jadwal/hapus-koor/{id}', [JadwalController::class, 'hapusKoor']);
     Route::get('/jadwal/hapus/{id}', [JadwalController::class, 'hapusJadwal']);
     Route::get('/jadwal/hapus-anggota/{id}', [JadwalController::class, 'hapusAnggota']);
+    Route::post('/jadwal/tableAnggota', [JadwalController::class, 'tableAnggota']);
     Route::post('/admin/masterdata/jadwal/create', [JadwalController::class, 'createJadwal']);
+
+
 
     // route KRS
     Route::get('/admin/masterdata/krs', [KrsController::class, 'index']);
@@ -225,5 +232,7 @@ Route::middleware('auth')->group(function(){
 
     Route::resource('pegawai', UserPegawaiController::class)->name('index','pegawai');
     Route::resource('riwayat', RiwayatPegawaiController::class)->name('index','pegawai');
+
+    Route::resource('admin/nilai_lama', NilaiLamaController::class)->name('index','nilai_lama');
 
 });

@@ -8,6 +8,7 @@
 @section('style')
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/vendors/datatables.css') }}">
 <link rel="stylesheet" type="text/css" href="{{asset('assets/css/vendors/sweetalert2.css')}}">
+<link rel="stylesheet" type="text/css" href="{{asset('assets/css/vendors/select2.css')}}">
 @endsection
 
 @section('breadcrumb-title')
@@ -27,7 +28,7 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header pb-0 card-no-border">
-                            
+
                     </div>
                     <div class="card-body">
                         <ul class="simple-wrapper nav nav-tabs" id="myTab" role="tablist">
@@ -42,8 +43,7 @@
                                         <div class="mb-3">
                                             <label for="kode_jadwal" class="form-label">Nama Anggota</label>
                                             <input type="text" value="{{ $idmk }}" name="idmk" id="idmk" hidden="" />
-                                            <select name="nama_anggota" id="nama_anggota" class="form-control">
-                                                <option value="" selected disabled>Pilih Dosen Anggota</option>
+                                            <select name="nama_anggota" id="nama_anggota" class="js-example-basic-single">
                                                 @foreach($pegawai as $dsn)
                                                     <option value="{{ $dsn['id'] }}">{{ $dsn['nama_lengkap'] }}, {{ $dsn['gelar_belakang'] }}</option>
                                                 @endforeach
@@ -57,17 +57,18 @@
                                                 <option value="2">Anggota</option>
                                             </select>
                                         </div>
-                                        <button class="btn btn-primary" onclick="simpanAnggota()"><i class="fa fa-save"></i> Tambahkan</button>
+                                        <button class="btn btn-primary" onclick="simpanAnggota()" id="btn_tambah"><i class="fa fa-save"></i> Tambahkan</button>
                                     </div>
                                 </div>
                                 <hr>
-                                <div class="table-responsive">
+                                <div class="table-responsive" id="anggota-table">
                                     <table class="display" id="myTable">
                                         <thead>
                                             <tr>
                                                 <th>No.</th>
                                                 <th>NPP</th>
                                                 <th>Nama Dosen</th>
+                                                <th>Status</th>
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>
@@ -78,7 +79,7 @@
                                                     <td>{{ $row['npp'] }}</td>
                                                     <td>{{ $row['nama_lengkap'] }}, {{ $row['gelar_belakang'] }}</td>
                                                     <td>{{ $row['status'] == 1 ? 'Koordinator':'Anggota' }}</td>
-                                                    <td><a href="{{ url('jadwal/hapus-anggota/'.$row['id']) }}" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Hapus</a></td>
+                                                    <td><a href="javascript:void(0)" data-id='{{$row->id}}' class="btn btn-danger btn-sm hapusAnggota"><i class="fa fa-trash"></i> Hapus</a></td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
@@ -97,14 +98,42 @@
 @section('script')
     <script src="{{ asset('assets/js/datatable/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{asset('assets/js/sweet-alert/sweetalert.min.js')}}"></script>
+    <script src="{{asset('assets/js/select2/select2.full.min.js')}}"></script>
+    <script src="{{asset('assets/js/select2/select2-custom.js')}}"></script>
 
     <script>
+        $(document).on('click','.hapusAnggota',function(){
+            const idmk = $('#idmk').val();
+            const id = $(this).data('id');
+            const baseUrl = {!! json_encode(url('/')) !!};
+            $.ajax({
+                url: baseUrl+'/jadwal/hapus-anggota/'+id,
+                type: 'get',
+                success: function(res){
+                    swal({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'Anggota Berhasil Terinputkan!',
+                        customClass: {
+                            confirmButton: 'btn btn-danger'
+                        }
+                    });
+                    update_table(baseUrl,idmk);
+
+                        //window.location.href = baseUrl+'/admin/masterdata/anggota-mk/'+idmk;
+
+
+                },
+            });
+        });
         $(function() {
             $("#myTable").DataTable({
                 responsive: true
             })
+
         })
         function simpanAnggota(){
+            $("#btn_tambah").attr("disabled",true);
             var id_pegawai_bio = $('#nama_anggota').val();
             var status = $('#status').val();
             var idmk = $('#idmk').val();
@@ -130,6 +159,16 @@
                             }
                         });
                     }
+                    if(res.kode == 205){
+                        swal({
+                            icon: 'warning',
+                            title: 'Galat!',
+                            text: 'Data Sudah pernah di input',
+                            customClass: {
+                                confirmButton: 'btn btn-danger'
+                            }
+                        });
+                    }
                     if(res.kode == 200){
                         swal({
                             icon: 'success',
@@ -139,8 +178,36 @@
                                 confirmButton: 'btn btn-danger'
                             }
                         });
-                        window.location.href = baseUrl+'/admin/masterdata/anggota-mk/'+idmk;
+                        update_table(baseUrl,idmk);
+
+                        //window.location.href = baseUrl+'/admin/masterdata/anggota-mk/'+idmk;
                     }
+                    $("#btn_tambah").attr("disabled",false);
+
+                },
+                error:function(data){
+                    swal({
+                        icon: 'warning',
+                        title: 'Galat!',
+                        text: 'Simpan Gagal!',
+                        customClass: {
+                            confirmButton: 'btn btn-danger'
+                        }
+                    });
+                    $("#btn_tambah").attr("disabled",false);
+                }
+            });
+        }
+        function update_table(baseUrl,idmk){
+            $.ajax({
+                url: baseUrl+'/jadwal/tableAnggota',
+                type: 'post',
+                data : {
+                    idmk:idmk,
+                },
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                success:function(data){
+                    $("#anggota-table").html(data);
                 }
             });
         }
