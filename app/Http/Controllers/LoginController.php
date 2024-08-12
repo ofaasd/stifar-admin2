@@ -31,7 +31,19 @@ class LoginController extends Controller
         ]);
 
         if (Auth::Attempt($credentials)) {
-            return redirect('dashboard');
+            $role = Auth::User()->roles->pluck('name');
+            if($role[0] == "mhs"){
+                $mhs = Mahasiswa::where('user_id',Auth::user()->id)->first();
+                if($mhs->update_password == 0){
+                    return redirect('mhs/profile');
+                }else{
+                    return redirect('mhs/dashboard');
+                }
+            }else{
+                return redirect('dashboard');
+            }
+
+            // return redirect('dashboard');
         }else{
             Session::flash('error', 'Email atau Password Salah');
             return redirect('/');

@@ -183,6 +183,39 @@ class MahasiswaController extends Controller
             return response()->json('User Created');
         }
     }
+  public function user_update2(Request $request){
+        $id = $request->id;
+        $id_mahasiswa = Mahasiswa::where('user_id',$id)->first()->id;
+        $user = User::find($id);
+        $cek = Hash::check($request->password_lama, $user->password);
+        $password_baru = $request->password_baru;
+        $confirm_password = $request->password_baru_confirm;
+        if($cek){
+            if($password_baru != $confirm_password){
+                //password konfirmasi tidak sama
+                return response()->json('Failed', 500);
+            }else{
+                $user = User::updateOrCreate(
+                    ['id' => $id,],
+                    [
+                        'password' => Hash::make($request->password_baru),
+                    ]
+                );
+                $mahasiswa = Mahasiswa::find($id_mahasiswa);
+                $mahasiswa->update_password = 1;
+                $mahasiswa->save();
+                return response()->json('Password updated');
+            }
+        }else{
+            $returnData = array(
+                'status' => 'error',
+                'message' => 'Password lama salah'
+            );
+            //password tidak sama dengan yang ada di db
+            return response()->json($returnData, 500);
+        }
+
+    }
     public function foto_update(Request $request){
         $id = $request->id;
         if ($request->file('foto')) {

@@ -43,7 +43,7 @@ class KurikulumController extends Controller
 
 
             if (empty($request->input('search.value'))) {
-                $kurikulum = Kurikulum::leftJoin('prodis', 'kurikulums.progdi', '=', 'prodis.id')
+                $kurikulum = Kurikulum::select("kurikulums.*")->leftJoin('prodis', 'kurikulums.progdi', '=', 'prodis.id')
                     ->leftJoin('tahun_ajarans', 'tahun_ajarans.id', '=', 'kurikulums.thn_ajar')
                     ->offset($start)
                     ->limit($limit)
@@ -52,7 +52,7 @@ class KurikulumController extends Controller
             } else {
                 $search = $request->input('search.value');
 
-                $kurikulum = Kurikulum::leftJoin('prodis', 'kurikulums.progdi', '=', 'prodis.id')
+                $kurikulum = Kurikulum::select("kurikulums.*")->leftJoin('prodis', 'kurikulums.progdi', '=', 'prodis.id')
                     ->leftJoin('tahun_ajarans', 'tahun_ajarans.id', '=', 'kurikulums.thn_ajar')
                     ->where('kurikulums.id', 'LIKE', "%{$search}%")
                     ->orWhere('kurikulums.kode_kurikulum', 'LIKE', "%{$search}%")

@@ -1,4 +1,5 @@
 <script>
+
     $(document.body).on("submit","#formMahasiswa",function(){
         $(".update-btn").prop('disabled', true);
         $(".update-btn").html('<div class="loader-2"></div> Please Wait');

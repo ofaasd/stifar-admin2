@@ -11,7 +11,7 @@
 @endsection
 
 @section('breadcrumb-title')
-    <h3><a href="{{URL::to('mahasiswa')}}"><i class="fa fa-arrow-left"></i></a> {{$title}}</h3>
+    <h3>{{$title}}</h3>
 @endsection
 
 @section('breadcrumb-items')
@@ -22,6 +22,13 @@
 @section('content')
 <div class="container-fluid">
     <div class="edit-profile">
+        <div class="row">
+            <div class="col-md-12">
+                @if($mahasiswa->update_password == 0)
+                <div class="alert alert-danger dark">Segera update password anda demi keamanan akun</div>
+                @endif
+            </div>
+        </div>
         <div class="row">
           <div class="col-xl-4">
             <div class="card">
@@ -64,7 +71,7 @@
                       <div class="row">
                           <div class="col-md-12 mb-4">
                               <a href="#" class="btn btn-primary btn-block" data-bs-toggle="modal" data-original-title="test" data-bs-target="#ubahPasswordModal"><i class="fa fa-key"></i> Ubah Password</a>
-                              @include('mahasiswa._form_ubah_password')
+                              @include('mahasiswa._form_ubah_password_user')
                           </div>
                           <div class="col-md-12 mb-4">
                               <a href="#" class="btn btn-primary btn-block" data-bs-toggle="modal" data-original-title="test" data-bs-target="#ubahFotoModal"><i class="fa fa-image"></i> Ubah Foto</a>
@@ -100,6 +107,13 @@
     <script src="{{ asset('assets/js/datatable/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{asset('assets/js/sweet-alert/sweetalert.min.js')}}"></script>
     @include('mahasiswa._script_profile')
-    @include('mahasiswa._script_user_update')
+    @include('mahasiswa._script_user_update2')
     @include('mahasiswa._script_foto_update')
+    @if($mahasiswa->update_password == 0)
+    <script>
+        $(window).on('load', function() {
+            $('#ubahPasswordModal').modal('show');
+        });
+    </script>
+    @endif
 @endsection

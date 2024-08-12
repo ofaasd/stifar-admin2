@@ -75,6 +75,7 @@ Route::get('/logout', [LoginController::class, 'logout'])->name('logout')->middl
 
 Route::middleware('auth')->group(function(){
     Route::get('/dashboard',[DashboardController::class, 'index'] )->name('dashboard');
+    Route::get('/mhs/dashboard',[DashboardController::class, 'mhs'] )->name('dashboard');
 
     Route::post('admin/admisi/peserta/daftar_kota',[PmbPesertaController::class, 'daftar_kota'] )->name('daftar_kota');
     Route::post('admin/admisi/peserta/get_gelombang',[PmbPesertaController::class, 'get_gelombang'] )->name('get_gelombang');
@@ -133,6 +134,7 @@ Route::middleware('auth')->group(function(){
 
     Route::get('/mahasiswa/detail/{nim}', [MahasiswaController::class, 'detail']);
     Route::post('mahasiswa/user_update', [MahasiswaController::class, 'user_update'])->name('user_update');
+    Route::post('mahasiswa/user_update2', [MahasiswaController::class, 'user_update2'])->name('user_update2');
     Route::post('mahasiswa/foto_update', [MahasiswaController::class, 'foto_update'])->name('foto_update');
 
     Route::get('mhs/profile', [ProfileController::class, 'index'])->name('index');

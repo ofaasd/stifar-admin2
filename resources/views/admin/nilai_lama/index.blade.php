@@ -35,7 +35,37 @@
                                 </select>
                             </div>
                             <div class="col-md-8 text-right">
-                                <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal">+ {{$title2}}</button>
+                                <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="Import" data-bs-target="#importModal">+ Import</button>
+                                <div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="importModal" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <form action="javascript:void(0)" id="formAdd">
+                                                @csrf
+                                                <input type="hidden" name="id" id="id">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="ModalLabel">Import {{$title2}}</h5>
+                                                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="mb-3">
+                                                        <label for="file_import" class="form-label">File Import</label>
+                                                        <input type="file" placeholder="Import File" name="file_import" id="file_import" class="form-control" required="">
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                                                    <button class="btn btn-primary" type="submit">Simpan</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal">+ {{$title2}}</button>
                                 <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
@@ -43,7 +73,7 @@
                                                 @csrf
                                                 <input type="hidden" name="id" id="id">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="ModalLabel">Tambah {{$title}}</h5>
+                                                    <h5 class="modal-title" id="ModalLabel">Tambah {{$title2}}</h5>
                                                     <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
@@ -112,10 +142,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
                         </div>
-                    </div>
-                    <div class="card-body">
                         <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
                         <div class="table-responsive">
                             <table class="display" id="basic-1">

@@ -13,7 +13,7 @@ use App\Models\Mahasiswa;
 class NilaiLamaController extends Controller
 {
     //
-    public $indexed = ['', 'id', 'ta','kd_matkul', 'nim','nama','uts','uas','nilai','nilai_huruf'];
+    public $indexed = ['', 'id', 'ta_id','kd_matkul', 'nim','nama','uts','uas','nilai','nilai_huruf'];
     public function index(Request $request,$id=0,$id_ta=0)
     {
         //
@@ -30,12 +30,12 @@ class NilaiLamaController extends Controller
             return view('admin.nilai_lama.index', compact('matakuliah','ta','prodi','title','indexed','title2','id_prodi','id_ta','nim'));
         }else{
             $columns = [
-                1 =>'id', 'ta','kd_matkul', 'nim','nama','uts','uas','nilai','nilai_huruf'
+                1 =>'id', 'ta_id','kd_matkul', 'nim','nama','uts','uas','nilai','nilai_huruf'
             ];
 
             $search = [];
 
-            $totalData = MasterProdiAtribut::where('id_prodi',$id)->where('keterangan',2)->count();
+            $totalData = NilaiLama::where('id_prodi',$id)->count();
 
             $totalFiltered = $totalData;
 
@@ -46,8 +46,7 @@ class NilaiLamaController extends Controller
 
 
             if (empty($request->input('search.value'))) {
-                $pt = MasterProdiAtribut::where('id_prodi',$id_prodi)
-                    ->where('keterangan',2)
+                $pt = NilaiLama::where('id_prodi',$id_prodi)
                     ->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
@@ -55,15 +54,15 @@ class NilaiLamaController extends Controller
             } else {
                 $search = $request->input('search.value');
 
-                $pt = MasterProdiAtribut::where(['id_prodi'=>$id_prodi,'keterangan'=>2])
-                    ->orWhere('nama', 'LIKE', "%{$search}%")
+                $pt = NilaiLama::where(['id_prodi'=>$id_prodi])
+                    ->orWhere('nim', 'LIKE', "%{$search}%")
                     ->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
                     ->get();
 
-                $totalFiltered = MasterProdiAtribut::where(['id_prodi'=>$id_prodi,'keterangan'=>2])
-                ->orWhere('nama', 'LIKE', "%{$search}%")
+                $totalFiltered = NilaiLama::where(['id_prodi'=>$id_prodi])
+                ->orWhere('nim', 'LIKE', "%{$search}%")
                 ->count();
             }
 
@@ -76,10 +75,14 @@ class NilaiLamaController extends Controller
                 foreach ($pt as $row) {
                     $nestedData['id'] = $row->id;
                     $nestedData['fake_id'] = ++$ids;
-                    $nestedData['nama'] = $row->nama;
-                    $nestedData['file'] = $row->file;
-                    $nestedData['url'] = $row->url;
-                    $nestedData['tahun'] = $row->tahun;
+                    $nestedData['ta_id'] = $row->ta_id;
+                    $nestedData['kd_matkul'] = $row->kode_mk;
+                    $nestedData['nim'] = $row->nim;
+                    $nestedData['nama'] = $row->nim;
+                    $nestedData['uts'] = $row->uts;
+                    $nestedData['uas'] = $row->uas;
+                    $nestedData['nilai'] = $row->nilai;
+                    $nestedData['nilai_huruf'] = $row->nilai_huruf;
                     $data[] = $nestedData;
                 }
             }
