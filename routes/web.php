@@ -73,9 +73,9 @@ Route::get('/register_mahasiswa', [LoginController::class, 'register_mahasiswa']
 Route::post('/actionRegister', [LoginController::class, 'actionRegister'])->name('actionRegister');
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 
-Route::middleware('auth')->group(function(){
+Route::group(['middleware' => ['role:super-admin']], function(){
+//Route::middleware('auth')->group(function(){
     Route::get('/dashboard',[DashboardController::class, 'index'] )->name('dashboard');
-    Route::get('/mhs/dashboard',[DashboardController::class, 'mhs'] )->name('dashboard');
 
     Route::post('admin/admisi/peserta/daftar_kota',[PmbPesertaController::class, 'daftar_kota'] )->name('daftar_kota');
     Route::post('admin/admisi/peserta/get_gelombang',[PmbPesertaController::class, 'get_gelombang'] )->name('get_gelombang');
@@ -237,4 +237,19 @@ Route::middleware('auth')->group(function(){
 
     Route::resource('admin/nilai_lama', NilaiLamaController::class)->name('index','nilai_lama');
 
+});
+
+Route::group(['middleware' => ['role:mhs']], function(){
+    Route::get('/mhs/dashboard',[DashboardController::class, 'mhs'] )->name('dashboard');
+
+    Route::get('/mahasiswa/detail/{nim}', [MahasiswaController::class, 'detail']);
+    Route::post('mahasiswa/user_update', [MahasiswaController::class, 'user_update'])->name('user_update');
+    Route::post('mahasiswa/user_update2', [MahasiswaController::class, 'user_update2'])->name('user_update2');
+    Route::post('mahasiswa/foto_update', [MahasiswaController::class, 'foto_update'])->name('foto_update');
+
+    Route::get('mhs/profile', [ProfileController::class, 'index'])->name('index');
+
+    Route::get('mhs/input_krs', [mhsKrsController::class, 'input'])->name('input');
+    Route::get('/admin/masterdata/krs/admin/hapus/{id}', [KrsController::class, 'hapusadminKRS']);
+    Route::post('/admin/masterdata/krs/list-jadwal', [KrsController::class, 'showJadwal']);
 });

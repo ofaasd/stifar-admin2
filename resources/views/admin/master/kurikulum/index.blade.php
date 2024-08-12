@@ -70,8 +70,17 @@
                                                                 </select>
                                                         </div>
                                                         <div class="mb-3">
-                                                            <label for="angkatan" class="form-label">Angkatan</label>
-                                                            <input type="number" name="angkatan" id="angkatan" class="form-control">
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <label for="angkatan" class="form-label">Mulai Angkatan</label>
+                                                                    <input type="number" name="angkatan" id="angkatan" class="form-control" placeholder="Mulai dari Angkatan">
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <label for="angkatan" class="form-label">Sampai Angkatan</label>
+                                                                    <input type="number" name="angkatan_akhir" id="angkatan_akhir" class="form-control" placeholder="Sampai Angkatan">
+                                                                </div>
+                                                            </div>
+
                                                         </div>
                                                         <div class="mb-3">
                                                             <label for="status" class="form-label">Status Kurikulum</label>
@@ -152,22 +161,30 @@
                 columnDefs: [
                     {
                     // For Responsive
-                    className: 'control',
-                    searchable: false,
-                    orderable: false,
-                    responsivePriority: 2,
-                    targets: 0,
-                    render: function render(data, type, full, meta) {
-                        return '';
-                    }
+                        className: 'control',
+                        searchable: false,
+                        orderable: false,
+                        responsivePriority: 2,
+                        targets: 0,
+                        render: function render(data, type, full, meta) {
+                            return '';
+                        }
                     },
                     {
-                    searchable: false,
-                    orderable: false,
-                    targets: 1,
-                    render: function render(data, type, full, meta) {
-                        return '<span>'.concat(full.fake_id, '</span>');
-                    }
+                        searchable: false,
+                        orderable: false,
+                        targets: 1,
+                        render: function render(data, type, full, meta) {
+                            return '<span>'.concat(full.fake_id, '</span>');
+                        }
+                    },
+                    {
+                        searchable: false,
+                        orderable: false,
+                        targets: 5,
+                        render: function render(data, type, full, meta) {
+                            return '<span>'.concat(full.angkatan).concat(' - ',full.angkatan_akhir).concat('</span>');
+                        }
                     },
                     {
                     // Actions

@@ -8,7 +8,10 @@ use App\Models\User;
 use App\Models\MataKuliah;
 use App\Models\Krs;
 use App\Models\TahunAjaran;
+use App\Models\Kurikulum;
 use App\Models\Mahasiswa;
+use App\Models\Prodi;
+use App\Models\MatakuliahKurikulum;
 use App\Models\MasterKeuanganMh;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
@@ -24,7 +27,10 @@ class KrsController extends Controller
         $ta = $tahun_ajaran->id;
 
         $title = 'Input KRS';
-        $mk = MataKuliah::get();
+        $kd_prodi_mhs = Prodi::where('id',$mhs->id_program_studi)->first()->kode_prodi;
+        $kurikulum = Kurikulum::where('progdi',$kd_prodi_mhs)->first();
+        $mk = MatakuliahKurikulum::select('mata_kuliahs.*')->join('mata_kuliahs','mata_kuliahs.id','=','matakuliah_kurikulums.id_mk')->where('id_kurikulum',$kurikulum->id)->get();
+        //$mk = MataKuliah::get();
         $krs = Krs::select('krs.*', 'a.hari', 'a.kel', 'b.nama_matkul', 'b.sks_teori', 'b.sks_praktek', 'c.nama_sesi', 'd.nama_ruang')
                     ->leftJoin('jadwals as a', 'krs.id_jadwal', '=', 'a.id')
                     ->leftJoin('mata_kuliahs as b', 'a.id_mk', '=', 'b.id')
@@ -35,6 +41,6 @@ class KrsController extends Controller
         $no = 1;
         $permission = MasterKeuanganMh::where('id_mahasiswa',$idmhs)->first();
         //return view('admin.akademik.krs.inputkrsadmin', compact('title', 'mk', 'krs', 'no', 'ta', 'idmhs'));
-        return view('mahasiswa.input_krs', compact('title', 'permission','mk', 'krs', 'no', 'ta', 'idmhs'));
+        return view('mahasiswa.input_krs', compact('mhs','title', 'permission','mk', 'krs', 'no', 'ta', 'idmhs'));
     }
 }

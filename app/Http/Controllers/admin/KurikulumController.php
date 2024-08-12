@@ -43,7 +43,7 @@ class KurikulumController extends Controller
 
 
             if (empty($request->input('search.value'))) {
-                $kurikulum = Kurikulum::select("kurikulums.*")->leftJoin('prodis', 'kurikulums.progdi', '=', 'prodis.id')
+                $kurikulum = Kurikulum::select("kurikulums.*",'tahun_ajarans.kode_ta')->leftJoin('prodis', 'kurikulums.progdi', '=', 'prodis.id')
                     ->leftJoin('tahun_ajarans', 'tahun_ajarans.id', '=', 'kurikulums.thn_ajar')
                     ->offset($start)
                     ->limit($limit)
@@ -52,7 +52,7 @@ class KurikulumController extends Controller
             } else {
                 $search = $request->input('search.value');
 
-                $kurikulum = Kurikulum::select("kurikulums.*")->leftJoin('prodis', 'kurikulums.progdi', '=', 'prodis.id')
+                $kurikulum = Kurikulum::select("kurikulums.*",'tahun_ajarans.kode_ta')->leftJoin('prodis', 'kurikulums.progdi', '=', 'prodis.id')
                     ->leftJoin('tahun_ajarans', 'tahun_ajarans.id', '=', 'kurikulums.thn_ajar')
                     ->where('kurikulums.id', 'LIKE', "%{$search}%")
                     ->orWhere('kurikulums.kode_kurikulum', 'LIKE', "%{$search}%")
@@ -89,6 +89,7 @@ class KurikulumController extends Controller
                     $nestedData['progdi'] = $row->progdi;
                     $nestedData['thn_ajar'] = $row->kode_ta;
                     $nestedData['angkatan'] = $row->angkatan;
+                    $nestedData['angkatan_akhir'] = $row->angkatan_akhir;
                     $nestedData['status'] = $row->status;
                     $data[] = $nestedData;
                 }
@@ -124,6 +125,7 @@ class KurikulumController extends Controller
                     'progdi' => $request->progdi,
                     'thn_ajar' => $request->thn_ajar,
                     'angkatan' => $request->angkatan,
+                    'angkatan_akhir' => $request->angkatan_akhir,
                     'status' => $request->status
                 ]
             );
@@ -137,6 +139,7 @@ class KurikulumController extends Controller
                     'progdi' => $request->progdi,
                     'thn_ajar' => $request->thn_ajar,
                     'angkatan' => $request->angkatan,
+                    'angkatan_akhir' => $request->angkatan_akhir,
                     'status' => $request->status
                 ]
             );
