@@ -39,7 +39,11 @@ class LoginController extends Controller
                 }else{
                     return redirect('mhs/dashboard');
                 }
-            }else{
+            }
+            // if($role[0] == "pegawai"){
+            //     $dosen = 
+            // }
+            else{
                 return redirect('dashboard');
             }
 

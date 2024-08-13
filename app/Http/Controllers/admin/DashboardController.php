@@ -14,4 +14,7 @@ class DashboardController extends Controller
     public function mhs(){
         return view('index_mhs');
     }
+    public function dosen(){
+        return view('index_pegawai');
+    }
 }
