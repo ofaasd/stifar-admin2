@@ -32,6 +32,9 @@
                             @if($permission->krs == 0)
                                 <div class="alert alert-danger">Anda belum diizinkan untuk melakukan input krs harap hubungi admin sistem</div>
                             @else
+                                @if($mk == 0)
+                                    <div class="alert alert-danger">Belum ada Kurikulum untuk angkatan anda. Harap hubungi admin</div>
+                                @endif
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label for="matakuliah">Pilih Matakuliah</label>
@@ -39,9 +42,11 @@
                                     <input type="number" value="{{ $idmhs }}" id="idmhs" hidden="" />
                                     <select name="matakuliah" onchange="getmk()" id="matakuliah" class="form-control js-example-basic-single">
                                         <option value="" disabled selected>Pilih Matakuliah</option>
-                                        @foreach($mk as $row)
-                                            <option value="{{ $row['id'] }}">Kode Matakuliah : {{ $row['kode_matkul'] }} | Nama Matakuliah : {{ $row['nama_matkul'] }} | Semester : {{ $row['semester'] ?? '-' }} | Status : {{ $row['status_mk'] ?? '-' }}</option>
-                                        @endforeach
+                                        @if($mk != 0)
+                                            @foreach($mk as $row)
+                                                <option value="{{ $row['id'] }}">Kode Matakuliah : {{ $row['kode_matkul'] }} | Nama Matakuliah : {{ $row['nama_matkul'] }} | Semester : {{ $row['semester'] ?? '-' }} | Status : {{ $row['status_mk'] ?? '-' }}</option>
+                                            @endforeach
+                                        @endif
                                     </select>
                                 </div>
                             </div>
