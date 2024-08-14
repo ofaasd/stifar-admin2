@@ -40,7 +40,7 @@ class JadwalController extends Controller
                   ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
                   ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
                   ->where(['jadwals.id_mk' => $mk['id'], 'jadwals.status' => 'Aktif'])->get();
-        $anggota = anggota_mk::select('anggota_mks.*', 'pegawai_biodata.npp', 'pegawai_biodata.nama_lengkap', 'pegawai_biodata.gelar_belakang')
+        $anggota = anggota_mk::select('anggota_mks.*', 'pegawai_biodata.id as id_dsn', 'pegawai_biodata.npp', 'pegawai_biodata.nama_lengkap', 'pegawai_biodata.gelar_belakang')
                         ->leftJoin('pegawai_biodata', 'anggota_mks.id_pegawai_bio', '=', 'pegawai_biodata.id')
                         ->where(['anggota_mks.idmk' => $mk['id']])->get();
         $warning = [];
@@ -136,9 +136,9 @@ class JadwalController extends Controller
         $tgl_pertemuan = $request->tgl_pertemuan;
         $nama_pengampu = $request->nama_pengampu;
 
-        $qr = Pertemuan::create(['id_jadwal' => $id_jadwal, 'tgl_pertemuan' => $tgl_pertemuan, 'nama_pengampu' => $nama_pengampu]);
+        $qr = Pertemuan::create(['id_jadwal' => $id_jadwal, 'tgl_pertemuan' => $tgl_pertemuan, 'id_dsn' => $nama_pengampu]);
         if ($qr) {
-            return json_encode(['kode' => 200, 'pertemuan' => Pertemuan::where(['id_jadwal' => $id_jadwal])->get()]);
+            return json_encode(['kode' => 200, 'pertemuan' => Pertemuan::select('pertemuans.*', 'pegawai_biodata.nama_lengkap')->leftJoin('pegawai_biodata', 'pertemuans.id_dsn', '=', 'pegawai_biodata.id')->where(['pertemuans.id_jadwal' => $id_jadwal])->get()]);
         }
         return json_encode(['kode' => 204]);
     }
