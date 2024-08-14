@@ -120,6 +120,9 @@
             $("#myTable").DataTable({
                 responsive: true
             })
+            $("#myTable1").DataTable({
+                responsive: true
+            })
         })
         function JadwalHarian(){
             var hari = $('#hari').val();
@@ -137,7 +140,7 @@
                 success: function(res){
                     var data = res.data
                     var html = `
-                        <table class="display" id="myTable">
+                        <table class="table" id="myTable1">
                             <thead>
                                 <tr>
                                     <th>No.</th>
