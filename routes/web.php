@@ -54,6 +54,7 @@ use App\Http\Controllers\admin\keuangan\KeuanganController;
 use App\Http\Controllers\mahasiswa\MahasiswaController;
 use App\Http\Controllers\mahasiswa\ProfileController;
 use App\Http\Controllers\mahasiswa\KrsController as mhsKrsController;
+use App\Http\Controllers\dosen\DosenController;
 
 /*
 |--------------------------------------------------------------------------
@@ -74,6 +75,12 @@ Route::post('/actionRegister', [LoginController::class, 'actionRegister'])->name
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 
 Route::group(['middleware' => ['role:super-admin']], function(){
+    // route dosen
+    Route::get('/dosen/perwalian', [DosenController::class, 'index'] )->name('Perwalian');
+    Route::get('/dosen/{id}/krs', [DosenController::class, 'detailKRS'] )->name('detailKRS');
+    Route::post('/dosen/validasi-krs-satuan', [DosenController::class, 'valiKrsSatuan'] );
+    Route::post('/dosen/validasi-krs', [DosenController::class, 'valiKrs'] );
+
 //Route::middleware('auth')->group(function(){
     Route::get('/dashboard',[DashboardController::class, 'index'] )->name('dashboard');
 
@@ -236,7 +243,6 @@ Route::group(['middleware' => ['role:super-admin']], function(){
     Route::resource('riwayat', RiwayatPegawaiController::class)->name('index','pegawai');
 
     Route::resource('admin/nilai_lama', NilaiLamaController::class)->name('index','nilai_lama');
-
 });
 
 Route::group(['middleware' => ['role:mhs']], function(){

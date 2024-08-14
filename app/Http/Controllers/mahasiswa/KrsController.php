@@ -43,7 +43,6 @@ class KrsController extends Controller
                     ->get();
         $no = 1;
         $permission = MasterKeuanganMh::where('id_mahasiswa',$idmhs)->first();
-        //return view('admin.akademik.krs.inputkrsadmin', compact('title', 'mk', 'krs', 'no', 'ta', 'idmhs'));
         return view('mahasiswa.input_krs', compact('mhs','title', 'permission','mk', 'krs', 'no', 'ta', 'idmhs'));
     }
 }

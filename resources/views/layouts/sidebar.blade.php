@@ -246,6 +246,12 @@
                     <li><a href="#">Export Data</a></li>
                 </ul>
             </li>
+            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{URL::to('dosen/perwalian')}}" >
+                <span><i class="fa fa-users"></i> Perwalian</span></a>
+            </li>
+            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{URL::to('dosen/krm')}}" >
+                <span><i class="fa fa-folder"></i> KRM</span></a>
+            </li>
           </ul>
         </div>
         <div class="right-arrow" id="right-arrow"><i data-feather="arrow-right"></i></div>
