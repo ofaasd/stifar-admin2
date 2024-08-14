@@ -20,7 +20,7 @@
 <script src="{{ asset('assets/js/header-slick.js') }}"></script>
 @yield('script')
 
-@if(Route::current()->getName() != 'popover') 
+@if(Route::current()->getName() != 'popover')
 	<script src="{{asset('assets/js/tooltip-init.js')}}"></script>
 @endif
 
@@ -30,10 +30,10 @@
 <script src="{{asset('assets/js/theme-customizer/customizer.js')}}"></script>
 
 
-{{-- @if(Route::current()->getName() == 'index') 
+{{-- @if(Route::current()->getName() == 'index')
 	<script src="{{asset('assets/js/layout-change.js')}}"></script>
 @endif --}}
-
+<script src="{{ asset('assets/js/clock.js') }}"></script>
 @if(Route::currentRouteName() == 'index')
 <script>
 	new WOW().init();

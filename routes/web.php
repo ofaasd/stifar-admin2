@@ -74,7 +74,7 @@ Route::get('/register_mahasiswa', [LoginController::class, 'register_mahasiswa']
 Route::post('/actionRegister', [LoginController::class, 'actionRegister'])->name('actionRegister');
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 
-Route::group(['middleware' => ['role:super-admin']], function(){
+Route::group(['middleware' => ['auth','role:super-admin']], function(){
     // route dosen
     Route::get('/dosen/perwalian', [DosenController::class, 'index'] )->name('Perwalian');
     Route::get('/dosen/{id}/krs', [DosenController::class, 'detailKRS'] )->name('detailKRS');
@@ -245,7 +245,7 @@ Route::group(['middleware' => ['role:super-admin']], function(){
     Route::resource('admin/nilai_lama', NilaiLamaController::class)->name('index','nilai_lama');
 });
 
-Route::group(['middleware' => ['role:mhs']], function(){
+Route::group(['middleware' => ['auth','role:mhs']], function(){
     Route::get('/mhs/dashboard',[DashboardController::class, 'mhs'] )->name('dashboard');
 
     Route::get('/mahasiswa/detail/{nim}', [MahasiswaController::class, 'detail']);
