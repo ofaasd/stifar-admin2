@@ -260,6 +260,7 @@ Route::group(['middleware' => ['auth','role:mhs']], function(){
     Route::post('mahasiswa/user_update', [MahasiswaController::class, 'user_update'])->name('user_update');
     Route::post('mahasiswa/user_update2', [MahasiswaController::class, 'user_update2'])->name('user_update2');
     Route::post('mahasiswa/foto_update', [MahasiswaController::class, 'foto_update'])->name('foto_update');
+    Route::post('mahasiswa', [MahasiswaController::class, 'store'])->name('input');
 
     Route::get('mhs/profile', [ProfileController::class, 'index'])->name('index');
 
