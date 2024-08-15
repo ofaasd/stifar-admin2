@@ -29,6 +29,7 @@ class UserPegawaiController extends Controller
     {
         //
         $id = Auth::user()->id;
+
         $title = "Data Pegawai";
         $pegawai = PegawaiBiodatum::where('user_id',$id)->first();
         $jenis_kelamin = [
@@ -36,6 +37,9 @@ class UserPegawaiController extends Controller
             'P' => 'Perempuan',
         ];
         $user = User::find($id);
+
+        $id = $pegawai->id;
+
         $progdi = Prodi::all();
         $jenis_pegawai = PegawaiJenis::all();
         $wilayah = Wilayah::where('id_induk_wilayah','000000')->get();
