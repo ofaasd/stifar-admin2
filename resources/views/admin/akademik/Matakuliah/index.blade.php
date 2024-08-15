@@ -151,7 +151,7 @@
                                                                             @csrf
                                                                             <div class="form-group mt-2">
                                                                                 <label for="kode_matkul">Kode Matakuliah :</label>
-                                                                                <input type="text" class="form-control" name="kode_matkul" id="kode_matkul_{{ $mk['kode_matkul'] }}" value="{{ $mk['kode_matkul'] }}" required="" readonly=""/>
+                                                                                <input type="text" class="form-control" name="kode_matkul" id="kode_matkul_{{ $mk['kode_matkul'] }}" value="{{ $mk['kode_matkul'] }}" required=""/>
                                                                             </div>
                                                                             <div class="form-group mt-2">
                                                                                 <label for="nama_matkul">Nama Matakuliah :</label>
