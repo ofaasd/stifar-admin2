@@ -195,7 +195,7 @@
                                                                                 <select name="nama_anggota" id="nama_anggota<?= $row['id']?>" class="form-control" required>
                                                                                     <option value="" selected disabled>Pilih Dosen</option>
                                                                                     @foreach($anggota as $dsn)
-                                                                                        <option value="{{ $dsn['id'] }}">{{ $dsn['nama_lengkap'] }}, {{ $dsn['gelar_belakang'] }}</option>
+                                                                                        <option value="{{ $dsn['id_dsn'] }}">{{ $dsn['nama_lengkap'] }}, {{ $dsn['gelar_belakang'] }}</option>
                                                                                     @endforeach
                                                                                 </select>
                                                                             </div>
@@ -453,7 +453,7 @@
                             table += `
                                         <tr>
                                             <td>${ list[i].tgl_pertemuan }</td>
-                                            <td>${ list[i].nama_lengkap }, ${ list[i].gelar_belakang }</td>
+                                            <td>${ list[i].nama_lengkap }</td>
                                             <td>
                                                 <a href="{{ url('jadwal/hapus-pertemuan') }}/${ list[i].id }" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i> Hapus</a>
                                             </td>

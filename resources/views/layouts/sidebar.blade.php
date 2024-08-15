@@ -89,7 +89,7 @@
                      <li><a href="{{URL::to('admin/masterdata/matakuliah')}}">Matakuliah</a></li>
                      <li><a href="{{URL::to('admin/masterdata/jadwal')}}">Jadwal</a></li>
                      <li><a href="#">Plot Jadwal Ajar</a></li>
-                     <li><a href="#">Kontrol Jadwal</a></li>
+                     <li><a href="{{URL::to('admin/masterdata/jadwal-harian')}}">Kontrol Jadwal</a></li>
                      <li>
                         <a class="submenu-title" href="#">
                             <span>KRS</span>  {{--  Ada menu untuk toggle krs sedang dibuka atau ditutup--}}

@@ -5,11 +5,9 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
-class Pertemuan extends Model
+class KontrakKuliahModel extends Model
 {
     protected $fillable = [
-        'id_jadwal',
-        'tgl_pertemuan',
-        'id_dsn'
+        'id_jadwal', 'tugas', 'uts', 'uas'
     ];
 }

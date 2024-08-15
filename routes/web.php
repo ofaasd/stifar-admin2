@@ -55,6 +55,7 @@ use App\Http\Controllers\mahasiswa\MahasiswaController;
 use App\Http\Controllers\mahasiswa\ProfileController;
 use App\Http\Controllers\mahasiswa\KrsController as mhsKrsController;
 use App\Http\Controllers\dosen\DosenController;
+use App\Http\Controllers\dosen\KrmController;
 
 /*
 |--------------------------------------------------------------------------
@@ -80,6 +81,13 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     Route::get('/dosen/{id}/krs', [DosenController::class, 'detailKRS'] )->name('detailKRS');
     Route::post('/dosen/validasi-krs-satuan', [DosenController::class, 'valiKrsSatuan'] );
     Route::post('/dosen/validasi-krs', [DosenController::class, 'valiKrs'] );
+    Route::get('/dosen/krm', [KrmController::class, 'index'] );
+    Route::get('/dosen/absensi/{id}/input', [KrmController::class, 'daftarMhs'] );
+    Route::get('/dosen/nilai/{id}/input', [KrmController::class, 'daftarMhsNilai'] );
+    Route::get('/dosen/{id}/set-pertemuan', [KrmController::class, 'setPertemuan'] );
+    Route::get('/dosen/input/{nim}/absensi/{id_jadwal}', [KrmController::class, 'setAbsensiSatuan'] );
+    Route::post('/dosen/simpan-absensi-satuan', [KrmController::class, 'saveAbsensiSatuan'] );
+    Route::post('/dosen/simpan-kontrak', [KrmController::class, 'saveKontrak'] );
 
 //Route::middleware('auth')->group(function(){
     Route::get('/dashboard',[DashboardController::class, 'index'] )->name('dashboard');
