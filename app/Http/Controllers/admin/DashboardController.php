@@ -29,6 +29,16 @@ class DashboardController extends Controller
         $jumlah_teori = MataKuliah::whereNotNull('sks_teori')->count();
         $jumlah_praktek = MataKuliah::whereNotNull('sks_praktek')->count();
         $prodi = Prodi::all();
+        $list_prodi = '';
+        $i = 0;
+        foreach($prodi as $row){
+            if($i == 0){
+                $list_prodi .= $row->nama_prodi;
+            }else{
+                $list_prodi .= ',' . $row->nama_prodi;
+            }
+            $i++;
+        }
         return view('index', compact('jumlah_kurikulum','jumlah_teori','jumlah_praktek','jumlah_mhs','jumlah_pegawai','total_pendaftar','jumlah_matkul'));
     }
     public function mhs(){
