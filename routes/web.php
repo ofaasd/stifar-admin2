@@ -271,7 +271,6 @@ Route::group(['middleware' => ['auth','role:mhs']], function(){
     Route::get('/admin/masterdata/krs/input/{id}/{mhs}', [KrsController::class, 'tambahadminKRS']);
 });
 Route::group(['middleware' => ['auth','role:pegawai']], function(){
-    Route::get('/dashboard',[DashboardController::class, 'index'] )->name('dashboard');
 
     Route::resource('pegawai', UserPegawaiController::class)->name('index','pegawai');
     Route::resource('riwayat', RiwayatPegawaiController::class)->name('index','pegawai');
