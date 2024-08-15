@@ -39,13 +39,15 @@ class LoginController extends Controller
                 }else{
                     return redirect('mhs/dashboard');
                 }
-            }
-            // if($role[0] == "pegawai"){
-            //     $dosen = 
-            // }
-            else{
+            }elseif($role[0] == "pegawai"){
+                return redirect('dsn/dashboard');
+            }else{
                 return redirect('dashboard');
             }
+            // if($role[0] == "pegawai"){
+            //     $dosen =
+            // }
+
 
             // return redirect('dashboard');
         }else{

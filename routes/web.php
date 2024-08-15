@@ -272,6 +272,8 @@ Route::group(['middleware' => ['auth','role:mhs']], function(){
 });
 Route::group(['middleware' => ['auth','role:pegawai']], function(){
 
+    Route::get('/dsn/dashboard',[DashboardController::class, 'dosen'] )->name('dashboard_pegawai');
+
     Route::resource('pegawai', UserPegawaiController::class)->name('index','pegawai');
     Route::resource('riwayat', RiwayatPegawaiController::class)->name('index','pegawai');
 
