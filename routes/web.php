@@ -254,7 +254,7 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
 });
 
 Route::group(['middleware' => ['auth','role:mhs']], function(){
-    Route::get('/mhs/dashboard',[DashboardController::class, 'mhs'] )->name('dashboard');
+    Route::get('/mhs/dashboard',[DashboardController::class, 'mhs'] )->name('dashboard_mahasiswa');
 
     Route::get('/mahasiswa/detail/{nim}', [MahasiswaController::class, 'detail']);
     Route::post('mahasiswa/user_update', [MahasiswaController::class, 'user_update'])->name('user_update');

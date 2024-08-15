@@ -44,6 +44,9 @@
       <!-- Page Body Start-->
       <div class="page-body-wrapper">
         <!-- Page Sidebar Start-->
+        @role('super-admin')
+            @include('layouts.sidebar')
+        @endrole
         @role('pegawai')
             @include('layouts.sidebar_pegawai')
         @endrole
@@ -53,9 +56,7 @@
         @role('admin-pmb')
             @include('layouts.sidebar_pmb')
         @endrole
-        @role('super-admin')
-            @include('layouts.sidebar')
-        @endrole
+
         <!-- Page Sidebar Ends-->
         <div class="page-body">
           <div class="container-fluid">
