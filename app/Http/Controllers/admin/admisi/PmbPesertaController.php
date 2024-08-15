@@ -37,10 +37,10 @@ class PmbPesertaController extends Controller
                 $gel[$row->id] = $row->nama_gel;
             }
 
-            $prodi = PmbJalurProdi::select('pmb_jalur_prodi.*','program_studi.nama_jurusan')->join('program_studi','program_studi.id','pmb_jalur_prodi.id_program_studi')->get();
+            $prodi = PmbJalurProdi::select('pmb_jalur_prodi.*','program_studi.nama_prodi')->join('program_studi','program_studi.id','pmb_jalur_prodi.id_program_studi')->get();
             $prod = [];
             foreach($prodi as $row){
-                $prod[$row->id] = $row->nama_jurusan . " " . $row->keterangan;
+                $prod[$row->id] = $row->nama_prodi . " " . $row->keterangan;
             }
 
             $columns = [
@@ -288,7 +288,7 @@ class PmbPesertaController extends Controller
         if($peserta->jalur_pendaftaran != 0 && !empty($peserta->jalur_pendaftaran)){
             $gelombang = PmbGelombang::where('id_jalur', $peserta->jalur_pendaftaran)->get();
             $pilihan = PmbGelombang::where('id',$peserta->gelombang)->first()->pilihan;
-            $prodi = PmbJalurProdi::select('pmb_jalur_prodi.*','program_studi.nama_jurusan')->join('program_studi','program_studi.id','pmb_jalur_prodi.id_program_studi')->where('id_jalur',$peserta->jalur_pendaftaran)->get();
+            $prodi = PmbJalurProdi::select('pmb_jalur_prodi.*','program_studi.nama_prodi')->join('program_studi','program_studi.id','pmb_jalur_prodi.id_program_studi')->where('id_jalur',$peserta->jalur_pendaftaran)->get();
         }
 
         return view('admin.admisi.peserta.edit_gelombang', compact('title','ta','pilihan','prodi','gelombang','jalur','peserta','id','action'));
@@ -452,7 +452,7 @@ class PmbPesertaController extends Controller
         $get_jalur = PmbJalur::where('id',$get_gelombang->id_jalur)->first();
         $data = [];
         for($i=1; $i <= $get_gelombang->pilihan; $i++){
-            $data[$i-1] = PmbJalurProdi::select('pmb_jalur_prodi.*','program_studi.nama_jurusan')->join('program_studi','program_studi.id','pmb_jalur_prodi.id_program_studi')->where('id_jalur',$get_gelombang->id_jalur)->get();
+            $data[$i-1] = PmbJalurProdi::select('pmb_jalur_prodi.*','program_studi.nama_prodi')->join('program_studi','program_studi.id','pmb_jalur_prodi.id_program_studi')->where('id_jalur',$get_gelombang->id_jalur)->get();
         }
         echo json_encode($data);
     }
