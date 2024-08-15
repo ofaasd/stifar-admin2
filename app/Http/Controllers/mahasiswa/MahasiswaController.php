@@ -57,6 +57,40 @@ class MahasiswaController extends Controller
 
     return view('mahasiswa.edit', compact('user','status','dosen','kecamatan','wilayah','kota','title', 'mahasiswa','prodi','agama'));
   }
+  public function create(){
+    $title = "Mahasiswa";
+    $mahasiswa = Mahasiswa::where('nim', $nim)->first();
+    $program_studi = Prodi::all();
+    $prodi = [];
+    foreach($program_studi as $row){
+        $prodi[$row->id] = $row->nama_prodi;
+    }
+    $agama = array('1'=>'Islam','Kristen','Katolik','Hindu','Budha','Konghuchu','Lainnya');
+    $wilayah = Wilayah::where('id_induk_wilayah','000000')->get();
+
+    $kota = [];
+    if($mahasiswa->provinsi != 0 && !empty($mahasiswa->provinsi)){
+        $kota = Wilayah::where('id_induk_wilayah', $mahasiswa->provinsi)->get();
+    }
+
+    $kecamatan = [];
+    if($mahasiswa->kecamatan != 0 && !empty($mahasiswa->kecamatan)){
+        $kecamatan = Wilayah::where('id_induk_wilayah', $mahasiswa->kotakab)->get();
+    }
+
+    $status = array(
+      1 => 'aktif',
+      2 => 'cuti',
+      3 => 'Keluar',
+      4 => 'lulus',
+      5 => 'meninggal',
+      6 => 'DO'
+    );
+    $dosen = PegawaiBiodatum::where('id_posisi_pegawai',1)->get();
+    $user = User::where('id',$mahasiswa->user_id)->first();
+
+    return view('mahasiswa.create', compact('user','status','dosen','kecamatan','wilayah','kota','title', 'mahasiswa','prodi','agama'));
+  }
   public function detail($nim){
     $title = "Detail Mahasiswa";
     $detail = Mahasiswa::where('nim', $nim)->get();

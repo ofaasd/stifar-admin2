@@ -50,14 +50,15 @@ class JadwalController extends Controller
             $waktu = Sesi::where('id',$row->id_sesi)->first();
             foreach ($pengajar as $dsn) {
                 $pegawai = PegawaiBiodatum::find($dsn->id_dsn);
-                $cekDosen = Jadwal::leftJoin('pengajars', 'pengajars.id_jadwal','=','jadwals.id')
+                $cekDosen = Jadwal::leftJoin('mata_kuliahs', 'mata_kuliahs.id','=','jadwals.id_mk')
+                                ->leftJoin('pengajars', 'pengajars.id_jadwal','=','jadwals.id')
                                 ->join('waktus','waktus.id','=','jadwals.id_sesi')
                                 ->where(['pengajars.id_dsn' => $dsn->id_dsn,'jadwals.hari' => $row->hari, 'jadwals.id_tahun' => $row->id_tahun])
                                 ->where('waktu_mulai','>=',$waktu->waktu_mulai)->where('waktu_mulai','<=',$waktu->waktu_selesai)
                                 ->where('jadwals.id','<>',$row->id)
                                 ->first();
                 if ($cekDosen) {
-                    $pesan = 'jadwal dengan dosen ' . $pegawai->nama_lengkap . ' bertabrakan dengan jadwal ' . $cekDosen->kode_jadwal;
+                    $pesan = 'jadwal dengan dosen ' . $pegawai->nama_lengkap . ' bertabrakan dengan jadwal ' . $cekDosen->kode_jadwal . ' matakulianh : ' . $cekDosen->nama_matkul;
                     $warning[$i] = $pesan;
                     $i++;
                     //return json_encode(['status' => 'bentrok', 'kode' => 204]);
