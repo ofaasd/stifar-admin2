@@ -11,6 +11,7 @@ use App\Models\PmbPesertum;
 use App\Models\TahunAjaran;
 use App\Models\MataKuliah;
 use App\Models\Kurikulum;
+use App\Models\MatakuliahKurikulum;
 use App\Models\Prodi;
 
 class DashboardController extends Controller
@@ -31,15 +32,30 @@ class DashboardController extends Controller
         $prodi = Prodi::all();
         $list_prodi = '';
         $i = 0;
+        $list_teori = '';
+        $list_praktek = '';
         foreach($prodi as $row){
+            $kurikulum = Kurikulum::where('progdi',$row->kode_prodi)->get();
+            $matakuliah_praktek = 0;
+            $matakuliah_teori = 0;
+
+            foreach($kurikulum as $kur ){
+                $matakuliah_praktek += MatakuliahKurikulum::join('mata_kuliahs','mata_kuliahs.id','=','matakuliah_kurikulums.id_mk')->where('id_kurikulum',$kur->id)->whereNotNull('sks_praktek')->count();
+                $matakuliah_teori += MatakuliahKurikulum::join('mata_kuliahs','mata_kuliahs.id','=','matakuliah_kurikulums.id_mk')->where('id_kurikulum',$kur->id)->whereNotNull('sks_teori')->count();
+            }
+
             if($i == 0){
-                $list_prodi .= $row->nama_prodi;
+                $list_prodi .= "'" . $row->nama_prodi . "'";
+                $list_teori .= "" . $matakuliah_teori . "";
+                $list_praktek .= "" . $matakuliah_praktek . "";
             }else{
-                $list_prodi .= ',' . $row->nama_prodi;
+                $list_prodi .= ",'" . $row->nama_prodi . "'";
+                $list_teori .= "," . $matakuliah_teori . "";
+                $list_praktek .= "," . $matakuliah_praktek . "";
             }
             $i++;
         }
-        return view('index', compact('jumlah_kurikulum','jumlah_teori','jumlah_praktek','jumlah_mhs','jumlah_pegawai','total_pendaftar','jumlah_matkul'));
+        return view('index', compact('list_praktek','list_teori','list_prodi','jumlah_kurikulum','jumlah_teori','jumlah_praktek','jumlah_mhs','jumlah_pegawai','total_pendaftar','jumlah_matkul'));
     }
     public function mhs(){
         return view('index_mhs');

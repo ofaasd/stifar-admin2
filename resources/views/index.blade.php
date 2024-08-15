@@ -181,8 +181,8 @@
                       <div class="col-xl-12">
                         <div class="card-body p-0">
                           <ul class="balance-data">
-                            <li><span class="circle bg-warning"> </span><span class="f-light ms-1">Earning</span></li>
-                            <li><span class="circle bg-primary"> </span><span class="f-light ms-1">Expense</span></li>
+                            <li><span class="circle bg-secondary"> </span><span class="f-light ms-1">Matakuliah Teori</span></li>
+                            <li><span class="circle bg-primary"> </span><span class="f-light ms-1">Matakuliah Praktek</span></li>
                           </ul>
                           <div class="current-sale-container">
                             <div id="chart-currently"></div>
@@ -261,12 +261,12 @@
     var options = {
      series: [
       {
-        name:'Earning',
-        data:[200,200, 350, 400, 200, 250,250,350, 350, 500, 500, 700,850,700, 400, 400, 250, 250,400, 350,400]
+        name:'Matkul Teori',
+        data:[{!!$list_teori!!}]
       },
       {
-        name: 'Expense',
-        data: [400,600,700,400,700,800,800,850,850,900,900,700,600,500,800,800,800,800,400,700,800]
+        name: 'Matkul Praktek',
+        data: [{!!$list_praktek!!}]
       }
     ],
     chart:{
@@ -337,7 +337,7 @@
     },
     xaxis:{
       categories:[
-        '1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18', '19','20','21'
+        {!!$list_prodi!!}
       ],
       labels: {
         style: {
