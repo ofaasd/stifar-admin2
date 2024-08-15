@@ -10,6 +10,8 @@ use App\Models\PmbPesertaOnline;
 use App\Models\PmbPesertum;
 use App\Models\TahunAjaran;
 use App\Models\MataKuliah;
+use App\Models\Kurikulum;
+use App\Models\Prodi;
 
 class DashboardController extends Controller
 {
@@ -23,7 +25,11 @@ class DashboardController extends Controller
         $pendaftaran_offline = PmbPesertum::where('tahun_ajaran',$ta)->count();
         $total_pendaftar = $pendaftaran_offline + $pendaftaran_online;
         $jumlah_matkul = MataKuliah::count();
-        return view('index', compact('jumlah_mhs','jumlah_pegawai','total_pendaftar','jumlah_matkul'));
+        $jumlah_kurikulum = Kurikulum::count();
+        $jumlah_teori = MataKuliah::whereNotNull('sks_teori')->count();
+        $jumlah_praktek = MataKuliah::whereNotNull('sks_praktek')->count();
+        $prodi = Prodi::all();
+        return view('index', compact('jumlah_kurikulum','jumlah_teori','jumlah_praktek','jumlah_mhs','jumlah_pegawai','total_pendaftar','jumlah_matkul'));
     }
     public function mhs(){
         return view('index_mhs');

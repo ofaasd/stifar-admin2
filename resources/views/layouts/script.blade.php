@@ -33,7 +33,7 @@
 {{-- @if(Route::current()->getName() == 'index')
 	<script src="{{asset('assets/js/layout-change.js')}}"></script>
 @endif --}}
-<script src="{{ asset('assets/js/clock.js') }}"></script>
+{{-- <script src="{{ asset('assets/js/clock.js') }}"></script> --}}
 @if(Route::currentRouteName() == 'index')
 <script>
 	new WOW().init();

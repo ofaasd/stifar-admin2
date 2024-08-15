@@ -28,10 +28,12 @@ class KrsController extends Controller
 
         $title = 'Input KRS';
         $kd_prodi_mhs = Prodi::where('id',$mhs->id_program_studi)->first()->kode_prodi;
-        $kurikulum = Kurikulum::where('progdi',$kd_prodi_mhs)->where('angkatan','>=',$mhs->angkatan)->where('angkatan_akhir','<=',$mhs->angkatan)->first();
-        $mk = 0;
+        $kurikulum = Kurikulum::where('progdi',$kd_prodi_mhs)->where('angkatan','<=',$mhs->angkatan)->where('angkatan_akhir','>=',$mhs->angkatan)->get();
+        $mk = [];
         if($kurikulum){
-            $mk = MatakuliahKurikulum::select('mata_kuliahs.*')->join('mata_kuliahs','mata_kuliahs.id','=','matakuliah_kurikulums.id_mk')->where('id_kurikulum',$kurikulum->id)->get();
+            foreach($kurikulum as $row){
+                $mk[] = MatakuliahKurikulum::select('mata_kuliahs.*')->join('mata_kuliahs','mata_kuliahs.id','=','matakuliah_kurikulums.id_mk')->where('id_kurikulum',$row->id)->get();
+            }
         }
         //$mk = MataKuliah::get();
         $krs = Krs::select('krs.*', 'a.hari', 'a.kel', 'b.nama_matkul', 'b.sks_teori', 'b.sks_praktek', 'c.nama_sesi', 'd.nama_ruang')
