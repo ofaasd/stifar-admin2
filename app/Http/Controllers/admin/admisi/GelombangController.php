@@ -4,7 +4,7 @@ namespace App\Http\Controllers\admin\admisi;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Gelombang;
+use App\Models\gelombang;
 use App\Models\PmbJalur as Jalur;
 
 class GelombangController extends Controller
