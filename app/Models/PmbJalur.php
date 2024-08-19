@@ -34,8 +34,8 @@ class PmbJalur extends Model
 
 	protected $fillable = [
 		'nama',
+        'kode',
 		'keterangan',
-		'pilihan'
 	];
 
 	public function pmb_gelombangs()

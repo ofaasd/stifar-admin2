@@ -67,6 +67,7 @@
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
                 <span><i class="fa fa-file-text"></i> Admisi</span></a>
                 <ul class="sidebar-submenu">
+                    <li><a href="{{URL::to('admin/admisi/jalur_pendaftaran')}}">Jalur Pendaftaran</a></li>
                     <li><a href="{{URL::to('admin/admisi/gelombang')}}">Gelombang</a></li>
                     <li><a href="{{URL::to('admin/admisi/peserta')}}">Pendaftaran Mahasiswa Baru</a></li>
                     <li><a href="{{URL::to('admin/admisi/daftar_soal')}}">Pengaturan Ujian PMB</a></li>

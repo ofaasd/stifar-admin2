@@ -12,6 +12,7 @@ use App\Http\Controllers\admin\admisi\PmbNilaiTambahanController;
 use App\Http\Controllers\admin\admisi\DaftarSoalController;
 use App\Http\Controllers\admin\admisi\VerifikasiController;
 use App\Http\Controllers\admin\admisi\PengumumanController;
+use App\Http\Controllers\admin\admisi\PmbJalurController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiJabatanStrukturalController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiJabatanFungsionalController;
@@ -229,6 +230,7 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     Route::resource('admin/admisi/gelombang', GelombangController::class)->name('index','gelombang');
     Route::resource('admin/admisi/peserta', PmbPesertaController::class)->name('index','peserta');
     Route::resource('admin/admisi/daftar_soal', DaftarSoalController::class)->name('index','daftar_soal');
+    Route::resource('admin/admisi/jalur_pendaftaran', PmbJalurController::class)->name('index','jalur_pendaftaran');
 
     Route::resource('admin/kepegawaian/pegawai', PegawaiController::class)->name('index','pegawai');
     Route::resource('admin/kepegawaian/struktural', PegawaiJabatanStrukturalController::class)->name('index','struktural');
