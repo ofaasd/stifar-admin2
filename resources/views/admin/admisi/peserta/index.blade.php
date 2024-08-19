@@ -25,8 +25,33 @@
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
                 <div class="card">
-                    <div class="card-header pb-0 card-no-border">
-                        <a href="{{URL::to('admin/admisi/peserta/create')}}" class="btn btn-primary" >+ {{$title}}</a>
+                    <div class="card-header pb-0">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <a href="{{URL::to('admin/admisi/peserta/create')}}" class="btn btn-primary mb-4" >+ {{$title}}</a>
+                            </div>
+                            <div class="col-md-6">
+                                <form action="{{URL::to('admin/admisi/peserta')}}" method="get">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <select name="ta_awal" id="ta_awal" class="form-control">
+                                                @for($i=$ta_min;$i<=$ta_max;$i++)
+                                                <option value="{{$i}}" {{($i == $curr_ta)?"selected":""}}>TA {{$i}} - {{($i+1)}}</option>
+                                                @endfor
+                                            </select>
+                                        </div>
+                                        <div class="col-8">
+                                            <select name="filter_gelombang" id="filter_gelombang" class="form-control">
+                                                @foreach($gelombang as $row)
+                                                    <option value="{{$row->id}}" {{($row->id == $id_gelombang)?"selected":""}}>{{$row->nama_gel}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
                     </div>
                     <div class="card-body">
                         <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
@@ -64,10 +89,10 @@
 
     <script>
         $(function () {
-
+            const id_gelombang = {{$id_gelombang}};
             const baseUrl = {!! json_encode(url('/')) !!};
             const title = "{{strtolower($title)}}";
-            const page = '/'.concat("admin/admisi/").concat(title);
+            const page = '/'.concat("admin/admisi/").concat(title).concat('/gelombang/',id_gelombang);
             var my_column = $('#my_column').val();
             const pecah = my_column.split('\n');
             let my_data = [];
@@ -77,6 +102,7 @@
                 //alert(data_obj.data);
                 my_data.push(data_obj);
             });
+
             //alert(data_obj);
             console.log(my_data);
 
@@ -252,6 +278,10 @@
                     });
                 }
                 });
+            });
+            $("#filter_gelombang").on('change',function(){
+                const id = $(this).val();
+                window.location.href = "{{URL::to('admin/admisi/peserta/gelombang')}}/"+id;
             });
         });
 

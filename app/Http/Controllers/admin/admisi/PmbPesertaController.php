@@ -22,15 +22,26 @@ class PmbPesertaController extends Controller
      * Display a listing of the resource.
      */
     public $indexed = ['', 'id','nama' , 'nopen', 'gelombang', 'pilihan1','pilihan2','ttl'];
-    public function index(Request $request)
+    public function index(Request $request,$id_gelombang=0)
     {
         //
+
+        $ta_min = PmbGelombang::selectRaw('min(ta_awal) as ta_min')->limit(1)->first()->ta_min;
+        $curr_ta = $ta_min;
+        if($id_gelombang == 0){
+            $curr_gelombang = PmbGelombang::where('ta_awal',$ta_min)->limit(1)->first();
+            $id_gelombang = $curr_gelombang->id;
+        }else{
+            $curr_ta = PmbGelombang::where('id',$id_gelombang)->first()->ta_awal;
+        }
+
         if (empty($request->input('length'))) {
             $title = "Peserta";
             $indexed = $this->indexed;
-            return view('admin.admisi.peserta.index', compact('title','indexed'));
+            $ta_max = PmbGelombang::selectRaw('max(ta_awal) as ta_max')->limit(1)->first()->ta_max;
+            $gelombang = PmbGelombang::where('ta_awal',$ta_min)->get();
+            return view('admin.admisi.peserta.index', compact('id_gelombang','curr_ta','gelombang','ta_max','ta_min','title','indexed'));
         }else{
-
             $gelombang = PmbGelombang::all();
             $gel = [];
             foreach($gelombang as $row){
@@ -66,30 +77,36 @@ class PmbPesertaController extends Controller
 
 
             if (empty($request->input('search.value'))) {
-                $peserta = PmbPesertaOnline::offset($start)
+                $peserta = PmbPesertaOnline::where('gelombang',$id_gelombang)
+                    ->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
                     ->get();
             } else {
                 $search = $request->input('search.value');
 
-                $peserta = PmbPesertaOnline::where('id', 'LIKE', "%{$search}%")
+                $peserta = PmbPesertaOnline::where('gelombang',$id_gelombang)
+                    ->where(fn($query) =>
+                        $query->where('id', 'LIKE', "%{$search}%")
+                        ->orWhere('nama', 'LIKE', "%{$search}%")
+                        ->orWhere('nopen', 'LIKE', "%{$search}%")
+                        ->orWhere('gelombang', 'LIKE', "%{$search}%")
+                        ->orWhere('pilihan1', 'LIKE', "%{$search}%")
+                        ->orWhere('pilihan2', 'LIKE', "%{$search}%")
+                    )->offset($start)
+                    ->limit($limit)
+                    ->orderBy($order, $dir)
+                    ->get();
+
+                $totalFiltered = PmbPesertaOnline::where('gelombang',$id_gelombang)
+                ->where(fn($query) =>
+                    $query->where('id', 'LIKE', "%{$search}%")
                     ->orWhere('nama', 'LIKE', "%{$search}%")
                     ->orWhere('nopen', 'LIKE', "%{$search}%")
                     ->orWhere('gelombang', 'LIKE', "%{$search}%")
                     ->orWhere('pilihan1', 'LIKE', "%{$search}%")
                     ->orWhere('pilihan2', 'LIKE', "%{$search}%")
-                    ->offset($start)
-                    ->limit($limit)
-                    ->orderBy($order, $dir)
-                    ->get();
-
-                $totalFiltered = PmbPesertaOnline::where('id', 'LIKE', "%{$search}%")
-                ->orWhere('nama', 'LIKE', "%{$search}%")
-                ->orWhere('nopen', 'LIKE', "%{$search}%")
-                ->orWhere('gelombang', 'LIKE', "%{$search}%")
-                ->orWhere('pilihan1', 'LIKE', "%{$search}%")
-                ->orWhere('pilihan2', 'LIKE', "%{$search}%")
+                )
                 ->count();
             }
 
