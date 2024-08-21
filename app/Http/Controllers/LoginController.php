@@ -16,7 +16,15 @@ class LoginController extends Controller
     //
     public function login(){
         if (Auth::check()) {
-            return redirect('home');
+            $role = Auth::User()->roles->pluck('name');
+            if($role[0] == "mhs"){
+                return redirect('mhs/dashboard');
+            }elseif($role[0] == "pegawai"){
+                return redirect('dsn/dashboard');
+            }else{
+                return redirect('dashboard');
+            }
+
         }else{
             return view('login');
         }
