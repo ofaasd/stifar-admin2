@@ -272,6 +272,8 @@ Route::group(['middleware' => ['auth','role:mhs']], function(){
     Route::post('/admin/masterdata/krs/list-jadwal', [KrsController::class, 'showJadwal']);
 
     Route::get('/admin/masterdata/krs/input/{id}/{mhs}', [KrsController::class, 'tambahadminKRS']);
+
+    Route::post('admin/admisi/peserta/daftar_kota',[PmbPesertaController::class, 'daftar_kota'] )->name('daftar_kota');
 });
 Route::group(['middleware' => ['auth','role:pegawai']], function(){
 
