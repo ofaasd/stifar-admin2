@@ -81,7 +81,7 @@
                     <li><a href="#">History PMB</a></li>
                     {{-- <li><a href="#">Berita Pendaftaran</a></li> --}}
                     <li><a href="#">Berita Gambar/Slideshow</a></li>
-                    <li><a href="#">User PMB Online</a></li> {{-- Daftar User pmb online--}}
+                    <li><a href="{{URL::to('admin/admisi/user_pmb')}}">User PMB Online</a></li> {{-- Daftar User pmb online--}}
                 </ul>
             </li>
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >

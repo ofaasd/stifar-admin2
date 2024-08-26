@@ -13,6 +13,7 @@ use App\Http\Controllers\admin\admisi\DaftarSoalController;
 use App\Http\Controllers\admin\admisi\VerifikasiController;
 use App\Http\Controllers\admin\admisi\PengumumanController;
 use App\Http\Controllers\admin\admisi\PmbJalurController;
+use App\Http\Controllers\admin\admisi\UserGuestController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiJabatanStrukturalController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiJabatanFungsionalController;
@@ -93,7 +94,7 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
 //Route::middleware('auth')->group(function(){
     Route::get('/dashboard',[DashboardController::class, 'index'] )->name('dashboard');
 
-    Route::post('admin/admisi/peserta/daftar_kota',[PmbPesertaController::class, 'daftar_kota'] )->name('daftar_kota');
+    Route::post('admin/admisi/peserta/daftar_kota_admin',[PmbPesertaController::class, 'daftar_kota'] )->name('daftar_kota_admin');
     Route::post('admin/admisi/peserta/get_gelombang',[PmbPesertaController::class, 'get_gelombang'] )->name('get_gelombang');
     Route::post('admin/admisi/peserta/get_jurusan',[PmbPesertaController::class, 'get_jurusan'] )->name('get_jurusan');
     Route::get('admin/admisi/peserta/{id}/edit_gelombang', [PmbPesertaController::class, 'edit_gelombang'])->name('edit_gelombang');
@@ -232,6 +233,7 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     Route::resource('admin/admisi/peserta', PmbPesertaController::class)->name('index','peserta');
     Route::resource('admin/admisi/daftar_soal', DaftarSoalController::class)->name('index','daftar_soal');
     Route::resource('admin/admisi/jalur_pendaftaran', PmbJalurController::class)->name('index','jalur_pendaftaran');
+    Route::resource('admin/admisi/user_pmb', UserGuestController::class)->name('index','user_pmb');
 
     Route::resource('admin/kepegawaian/pegawai', PegawaiController::class)->name('index','pegawai');
     Route::resource('admin/kepegawaian/struktural', PegawaiJabatanStrukturalController::class)->name('index','struktural');
