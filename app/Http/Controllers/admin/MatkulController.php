@@ -16,7 +16,7 @@ class MatkulController extends Controller
     {
         //
         $title = "Master Matakuliah";
-        $mk = MataKuliah::leftJoin('kelompok_mata_kuliahs', 'kelompok_mata_kuliahs.id','=','mata_kuliahs.kel_mk')
+        $mk = MataKuliah::select('mata_kuliahs.*')->leftJoin('kelompok_mata_kuliahs', 'kelompok_mata_kuliahs.id','=','mata_kuliahs.kel_mk')
                           ->leftJoin('rumpuns', 'rumpuns.id','=','mata_kuliahs.rumpun')->get();
         $kelompok = KelompokMatakuliah::get();
         $rumpun = Rumpun::get();
@@ -47,7 +47,7 @@ class MatkulController extends Controller
         }
     }
     public function updateMK(Request $request){
-        $mk = MataKuliah::where('kode_matkul', $request->kode_matkul)->update([
+        $mk = MataKuliah::where('id', $request->id)->update([
             'kode_matkul' => $request->kode_matkul,
             'nama_matkul' => $request->nama_matkul,
             'nama_matkul_eng' => $request->nama_inggris,
@@ -62,7 +62,7 @@ class MatkulController extends Controller
         if ($mk) {
             return json_encode(['status' => 'ok', 'kode' => 200]);
         } else {
-            return json_encode(['status' => 'fail', 'kode' => 201]);
+            return json_encode(['status' => $mk, 'kode' => 201]);
         }
     }
     public function destroy(string $id)

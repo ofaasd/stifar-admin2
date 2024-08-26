@@ -139,9 +139,15 @@
                                                     <td>{{ $mk['nama_rumpun'] }}</td> --}}
                                                     <td>{{ $mk['status'] }}</td>
                                                     <td>
-                                                        <a href="#" class="btn btn-warning btn-sm btn-icon edit-record" data-bs-toggle="modal" data-original-title="test" data-bs-target="#editMK{{ $mk['kode_matkul'] }}">
-                                                            <i class="fa fa-edit"></i> Edit
-                                                        </a>
+                                                        <div class="btn-group">
+                                                            <a href="#" class="btn btn-warning btn-sm btn-icon edit-record" data-bs-toggle="modal" data-original-title="test" data-bs-target="#editMK{{ $mk['kode_matkul'] }}">
+                                                                <i class="fa fa-edit"></i>
+                                                            </a>
+                                                            <a href="{{ url('admin/masterdata/matakuliah/delete/'. $mk['id']) }}" class="btn btn-danger btn-sm btn-icon edit-record">
+                                                                <i class="fa fa-trash"></i>
+                                                            </a>
+                                                        </div>
+
                                                         <div class="modal fade" id="editMK{{ $mk['kode_matkul'] }}" tabindex="-1" aria-labelledby="editMK{{ $mk['kode_matkul'] }}" aria-hidden="true">
                                                             <div class="modal-dialog" role="document">
                                                                 <div class="modal-content">
@@ -149,6 +155,7 @@
                                                                         <div class="modal-toggle-wrapper">
                                                                             <h5 style="text-align: center">Tambah Matakuliah</h5>
                                                                             @csrf
+                                                                            <input type="hidden" name="id" id="id_{{ $mk['kode_matkul'] }}" value="{{$mk['id']}}">
                                                                             <div class="form-group mt-2">
                                                                                 <label for="kode_matkul">Kode Matakuliah :</label>
                                                                                 <input type="text" class="form-control" name="kode_matkul" id="kode_matkul_{{ $mk['kode_matkul'] }}" value="{{ $mk['kode_matkul'] }}" required=""/>
@@ -224,9 +231,7 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <a href="{{ url('admin/masterdata/matakuliah/delete/'. $mk['id']) }}" class="btn btn-danger btn-sm btn-icon edit-record">
-                                                            <i class="fa fa-trash"></i> Delete
-                                                        </a>
+
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -304,6 +309,7 @@
                 type: 'post',
                 dataType: 'json',
                 data: {
+                    id : $('#id_'+kode).val(),
                     kode_matkul: $('#kode_matkul_'+kode).val(),
                     nama_matkul: $('#nama_matkul_'+kode).val(),
                     nama_inggris: $('#nama_inggris_'+kode).val(),
