@@ -77,10 +77,10 @@
                     <li><a href="{{URL::to('admin/admisi/pengumuman')}}">Surat Pengumuman</a></li> {{-- Butuh format surat pengumuman resmi dari pihak kampus --}}
                     <li><a href="#">KTM (s)</a></li>
                     <li><a href="#">Statistik</a></li>
-                    <li><a href="#">Verifikasi Pembayaran Registrasi</a></li>
+                    <li><a href="#">Verifikasi Pembayaran Daftar Ulang</a></li>
                     <li><a href="#">History PMB</a></li>
                     {{-- <li><a href="#">Berita Pendaftaran</a></li> --}}
-                    <li><a href="#">Berita Gambar/Slideshow</a></li>
+                    <li><a href="{{URL::to('admin/admisi/slideshow')}}">Berita Gambar/Slideshow</a></li>
                     <li><a href="{{URL::to('admin/admisi/user_pmb')}}">User PMB Online</a></li> {{-- Daftar User pmb online--}}
                 </ul>
             </li>

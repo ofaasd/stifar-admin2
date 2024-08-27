@@ -71,9 +71,9 @@ class SlideController extends Controller
                 foreach ($slide as $row) {
                     $nestedData['id'] = $row->id;
                     $nestedData['fake_id'] = ++$ids;
-                    $nestedData['gambar'] = $row->nama;
-                    $nestedData['caption'] = $row->email;
-                    $nestedData['link'] = date('d-m-Y', strtotime($row->tgl_lahir));
+                    $nestedData['gambar'] = $row->gambar;
+                    $nestedData['caption'] = $row->caption;
+                    $nestedData['link'] = $row->link;
                     $data[] = $nestedData;
                 }
             }
@@ -101,30 +101,55 @@ class SlideController extends Controller
         $id = $request->id;
 
         if ($id) {
+            $filename = '';
+            if ($request->file('gambar') != null) {
+                $file = $request->file('gambar');
+                $filename = date('YmdHi') . $file->getClientOriginalName();
+                $tujuan_upload = 'assets/images/slideshow';
+                $file->move($tujuan_upload,$filename);
+            }
+            if(!empty($filename)){
+                $pt = MasterSlide::updateOrCreate(
+                    ['id' => $id],
+                    [
+                        'gambar' => $filename,
+                        'caption' => $request->caption,
+                        'link' => $request->link,
+                    ]
+                );
+            }else{
+                $pt = MasterSlide::updateOrCreate(
+                    ['id' => $id],
+                    [
+                        'caption' => $request->caption,
+                        'link' => $request->link,
+                    ]
+                );
+            }
 
-            $slide = MasterSlide::updateOrCreate(
-                ['id' => $id],
-                [
-                    'gambar' => $request->nama,
-                    'caption' => $request->email,
-                    'link' => $request->tgl_lahir,
-                ]
-            );
 
             return response()->json('Updated');
         } else {
-            $slide = MasterSlide::updateOrCreate(
+            $filename = '';
+            if ($request->file('gambar') != null) {
+                $file = $request->file('gambar');
+                $filename = date('YmdHi') . $file->getClientOriginalName();
+                $tujuan_upload = 'assets/images/slideshow';
+                $file->move($tujuan_upload,$filename);
+            }
+            $pt = MasterSlide::updateOrCreate(
                 ['id' => $id],
                 [
-                    'gambar' => $request->nama,
-                    'caption' => $request->email,
-                    'link' => $request->tgl_lahir,
+                    'gambar' => $filename,
+                    'caption' => $request->caption,
+                    'link' => $request->link,
                 ]
             );
-            if ($slide) {
+
+            if ($pt) {
                 return response()->json('Created');
             } else {
-                return response()->json('Failed Create Academic');
+                return response()->json('Failed Create Slideshow');
             }
         }
     }
@@ -133,7 +158,7 @@ class SlideController extends Controller
         //
         $where = ['id' => $id];
 
-        $slide[0] = MasterSlide::where($where)->first();
+        $slide = MasterSlide::where($where)->first();
 
         return response()->json($slide);
     }
