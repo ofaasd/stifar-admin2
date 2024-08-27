@@ -94,7 +94,7 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
 //Route::middleware('auth')->group(function(){
     Route::get('/dashboard',[DashboardController::class, 'index'] )->name('dashboard');
 
-    Route::post('admin/admisi/peserta/daftar_kota_admin',[PmbPesertaController::class, 'daftar_kota'] )->name('daftar_kota_admin');
+    Route::post('admin/admisi/peserta/daftar_kota',[PmbPesertaController::class, 'daftar_kota'] )->name('daftar_kota');
     Route::post('admin/admisi/peserta/get_gelombang',[PmbPesertaController::class, 'get_gelombang'] )->name('get_gelombang');
     Route::post('admin/admisi/peserta/get_jurusan',[PmbPesertaController::class, 'get_jurusan'] )->name('get_jurusan');
     Route::get('admin/admisi/peserta/{id}/edit_gelombang', [PmbPesertaController::class, 'edit_gelombang'])->name('edit_gelombang');
@@ -258,7 +258,7 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     Route::resource('admin/nilai_lama', NilaiLamaController::class)->name('index','nilai_lama');
 });
 
-Route::group(['middleware' => ['auth','role:mhs']], function(){
+Route::group(['middleware' => ['auth','role:mhs|super-admin']], function(){
     Route::get('/mhs/dashboard',[DashboardController::class, 'mhs'] )->name('dashboard_mahasiswa');
 
     Route::get('/mahasiswa/detail/{nim}', [MahasiswaController::class, 'detail']);
@@ -277,26 +277,26 @@ Route::group(['middleware' => ['auth','role:mhs']], function(){
 
     Route::post('admin/admisi/peserta/daftar_kota',[PmbPesertaController::class, 'daftar_kota'] )->name('daftar_kota');
 });
-Route::group(['middleware' => ['auth','role:pegawai']], function(){
+Route::group(['middleware' => ['auth','role:pegawai|super-admin']], function(){
 
     Route::get('/dsn/dashboard',[DashboardController::class, 'dosen'] )->name('dashboard_pegawai');
 
-    Route::resource('pegawai', UserPegawaiController::class)->name('index','pegawai_user');
+    Route::resource('pegawai', UserPegawaiController::class)->name('index','pegawai');
     Route::resource('riwayat', RiwayatPegawaiController::class)->name('index','pegawai');
 
     //Route::resource('admin/kepegawaian/pegawai', PegawaiController::class)->name('index','pegawai');
-    Route::post('kepegawaian/pegawai', [PegawaiController::class, 'store'])->name('input_pegawai');
-    Route::resource('kepegawaian/struktural', PegawaiJabatanStrukturalController::class)->name('index','struktural');
-    Route::resource('kepegawaian/fungsional', PegawaiJabatanFungsionalController::class)->name('index','fungsional');
-    Route::resource('kepegawaian/mengajar', PegawaiMengajarController::class)->name('index','mengajar');
-    Route::resource('kepegawaian/penelitian', PegawaiPenelitianController::class)->name('index','penelitian');
-    Route::resource('kepegawaian/pengabdian', PegawaiPengabdianController::class)->name('index','pengabdian');
-    Route::resource('kepegawaian/karya', PegawaiKaryaController::class)->name('index','karya');
-    Route::resource('kepegawaian/organisasi', PegawaiOrganisasiController::class)->name('index','organisasi');
-    Route::resource('kepegawaian/repository', PegawaiRepositoryController::class)->name('index','repository');
-    Route::resource('kepegawaian/pekerjaan', PegawaiPekerjaanController::class)->name('index','pekerjaan');
-    Route::resource('kepegawaian/pendidikan', PegawaiPendidikanController::class)->name('index','pendidikan');
-    Route::resource('kepegawaian/berkas', PegawaiBerkasController::class)->name('index','berkas');
-    Route::resource('kepegawaian/jamkerja', JamkerjaController::class)->name('index','jamkerja');
-    Route::resource('kepegawaian/surat_izin', SuratIzinController::class)->name('index','surat_izin');
+    Route::post('admin/kepegawaian/pegawai', [PegawaiController::class, 'store'])->name('input_pegawai');
+    Route::resource('admin/kepegawaian/struktural', PegawaiJabatanStrukturalController::class)->name('index','struktural');
+    Route::resource('admin/kepegawaian/fungsional', PegawaiJabatanFungsionalController::class)->name('index','fungsional');
+    Route::resource('admin/kepegawaian/mengajar', PegawaiMengajarController::class)->name('index','mengajar');
+    Route::resource('admin/kepegawaian/penelitian', PegawaiPenelitianController::class)->name('index','penelitian');
+    Route::resource('admin/kepegawaian/pengabdian', PegawaiPengabdianController::class)->name('index','pengabdian');
+    Route::resource('admin/kepegawaian/karya', PegawaiKaryaController::class)->name('index','karya');
+    Route::resource('admin/kepegawaian/organisasi', PegawaiOrganisasiController::class)->name('index','organisasi');
+    Route::resource('admin/kepegawaian/repository', PegawaiRepositoryController::class)->name('index','repository');
+    Route::resource('admin/kepegawaian/pekerjaan', PegawaiPekerjaanController::class)->name('index','pekerjaan');
+    Route::resource('admin/kepegawaian/pendidikan', PegawaiPendidikanController::class)->name('index','pendidikan');
+    Route::resource('admin/kepegawaian/berkas', PegawaiBerkasController::class)->name('index','berkas');
+    Route::resource('admin/kepegawaian/jamkerja', JamkerjaController::class)->name('index','jamkerja');
+    Route::resource('admin/kepegawaian/surat_izin', SuratIzinController::class)->name('index','surat_izin');
 });

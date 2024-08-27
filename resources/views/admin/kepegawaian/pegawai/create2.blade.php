@@ -365,7 +365,7 @@ $(document).ready(function(){
 $('#provinsi').change(function(){
     //alert("asdasd");
     var id=$(this).val();
-    const url = "{{URL::to('admin/admisi/peserta/daftar_kota_admin')}}";
+    const url = "{{URL::to('admin/admisi/peserta/daftar_kota')}}";
     $.ajax({
         url : url,
         method : "POST",
@@ -386,7 +386,7 @@ $('#provinsi').change(function(){
 $('#provinsi_sekolah').change(function(){
     //alert("asdasd");
     var id=$(this).val();
-    const url = "{{URL::to('admin/admisi/peserta/daftar_kota_admin')}}";
+    const url = "{{URL::to('admin/admisi/peserta/daftar_kota')}}";
     $.ajax({
         url : url,
         method : "POST",
@@ -407,7 +407,7 @@ $('#provinsi_sekolah').change(function(){
 $('#kotakab').change(function(){
     //alert("asdasd");
     var id=$(this).val();
-    const url = "{{URL::to('admin/admisi/peserta/daftar_kota_admin')}}";
+    const url = "{{URL::to('admin/admisi/peserta/daftar_kota')}}";
     $.ajax({
         url : url,
         method : "POST",
