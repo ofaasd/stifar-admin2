@@ -274,7 +274,7 @@ Route::group(['middleware' => ['auth','role:mhs|super-admin']], function(){
     Route::get('mhs/input_krs', [mhsKrsController::class, 'input'])->name('input');
     Route::get('/admin/masterdata/krs/admin/hapus/{id}', [KrsController::class, 'hapusadminKRS']);
     Route::post('/admin/masterdata/krs/list-jadwal', [KrsController::class, 'showJadwal']);
-
+    Route::get('/admin/masterdata/krs/admin/download/{id}', [KrsController::class, 'downloadkrs']);
     Route::get('/admin/masterdata/krs/input/{id}/{mhs}', [KrsController::class, 'tambahadminKRS']);
 
     Route::post('admin/admisi/peserta/daftar_kota',[PmbPesertaController::class, 'daftar_kota'] )->name('daftar_kota');

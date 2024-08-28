@@ -52,7 +52,9 @@
                             ?>
                             <div class="mt-4">
                                 <h3>KRS diinputkan : </h3>
-                                <table class="table" id="tablekrs">
+                                <a href="{{ url('admin/masterdata/krs/admin/download/'.$idmhs) }}" class="btn btn-info btn-sm" style="float: right;"><i class="fa fa-download"></i> Download KRS</a>
+                                <div class="pt-4"></div>
+                                <table class="table">
                                     <thead>
                                         <td>No.</td>
                                         <td>Kelas</td>

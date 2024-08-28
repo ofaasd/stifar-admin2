@@ -37,6 +37,7 @@ class KrmController extends Controller
                         ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
                         ->leftJoin('mata_kuliahs', 'mata_kuliahs.id', '=', 'jadwals.id_mk')
                         ->where([ 'jadwals.id' => $id, 'jadwals.status' => 'Aktif'])->first();
+                        
         $daftar_mhs = Krs::select('krs.*', 'mhs.nim', 'mhs.nama', 'mhs.foto_mhs')
                          ->leftJoin('mahasiswa as mhs', 'mhs.id', '=', 'krs.id_mhs')
                          ->where('krs.id_jadwal', $id)->get();
