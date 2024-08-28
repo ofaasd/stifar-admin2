@@ -32,6 +32,7 @@
                                 <h6>{{ $jadwal['hari'] }}, {{ $jadwal['nama_sesi'] }}</h6>
                             </div>
                             <div class="col-sm-6">
+                                <a href="{{ url('admin/input-batch/'.$jadwal['id']) }}" class="btn btn-info" style="float: right;"><i fa fa-list></i> Input Absensi Batch</a>
                                 <!-- <b>Kontrak Kuliah</b>
                                 <table>
                                     <tr>

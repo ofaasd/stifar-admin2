@@ -81,6 +81,15 @@ class KrmController extends Controller
         }
         return json_encode(['kode' => 200]);
     }
+    public function inputAbsenBatch($id){
+        $title = "Input Absensi Batch";
+        $pertemuan = Pertemuan::select('pertemuans.*', 'pegawai_biodata.nama_lengkap', 'absensi_models.type')
+                              ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'pertemuans.id_dsn')
+                              ->leftJoin('absensi_models', 'absensi_models.id_pertemuan', '=', 'pertemuans.id')
+                              ->where('pertemuans.id_jadwal', $id)->get();
+        $id_jadwal = $id;
+        return view('dosen.input_absen_batch', compact('title', 'pertemuan', 'id_jadwal'));
+    }
     public function daftarMhsNilai($id){
         $title = "Daftar Mahasiswa";
         $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
