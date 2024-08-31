@@ -285,6 +285,7 @@ Route::group(['middleware' => ['auth','role:pegawai|super-admin']], function(){
 
     Route::get('/dsn/dashboard',[DashboardController::class, 'dosen'] )->name('dashboard_pegawai');
     Route::get('/admin/input-batch/{id}',[KrmController::class, 'inputAbsenBatch'] )->name('dashboard_pegawai');
+    Route::post('/dosen/tampil-pertemuan-absensi',[KrmController::class, 'pertemuanAbsensi'] )->name('dashboard_pegawai');
 
     Route::resource('pegawai', UserPegawaiController::class)->name('index','pegawai');
     Route::resource('riwayat', RiwayatPegawaiController::class)->name('index','pegawai');

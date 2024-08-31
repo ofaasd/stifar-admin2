@@ -87,8 +87,24 @@ class KrmController extends Controller
                               ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'pertemuans.id_dsn')
                               ->leftJoin('absensi_models', 'absensi_models.id_pertemuan', '=', 'pertemuans.id')
                               ->where('pertemuans.id_jadwal', $id)->get();
+        $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
+                              ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
+                              ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
+                              ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
+                              ->leftJoin('mata_kuliahs', 'mata_kuliahs.id', '=', 'jadwals.id_mk')
+                              ->where([ 'jadwals.id' => $id, 'jadwals.status' => 'Aktif'])->first();
         $id_jadwal = $id;
-        return view('dosen.input_absen_batch', compact('title', 'pertemuan', 'id_jadwal'));
+        return view('dosen.input_absen_batch', compact('title', 'pertemuan', 'id_jadwal', 'jadwal'));
+    }
+    public function pertemuanAbsensi(Request $request){
+        $id_pertemuan = $request->id_pertemuan;
+        $pertemuan = Pertemuan::find($id_pertemuan);
+        $daftar_mhs = Krs::select('krs.*', 'mahasiswa.nim', 'mahasiswa.nama')
+                           ->leftJoin('mahasiswa', 'krs.id_mhs', '=', 'mahasiswa.id') 
+                           ->where('krs.id_jadwal', $pertemuan->id_jadwal)->get();
+        $capaian = $pertemuan->capaian;
+        $no = 1;
+        return view('dosen._view_pertemuan_absensi_', compact('no', 'daftar_mhs', 'capaian'));
     }
     public function daftarMhsNilai($id){
         $title = "Daftar Mahasiswa";
