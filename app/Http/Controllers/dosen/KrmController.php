@@ -13,6 +13,7 @@ use App\Models\AbsensiModel;
 use App\Models\Pertemuan;
 use App\Models\Prodi;
 use App\Models\KontrakKuliahModel;
+use Illuminate\Support\Facades\DB;
 
 class KrmController extends Controller
 {
@@ -79,7 +80,7 @@ class KrmController extends Controller
         }else{
             AbsensiModel::create(['id_jadwal' => $id_jadwal, 'id_pertemuan' => $id_pertemuan, 'id_mhs' => $id_mhs, 'type' => $type]);
         }
-        return json_encode(['kode' => 200]);
+        return json_encode(['kode' => 200, 'result' => $cek]);
     }
     public function inputAbsenBatch($id){
         $title = "Input Absensi Batch";
@@ -99,12 +100,38 @@ class KrmController extends Controller
     public function pertemuanAbsensi(Request $request){
         $id_pertemuan = $request->id_pertemuan;
         $pertemuan = Pertemuan::find($id_pertemuan);
-        $daftar_mhs = Krs::select('krs.*', 'mahasiswa.nim', 'mahasiswa.nama')
-                           ->leftJoin('mahasiswa', 'krs.id_mhs', '=', 'mahasiswa.id') 
-                           ->where('krs.id_jadwal', $pertemuan->id_jadwal)->get();
+        // $daftar_mhs = Krs::select('kr.*', 'mahasiswa.nim', 'mahasiswa.nama', 'absensi_models.type')
+        //                    ->leftJoin('mahasiswa', 'krs.id_mhs', '=', 'mahasiswa.id') 
+        //                    ->leftJoin('absensi_models', function($join){
+        //                         $join->on('absensi_models.id_jadwal', '=', 'krs.id_jadwal');
+        //                         $join->on('absensi_models.id_mhs', '=', 'krs.id_mhs');
+        //                    })
+        //                    ->where([
+        //                                 'krs.id_jadwal' => $pertemuan->id_jadwal,
+        //                                 'absensi_models.id_pertemuan' => $id_pertemuan
+        //                             ])->get();
+        $daftar_mhs = DB::select('select 
+                                        krs.*, 
+                                        mahasiswa.nim, 
+                                        mahasiswa.nama, 
+                                        (select 
+                                            type 
+                                        from absensi_models 
+                                        where id_pertemuan = '. $id_pertemuan .' and id_mhs = krs.id_mhs) as type 
+                                        from krs 
+                                    left join mahasiswa on krs.id_mhs = mahasiswa.id
+                                    where krs.id_jadwal = '. $pertemuan->id_jadwal);
+        
         $capaian = $pertemuan->capaian;
         $no = 1;
-        return view('dosen._view_pertemuan_absensi_', compact('no', 'daftar_mhs', 'capaian'));
+        return view('dosen._view_pertemuan_absensi_', compact('no', 'daftar_mhs', 'capaian', 'id_pertemuan'));
+    }
+    public function simpanCapaian(Request $request){
+        $id_pertemuan = $request->id_pertemuan;
+        $capaian = $request->capaian;
+        Pertemuan::where('id', $id_pertemuan)->update(['capaian' => $capaian]);
+        
+        return json_encode(['msg' => 'ok']);
     }
     public function daftarMhsNilai($id){
         $title = "Daftar Mahasiswa";
