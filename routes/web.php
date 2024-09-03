@@ -302,6 +302,7 @@ Route::group(['middleware' => ['auth','role:pegawai|super-admin']], function(){
     Route::get('dosen/input/{nim}/absensi/{id_jadwal}', [KrmController::class, 'setAbsensiSatuan'] );
     Route::post('dosen/simpan-absensi-satuan', [KrmController::class, 'saveAbsensiSatuan'] );
     Route::post('dosen/simpan-kontrak', [KrmController::class, 'saveKontrak'] );
+    Route::post('dosen/simpan-nilai', [KrmController::class, 'saveNilai'] );
 
     //Route::resource('admin/kepegawaian/pegawai', PegawaiController::class)->name('index','pegawai');
     Route::post('admin/kepegawaian/pegawai', [PegawaiController::class, 'store'])->name('input_pegawai');
