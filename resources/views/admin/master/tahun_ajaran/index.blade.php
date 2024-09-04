@@ -57,10 +57,14 @@
                                                         <option value="Tidak Aktif">Tidak Aktif</option>
                                                 </select>
                                             </div>
+                                            <div class="mb-3">
+                                                <label for="keterangan" class="form-label">Keterangan</label>
+                                                <input type="text" name="keterangan" id="keterangan" class="form-control">
+                                            </div>
                                         </div>
                                         <div class="modal-footer">
                                             <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
-                                            <button class="btn btn-primary" type="submit">Simpan</button>
+                                            <button class="btn btn-primary" type="submit" id="btn_save">Simpan</button>
                                         </div>
                                     </form>
                                 </div>
@@ -79,6 +83,7 @@
                                         <th>Tanggal Awal</th>
                                         <th>Tanggal Akhir</th>
                                         <th>Status</th>
+                                        <th>Keterangan</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -203,6 +208,8 @@
             //save record
             $('#formAdd').on('submit',function(e){
                 e.preventDefault();
+                $("#btn_save").prop('disabled',true);
+                $("#btn_save").val('Tunggu Sebentar');
                 $.ajax({
                     data: $('#formAdd').serialize(),
                     url: ''.concat(baseUrl).concat(page),
@@ -220,6 +227,8 @@
                             confirmButton: 'btn btn-success'
                         }
                         });
+                        $("#btn_save").prop('disabled',false);
+                        $("#btn_save").val('Simpan');
                     },
                     error: function error(err) {
                         offCanvasForm.offcanvas('hide');
@@ -231,6 +240,8 @@
                             confirmButton: 'btn btn-success'
                         }
                         });
+                        $("#btn_save").prop('disabled',false);
+                        $("#btn_save").val('Simpan');
                     }
                 });
             });

@@ -8,7 +8,7 @@ use App\Models\TahunAjaran;
 
 class TahunAjaranController extends Controller
 {
-    public $indexed = ['', 'id', 'kode_ta', 'tgl_awal', 'tgl_akhir', 'status'];
+    public $indexed = ['', 'id', 'kode_ta', 'tgl_awal', 'tgl_akhir', 'status','keterangan'];
     public function index(Request $request)
     {
         //
@@ -23,7 +23,8 @@ class TahunAjaranController extends Controller
                 2 => 'kode_ta',
                 3 => 'tgl_awal',
                 4 => 'tgl_akhir',
-                5 => 'status'
+                5 => 'status',
+                6 => 'keterangan'
             ];
 
             $search = [];
@@ -77,6 +78,7 @@ class TahunAjaranController extends Controller
                     $nestedData['tgl_awal'] = $row->tgl_awal;
                     $nestedData['tgl_akhir'] = $row->tgl_akhir;
                     $nestedData['status'] = $row->status;
+                    $nestedData['keterangan'] = $row->keterangan;
                     $data[] = $nestedData;
                 }
             }
@@ -110,7 +112,8 @@ class TahunAjaranController extends Controller
                     'kode_ta' => $request->kode_ta,
                     'tgl_awal' => $request->tgl_awal,
                     'tgl_akhir' => $request->tgl_akhir,
-                    'status' => $request->status
+                    'status' => $request->status,
+                    'keterangan' => $request->keterangan
                 ]
             );
 
@@ -122,7 +125,8 @@ class TahunAjaranController extends Controller
                     'kode_ta' => $request->kode_ta,
                     'tgl_awal' => $request->tgl_awal,
                     'tgl_akhir' => $request->tgl_akhir,
-                    'status' => $request->status
+                    'status' => $request->status,
+                    'keterangan' => $request->keterangan
                 ]
             );
             if ($ta) {

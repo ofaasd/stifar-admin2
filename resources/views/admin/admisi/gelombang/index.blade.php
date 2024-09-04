@@ -93,7 +93,7 @@
                                         </div>
                                         <div class="modal-footer">
                                             <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
-                                            <button class="btn btn-primary" type="submit">Simpan</button>
+                                            <button class="btn btn-primary" type="submit" id="btn_save">Simpan</button>
                                         </div>
                                     </form>
                                 </div>
@@ -273,6 +273,8 @@
             //save record
             $('#formAdd').on('submit',function(e){
                 e.preventDefault();
+                $("#btn_save").prop('disabled',true);
+                $("#btn_save").val('Tunggu Sebentar');
                 $.ajax({
                     data: $('#formAdd').serialize(),
                     url: ''.concat(baseUrl).concat(page),
@@ -290,6 +292,8 @@
                             confirmButton: 'btn btn-success'
                         }
                         });
+                        $("#btn_save").prop('disabled',false);
+                        $("#btn_save").val('Simpan');
                     },
                     error: function error(err) {
                         offCanvasForm.offcanvas('hide');
@@ -301,6 +305,8 @@
                             confirmButton: 'btn btn-success'
                         }
                         });
+                        $("#btn_save").prop('disabled',false);
+                        $("#btn_save").val('Simpan');
                     }
                 });
             });

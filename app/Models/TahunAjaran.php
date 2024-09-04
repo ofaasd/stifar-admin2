@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class TahunAjaran extends Model
 {
     protected $fillable = [
-        'kode_ta', 
+        'kode_ta',
         'tgl_awal',
         'tgl_akhir',
         'status',
-        'krs'
+        'krs',
+        'keterangan'
     ];
 }
