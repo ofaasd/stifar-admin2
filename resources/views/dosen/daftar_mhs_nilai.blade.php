@@ -15,7 +15,7 @@
 @endsection
 
 @section('breadcrumb-items')
-    <li class="breadcrumb-item">Mahasiswa</li>
+    <li class="breadcrumb-item">KRM</li>
     <li class="breadcrumb-item active">{{$title}}</li>
 @endsection
 
@@ -32,36 +32,29 @@
                             <div class="col-sm-6">
                                 <h5>[{{ $jadwal['kode_matkul'] }}] - {{ $jadwal['nama_matkul'] }}</h5>
                                 <h6>{{ $jadwal['hari'] }}, {{ $jadwal['nama_sesi'] }}</h6>
-                            </div>
-                            <div class="col-sm-6">
                                 <b>Kontrak Kuliah</b>
                                 <table>
                                     <tr>
                                         <td>
-                                            Persentase Tugas
+                                            Persentase Tugas (%)
                                         </td>
-                                        <td style="padding-left: 10px;">
-                                            <input type="number" id="persentase_tugas" class="form-control" value="{{ $kontrak->tugas?? 0 }}">
+                                        <td>
+                                            Persentase UTS (%)
                                         </td>
-                                        <td>%</td>
+                                        <td>
+                                            Persentase UAS (%)
+                                        </td>
                                     </tr>
                                     <tr>
-                                        <td>
-                                            Persentase UTS
+                                        <td style="padding-left: 0px;">
+                                            <input type="number" id="persentase_tugas" class="form-control form-control-sm" value="{{ $kontrak->tugas?? 0 }}">
                                         </td>
-                                        <td style="padding-left: 10px;">
-                                            <input type="number" id="persentase_uts" class="form-control" value="{{ $kontrak->uts?? 0 }}">
+                                        <td style="padding-left: 0px;">
+                                            <input type="number" id="persentase_uts" class="form-control form-control-sm" value="{{ $kontrak->uts?? 0 }}">
                                         </td>
-                                        <td>%</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            Persentase UAS
+                                        <td style="padding-left: 0px;">
+                                            <input type="number" id="persentase_uas" class="form-control form-control-sm" value="{{ $kontrak->uas?? 0 }}">
                                         </td>
-                                        <td style="padding-left: 10px;">
-                                            <input type="number" id="persentase_uas" class="form-control" value="{{ $kontrak->uas?? 0 }}">
-                                        </td>
-                                        <td>%</td>
                                     </tr>
                                     <tr>
                                         <td>
@@ -69,6 +62,24 @@
                                         </td>
                                     </tr>
                                 </table>
+                            </div>
+                            <div class="col-sm-6">
+                                <table>
+                                    <tr>
+                                        <td><button class="btn btn-info btn-sm">Publish Tugas</button></td>
+                                        <td style="padding-left: 10px;"><button class="btn btn-info btn-sm">Validasi Tugas</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td><button class="btn btn-info btn-sm">Publish UTS</button></td>
+                                        <td style="padding-left: 10px;"><button class="btn btn-info btn-sm">Validasi UTS</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td><button class="btn btn-info btn-sm">Publish UAS</button></td>
+                                        <td style="padding-left: 10px;"><button class="btn btn-info btn-sm">Validasi UAS</button></td>
+                                    </tr>
+                                </table>
+                                <div class="mt-4"></div>
+                                <span>A = 0; B = 0; C = 0; D = 0; E = 0;</span>
                             </div>
                         </div>
                         <div class="table-responsive mt-4">
@@ -88,19 +99,19 @@
                                     @foreach($daftar_mhs as $row)
                                         <tr>
                                             <td>{{ $no++ }}</td>
-                                            <td>{{ $row['nim'] }}</td>
+                                            <td>{{ $row['nims'] }}</td>
                                             <td>{{ $row['nama'] }}</td>
                                             <td>
-                                                <input type="number" class="form-control" id="nilai_tugas" value="0">
+                                                <input type="number" onchange="simpanNilai({{ $row['idmhs'] }}, {{ $id }}, '1', $(this).val())" class="form-control" id="nilai_tugas" value="{{ $row['ntugas'] }}">
                                             </td>
                                             <td>
-                                                <input type="number" class="form-control" id="nilai_uts" value="0">
+                                                <input type="number" onchange="simpanNilai({{ $row['idmhs'] }}, {{ $id }}, '2', $(this).val())" class="form-control" id="nilai_uts" value="{{ $row['nuts'] }}">
                                             </td>
                                             <td>
-                                                <input type="number" class="form-control" id="nilai_uas" value="0">
+                                                <input type="number" onchange="simpanNilai({{ $row['idmhs'] }}, {{ $id }}, '3', $(this).val())" class="form-control" id="nilai_uas" value="{{ $row['nuas'] }}">
                                             </td>
                                             <td>
-                                                |
+                                                <span id="na">{{ $row['nakhir'] }} | {{ $row['nhuruf'] }}  </span>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -126,6 +137,43 @@
                 responsive: true
             })
         })
+        function simpanNilai(idmhs, idjadwal, tipe, nilai){
+            $.ajax({
+                url: baseUrl+'/dosen/simpan-nilai',
+                type: 'post',
+                data: {
+                    id_mhs: idmhs,
+                    id_jadwal: idjadwal,
+                    tipe: tipe,
+                    nilai: nilai
+                },
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                dataType: 'json',
+                success: function(res){
+                    console.log(res)
+                    if(res.kode == 200){
+                        swal({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: 'Berhasil disimpan.',
+                            customClass: {
+                                confirmButton: 'btn btn-success'
+                            }
+                        });
+                        $('#na').html(`<span>${ res.na } | ${ res.nh }</span>`)
+                    }else{
+                        swal({
+                            icon: 'warning',
+                            title: 'Galat!',
+                            text: 'Server Error.',
+                            customClass: {
+                                confirmButton: 'btn btn-danger'
+                            }
+                        });
+                    }
+                }
+            })
+        }
         function simpanKontrak(id_jadwal){
             var persentase_tugas = $('#persentase_tugas').val();
             var persentase_uts = $('#persentase_uts').val();

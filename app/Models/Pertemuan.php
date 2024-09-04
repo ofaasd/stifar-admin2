@@ -9,6 +9,7 @@ class Pertemuan extends Model
 {
     protected $fillable = [
         'id_jadwal',
+        'capaian',
         'tgl_pertemuan',
         'id_dsn'
     ];

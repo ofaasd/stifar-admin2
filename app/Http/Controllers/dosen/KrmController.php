@@ -13,6 +13,9 @@ use App\Models\AbsensiModel;
 use App\Models\Pertemuan;
 use App\Models\Prodi;
 use App\Models\KontrakKuliahModel;
+use App\Models\master_nilai;
+use App\Models\TahunAjaran;
+use Illuminate\Support\Facades\DB;
 
 class KrmController extends Controller
 {
@@ -79,7 +82,7 @@ class KrmController extends Controller
         }else{
             AbsensiModel::create(['id_jadwal' => $id_jadwal, 'id_pertemuan' => $id_pertemuan, 'id_mhs' => $id_mhs, 'type' => $type]);
         }
-        return json_encode(['kode' => 200]);
+        return json_encode(['kode' => 200, 'result' => $cek]);
     }
     public function inputAbsenBatch($id){
         $title = "Input Absensi Batch";
@@ -87,23 +90,156 @@ class KrmController extends Controller
                               ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'pertemuans.id_dsn')
                               ->leftJoin('absensi_models', 'absensi_models.id_pertemuan', '=', 'pertemuans.id')
                               ->where('pertemuans.id_jadwal', $id)->get();
+        $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
+                              ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
+                              ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
+                              ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
+                              ->leftJoin('mata_kuliahs', 'mata_kuliahs.id', '=', 'jadwals.id_mk')
+                              ->where([ 'jadwals.id' => $id, 'jadwals.status' => 'Aktif'])->first();
         $id_jadwal = $id;
-        return view('dosen.input_absen_batch', compact('title', 'pertemuan', 'id_jadwal'));
+        return view('dosen.input_absen_batch', compact('title', 'pertemuan', 'id_jadwal', 'jadwal'));
+    }
+    public function pertemuanAbsensi(Request $request){
+        $id_pertemuan = $request->id_pertemuan;
+        $pertemuan = Pertemuan::find($id_pertemuan);
+        $daftar_mhs = DB::select('select 
+                                        krs.*, 
+                                        mahasiswa.nim, 
+                                        mahasiswa.nama, 
+                                        (select 
+                                            type 
+                                        from absensi_models 
+                                        where id_pertemuan = '. $id_pertemuan .' and id_mhs = krs.id_mhs) as type 
+                                        from krs 
+                                    left join mahasiswa on krs.id_mhs = mahasiswa.id
+                                    where krs.id_jadwal = '. $pertemuan->id_jadwal);
+        
+        $capaian = $pertemuan->capaian;
+        $no = 1;
+        return view('dosen._view_pertemuan_absensi_', compact('no', 'daftar_mhs', 'capaian', 'id_pertemuan'));
+    }
+    public function simpanCapaian(Request $request){
+        $id_pertemuan = $request->id_pertemuan;
+        $capaian = $request->capaian;
+        Pertemuan::where('id', $id_pertemuan)->update(['capaian' => $capaian]);
+        
+        return json_encode(['msg' => 'ok']);
     }
     public function daftarMhsNilai($id){
-        $title = "Daftar Mahasiswa";
+        $title = "Input Nilai";
         $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
                         ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
                         ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
                         ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
                         ->leftJoin('mata_kuliahs', 'mata_kuliahs.id', '=', 'jadwals.id_mk')
                         ->where([ 'jadwals.id' => $id, 'jadwals.status' => 'Aktif'])->first();
-        $daftar_mhs = Krs::select('krs.*', 'mhs.nim', 'mhs.nama', 'mhs.foto_mhs')
+        $daftar_mhs = Krs::select('krs.id_mhs as idmhs', 'krs.*', 'mhs.nim as nims', 'mhs.nama', 'mhs.foto_mhs', 'master_nilai.*')
                          ->leftJoin('mahasiswa as mhs', 'mhs.id', '=', 'krs.id_mhs')
+                         ->leftJoin('master_nilai', function($join) {
+                            $join->on('master_nilai.id_jadwal', '=', 'krs.id_jadwal');
+                            $join->on('master_nilai.id_mhs', '=', 'mhs.id');
+                         })
                          ->where('krs.id_jadwal', $id)->get();
         $kontrak = KontrakKuliahModel::where('id_jadwal', $id)->first();
         $no = 1;
-        return view('dosen.daftar_mhs_nilai', compact('title', 'jadwal', 'daftar_mhs', 'no', 'kontrak'));
+        return view('dosen.daftar_mhs_nilai', compact('title', 'jadwal', 'daftar_mhs', 'no', 'id', 'kontrak'));
+    }
+    public function saveNilai(Request $request){
+        $id_jadwal = $request->id_jadwal;
+        $id_mhs = $request->id_mhs;
+        $tipe = $request->tipe;
+        $nilai = $request->nilai;
+
+        $cek = master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs])->first();
+        $kontrak = KontrakKuliahModel::where('id_jadwal', $id_jadwal)->first();
+        $tahun_ajaran = TahunAjaran::where('status','Aktif')->first();
+        $na = 0;
+        $nh = 'E';
+
+        if ($cek) {
+            if ($tipe == 1) {
+                master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs])->update(['ntugas' => $nilai]);
+            }
+            if ($tipe == 2) {
+                master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs])->update(['nuts' => $nilai]);
+            }
+            if ($tipe == 3) {
+                master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs])->update(['nuas' => $nilai]);
+            }
+            $cek = master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs])->first();
+            $kontrak_tugas = $kontrak['tugas']??0;
+            $kontrak_uts = $kontrak['uts']??0;
+            $kontrak_uas = $kontrak['uas']??0;
+            $na = (floatval($cek['ntugas']??0) * floatval(($kontrak_tugas / 100))) + 
+                  (floatval($cek['nuts']??0) * floatval(($kontrak_uts / 100))) + 
+                  (floatval($cek['nuas']??0) * floatval(($kontrak_uas / 100)));
+            $nh = 'E';
+            if(($na >= 85) && ($na <= 100)){
+                $nh = 'A';
+            }
+            if(($na >= 80) && ($na < 85)){
+                $nh = 'AB';
+            }
+            if(($na >= 70) && ($na < 80)){
+                $nh = 'B';
+            }
+            if(($na >= 65) && ($na < 70)){
+                $nh = 'BC';
+            }
+            if(($na >= 60) && ($na < 65)){
+                $nh = 'C';
+            }
+            if(($na >= 50) && ($na < 60)){
+                $nh = 'D';
+            }
+            if(($na >= 0) && ($na < 50)){
+                $nh = 'E';
+            }
+            
+            master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs])->update(['nakhir' => $na, 'nhuruf' => $nh]);
+            return json_encode(['kode' => 200, 'na' => $na, 'nh' => $nh]);
+        }else{
+            if ($tipe == 1) {
+                master_nilai::create(['id_jadwal' => $id_jadwal, 'id_tahun' => $tahun_ajaran['id'], 'id_mhs' => $id_mhs, 'ntugas' => $nilai]);
+            }
+            if ($tipe == 2) {
+                master_nilai::where(['id_jadwal' => $id_jadwal, 'id_tahun' => $tahun_ajaran['id'], 'id_mhs' => $id_mhs, 'nuts' => $nilai]);
+            }
+            if ($tipe == 3) {
+                master_nilai::where(['id_jadwal' => $id_jadwal, 'id_tahun' => $tahun_ajaran['id'], 'id_mhs' => $id_mhs, 'nuas' => $nilai]);
+            }
+            $cek = master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs])->first();
+            $kontrak_tugas = $kontrak['tugas']??0;
+            $kontrak_uts = $kontrak['uts']??0;
+            $kontrak_uas = $kontrak['uas']??0;
+            $na = (floatval($cek['ntugas']??0) * floatval(($kontrak_tugas / 100))) + 
+                  (floatval($cek['nuts']??0) * floatval(($kontrak_uts / 100))) + 
+                  (floatval($cek['nuas']??0) * floatval(($kontrak_uas / 100)));
+            $nh = 'E';
+            if(($na >= 85) && ($na <= 100)){
+                $nh = 'A';
+            }
+            if(($na >= 80) && ($na < 85)){
+                $nh = 'AB';
+            }
+            if(($na >= 70) && ($na < 80)){
+                $nh = 'B';
+            }
+            if(($na >= 65) && ($na < 70)){
+                $nh = 'BC';
+            }
+            if(($na >= 60) && ($na < 65)){
+                $nh = 'C';
+            }
+            if(($na >= 50) && ($na < 60)){
+                $nh = 'D';
+            }
+            if(($na >= 0) && ($na < 50)){
+                $nh = 'E';
+            }
+            master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs])->update(['nakhir' => $na, 'nhuruf' => $nh]);
+            return json_encode(['kode' => 200, 'na' => $na, 'nh' => $nh]);
+        }
     }
     public function saveKontrak(Request $request){
         $id_jadwal = $request->id_jadwal;
