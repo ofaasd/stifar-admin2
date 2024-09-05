@@ -87,6 +87,12 @@
                                 <input type="text" class="form-control" name="nidn" value="" >
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">NUPTK : </label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" name="nuptk" value="" >
+                            </div>
+                        </div>
                         <div class="mb-2">
                             <label class="col-sm-4 col-form-label">Nama Lengkap : </label>
                             <div class="col-sm-12">

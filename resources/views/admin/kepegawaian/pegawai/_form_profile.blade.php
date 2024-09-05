@@ -47,6 +47,14 @@
                 </select>
             </div>
         </div>
+        <div class="mb-2">
+            <label class="col-sm-12 col-form-label">NUPTK : </label>
+            <div class="col-sm-12">
+                <div class="input-group">
+                    <input type="text" name="nuptk" class="form-control" placeholder="NUPTK" id="nuptk" aria-describedby="inputGroupPrepend" required value="{{$pegawai->nuptk}}">
+                </div>
+            </div>
+        </div>
         <div class="form-group row">
             <label class="col-sm-12 col-form-label">NIDN : </label>
             <div class="col-sm-12">

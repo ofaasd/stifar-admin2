@@ -119,6 +119,7 @@ class PegawaiBiodatum extends Model
 		'kotakab',
 		'kecamatan',
 		'kelurahan',
-        'user_id'
+        'user_id',
+        'nuptk',
 	];
 }
