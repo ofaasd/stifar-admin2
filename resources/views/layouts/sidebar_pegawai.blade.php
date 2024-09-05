@@ -12,7 +12,7 @@
             <li class="back-btn">
               <div class="mobile-back text-end"><span>Back</span><i class="fa fa-angle-right ps-2" aria-hidden="true"></i></div>
             </li>
-            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{ route('dashboard_pegawai')}}" >
+            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{ URL::to('dsn/dashboard')}}" >
                 <span><i class="fa fa-home"></i> Dashboard</span></a>
             </li>
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{URL::to('pegawai')}}" >
