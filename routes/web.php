@@ -128,6 +128,7 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     Route::post('admin/kepegawaian/pegawai/get_status', [PegawaiController::class, 'get_status'])->name('get_status');
     Route::post('admin/kepegawaian/pegawai/user_update', [PegawaiController::class, 'user_update'])->name('user_update');
     Route::post('admin/kepegawaian/pegawai/foto_update', [PegawaiController::class, 'foto_update'])->name('foto_update');
+    Route::get('admin/pegawai/generate_user',[PegawaiController::class, 'generate_user'])->name('generate_user');
 
     Route::get('admin/masterdata/pt/atribut', [AtributPTController::class, 'index'])->name('atribut');
     Route::get('admin/masterdata/prodi/atribut/{id}', [AtributProdiController::class, 'index'])->name('atribut_prodi');

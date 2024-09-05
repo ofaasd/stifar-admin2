@@ -290,4 +290,15 @@ class PegawaiController extends Controller
             return response()->json('Failed');
         }
     }
+    public function generate_user(){
+        $pegawai = PegawaiBiodatum::all();
+        foreach($pegawai as $row){
+            echo $row->nama_lengkap;
+            echo $row->npp;
+            echo "<br />";
+
+            //cek user
+            $user = User::where('');
+        }
+    }
 }
