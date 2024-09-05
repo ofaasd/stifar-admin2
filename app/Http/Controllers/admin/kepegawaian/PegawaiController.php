@@ -296,9 +296,36 @@ class PegawaiController extends Controller
             echo $row->nama_lengkap;
             echo $row->npp;
             echo "<br />";
-
+            $email = $row->npp . "@dsn.stifar.id";
+            $password = $row->npp . "stifar";
             //cek user
-            $user = User::where('');
+            $user = User::where('email',$email);
+            if($user->count() > 0){
+                // $user = $user->row();
+                // $new_user = User::find($user->id);
+                // $new_user->password = Hash::make($password);
+                // $new_user->save();
+                //donothing
+            }else{
+                $new_user = User::create(
+                    [
+                        'name'=>$row->nama_lengkap,
+                        'email' => $email,
+                        'password' => Hash::make($password),
+                    ]
+                );
+                $user_id = $new_user->id;
+                $role = ModelHasRole::create(
+                    [
+                        'role_id' => 3,
+                        'model_type' => 'App\Models\User',
+                        'model_id' => $user_id,
+                    ]
+                );
+                $pegawai2 = PegawaiBiodatum::find($row->id);
+                $pegawai2->user_id = $user_id;
+                $pegawai2->save();
+            }
         }
     }
 }
