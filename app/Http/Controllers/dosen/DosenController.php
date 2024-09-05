@@ -39,6 +39,7 @@ class DosenController extends Controller
                     ->leftJoin('waktus as c', 'a.id_sesi', '=', 'c.id')
                     ->leftJoin('master_ruang as d', 'a.id_ruang', '=', 'd.id')
                     ->where('krs.id_tahun', $ta)
+                    ->where('id_mhs',$idmhs)
                     ->get();
         $no = 1;
         $program_studi = Prodi::all();
