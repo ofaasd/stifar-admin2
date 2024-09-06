@@ -280,7 +280,7 @@ Route::group(['middleware' => ['auth','role:mhs|super-admin']], function(){
     Route::get('/admin/masterdata/krs/admin/download/{id}', [KrsController::class, 'downloadkrs']);
     Route::get('/admin/masterdata/krs/input/{id}/{mhs}', [KrsController::class, 'tambahadminKRS']);
 
-    Route::post('admin/admisi/peserta/daftar_kota',[PmbPesertaController::class, 'daftar_kota'] )->name('daftar_kota');
+    //Route::post('admin/admisi/peserta/daftar_kota',[PmbPesertaController::class, 'daftar_kota'] )->name('daftar_kota');
 });
 Route::group(['middleware' => ['auth','role:pegawai|super-admin']], function(){
 
@@ -324,5 +324,8 @@ Route::group(['middleware' => ['auth','role:pegawai|super-admin']], function(){
     Route::resource('admin/kepegawaian/surat_izin', SuratIzinController::class)->name('index','surat_izin');
 
     Route::get('/mahasiswa/detail/{nim}', [MahasiswaController::class, 'detail']);
+
+});
+Route::group(['middleware' => ['auth','role:mhs|pegawai|super-admin']], function(){
     Route::post('admin/admisi/peserta/daftar_kota',[PmbPesertaController::class, 'daftar_kota'] )->name('daftar_kota_pegawai');
 });
