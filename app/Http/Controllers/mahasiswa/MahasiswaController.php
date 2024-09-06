@@ -26,6 +26,9 @@ class MahasiswaController extends Controller
   public function edit($nim){
     $title = "Mahasiswa";
     $mahasiswa = Mahasiswa::where('nim', $nim)->first();
+    if(empty($mahasiswa)){
+        return view('errors.404');
+    }
     $program_studi = Prodi::all();
     $prodi = [];
     foreach($program_studi as $row){
@@ -41,7 +44,7 @@ class MahasiswaController extends Controller
 
     $kecamatan = [];
     if($mahasiswa->kecamatan != 0 && !empty($mahasiswa->kecamatan)){
-        $kecamatan = Wilayah::where('id_induk_wilayah', $mahasiswa->kotakab)->get();
+        $kecamatan = Wilayah::where('id_induk_wilayah', $mahasiswa->kokab)->get();
     }
 
     $status = array(
@@ -59,6 +62,7 @@ class MahasiswaController extends Controller
   }
   public function create(){
     $title = "Mahasiswa";
+    $nim = 'asdasd';
     $mahasiswa = Mahasiswa::where('nim', $nim)->first();
     $program_studi = Prodi::all();
     $prodi = [];
@@ -69,12 +73,12 @@ class MahasiswaController extends Controller
     $wilayah = Wilayah::where('id_induk_wilayah','000000')->get();
 
     $kota = [];
-    if($mahasiswa->provinsi != 0 && !empty($mahasiswa->provinsi)){
+    if(!empty($mahasiswa->provinsi) && $mahasiswa->provinsi != 0){
         $kota = Wilayah::where('id_induk_wilayah', $mahasiswa->provinsi)->get();
     }
 
     $kecamatan = [];
-    if($mahasiswa->kecamatan != 0 && !empty($mahasiswa->kecamatan)){
+    if(!empty($mahasiswa->kecamatan) && $mahasiswa->kecamatan != 0 ){
         $kecamatan = Wilayah::where('id_induk_wilayah', $mahasiswa->kotakab)->get();
     }
 
@@ -87,7 +91,7 @@ class MahasiswaController extends Controller
       6 => 'DO'
     );
     $dosen = PegawaiBiodatum::where('id_posisi_pegawai',1)->get();
-    $user = User::where('id',$mahasiswa->user_id)->first();
+    $user = '';
 
     return view('mahasiswa.create', compact('user','status','dosen','kecamatan','wilayah','kota','title', 'mahasiswa','prodi','agama'));
   }
@@ -101,11 +105,13 @@ class MahasiswaController extends Controller
     $id = $request->id;
     if(empty($id)){
       //create user
+      $email = $request->nim . "@mhs.stifar.id";
+      $password = $request->nim.'stifar';
       $user = User::create(
         [
-            'name'=>$request->nama_lengkap,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'name'=>$request->nama,
+            'email' => $email,
+            'password' => Hash::make($password),
         ]
       );
       $user_id = $user->id;
@@ -134,7 +140,7 @@ class MahasiswaController extends Controller
                 'alamat' => $request->alamat,
                 'alamat_semarang' => $request->alamat_semarang,
                 'provinsi' => $request->provinsi,
-                'kotakab' => $request->kotakab,
+                'kokab' => $request->kotakab,
                 'kecamatan' => $request->kecamatan,
                 'kelurahan' => $request->kelurahan,
                 'rt' => $request->rt,
@@ -143,9 +149,15 @@ class MahasiswaController extends Controller
                 'hp' => $request->hp,
                 'id_dsn_wali' => $request->id_dsn_wali,
                 'user_id'=>$user_id,
+                'status' => 1,
             ]
         );
-        return response()->json('created');
+        $data = [
+            'status' => 200,
+            'id' => $mahasiswa->nim,
+            'user_id' => $user_id,
+        ];
+        return response()->json($data);
     }else{
       //update user
         $mahasiswa = Mahasiswa::updateOrCreate(
@@ -166,7 +178,7 @@ class MahasiswaController extends Controller
                 'alamat' => $request->alamat,
                 'alamat_semarang' => $request->alamat_semarang,
                 'provinsi' => $request->provinsi,
-                'kotakab' => $request->kotakab,
+                'kokab' => $request->kotakab,
                 'kecamatan' => $request->kecamatan,
                 'kelurahan' => $request->kelurahan,
                 'rt' => $request->rt,

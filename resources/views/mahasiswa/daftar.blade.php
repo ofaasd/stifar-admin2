@@ -26,7 +26,7 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header pb-0 card-no-border">
-                      <a href="{{URL::to('mahasiswa/tambah-data')}}" class="btn btn-primary">
+                      <a href="{{URL::to('mahasiswa/create')}}" class="btn btn-primary">
                         <i class="fa fa-plus"></i>
                         Tambah Data Mahasiswa
                       </a>
@@ -36,6 +36,7 @@
                             <table class="display" id="myTable">
                                 <thead>
                                     <tr>
+                                        <th></th>
                                         <th></th>
                                         <th>NIM</th>
                                         <th>Nama Mahasiswa</th>
@@ -48,6 +49,7 @@
                                 @foreach($mhs as $row_mhs)
                                   <tr>
                                     <td>{{ $no++ }}</td>
+                                    <td><img class="img-60 b-r-8" alt="" src="{{ (!empty($row_mhs->foto_mhs))?asset('assets/images/mahasiswa/' . $row_mhs->foto_mhs):asset('assets/images/user/7.jpg') }}"></td>
                                     <td>{{ $row_mhs['nim'] }}</td>
                                     <td>{{ $row_mhs['nama'] }}</td>
                                     <td>{{ $row_mhs['hp'] }}</td>

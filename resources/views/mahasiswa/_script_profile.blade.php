@@ -9,20 +9,20 @@
             url:'{{URL::to('mahasiswa')}}',
             method:'POST',
             data:form,
-            success:function(status){
+            success:function(data){
                 swal({
                     icon: 'success',
-                    title: 'Successfully '.concat(status, '!'),
-                    text: ''.concat(status, ' Successfully.'),
+                    title: 'Successfully '.concat(data.status, '!'),
+                    text: ''.concat(data.status, ' Successfully.'),
                     customClass: {
                         confirmButton: 'btn btn-success'
                     }
-                })
-                $(".update-btn").prop('disabled', false);
-                $(".update-btn").html('Update Profile');
+                }).then(function(){
+                    window.location = "{{URL::to('/mahasiswa/')}}" + '/' + data.id + '/edit';
+                });
             },
             error: function error(err) {
-                offCanvasForm.offcanvas('hide');
+                //offCanvasForm.offcanvas('hide');
                 swal({
                 title: 'Duplicate Entry!',
                 text: 'Data Not Saved !',

@@ -21,7 +21,7 @@
                 $(".update-btn").html('Update Profile');
             },
             error: function error(err) {
-                offCanvasForm.offcanvas('hide');
+                //offCanvasForm.offcanvas('hide');
                 swal({
                 title: 'Duplicate Entry!',
                 text: 'Data Not Saved !',
