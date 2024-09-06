@@ -284,6 +284,8 @@ Route::group(['middleware' => ['auth','role:mhs|super-admin']], function(){
 });
 Route::group(['middleware' => ['auth','role:pegawai|super-admin']], function(){
 
+
+
     Route::get('/dsn/dashboard',[DashboardController::class, 'dosen'] )->name('dashboard_pegawai');
     Route::get('/admin/input-batch/{id}',[KrmController::class, 'inputAbsenBatch'] )->name('dashboard_pegawai');
     Route::post('/dosen/tampil-pertemuan-absensi',[KrmController::class, 'pertemuanAbsensi'] )->name('dashboard_pegawai');
@@ -322,4 +324,5 @@ Route::group(['middleware' => ['auth','role:pegawai|super-admin']], function(){
     Route::resource('admin/kepegawaian/surat_izin', SuratIzinController::class)->name('index','surat_izin');
 
     Route::get('/mahasiswa/detail/{nim}', [MahasiswaController::class, 'detail']);
+    Route::post('admin/admisi/peserta/daftar_kota',[PmbPesertaController::class, 'daftar_kota'] )->name('daftar_kota_pegawai');
 });
