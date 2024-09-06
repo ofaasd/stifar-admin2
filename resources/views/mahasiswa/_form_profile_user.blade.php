@@ -184,7 +184,19 @@
                 </div>
             </div>
         </div>
-
+        <div class="mb-2">
+            <label class="col-sm-10 col-form-label">Dosen Wali :</label>
+            <div class="col-sm-12">
+                <p>
+                    <select name="id_dsn_wali" id="id_dsn_wali" class="form-control" >
+                        <option selected="" disabled="">Pilih Dosen</option>
+                        @foreach($dosen as $row)
+                            <option value="{{ $row->id }}" {{(!empty($mahasiswa->id_dsn_wali) && $mahasiswa->id_dsn_wali == $row->id)?"selected":""}}>{{$row->nama_lengkap}}</option>
+                        @endforeach
+                    </select>
+                </p>
+            </div>
+        </div>
 
     </div>
 </div>

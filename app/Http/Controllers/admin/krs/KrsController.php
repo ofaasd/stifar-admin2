@@ -53,7 +53,7 @@ class KrsController extends Controller
         $id_mk = $request->id_mk;
         $ta = $request->ta;
         $idmhs = $request->idmhs;
-        $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'c.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.nama_matkul')
+        $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'c.nama_sesi', 'mata_kuliahs.sks_teori', 'mata_kuliahs.sks_praktek','ruang.nama_ruang', 'mata_kuliahs.nama_matkul')
                   ->leftJoin('mata_kuliahs', 'mata_kuliahs.id', '=', 'jadwals.id_mk')
                   ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
                   ->leftJoin('waktus as c', 'jadwals.id_sesi', '=', 'c.id')
@@ -68,7 +68,7 @@ class KrsController extends Controller
                             ->leftJoin('jadwals', 'jadwals.id', '=', 'krs.id_jadwal')
                             ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
                             ->leftJoin('waktus as c', 'jadwals.id_sesi', '=', 'c.id')
-                            ->where(['jadwals.hari' => $data_jadwal['hari'], 'jadwals.id_sesi' => $data_jadwal['id_sesi'], 'jadwals.id_tahun' => $data_jadwal['id_tahun'], 'jadwals.status' => 'Aktif'])
+                            ->where(['jadwals.hari' => $data_jadwal['hari'], 'jadwals.id_sesi' => $data_jadwal['id_sesi'], 'jadwals.id_tahun' => $data_jadwal['id_tahun'], 'jadwals.status' => 'Aktif','id_mhs'=>$mhs])
                             ->get();
         echo count($cek_bentrok);
         if(count($cek_bentrok) >= 1){

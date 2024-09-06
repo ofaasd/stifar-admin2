@@ -73,6 +73,7 @@
                                         <!-- <td>SKS</td> -->
                                         <td>Hari, Waktu</td>
                                         <td>Ruang</td>
+                                        <td>SKS</td>
                                         <td>Aksi</td>
                                     </thead>
                                     <tbody>
@@ -84,6 +85,7 @@
                                                 <!-- <td>{{ $row_krs['sks_teori'] }}T/ {{ $row_krs['sks_praktek'] }}P</td> -->
                                                 <td>{{ $row_krs['hari'] }}, {{ $row_krs['nama_sesi'] }}</td>
                                                 <td>{{ $row_krs['nama_ruang'] }}</td>
+                                                <td>{{ ($row->sks_teori+$row->sks_praktek) }}</td>
                                                 <td>
                                                     <a href="{{ url('admin/masterdata/krs/admin/hapus/'.$row_krs['id']) }}" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Hapus</a>
                                                 </td>

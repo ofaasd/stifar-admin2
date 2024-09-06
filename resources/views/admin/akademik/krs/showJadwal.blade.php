@@ -10,6 +10,7 @@
             <td>Hari, Waktu</td>
             <td>Ruang</td>
             <td>Kuota</td>
+            <td>SKS</td>
             <td>Aksi</td>
         </thead>
         <tbody>
@@ -22,6 +23,7 @@
                 <td>{{ $j['hari'] }}, {{ $j['nama_sesi'] }}</td>
                 <td>{{ $j['nama_ruang'] }}</td>
                 <td>{{ $j['kuota'] }}</td>
+                <td>{{ ($j->sks_teori+$j->sks_praktek) }}</td>
                 <td>
                     <a href="{{ url('admin/masterdata/krs/input/'.$j['id'].'/'.$idmhs) }}" class="btn btn-primary btn-sm">
                         <i class="fa fa-plus"></i>
