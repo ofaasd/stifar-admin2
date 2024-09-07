@@ -4,7 +4,7 @@
         <div class="back-btn"><i class="fa fa-angle-left"></i></div>
         <div class="toggle-sidebar"><i class="status_toggle middle sidebar-toggle" data-feather="grid"> </i></div>
       </div>
-      <div class="logo-icon-wrapper"><a href="{{ route('dashboard_mahasiswa')}}"><img class="img-fluid" src="{{ asset('assets/images/logo/logo-icon.png') }}" alt=""></a></div>
+      <div class="logo-icon-wrapper"><a href="{{ route('dashboard_mahasiswa')}}"></a></div>
       <nav class="sidebar-main">
         <div class="left-arrow" id="left-arrow"><i data-feather="arrow-left"></i></div>
         <div id="sidebar-menu">
