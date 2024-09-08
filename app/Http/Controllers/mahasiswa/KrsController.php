@@ -32,11 +32,11 @@ class KrsController extends Controller
         $mk = [];
         if($kurikulum){
             foreach($kurikulum as $row){
-                $mk[] = MatakuliahKurikulum::select('mata_kuliahs.*')->join('mata_kuliahs','mata_kuliahs.id','=','matakuliah_kurikulums.id_mk')->where('id_kurikulum',$row->id)->get();
+                $mk[] = MatakuliahKurikulum::select('mata_kuliahs.*')->join('mata_kuliahs','mata_kuliahs.id','=','matakuliah_kurikulums.id_mk')->where('mata_kuliahs.status','Aktif')->where('id_kurikulum',$row->id)->get();
             }
         }
         //$mk = MataKuliah::get();
-        $krs = Krs::select('krs.*', 'a.hari', 'a.kel', 'b.nama_matkul', 'b.sks_teori', 'b.sks_praktek', 'c.nama_sesi', 'd.nama_ruang')
+        $krs = Krs::select('krs.*', 'a.hari', 'a.kel', 'b.nama_matkul', 'b.sks_teori', 'b.sks_praktek','b.kode_matkul', 'c.nama_sesi', 'd.nama_ruang')
                     ->leftJoin('jadwals as a', 'krs.id_jadwal', '=', 'a.id')
                     ->leftJoin('mata_kuliahs as b', 'a.id_mk', '=', 'b.id')
                     ->leftJoin('waktus as c', 'a.id_sesi', '=', 'c.id')

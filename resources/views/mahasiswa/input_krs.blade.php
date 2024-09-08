@@ -65,33 +65,51 @@
                                 <h3>KRS diinputkan : </h3>
                                 <a href="{{ url('admin/masterdata/krs/admin/download/'.$idmhs) }}" class="btn btn-info btn-sm" style="float: right;"><i class="fa fa-download"></i> Download KRS</a>
                                 <div class="mt-2"></div>
-                                <table class="table">
+                                <table class="table" id="tablekrs">
                                     <thead>
                                         <td>No.</td>
-                                        <td>Kelas</td>
+                                        <td>Kode</td>
                                         <td>Nama Matakuliah</td>
+                                        <td>Kelas</td>
                                         <!-- <td>SKS</td> -->
                                         <td>Hari, Waktu</td>
                                         <td>Ruang</td>
                                         <td>SKS</td>
+                                        <td>Validasi</td>
                                         <td>Aksi</td>
                                     </thead>
                                     <tbody>
+                                        @php
+                                            $total_krs = 0;
+                                        @endphp
                                         @foreach($krs as $row_krs)
                                             <tr>
                                                 <td>{{ $no++ }}</td>
-                                                <td>{{ $row_krs['kel'] }}</td>
+                                                <td>{{ $row_krs['kode_matkul'] }}</td>
                                                 <td>{{ $row_krs['nama_matkul'] }}</td>
+                                                <td>{{ $row_krs['kel'] }}</td>
                                                 <!-- <td>{{ $row_krs['sks_teori'] }}T/ {{ $row_krs['sks_praktek'] }}P</td> -->
                                                 <td>{{ $row_krs['hari'] }}, {{ $row_krs['nama_sesi'] }}</td>
                                                 <td>{{ $row_krs['nama_ruang'] }}</td>
-                                                <td>{{ ($row->sks_teori+$row->sks_praktek) }}</td>
+                                                <td>{{ ($row_krs->sks_teori+$row_krs->sks_praktek) }}</td>
+                                                <td>{!!($row_krs->is_validasi == 0)?'<p class="btn btn-secondary" style="font-size:8pt;">Menunggu Validasi Dosen Wali</p>':'<p class="btn btn-success" style="font-size:8pt;">Sudah Divalidasi</p>'!!}</td>
                                                 <td>
-                                                    <a href="{{ url('admin/masterdata/krs/admin/hapus/'.$row_krs['id']) }}" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Hapus</a>
+                                                    <a href="{{ url('admin/masterdata/krs/admin/hapus/'.$row_krs['id']) }}" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></a>
                                                 </td>
                                             </tr>
+                                            @php
+                                            $total_krs += ($row_krs->sks_teori+$row_krs->sks_praktek);
+                                            @endphp
                                         @endforeach
                                     </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th colspan=6 class="text-center">Total SKS</th>
+                                            <th>{{$total_krs}}</th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </tfoot>
                                 </table>
                             </div>
                             @endif
