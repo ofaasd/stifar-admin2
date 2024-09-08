@@ -21,7 +21,46 @@ class MahasiswaController extends Controller
       $title = "Daftar Mahasiswa";
       $mhs = Mahasiswa::get();
       $no = 1;
-      return view('mahasiswa.daftar', compact('title', 'mhs', 'no'));
+      $prodi = Prodi::all();
+      $jumlah = [];
+      $nama = [];
+
+      foreach($prodi as $row){
+        $jumlah[$row->id] = Mahasiswa::where('id_program_studi',$row->id)->count();
+        $nama_prodi = explode(' ',$row->nama_prodi);
+        $nama[$row->id] = $nama_prodi[0] . " " . $nama_prodi[1];
+      }
+      return view('mahasiswa.daftar', compact('title', 'mhs', 'no', 'prodi','jumlah','nama'));
+  }
+  public function get_mhs(Request $request){
+    $id = $request->id;
+    if($id == 0){
+      $mhs = Mahasiswa::get();
+      $no = 1;
+      $prodi = Prodi::all();
+      $jumlah = [];
+      $nama = [];
+
+      foreach($prodi as $row){
+        $jumlah[$row->id] = Mahasiswa::where('id_program_studi',$row->id)->count();
+        $nama_prodi = explode(' ',$row->nama_prodi);
+        $nama[$row->id] = $nama_prodi[0] . " " . $nama_prodi[1];
+      }
+      return view('mahasiswa._table_mhs', compact('mhs', 'no', 'prodi','jumlah','nama'));
+    }else{
+      $mhs = Mahasiswa::where('id_program_studi',$id)->get();
+      $no = 1;
+      $prodi = Prodi::all();
+      $jumlah = [];
+      $nama = [];
+
+      foreach($prodi as $row){
+        $jumlah[$row->id] = Mahasiswa::where('id_program_studi',$row->id)->count();
+        $nama_prodi = explode(' ',$row->nama_prodi);
+        $nama[$row->id] = $nama_prodi[0] . " " . $nama_prodi[1];
+      }
+      return view('mahasiswa._table_mhs', compact('mhs', 'no', 'prodi','jumlah','nama'));
+    }
   }
   public function edit($nim){
     $title = "Mahasiswa";
