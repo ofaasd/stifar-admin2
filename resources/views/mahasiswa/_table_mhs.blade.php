@@ -17,7 +17,7 @@
     <td>{{ $no++ }}</td>
     <td><img class="img-60 b-r-8" alt="" src="{{ (!empty($row_mhs->foto_mhs))?asset('assets/images/mahasiswa/' . $row_mhs->foto_mhs):asset('assets/images/user/7.jpg') }}"></td>
     <td>{{ $row_mhs['nim'] }}</td>
-    <td>{{ $row_mhs['nama'] }}</td>
+    <td><a href="{{ URL::to('mahasiswa/' . $row_mhs['nim']) . "/edit/" }}">{{ $row_mhs['nama'] }}</a></td>
     <td>{{ $row_mhs['hp'] }}</td>
     <td>{{ $row_mhs['email'] }}</td>
     <td>{{ $nama[$row_mhs['id_program_studi']] }}</td>
