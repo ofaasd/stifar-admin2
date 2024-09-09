@@ -137,13 +137,13 @@
                                                     <td>{{ $mk['nama_matkul_eng'] }}</td>
                                                     {{-- <td>{{ $mk['nama_kelompok'] }}</td>
                                                     <td>{{ $mk['nama_rumpun'] }}</td> --}}
-                                                    <td>{{ $mk['status'] }}</td>
+                                                    <td>{{ $mk['status'] . $mk['id'] }}</td>
                                                     <td>
                                                         <div class="btn-group">
                                                             <a href="#" class="btn btn-warning btn-sm btn-icon edit-record" data-bs-toggle="modal" data-original-title="test" data-bs-target="#editMK{{ $mk['kode_matkul'] }}">
                                                                 <i class="fa fa-edit"></i>
                                                             </a>
-                                                            <a href="{{ url('admin/masterdata/matakuliah/delete/'. $mk['id']) }}" class="btn btn-danger btn-sm btn-icon edit-record">
+                                                            <a href="{{ URL::to('admin/masterdata/matakuliah/delete/'. $mk['id']) }}" class="btn btn-danger btn-sm btn-icon edit-record">
                                                                 <i class="fa fa-trash"></i>
                                                             </a>
                                                         </div>

@@ -15,15 +15,49 @@ use App\Models\PegawaiBiodatum;
 use App\Models\koordinator_mk;
 use App\Models\anggota_mk;
 use App\Models\Pertemuan;
+use App\Models\Prodi;
+use App\Models\Kurikulum;
+use App\Models\MatakuliahKurikulum;
+use App\Models\Krs;
 
 class JadwalController extends Controller
 {
     public function index(Request $request)
     {
         $title = "Jadwal";
-        $mk = MataKuliah::where('status', 'Aktif')->get();
+        $mk[] = MataKuliah::where('status', 'Aktif')->get();
         $no = 1;
-        return view('admin.akademik.jadwal.index', compact('title', 'mk', 'no'));
+        $prodi = Prodi::all();
+        $nama = [];
+        $id_prodi = 0;
+
+      foreach($prodi as $row){
+        $nama_prodi = explode(' ',$row->nama_prodi);
+        $nama[$row->id] = $nama_prodi[0] . " " . $nama_prodi[1];
+      }
+        return view('admin.akademik.jadwal.index', compact('title', 'mk', 'no','prodi', 'nama', 'id_prodi'));
+    }
+    public function jadwal_prodi(String $id){
+        $title = "Jadwal";
+        $id_prodi = $id;
+        $prodi = Prodi::find($id);
+        $kurikulum = Kurikulum::where('progdi',$prodi->kode_prodi)->get();
+        $mk = [];
+        if($kurikulum){
+            foreach($kurikulum as $row){
+                $mk[] = MatakuliahKurikulum::select('mata_kuliahs.*')->join('mata_kuliahs','mata_kuliahs.id','=','matakuliah_kurikulums.id_mk')->where('mata_kuliahs.status','Aktif')->where('id_kurikulum',$row->id)->get();
+            }
+        }
+        //$mk = MataKuliah::where('status', 'Aktif')->get();
+        $no = 1;
+        $prodi = Prodi::all();
+        $nama = [];
+
+        foreach($prodi as $row){
+            $nama_prodi = explode(' ',$row->nama_prodi);
+            $nama[$row->id] = $nama_prodi[0] . " " . $nama_prodi[1];
+        }
+        return view('admin.akademik.jadwal.index', compact('title', 'mk', 'no','prodi', 'nama', 'id_prodi'));
     }
     public function daftarJadwal($id){
         $title = 'Buat Jadwal';
@@ -69,6 +103,7 @@ class JadwalController extends Controller
         return view('admin.akademik.jadwal.input', compact('anggota', 'ta', 'id_mk','title','nama_mk', 'days', 'jadwal', 'id', 'ruang', 'sesi', 'warning'));
     }
     public function daftarJadwalHarian(Request $request){
+        $id_tahun = TahunAjaran::where('status','Aktif')->first()->id;
         $title = "Jadwal Harian";
         $mk = MataKuliah::where('status', 'Aktif')->get();
         $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
@@ -76,49 +111,159 @@ class JadwalController extends Controller
                     ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
                     ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
                     ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
-                    ->where(['jadwals.hari' => 'Senin'])
                     ->get();
         $no = 1;
-        return view('admin.akademik.jadwal.jadwal_harian', compact('title', 'mk', 'no', 'jadwal'));
-    }
-    public function reqJadwalHarian(Request $request){
-        $hari = $request->hari;
-        $matakuliah = $request->matakuliah;
+        $id_prodi = 0;
+        $prodi = Prodi::all();
+        $nama = [];
 
-        $q = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
+        $jumlah_input_krs = [];
+        foreach($jadwal as $row){
+            $jumlah_input_krs[$row->id] = Krs::where('id_jadwal',$row->id)->where('id_tahun',$id_tahun)->count();
+        }
+
+        foreach($prodi as $row){
+            $nama_prodi = explode(' ',$row->nama_prodi);
+            $nama[$row->id] = $nama_prodi[0] . " " . $nama_prodi[1];
+        }
+        return view('admin.akademik.jadwal.jadwal_harian', compact('title', 'mk', 'no', 'jadwal','id_prodi','prodi','nama','jumlah_input_krs'));
+    }
+    public function daftarJadwalHarianProdi(String $id){
+        $id_tahun = TahunAjaran::where('status','Aktif')->first()->id;
+        $title = "Jadwal Harian";
+        $id_prodi = $id;
+        $prodi = Prodi::find($id);
+
+        $kurikulum = Kurikulum::where('progdi',$prodi->kode_prodi)->get();
+        $list_mk = [];
+        if($kurikulum){
+            foreach($kurikulum as $row){
+                $mk_kurikulum = MatakuliahKurikulum::select('mata_kuliahs.*')->join('mata_kuliahs','mata_kuliahs.id','=','matakuliah_kurikulums.id_mk')->where('mata_kuliahs.status','Aktif')->where('id_kurikulum',$row->id)->get();
+                foreach($mk_kurikulum as $mkkurikulum){
+                    $list_mk[] = $mkkurikulum->id;
+                }
+            }
+        }
+
+        $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
                     ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
                     ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
                     ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
                     ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
+                    ->whereIn('id_mk',$list_mk)
                     ->get();
-        if (($hari != 0) && ($matakuliah == 0)) {
-            $q = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
-            ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
-            ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
-            ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
-            ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
-            ->where(['jadwals.hari' => $hari])
-            ->get();
+        $mk = MataKuliah::where('status', 'Aktif')->whereIn('id',$list_mk)->get();
+        $no = 1;
+        $prodi = Prodi::all();
+        $nama = [];
+
+        $jumlah_input_krs = [];
+        foreach($jadwal as $row){
+            $jumlah_input_krs[$row->id] = Krs::where('id_jadwal',$row->id)->where('id_tahun',$id_tahun)->count();
         }
-        if (($hari == 0) && ($matakuliah != 0)) {
-            $q = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
-            ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
-            ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
-            ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
-            ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
-            ->where(['jadwals.id_mk' => $matakuliah])
-            ->get();
+        foreach($prodi as $row){
+            $nama_prodi = explode(' ',$row->nama_prodi);
+            $nama[$row->id] = $nama_prodi[0] . " " . $nama_prodi[1];
         }
-        if (($hari != 0) && ($matakuliah != 0)) {
+        return view('admin.akademik.jadwal.jadwal_harian', compact('title', 'mk', 'no', 'jadwal','id_prodi','prodi','nama','jumlah_input_krs'));
+    }
+    public function reqJadwalHarian(Request $request){
+        $id_tahun = TahunAjaran::where('status','Aktif')->first()->id;
+        $hari = $request->hari;
+        $matakuliah = $request->matakuliah;
+
+        if($request->id_prodi == 0){
+
             $q = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
-            ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
-            ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
-            ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
-            ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
-            ->where(['jadwals.hari' => $hari, 'jadwals.id_mk' => $matakuliah])
-            ->get();
+                        ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
+                        ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
+                        ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
+                        ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
+                        ->get();
+            if (($hari != 0) && ($matakuliah == 0)) {
+                $q = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
+                ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
+                ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
+                ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
+                ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
+                ->where(['jadwals.hari' => $hari])
+                ->get();
+            }
+            if (($hari == 0) && ($matakuliah != 0)) {
+                $q = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
+                ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
+                ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
+                ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
+                ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
+                ->where(['jadwals.id_mk' => $matakuliah])
+                ->get();
+            }
+            if (($hari != 0) && ($matakuliah != 0)) {
+                $q = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
+                ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
+                ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
+                ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
+                ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
+                ->where(['jadwals.hari' => $hari, 'jadwals.id_mk' => $matakuliah])
+                ->get();
+            }
+        }else{
+            $id = $request->id_prodi;
+            $prodi = Prodi::find($id);
+            $kurikulum = Kurikulum::where('progdi',$prodi->kode_prodi)->get();
+            $list_mk = [];
+            if($kurikulum){
+                foreach($kurikulum as $row){
+                    $mk_kurikulum = MatakuliahKurikulum::select('mata_kuliahs.*')->join('mata_kuliahs','mata_kuliahs.id','=','matakuliah_kurikulums.id_mk')->where('mata_kuliahs.status','Aktif')->where('id_kurikulum',$row->id)->get();
+                    foreach($mk_kurikulum as $mkkurikulum){
+                        $list_mk[] = $mkkurikulum->id;
+                    }
+                }
+            }
+
+            $q = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
+                        ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
+                        ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
+                        ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
+                        ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
+                        ->whereIn('id_mk',$list_mk)
+                        ->get();
+            if (($hari != 0) && ($matakuliah == 0)) {
+                $q = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
+                ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
+                ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
+                ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
+                ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
+                ->where(['jadwals.hari' => $hari])
+                ->whereIn('id_mk',$list_mk)
+                ->get();
+            }
+            if (($hari == 0) && ($matakuliah != 0)) {
+                $q = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
+                ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
+                ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
+                ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
+                ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
+                ->where(['jadwals.id_mk' => $matakuliah])
+                ->whereIn('id_mk',$list_mk)
+                ->get();
+            }
+            if (($hari != 0) && ($matakuliah != 0)) {
+                $q = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
+                ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
+                ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
+                ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
+                ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
+                ->where(['jadwals.hari' => $hari, 'jadwals.id_mk' => $matakuliah])
+                ->whereIn('id_mk',$list_mk)
+                ->get();
+            }
         }
-        return json_encode(['data' => $q]);
+        $jumlah_input_krs = [];
+        foreach($q as $row){
+            $jumlah_input_krs[$row->id] = Krs::where('id_jadwal',$row->id)->where('id_tahun',$id_tahun)->count();
+        }
+        return json_encode(['data' => $q,'jumlah_input' => $jumlah_input_krs]);
     }
     public function daftarPertemuan(Request $request){
         $id_jadwal = $request->id_jadwal;

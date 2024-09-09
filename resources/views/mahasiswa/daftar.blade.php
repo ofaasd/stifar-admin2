@@ -41,7 +41,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="col-md-12 mb-4">
-                            <a class="btn btn-primary" href="{{ URL::to('mahasiswa/create')}} }}">Tambah mahasiswa</a>
+                            <a class="btn btn-primary" href="{{ URL::to('mahasiswa/create')}}">Tambah mahasiswa</a>
                         </div>
 
                         <div class="table-responsive tbl-mhs">

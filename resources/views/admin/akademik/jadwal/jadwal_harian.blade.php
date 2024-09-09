@@ -23,6 +23,20 @@
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <div class="container-fluid">
         <div class="row">
+            <div class="col-md-12 project-list">
+                <div class="card">
+                   <div class="row">
+                      <div class="col-md-12">
+                         <ul class="nav nav-tabs border-tab" id="top-tab" role="tablist">
+                            <li class="nav-item"><a href="{{URL::to('admin/masterdata/jadwal-harian')}}" class="nav-link {{($id_prodi==0)?"active":""}}" ><i data-feather="target"></i>All</a></li>
+                            @foreach($prodi as $prod)
+                                <li class="nav-item"><a href="{{URL::to('admin/masterdata/jadwal-harian/prodi/' . $prod->id)}}" class="nav-link {{($id_prodi==$prod->id)?"active":""}}" style="font-size:10pt;"><i data-feather="info"></i>{{$nama[$prod->id]}} </a></li>
+                            @endforeach
+                         </ul>
+                      </div>
+                   </div>
+                </div>
+            </div>
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
                 <div class="card">
@@ -91,7 +105,7 @@
                                                             <td>{{ $jad['kode_ta'] }}</td>
                                                             <td>{{ $jad['status'] }}</td>
                                                             <td>{{ $jad['tp'] }}</td>
-                                                            <td>{{ $jad['kuota'] }}</td>
+                                                            <td>{{$jumlah_input_krs[$jad->id]}} / {{ $jad['kuota'] }}</td>
                                                             <td>#</td>
                                                         </tr>
                                                     @endforeach
@@ -125,20 +139,25 @@
             })
         })
         function JadwalHarian(){
+            $("#vJadwalHarian").html(`<div class="loader-box">
+                            <div class="loader-2"></div>
+                        </div>`);
             var hari = $('#hari').val();
             var matakuliah = $('#matakuliah').val();
-
+            const id_prodi = {{$id_prodi}};
             $.ajax({
                 url: baseUrl+'/jadwal/daftar-jadwal-harian',
                 type: 'post',
                 data: {
                     hari: hari,
-                    matakuliah: matakuliah
+                    matakuliah: matakuliah,
+                    id_prodi : id_prodi,
                 },
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 dataType: 'json',
                 success: function(res){
                     var data = res.data
+                    var jumlah_input = res.jumlah_input;
                     var html = `
                         <table class="table" id="myTable1">
                             <thead>
@@ -170,13 +189,16 @@
                                     <td>${ data[i].kode_ta }</td>
                                     <td>${ data[i].status }</td>
                                     <td>${ data[i].tp }</td>
-                                    <td>${ data[i].kuota }</td>
+                                    <td>${ jumlah_input[data[i].id]} / ${ data[i].kuota }</td>
                                     <td>#</td>
                                 </tr>
-                                `                        
+                                `
                     }
                     html += `</tbody></table>`
                     $('#vJadwalHarian').html(html)
+                    $("#myTable1").DataTable({
+                        responsive: true
+                    })
                 }
             })
         }

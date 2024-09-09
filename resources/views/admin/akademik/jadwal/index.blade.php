@@ -22,8 +22,23 @@
 @section('content')
     <div class="container-fluid">
         <div class="row">
+            <div class="col-md-12 project-list">
+                <div class="card">
+                   <div class="row">
+                      <div class="col-md-12">
+                         <ul class="nav nav-tabs border-tab" id="top-tab" role="tablist">
+                            <li class="nav-item"><a href="{{URL::to('admin/masterdata/jadwal')}}" class="nav-link {{($id_prodi==0)?"active":""}}" data-id="0" id="top-home-tab" data-bs-toggle="tab" href="#top-home" role="tab" aria-controls="top-home" aria-selected="true"><i data-feather="target"></i>All</a></li>
+                            @foreach($prodi as $prod)
+                                <li class="nav-item"><a href="{{URL::to('admin/masterdata/jadwal/prodi/' . $prod->id)}}" class="nav-link {{($id_prodi==$prod->id)?"active":""}}" style="font-size:10pt;"><i data-feather="info"></i>{{$nama[$prod->id]}} </a></li>
+                            @endforeach
+                         </ul>
+                      </div>
+                   </div>
+                </div>
+             </div>
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
+
                 <div class="card">
                     <div class="card-header pb-0 card-no-border">
 
@@ -49,30 +64,32 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach($mk as $mk)
-                                                <tr>
-                                                    <td>{{ $no++ }}</td>
-                                                    <td>{{ $mk['kode_matkul'] }}</td>
-                                                    <td>{{ $mk['nama_matkul'] }}</td>
-                                                    <td>
-                                                        @if(empty($mk['sks_praktek']) && !empty($mk['sks_teori']))
-                                                            {{ $mk['sks_teori'] }} T
-                                                        @elseif(empty($mk['sks_teori']) && !empty($mk['sks_praktek']))
-                                                            {{ $mk['sks_praktek'] }} P
-                                                        @elseif(!empty($mk['sks_teori']) && !empty($mk['sks_praktek']))
-                                                            {{ $mk['sks_teori'] }} T / {{ $mk['sks_praktek'] }} P
-                                                        @else
-                                                            T / P
-                                                        @endif
-                                                    </td>
-                                                    <td>{{ $mk['semester'] }}</td>
-                                                    <td>{{ $mk['status_mk'] }}</td>
-                                                    <td>
-                                                        <a href="{{ url('admin/masterdata/jadwal/create/'. $mk['id']) }}" class="btn btn-sm btn-icon edit-record text-primary">
-                                                            <i class="fa fa-pencil"></i>
-                                                        </a>
-                                                    </td>
-                                                </tr>
+                                            @foreach($mk as $value)
+                                                @foreach($value as $mk)
+                                                    <tr>
+                                                        <td>{{ $no++ }}</td>
+                                                        <td>{{ $mk['kode_matkul'] }}</td>
+                                                        <td>{{ $mk['nama_matkul'] }}</td>
+                                                        <td>
+                                                            @if(empty($mk['sks_praktek']) && !empty($mk['sks_teori']))
+                                                                {{ $mk['sks_teori'] }} T
+                                                            @elseif(empty($mk['sks_teori']) && !empty($mk['sks_praktek']))
+                                                                {{ $mk['sks_praktek'] }} P
+                                                            @elseif(!empty($mk['sks_teori']) && !empty($mk['sks_praktek']))
+                                                                {{ $mk['sks_teori'] }} T / {{ $mk['sks_praktek'] }} P
+                                                            @else
+                                                                T / P
+                                                            @endif
+                                                        </td>
+                                                        <td>{{ $mk['semester'] }}</td>
+                                                        <td>{{ $mk['status_mk'] }}</td>
+                                                        <td>
+                                                            <a href="{{ url('admin/masterdata/jadwal/create/'. $mk['id']) }}" class="btn btn-sm btn-icon edit-record text-primary">
+                                                                <i class="fa fa-pencil"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
                                             @endforeach
                                         </tbody>
                                     </table>

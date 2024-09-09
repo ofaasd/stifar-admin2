@@ -67,8 +67,9 @@ class MatkulController extends Controller
     }
     public function destroy(string $id)
     {
-        //
+
         $mk = MataKuliah::where('id', $id)->delete();
+
         redirect('admin/masterdata/matakuliah');
     }
 }

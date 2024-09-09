@@ -183,7 +183,7 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     Route::get('/admin/masterdata/matakuliah', [MatkulController::class, 'index']);
     Route::post('/admin/masterdata/matakuliah/save', [MatkulController::class, 'simpanMK']);
     Route::post('/admin/masterdata/matakuliah/update', [MatkulController::class, 'updateMK']);
-    Route::get('/admin/masterdata/matakuliah/delete/{id}', [MatkulController::class, 'destroy']);
+    Route::get('admin/masterdata/matakuliah/delete/{id}', [MatkulController::class, 'destroy']);
 
     // route jadwal
     Route::post('/jadwal/save-koordinator', [JadwalController::class, 'simpanKoor']);
@@ -197,7 +197,9 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     Route::post('/admin/masterdata/jadwal/update', [JadwalController::class, 'updateJadwal']);
     Route::get('/jadwal/hapus-pengampu/{id}', [JadwalController::class, 'hapusPengampu']);
     Route::get('/admin/masterdata/jadwal', [JadwalController::class, 'index']);
+    Route::get('/admin/masterdata/jadwal/prodi/{id}', [JadwalController::class, 'jadwal_prodi']);
     Route::get('/admin/masterdata/jadwal-harian', [JadwalController::class, 'daftarJadwalHarian']);
+    Route::get('/admin/masterdata/jadwal-harian/prodi/{id}', [JadwalController::class, 'daftarJadwalHarianProdi']);
     Route::get('/admin/masterdata/koordinator-mk/{id}', [JadwalController::class, 'koordinatorMK']);
     Route::get('/admin/masterdata/anggota-mk/{id}', [JadwalController::class, 'anggotaMK']);
     Route::get('/admin/masterdata/jadwal/create/{id}', [JadwalController::class, 'daftarJadwal']);
