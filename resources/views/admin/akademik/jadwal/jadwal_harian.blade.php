@@ -87,8 +87,8 @@
                                                         <th>Hari & Waktu</th>
                                                         <th>Matakuliah</th>
                                                         <th>Ruang</th>
-                                                        <th>Tahun Ajaran</th>
-                                                        <th>Status</th>
+                                                        {{-- <th>Tahun Ajaran</th>
+                                                        <th>Status</th> --}}
                                                         <th>T/P</th>
                                                         <th>Kuota</th>
                                                         <th>Aksi</th>
@@ -102,8 +102,8 @@
                                                             <td>{{ $jad['hari'] }}, {{ $jad['nama_sesi'] }}</td>
                                                             <td>[{{ $jad['kode_matkul'] }}] {{ $jad['nama_matkul'] }}</td>
                                                             <td>{{ $jad['nama_ruang'] }}</td>
-                                                            <td>{{ $jad['kode_ta'] }}</td>
-                                                            <td>{{ $jad['status'] }}</td>
+                                                            {{-- <td>{{ $jad['kode_ta'] }}</td>
+                                                            <td>{{ $jad['status'] }}</td> --}}
                                                             <td>{{ $jad['tp'] }}</td>
                                                             <td>{{$jumlah_input_krs[$jad->id]}} / {{ $jad['kuota'] }}</td>
                                                             <td>#</td>
@@ -167,8 +167,7 @@
                                     <th>Hari & Waktu</th>
                                     <th>Matakuliah</th>
                                     <th>Ruang</th>
-                                    <th>Tahun Ajaran</th>
-                                    <th>Status</th>
+
                                     <th>T/P</th>
                                     <th>Kuota</th>
                                     <th>Aksi</th>
@@ -186,8 +185,7 @@
                                     <td>${ data[i].hari }, ${ data[i].nama_sesi }</td>
                                     <td>[${ data[i].kode_matkul }] ${ data[i].nama_matkul }</td>
                                     <td>${ data[i].nama_ruang }</td>
-                                    <td>${ data[i].kode_ta }</td>
-                                    <td>${ data[i].status }</td>
+
                                     <td>${ data[i].tp }</td>
                                     <td>${ jumlah_input[data[i].id]} / ${ data[i].kuota }</td>
                                     <td>#</td>
