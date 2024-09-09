@@ -14,6 +14,9 @@ use App\Models\Mahasiswa;
 class LoginController extends Controller
 {
     //
+    public function landing(){
+        return view('landing');
+    }
     public function login(){
         if (Auth::check()) {
             $role = Auth::User()->roles->pluck('name');

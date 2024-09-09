@@ -69,5 +69,6 @@ class MatkulController extends Controller
     {
         //
         $mk = MataKuliah::where('id', $id)->delete();
+        redirect('admin/masterdata/matakuliah');
     }
 }
