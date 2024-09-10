@@ -221,26 +221,26 @@
                 <div class="form-group row">
                     <label class="col-sm-12 col-form-label">Nama Pasangan : </label>
                     <div class="col-sm-12">
-                        <input type="text" class="form-control" name="nama_pasangan" value="" >
+                        <input type="text" class="form-control" name="nama_pasangan" value="{{$pegawai->nama_pasangan}}" >
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-12 col-form-label">Tgl Lahir Pasangan : </label>
                     <div class="col-sm-12">
-                        <input type="date" class="form-control" name="tgl_lahir_pasangan" value="" id="datepicker2">
+                        <input type="date" class="form-control" name="tgl_lahir_pasangan" value="{{date('Y-m-d', strtotime($pegawai->tgl_lahir_pasangan))}}" id="datepicker2">
                     </div>
 
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-8 col-form-label">Pekerjaan Pasangan : </label>
                     <div class="col-sm-12">
-                        <input type="text" class="form-control" name="pekerjaan_pasangan" value="" >
+                        <input type="text" class="form-control" name="pekerjaan_pasangan" value="{{$pegawai->pekerjaan_pasangan}}" >
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-form-label">Jumlah Anak : </label>
                     <div class="col-sm-12">
-                        <input type="number" class="form-control" name="jumlah_anak" value="" >
+                        <input type="number" class="form-control" name="jumlah_anak" value="{{$pegawai->jumlah_anak}}" >
                     </div>
                 </div>
             </div>

@@ -71,9 +71,6 @@ class PegawaiBiodatum extends Model
 		'id_posisi_pegawai' => 'int',
 		'id_progdi' => 'int',
 		'expired_ktp' => 'datetime',
-		'tanggal_lahir' => 'datetime',
-		'jumlah_anak' => 'int',
-		'tgl_lahir_pasangan' => 'datetime',
 		'status_nikah' => 'int',
 		'homebase' => 'int'
 	];

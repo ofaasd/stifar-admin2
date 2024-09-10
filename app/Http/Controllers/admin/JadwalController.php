@@ -66,7 +66,7 @@ class JadwalController extends Controller
         $id_mk = $mk['id'];
         $days = hari::get();
         $ruang = MasterRuang::get();
-        $sesi = Sesi::get();
+        $sesi = Sesi::orderBy('nama_sesi','asc')->get();
         $ta = TahunAjaran::get();
         $id = 1;
         $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang')

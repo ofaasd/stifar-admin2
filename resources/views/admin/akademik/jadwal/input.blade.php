@@ -278,7 +278,7 @@
                                                                                 <label for="sesi" class="form-label">Sesi</label>
                                                                                 <select name="sesi" id="sesi{{ $row['id'] }}" class="form-control">
                                                                                     @foreach($sesi as $s)
-                                                                                        <option value="{{ $s['id'] }}" {{ $s['id'] == $row['id_sesi'] ? 'selected=""':'' }}>{{ $s['kode_sesi'] }}</option>
+                                                                                        <option value="{{ $s['id'] }}" {{ $s['id'] == $row['id_sesi'] ? 'selected=""':'' }}>{{ $s['nama_sesi'] }}</option>
                                                                                     @endforeach
                                                                                 </select>
                                                                             </div>

@@ -151,7 +151,8 @@ class PegawaiController extends Controller
                     'status_pegawai' => $request->status,
                     'status_nikah' => $request->status_nikah,
                     'nama_pasangan' => $request->nama_pasangan,
-                    'jumlah_anak' => $request->junmlah_anak,
+                    'tgl_lahir_pasangan' => $request->tgl_lahir_pasangan,
+                    'jumlah_anak' => $request->jumlah_anak,
                     'pekerjaan_pasangan' => $request->pekerjaan_pasangan,
                 ]
             );
