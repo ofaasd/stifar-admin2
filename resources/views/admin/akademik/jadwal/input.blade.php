@@ -307,6 +307,7 @@
                                                                                     <option value="L" {{ $row['kel'] == 'L' ? 'selected=""':'' }}>L</option>
                                                                                     <option value="M" {{ $row['kel'] == 'M' ? 'selected=""':'' }}>M</option>
                                                                                     <option value="N" {{ $row['kel'] == 'N' ? 'selected=""':'' }}>N</option>
+                                                                                    <option value="N" {{ $row['kel'] == 'O' ? 'selected=""':'' }}>O</option>
                                                                                 </select>
                                                                             </div>
                                                                             <div class="mb-3">

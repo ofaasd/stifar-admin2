@@ -31,11 +31,17 @@ class JadwalController extends Controller
         $nama = [];
         $id_prodi = 0;
 
-      foreach($prodi as $row){
-        $nama_prodi = explode(' ',$row->nama_prodi);
-        $nama[$row->id] = $nama_prodi[0] . " " . $nama_prodi[1];
-      }
-        return view('admin.akademik.jadwal.index', compact('title', 'mk', 'no','prodi', 'nama', 'id_prodi'));
+        foreach($prodi as $row){
+            $nama_prodi = explode(' ',$row->nama_prodi);
+            $nama[$row->id] = $nama_prodi[0] . " " . $nama_prodi[1];
+        }
+        $jumlah_anggota = [];
+        foreach($mk as $value){
+            foreach($value as $row){
+                $jumlah_anggota[$row->id] = anggota_mk::where('idmk',$row->id)->count();
+            }
+        }
+        return view('admin.akademik.jadwal.index', compact('title', 'mk', 'no','prodi', 'nama', 'id_prodi' ,'jumlah_anggota'));
     }
     public function jadwal_prodi(String $id){
         $title = "Jadwal";
@@ -48,6 +54,12 @@ class JadwalController extends Controller
                 $mk[] = MatakuliahKurikulum::select('mata_kuliahs.*')->join('mata_kuliahs','mata_kuliahs.id','=','matakuliah_kurikulums.id_mk')->where('mata_kuliahs.status','Aktif')->where('id_kurikulum',$row->id)->get();
             }
         }
+        $jumlah_anggota = [];
+        foreach($mk as $value){
+            foreach($value as $row){
+                $jumlah_anggota[$row->id] = anggota_mk::where('idmk',$row->id)->count();
+            }
+        }
         //$mk = MataKuliah::where('status', 'Aktif')->get();
         $no = 1;
         $prodi = Prodi::all();
@@ -57,7 +69,7 @@ class JadwalController extends Controller
             $nama_prodi = explode(' ',$row->nama_prodi);
             $nama[$row->id] = $nama_prodi[0] . " " . $nama_prodi[1];
         }
-        return view('admin.akademik.jadwal.index', compact('title', 'mk', 'no','prodi', 'nama', 'id_prodi'));
+        return view('admin.akademik.jadwal.index', compact('title', 'mk', 'no','prodi', 'nama', 'id_prodi' ,'jumlah_anggota'));
     }
     public function daftarJadwal($id){
         $title = 'Buat Jadwal';
@@ -341,6 +353,22 @@ class JadwalController extends Controller
         }
 
     }
+    public function updateAnggota(Request $request){
+        $idmk = $request->idmk;
+        $id_pegawai_bio = $request->id_pegawai_bio;
+        $status = $request->status;
+        $id = $request->id;
+
+        $qr = anggota_mk::updateOrCreate(
+            ['id'=>$id],
+            ['idmk' => $idmk, 'id_pegawai_bio' => $id_pegawai_bio, 'status' => $status]
+        );
+        if($qr){
+            return json_encode(['status' => 'ok', 'kode' => 200]);
+        }else{
+            return json_encode(['status' => 'error', 'kode' => 204]);
+        }
+    }
     public function hapusAnggota($id){
         $qr = anggota_mk::where('id', $id)->first();
         $idmk = $qr['idmk'];
@@ -454,11 +482,12 @@ class JadwalController extends Controller
         return json_encode(['status' => 'ok', 'kode' => 200]);
     }
     public function tableAnggota(Request $request){
+        $pegawai = PegawaiBiodatum::all();
         $idmk = $request->idmk;
         $anggota = anggota_mk::select('anggota_mks.*', 'pegawai_biodata.npp', 'pegawai_biodata.nama_lengkap', 'pegawai_biodata.gelar_belakang')
                         ->leftJoin('pegawai_biodata', 'anggota_mks.id_pegawai_bio', '=', 'pegawai_biodata.id')
                         ->where(['anggota_mks.idmk' => $idmk])->get();
         $no = 1;
-        return view('admin.akademik.jadwal.tableAnggota', compact('idmk', 'anggota', 'no'));
+        return view('admin.akademik.jadwal.tableAnggota', compact('idmk', 'anggota', 'no','pegawai'));
     }
 }

@@ -79,7 +79,47 @@
                                                     <td>{{ $row['npp'] }}</td>
                                                     <td>{{ $row['nama_lengkap'] }}, {{ $row['gelar_belakang'] }}</td>
                                                     <td>{{ $row['status'] == 1 ? 'Koordinator':'Anggota' }}</td>
-                                                    <td><a href="javascript:void(0)" data-id='{{$row->id}}' class="btn btn-danger btn-sm hapusAnggota"><i class="fa fa-trash"></i> Hapus</a></td>
+                                                    <td>
+                                                        <a href="javascript:void(0)" data-id='{{$row->id}}' data-bs-toggle="modal" data-original-title="test" data-bs-target="#editMK{{ $row->id }}" class="btn btn-success btn-sm"><i class="fa fa-trash"></i> Edit</a> <a href="javascript:void(0)" data-id='{{$row->id}}' class="btn btn-danger btn-sm hapusAnggota"><i class="fa fa-trash"></i> Hapus</a>
+                                                        <div class="modal fade" id="editMK{{ $row->id }}" tabindex="-1" aria-labelledby="editMK{{ $row->id }}" aria-hidden="true">
+                                                            <div class="modal-dialog" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-body">
+                                                                        <div class="modal-toggle-wrapper">
+                                                                            <h5 style="text-align: center">Edit Koordinator/Anggota MK</h5>
+                                                                            @csrf
+                                                                                <input type="hidden" name="id" id="id_{{ $row->id }}" value="{{$row->id}}">
+                                                                                <hr>
+                                                                                <div class="mb-3">
+                                                                                    <label for="kode_jadwal" class="form-label">Nama Anggota</label>
+                                                                                    <select name="nama_anggota" id="nama_anggota_{{$row->id}}" class="js-example-basic-single">
+                                                                                        @foreach($pegawai as $dsn)
+                                                                                            <option value="{{ $dsn['id'] }}" {{($dsn['id'] == $row->id_pegawai_bio)?"selected":""}}>{{ $dsn['nama_lengkap'] }}, {{ $dsn['gelar_belakang'] }}</option>
+                                                                                        @endforeach
+                                                                                    </select>
+                                                                                </div>
+                                                                                <div class="mb-3">
+                                                                                    <label for="kode_jadwal" class="form-label">Status</label>
+                                                                                    <select name="status" id="status_{{$row->id}}" class="form-control" required>
+                                                                                        <option value="" selected disabled>Pilih Status</option>
+                                                                                        <option value="1" {{($row->status == 1)?"selected":""}}>Koordinator</option>
+                                                                                        <option value="2" {{($row->status == 2)?"selected":""}}>Anggota</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                            <div class="row">
+                                                                                <div class="col-md-6">
+                                                                                    <button type="button" onclick="updateAnggotaJadwal('{{ $row->id }}')" class="btn btn-primary btn-sm btn-update"><i class="fa fa-save"></i>Update Anggota Matakuliah</button>
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <button class="btn bg-danger d-flex align-items-center gap-2 text-light ms-auto" type="button" data-bs-dismiss="modal">Tutup<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></button>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
@@ -132,6 +172,79 @@
             })
 
         })
+        function updateAnggotaJadwal(id){
+            $(".btn-update").attr("disabled",true);
+            const id_anggota = $("#id_" + id).val();
+            const id_pegawai_bio = $("#nama_anggota_" + id).val();
+            const status = $("#status_" + id).val();
+            const idmk = $('#idmk').val();
+            const baseUrl = {!! json_encode(url('/')) !!};
+            $.ajax({
+                url: baseUrl+'/jadwal/update-anggota',
+                type: 'post',
+                dataType: 'json',
+                data: {
+                    id:id_anggota,
+                    id_pegawai_bio:id_pegawai_bio,
+                    idmk:idmk,
+                    status:status
+                },
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                success: function(res){
+                    if(res.kode == 204){
+                        swal({
+                            icon: 'warning',
+                            title: 'Galat!',
+                            text: 'Simpan Gagal!',
+                            customClass: {
+                                confirmButton: 'btn btn-danger'
+                            }
+                        });
+                        $("btn-update").attr("disabled",false);
+                    }
+                    if(res.kode == 205){
+                        swal({
+                            icon: 'warning',
+                            title: 'Galat!',
+                            text: 'Data Sudah pernah di input',
+                            customClass: {
+                                confirmButton: 'btn btn-danger'
+                            }
+                        });
+                        $("btn-update").attr("disabled",false);
+                    }
+                    if(res.kode == 200){
+                        swal({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: 'Anggota Berhasil Terinputkan!',
+                            customClass: {
+                                confirmButton: 'btn btn-danger'
+                            }
+                        });
+                        update_table(baseUrl,idmk);
+
+                        //window.location.href = baseUrl+'/admin/masterdata/anggota-mk/'+idmk;
+                    }
+                    $("btn-update").attr("disabled",false);
+
+                    $("#editMK"+id).modal('hide');
+
+                },
+                error:function(data){
+                    swal({
+                        icon: 'warning',
+                        title: 'Galat!',
+                        text: 'Simpan Gagal!',
+                        customClass: {
+                            confirmButton: 'btn btn-danger'
+                        }
+                    });
+                    $(".btn-update").attr("disabled",false);
+                }
+            });
+
+        }
         function simpanAnggota(){
             $("#btn_tambah").attr("disabled",true);
             var id_pegawai_bio = $('#nama_anggota').val();

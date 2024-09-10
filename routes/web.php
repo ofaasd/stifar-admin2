@@ -188,6 +188,7 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     // route jadwal
     Route::post('/jadwal/save-koordinator', [JadwalController::class, 'simpanKoor']);
     Route::post('/jadwal/save-anggota', [JadwalController::class, 'simpanAnggota']);
+    Route::post('/jadwal/update-anggota', [JadwalController::class, 'updateAnggota']);
     Route::post('/jadwal/pengampu', [JadwalController::class, 'jadwalPengampu']);
     Route::post('/jadwal/tambah-pegampu', [JadwalController::class, 'tambahPengampu']);
     Route::post('/jadwal/daftar-jadwal-harian', [JadwalController::class, 'reqJadwalHarian']);

@@ -84,9 +84,15 @@
                                                         <td>{{ $mk['semester'] }}</td>
                                                         <td>{{ $mk['status_mk'] }}</td>
                                                         <td>
+                                                            @if($jumlah_anggota[$mk->id] > 0)
                                                             <a href="{{ url('admin/masterdata/jadwal/create/'. $mk['id']) }}" class="btn btn-sm btn-icon edit-record text-primary">
                                                                 <i class="fa fa-pencil"></i>
                                                             </a>
+                                                            @else
+                                                            <a href="{{ url('admin/masterdata/anggota-mk/'. $mk['id']) }}" class="btn btn-sm btn-icon edit-record text-primary">
+                                                                <i class="fa fa-pencil"></i>
+                                                            </a>
+                                                            @endif
                                                         </td>
                                                     </tr>
                                                 @endforeach
