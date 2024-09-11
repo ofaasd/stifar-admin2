@@ -27,7 +27,7 @@
                    <div class="row">
                       <div class="col-md-12">
                          <ul class="nav nav-tabs border-tab" id="top-tab" role="tablist">
-                            <li class="nav-item"><a href="{{URL::to('admin/masterdata/jadwal')}}" class="nav-link {{($id_prodi==0)?"active":""}}" data-id="0" id="top-home-tab" data-bs-toggle="tab" href="#top-home" role="tab" aria-controls="top-home" aria-selected="true"><i data-feather="target"></i>All</a></li>
+                            <li class="nav-item"><a href="{{URL::to('admin/masterdata/jadwal')}}" class="nav-link {{($id_prodi==0)?"active":""}}" data-id="0" id="top-home-tab" ><i data-feather="target"></i>All</a></li>
                             @foreach($prodi as $prod)
                                 <li class="nav-item"><a href="{{URL::to('admin/masterdata/jadwal/prodi/' . $prod->id)}}" class="nav-link {{($id_prodi==$prod->id)?"active":""}}" style="font-size:10pt;"><i data-feather="info"></i>{{$nama[$prod->id]}} </a></li>
                             @endforeach

@@ -13,6 +13,7 @@ use App\Models\MataKuliah;
 use App\Models\Kurikulum;
 use App\Models\MatakuliahKurikulum;
 use App\Models\Prodi;
+use Auth;
 
 class DashboardController extends Controller
 {
@@ -58,7 +59,9 @@ class DashboardController extends Controller
         return view('index', compact('list_praktek','list_teori','list_prodi','jumlah_kurikulum','jumlah_teori','jumlah_praktek','jumlah_mhs','jumlah_pegawai','total_pendaftar','jumlah_matkul'));
     }
     public function mhs(){
-        return view('index_mhs');
+        $user_id = Auth::user()->id;
+        $mahasiswa = Mahasiswa::where('user_id',$user_id)->first();
+        return view('index_mhs',compact('mahasiswa'));
     }
     public function dosen(){
         return view('index_pegawai');
