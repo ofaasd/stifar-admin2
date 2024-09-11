@@ -3,7 +3,7 @@
     <a href="#" class="btn btn-primary btn-sm btn-icon edit-record" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahbaru">
                                 <i class="fa fa-plus"></i> Tambah Baru
     </a>
-    <div class="modal fade" id="tambahbaru" tabindex="-1" aria-labelledby="tambahbaru" aria-hidden="true">
+    <div class="modal fade" id="tambahbaru" aria-labelledby="tambahbaru" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-body">
@@ -15,7 +15,7 @@
                         </div>
                         <div class="form-group mt-2">
                             <label for="kelompok">Mata Kuliah :</label>
-                            <select name="mk" id="mk" class="form-control" required="">
+                            <select name="mk" id="mk" class="form-control js-example-basic-single" required="">
                                 <option value="" selected disabled>Pilih Mata Kuliah</option>
                                 @foreach($matkul as $matkul)
                                 <option value="{{ $matkul['id'] }}">{{ $matkul['kode_matkul'] }} - {{ $matkul['nama_matkul'] }}</option>
@@ -156,7 +156,8 @@
     $(function() {
             $("#tableMK").DataTable({
                 responsive: true
-            })
+            });
+            $(".js-example-basic-single").select2();
         })
     function simpanData(){
         const baseUrl = {!! json_encode(url('/')) !!};
