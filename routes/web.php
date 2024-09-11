@@ -288,6 +288,7 @@ Route::group(['middleware' => ['auth','role:pegawai|super-admin']], function(){
 
 
     Route::get('admin/kepegawaian/struktural/get_jabatan', [PegawaiJabatanStrukturalController::class, 'get_jabatan'])->name('get_jabatan');
+    Route::post('admin/kepegawaian/struktural/get_jabatan', [PegawaiJabatanStrukturalController::class, 'get_jabatan'])->name('get_jabatan');
 
     Route::get('/dsn/dashboard',[DashboardController::class, 'dosen'] )->name('dashboard_pegawai');
     Route::get('/admin/input-batch/{id}',[KrmController::class, 'inputAbsenBatch'] )->name('dashboard_pegawai');

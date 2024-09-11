@@ -108,8 +108,9 @@
 
                 $.ajax({
                     url:'{{URL::to('admin/kepegawaian/struktural/get_jabatan')}}',
-                    method:'GET',
-                    data:{id : $("#unit_kerja_struktural").val()},
+                    method:'POST',
+                    dataType: "json",
+                    data:{id : $("#unit_kerja_struktural").val(),'_token': '{{ csrf_token() }}',},
                     success:function(data){
                         //console.log(data);
                         $("#id_jabatan_struktural").html('');
