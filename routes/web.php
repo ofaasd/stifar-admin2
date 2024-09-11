@@ -148,7 +148,7 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     Route::resource('admin/masterdata/ruang', RuangController::class)->name('index','ruang');
     Route::resource('admin/masterdata/sekolah', AsalSekolahController::class)->name('index','sekolah');
 
-    Route::get('admin/kepegawaian/struktural/get_jabatan', [PegawaiJabatanStrukturalController::class, 'get_jabatan'])->name('get_jabatan');
+
 
     Route::get('/mahasiswa/detail/{nim}', [MahasiswaController::class, 'detail']);
     Route::post('mahasiswa/user_update', [MahasiswaController::class, 'user_update'])->name('user_update');
@@ -287,6 +287,7 @@ Route::group(['middleware' => ['auth','role:mhs|super-admin']], function(){
 Route::group(['middleware' => ['auth','role:pegawai|super-admin']], function(){
 
 
+    Route::get('admin/kepegawaian/struktural/get_jabatan', [PegawaiJabatanStrukturalController::class, 'get_jabatan'])->name('get_jabatan');
 
     Route::get('/dsn/dashboard',[DashboardController::class, 'dosen'] )->name('dashboard_pegawai');
     Route::get('/admin/input-batch/{id}',[KrmController::class, 'inputAbsenBatch'] )->name('dashboard_pegawai');
@@ -330,6 +331,7 @@ Route::group(['middleware' => ['auth','role:pegawai|super-admin']], function(){
     Route::post('admin/kepegawaian/pegawai/get_status', [PegawaiController::class, 'get_status'])->name('get_status');
     Route::post('admin/kepegawaian/pegawai/user_update', [PegawaiController::class, 'user_update'])->name('user_update');
     Route::post('admin/kepegawaian/pegawai/foto_update', [PegawaiController::class, 'foto_update'])->name('foto_update');
+
 
 });
 Route::group(['middleware' => ['auth','role:mhs|pegawai|super-admin']], function(){
