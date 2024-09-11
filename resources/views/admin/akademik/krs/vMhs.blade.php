@@ -1,6 +1,6 @@
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/vendors/datatables.css') }}">
 <div class="mt-2">
-    <label for="status_krs">Status KRS : </label> 
+    <label for="status_krs">Status KRS : </label>
     <select onchange="gantiStatus({{ $ta['id'] }})" name="status_krs" id="status_krs" class="form-control">
         <option value="" selected disabled>Status KRS</option>
         <option value="1" {{ $ta['krs'] == 1 ? 'selected=""':'' }}>Aktif</option>

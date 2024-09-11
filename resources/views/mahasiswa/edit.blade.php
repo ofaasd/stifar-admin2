@@ -39,7 +39,7 @@
                           </div>
                         <div class="media-body">
                           <h5 class="mb-1">{{$mahasiswa->nama}}</h5>
-                          <p>{{$prodi[$mahasiswa->id_program_studi]}}</p>
+                          <p>{{$prodi[$mahasiswa->id_program_studi]}} <br /> {{$user->email}}</p>
                         </div>
                       </div>
                     </div>

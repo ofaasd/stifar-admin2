@@ -36,7 +36,8 @@ class KrsController extends Controller
         }
         return json_encode(['kode' => 204]);
     }
-    public function inputadminKRS($idmhs, $ta){
+    public function inputadminKRS($id, $ta){
+        $idmhs = $id;
         $title = 'Input KRS [Admin]';
         $mk = MataKuliah::get();
         $krs = Krs::select('krs.*', 'a.hari', 'a.kel', 'b.nama_matkul', 'b.sks_teori', 'b.sks_praktek', 'c.nama_sesi', 'd.nama_ruang')
@@ -45,6 +46,7 @@ class KrsController extends Controller
                     ->leftJoin('waktus as c', 'a.id_sesi', '=', 'c.id')
                     ->leftJoin('master_ruang as d', 'a.id_ruang', '=', 'd.id')
                     ->where('krs.id_tahun', $ta)
+                    ->where('krs.id_mhs',$idmhs)
                     ->get();
         $no = 1;
         return view('admin.akademik.krs.inputkrsadmin', compact('title', 'mk', 'krs', 'no', 'ta', 'idmhs'));

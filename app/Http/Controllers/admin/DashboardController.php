@@ -72,7 +72,7 @@ class DashboardController extends Controller
                     ->where('krs.id_tahun', $ta)
                     ->where('id_mhs',$mahasiswa->id)
                     ->get();
-        $no = 0;
+        $no = 1;
         return view('index_mhs',compact('mahasiswa','krs','no'));
     }
     public function dosen(){

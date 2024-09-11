@@ -99,24 +99,24 @@
                                 <input type="text" id="nama_lengkap" class="form-control" name="nama_lengkap" value="" required>
                             </div>
                         </div>
-                        <div class="row">
+                        {{-- <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-2">
                                     <label class="col-sm-12 col-form-label">Gelar Depan : </label>
-                                    <div class="col-sm-12">
-                                        <input type="text" class="form-control" name="gelar_depan" value="" placeholder="Ex: Dr., Ir.,">
-                                    </div>
+                                    <div class="col-sm-12"> --}}
+                                        <input type="hidden" class="form-control" name="gelar_depan" value="" placeholder="Ex: Dr., Ir.,">
+                                    {{-- </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-2">
                                     <label class="col-sm-12 col-form-label">Gelar Belakang : </label>
-                                    <div class="col-sm-12">
-                                        <input type="text" class="form-control" name="gelar_belakang" value="" placeholder="Ex: S.ked, S.Farm, M.Farm">
-                                    </div>
+                                    <div class="col-sm-12"> --}}
+                                        <input type="hidden" class="form-control" name="gelar_belakang" value="" placeholder="Ex: S.ked, S.Farm, M.Farm">
+                                    {{-- </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="mb-2">
                             <label class="col-sm-4 col-form-label">Jenis Kelamin : </label>
                             <div class="col-sm-12">
