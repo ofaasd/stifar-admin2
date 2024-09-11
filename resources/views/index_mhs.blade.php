@@ -64,10 +64,19 @@
           </div>
         </div>
       </div>
-      <div class="col-xxl-4 col-sm-6 box-col-6">
+      <div class="col-xxl-2 col-sm-3 box-col-3">
         <div class="card">
-            <div class="card-body">
-                <div id="ipchart"></div>
+            <div class="card-body b-l-primary border-3 text-center">
+                <h1>0</h1>
+                <h3>IPK</h3>
+            </div>
+        </div>
+      </div>
+      <div class="col-xxl-2 col-sm-3 box-col-3">
+        <div class="card">
+            <div class="card-body b-l-primary border-3 text-center">
+                <h1>0</h1>
+                <h3>IPS Terakhir</h3>
             </div>
         </div>
       </div>
@@ -93,68 +102,4 @@
 <script src="{{asset('assets/js/chart/echart/pie-chart/testHelper.js')}}"></script>
 <script src="{{asset('assets/js/chart/echart/pie-chart/custom-transition-texture.js')}}"></script>
 <script src="{{asset('assets/js/chart/echart/data/symbols.js')}}"></script>
-<script>
- var options = {
-          series: [3],
-          chart: {
-          type: 'radialBar',
-          offsetY: -20,
-          sparkline: {
-            enabled: true
-          }
-        },
-        plotOptions: {
-          radialBar: {
-            startAngle: -90,
-            endAngle: 90,
-            track: {
-              background: "#e7e7e7",
-              strokeWidth: '97%',
-              margin: 5, // margin is in pixels
-              dropShadow: {
-                enabled: true,
-                top: 2,
-                left: 0,
-                color: '#999',
-                opacity: 1,
-                blur: 2
-              }
-            },
-            dataLabels: {
-              name: {
-                show: true
-              },
-              value: {
-                offsetY: 30,
-                fontSize: '22px'
-              }
-            }
-          }
-        },
-        grid: {
-          padding: {
-            top: -10
-          }
-        },
-        fill: {
-          type: 'gradient',
-          gradient: {
-            shade: 'light',
-            shadeIntensity: 0.4,
-            inverseColors: false,
-            opacityFrom: 1,
-            opacityTo: 1,
-            stops: [0, 50, 53, 91]
-          },
-        },
-        yaxis:[{
-            min: 0,
-            max: 4,
-        }],
-        labels: ['IPK'],
-        };
-
-        var chart = new ApexCharts(document.querySelector("#ipchart"), options);
-        chart.render();
-</script>
 @endsection
