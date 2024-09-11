@@ -13,6 +13,7 @@ use App\Models\MataKuliah;
 use App\Models\Kurikulum;
 use App\Models\MatakuliahKurikulum;
 use App\Models\Prodi;
+use App\Models\Krs;
 use Auth;
 
 class DashboardController extends Controller
@@ -61,7 +62,18 @@ class DashboardController extends Controller
     public function mhs(){
         $user_id = Auth::user()->id;
         $mahasiswa = Mahasiswa::where('user_id',$user_id)->first();
-        return view('index_mhs',compact('mahasiswa'));
+        $tahun_ajaran = TahunAjaran::where('status','Aktif')->first();
+        $ta = $tahun_ajaran->id;
+        $krs = Krs::select('krs.*', 'a.hari', 'a.kel', 'b.nama_matkul', 'b.sks_teori', 'b.sks_praktek','b.kode_matkul', 'c.nama_sesi', 'd.nama_ruang')
+                    ->leftJoin('jadwals as a', 'krs.id_jadwal', '=', 'a.id')
+                    ->leftJoin('mata_kuliahs as b', 'a.id_mk', '=', 'b.id')
+                    ->leftJoin('waktus as c', 'a.id_sesi', '=', 'c.id')
+                    ->leftJoin('master_ruang as d', 'a.id_ruang', '=', 'd.id')
+                    ->where('krs.id_tahun', $ta)
+                    ->where('id_mhs',$mahasiswa->id)
+                    ->get();
+        $no = 0;
+        return view('index_mhs',compact('mahasiswa','krs','no'));
     }
     public function dosen(){
         return view('index_pegawai');

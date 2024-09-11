@@ -67,16 +67,67 @@
       <div class="col-xxl-2 col-sm-3 box-col-3">
         <div class="card">
             <div class="card-body b-l-primary border-3 text-center">
-                <h1>0</h1>
-                <h3>IPK</h3>
+                <h4>0</h2>
+                <h6>IPK</h6>
             </div>
         </div>
       </div>
       <div class="col-xxl-2 col-sm-3 box-col-3">
         <div class="card">
-            <div class="card-body b-l-primary border-3 text-center">
-                <h1>0</h1>
-                <h3>IPS Terakhir</h3>
+            <div class="card-body b-r-primary border-3 text-center">
+                <h4>0</h4>
+                <h6>IPS Terakhir</h6>
+            </div>
+        </div>
+      </div>
+      <div class="col-xxl-12 col-sm-12 box-col-12">
+        <div class="card card-absolute">
+            <div class="card-header bg-primary">
+                <h6>KRS Aktif</h6>
+            </div>
+            <div class="card-body">
+                <table class="table" id="tablekrs">
+                    <thead>
+                        <td>No.</td>
+                        <td>Kode</td>
+                        <td>Nama Matakuliah</td>
+                        <td>Kelas</td>
+                        <!-- <td>SKS</td> -->
+                        <td>Hari, Waktu</td>
+                        <td>Ruang</td>
+                        <td>SKS</td>
+                        <td>Validasi</td>
+                    </thead>
+                    <tbody>
+                        @php
+                            $total_krs = 0;
+                        @endphp
+                        @foreach($krs as $row_krs)
+                            <tr>
+                                <td>{{ $no++ }}</td>
+                                <td>{{ $row_krs['kode_matkul'] }}</td>
+                                <td>{{ $row_krs['nama_matkul'] }}</td>
+                                <td>{{ $row_krs['kel'] }}</td>
+                                <!-- <td>{{ $row_krs['sks_teori'] }}T/ {{ $row_krs['sks_praktek'] }}P</td> -->
+                                <td>{{ $row_krs['hari'] }}, {{ $row_krs['nama_sesi'] }}</td>
+                                <td>{{ $row_krs['nama_ruang'] }}</td>
+                                <td>{{ ($row_krs->sks_teori+$row_krs->sks_praktek) }}</td>
+                                <td>{!!($row_krs->is_validasi == 0)?'<p class="btn btn-secondary" style="font-size:8pt;">Menunggu Validasi Dosen Wali</p>':'<p class="btn btn-success" style="font-size:8pt;">Sudah Divalidasi</p>'!!}</td>
+                            </tr>
+                            @php
+                            $total_krs += ($row_krs->sks_teori+$row_krs->sks_praktek);
+                            @endphp
+                        @endforeach
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan=6 class="text-center">Total SKS</th>
+                            <th>{{$total_krs}}</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
+                </table>
             </div>
         </div>
       </div>
