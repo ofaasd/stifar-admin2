@@ -15,7 +15,7 @@
 @endsection
 
 @section('breadcrumb-items')
-    <li class="breadcrumb-item">Kepawaian</li>
+    <li class="breadcrumb-item">Kepegawaian</li>
     <li class="breadcrumb-item active">Data Pegawai</li>
 @endsection
 

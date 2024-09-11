@@ -24,7 +24,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="jabatan_struktural" class="form-label">Jabatan Struktural</label>
-                                <select name="jabatan_struktural" id="id_jabatan_struktural" class="form-control select2">
+                                <select name="jabatan_struktural" id="id_jabatan_struktural" class="form-control">
 
                                 </select>
                             </div>
@@ -117,7 +117,7 @@
                         Object.keys(data).forEach(function (item) {
                             $("#id_jabatan_struktural").append(`<option value='${item}'>${data[item]}</option>`);
                         });
-                        $("#id_jabatan_struktural").select2();
+
                     },
                     error: function error(err) {
 

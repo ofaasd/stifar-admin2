@@ -37,9 +37,9 @@ class PegawaiJabatanStrukturalController extends Controller
         $list_jabatan_struktural = [];
         foreach($jabatan_struktural as $row){
             if($row->unit_kerja_id == 1){
-                $list_jabatan_struktural[$row->id] = $row->bagian . " " . $row->jabatan;
+                $list_jabatan_struktural[$row->id] = $row->jabatan . " " . $row->bagian;
             }else{
-                $list_jabatan_struktural[$row->id] = $list_prodi[$prodi_id] . " " . $row->jabatan;
+                $list_jabatan_struktural[$row->id] = $row->jabatan . " " . $row->bagian;
             }
         }
         $data = [];
@@ -57,9 +57,9 @@ class PegawaiJabatanStrukturalController extends Controller
         $list_jabatan_struktural = [];
         foreach($jabatan_struktural as $row){
             if($row->unit_kerja_id == 1){
-                $list_jabatan_struktural[$row->id] = $row->bagian . " " . $row->jabatan;
+                $list_jabatan_struktural[$row->id] = $row->jabatan . " " . $row->bagian;
             }else{
-                $list_jabatan_struktural[$row->id] = $list_prodi[$prodi_id] . " " . $row->jabatan;
+                $list_jabatan_struktural[$row->id] = $row->jabatan . " " . $row->bagian;
             }
         }
 
