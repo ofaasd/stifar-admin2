@@ -18,7 +18,7 @@
                         confirmButton: 'btn btn-success'
                     }
                 }).then(function(){
-                    window.location = "{{URL::to('/mahasiswa/')}}" + '/' + data.id + '/edit';
+                    //window.location = "{{URL::to('/mahasiswa/')}}" + '/' + data.id + '/edit';
                 });
             },
             error: function error(err) {
