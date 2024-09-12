@@ -97,6 +97,13 @@ class MahasiswaController extends Controller
     $dosen = PegawaiBiodatum::where('id_posisi_pegawai',1)->get();
     $user = User::where('id',$mahasiswa->user_id)->first();
 
+    $tagihan = DetailTagihan::where('nim', $nim)->first();
+    $statusTagihan = $tagihan->status == 1 ? true : false;
+
+    $sksTempuh = 0;
+    $ipk = 0;
+    $sksAktif = 0;
+
     return view('mahasiswa.edit', compact('user','status','dosen','kecamatan','wilayah','kota','title', 'mahasiswa','prodi','agama'));
   }
   public function create(){
