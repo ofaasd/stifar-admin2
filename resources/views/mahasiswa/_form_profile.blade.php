@@ -105,10 +105,10 @@
         </div>
 
         <div class="mb-2">
-            <label class="col-sm-12 col-form-label">Angkatan: </label>
+            <label class="col-sm-12 col-form-label">Angkatan <span class="text-danger">*</span>: </label>
             <div class="col-sm-12">
                 <div class="input-group">
-                    <input type="text" name="angkatan" class="form-control" id="angkatan"  value="{{$mahasiswa->angkatan ?? ''}}">
+                    <input type="text" name="angkatan" class="form-control" id="angkatan"  value="{{$mahasiswa->angkatan ?? ''}}" required>
                 </div>
             </div>
         </div>
