@@ -248,6 +248,7 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
 
     // route mkKurikulum
     Route::get('/admin/masterdata/matakuliah-kurikulum', [MkKurikulum::class, 'index']);
+    Route::get('/admin/masterdata/matakuliah-kurikulum/get_table', [MkKurikulum::class, 'get_table']);
     Route::post('/admin/masterdata/matakuliah-kurikulum/get', [MkKurikulum::class, 'daftarKur']);
     Route::post('/admin/masterdata/matakuliah-kurikulum/save', [MkKurikulum::class, 'simpandaftarKur']);
     Route::post('/admin/masterdata/matakuliah-kurikulum/update', [MkKurikulum::class, 'updateMK']);

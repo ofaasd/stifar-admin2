@@ -31,6 +31,18 @@ class MkKurikulum extends Controller
                      'id_kur' => $request->id_kur
                     ]);
     }
+    public function get_table(Request $request){
+        $list_mk = MatakuliahKurikulum::leftJoin('mata_kuliahs', 'mata_kuliahs.id', '=', 'matakuliah_kurikulums.id_mk')
+                                        ->where('matakuliah_kurikulums.id_kurikulum', $request->id_kur)->get();
+        $matkul = MataKuliah::get();
+        $no = 1;
+        return view('admin.akademik.Matakuliah._table_mk_kurikulum',
+                    [   'list_mk' => $list_mk,
+                        'no' => $no,
+                        'matkul' => $matkul,
+                        'id_kur' => $request->id_kur
+                    ]);
+    }
     public function simpandaftarKur(Request $request){
         $cek = MatakuliahKurikulum::where(['id_kurikulum' => $request->id_kur, 'id_mk' => $request->id_mk])->first();
         if (!$cek) {
