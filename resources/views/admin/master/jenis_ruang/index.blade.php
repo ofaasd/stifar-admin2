@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Basic DataTables')
+@section('title', 'Aset Jenis Ruang')
 
 @section('css')
 
@@ -11,12 +11,12 @@
 @endsection
 
 @section('breadcrumb-title')
-    <h3>{{$title}}</h3>
+    <h3>{{$title2}}</h3>
 @endsection
 
 @section('breadcrumb-items')
-    <li class="breadcrumb-item">Master Data</li>
-    <li class="breadcrumb-item active">Ruang</li>
+    <li class="breadcrumb-item">Master</li>
+    <li class="breadcrumb-item active">Jenis Ruang</li>
 @endsection
 
 @section('content')
@@ -26,7 +26,9 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header pb-0 card-no-border">
-                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal">+ {{$title}}</button>
+                        @if(empty($link))
+                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal" id="add-record">+ {{$title2}}</button>
+                        @endif
                         <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
@@ -34,42 +36,18 @@
                                         @csrf
                                         <input type="hidden" name="id" id="id">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="ModalLabel">Tambah {{$title}}</h5>
+                                            <h5 class="modal-title" id="ModalLabel">Tambah {{$title2}}</h5>
                                             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <div class="mb-3">
-                                                <label for="nama_ruang" class="form-label">Nama Ruang</label>
-                                                <input type="text" name="nama_ruang" id="nama_ruang" class="form-control">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="lantai" class="form-label">Lantai</label>
-                                                <select class="form-select" aria-label="Default select example" id="lantai_id" name="lantai">
-                                                    @foreach ($lantais as $row)
-                                                    <option value="{{ $row->id }}">{{ $row->lantai }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="jenis_ruang " class="form-label">Jenis Ruang</label>
-                                                <select class="form-select" aria-label="Default select example" id="jenis_id" name="jenis_ruang">
-                                                    @foreach ($jenisRuangs as $row)
-                                                    <option value="{{ $row->id }}">{{ $row->nama }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="kapasitas" class="form-label">Kapasitas</label>
-                                                <input type="text" name="kapasitas" id="kapasitas" class="form-control">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="luas" class="form-label">Luas Ruangan</label>
-                                                <input type="text" name="luas" id="luas" class="form-control">
+                                            <div class="mb-3" id="field-nama">
+                                                <label for="nama" class="form-label">Nama Jenis Ruang</label>
+                                                <input type="text" class="form-control" name="nama" id="nama">
                                             </div>
                                         </div>
                                         <div class="modal-footer">
                                             <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
-                                            <button class="btn btn-primary" type="submit">Simpan</button>
+                                            <button class="btn btn-primary" id="btn-submit" type="submit">Simpan</button>
                                         </div>
                                     </form>
                                 </div>
@@ -83,12 +61,8 @@
                                 <thead>
                                     <tr>
                                         <th></th>
-                                        <th>ID</th>
-                                        <th>Nama Ruang</th>
-                                        <th>Lantai</th>
-                                        <th>Jenis Ruang</th>
-                                        <th>Kapasitas</th>
-                                        <th>Luas Ruang</th>
+                                        <th>No</th>
+                                        <th>Nama Jenis Ruang</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -111,10 +85,9 @@
 
     <script>
         $(function () {
-
             const baseUrl = {!! json_encode(url('/')) !!};
             const title = "{{strtolower($title)}}";
-            const page = '/'.concat("admin/masterdata/").concat(title);
+            const page = '/'.concat("admin/masterdata/aset/").concat(title);
             var my_column = $('#my_column').val();
             const pecah = my_column.split('\n');
             let my_data = [];
@@ -125,7 +98,7 @@
                 my_data.push(data_obj);
             });
             //alert(data_obj);
-            // console.log(my_data);
+            // console.log(baseUrl.concat(page));
 
             const dt = $("#basic-1").DataTable({
                 processing: true,
@@ -151,7 +124,7 @@
                     orderable: false,
                     targets: 1,
                     render: function render(data, type, full, meta) {
-                        return '<span>'.concat(full.fake_id, '</span>');
+                        return '<span>'.concat(full['fake_id'], '</span>');
                     }
                     },
                     {
@@ -161,16 +134,16 @@
                     searchable: false,
                     orderable: false,
                     render: function render(data, type, full, meta) {
-                        return (
-                        '<div class="d-inline-block text-nowrap">' +
-                        '<button class="btn btn-sm btn-icon edit-record text-primary" data-id="'
-                            .concat(full['id'], '" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal"')
-                            .concat(title, '"><i class="fa fa-pencil"></i></button>') +
-                        '<button class="btn btn-sm btn-icon delete-record text-primary" data-id="'.concat(
-                            full['id'],
-                            '"><i class="fa fa-trash"></i></button>'
-                        )
-                        );
+                            return (
+                            '<div class="d-inline-block text-nowrap">' +
+                            '<button class="btn btn-sm btn-icon edit-record text-primary" data-id="'
+                                .concat(full['id'], '" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal"')
+                                .concat(title, '"><i class="fa fa-pencil"></i></button>') +
+                            '<button class="btn btn-sm btn-icon delete-record text-primary" data-id="'.concat(
+                                full['id'],
+                                '"><i class="fa fa-trash"></i></button>'
+                            )
+                            );
                     }
                     }
                 ],
@@ -190,11 +163,16 @@
                     searchPlaceholder: 'Search..'
                 },
             });
+
             $('#tambahModal').on('hidden.bs.modal', function () {
-                $('#id').val('');
                 $('#formAdd').trigger("reset");
             });
             //Edit Record
+            $(document).on('click', '#add-record', function () {
+                $('#ModalLabel').html('Tambah ' + title);
+                $("#id").val('');
+                $('#formAdd').trigger("reset");
+            });
             $(document).on('click', '.edit-record', function () {
                 const id = $(this).data('id');
 
@@ -203,25 +181,31 @@
 
                 // get data
                 $.get(''.concat(baseUrl).concat(page, '/').concat(id, '/edit'), function (data) {
-                Object.keys(data).forEach(key => {
-                    //console.log(key);
-                    $('#' + key)
-                        .val(data[key])
-                        .trigger('change');
+                    Object.keys(data).forEach(key => {
+                        // console.log(data[key]);
+                        $('#' + key)
+                            .val(data[key])
+                            .trigger('change');
+                    });
                 });
-                });
+
             });
             //save record
             $('#formAdd').on('submit',function(e){
                 e.preventDefault();
+                var btnSubmit = $('#btn-submit');
+                btnSubmit.prop('disabled', true); 
+                const myFormData = new FormData(document.getElementById('formAdd'));
+                const offCanvasForm = $('#formAdd');
                 $.ajax({
-                    data: $('#formAdd').serialize(),
+                    data: myFormData,
                     url: ''.concat(baseUrl).concat(page),
                     type: 'POST',
+                    processData: false,
+                    contentType: false,
                     success: function success(status) {
                         dt.draw();
                         $("#tambahModal").modal('hide');
-
                         // sweetalert
                         swal({
                         icon: 'success',
@@ -231,20 +215,23 @@
                             confirmButton: 'btn btn-success'
                         }
                         });
+                        btnSubmit.prop('disabled', false);
                     },
                     error: function error(err) {
                         offCanvasForm.offcanvas('hide');
                         swal({
-                        title: 'Duplicate Entry!',
-                        text: title + ' Not Saved !',
-                        icon: 'error',
-                        customClass: {
-                            confirmButton: 'btn btn-success'
-                        }
+                            title: 'Duplicate Entry!',
+                            text: title + ' Not Saved !',
+                            icon: 'error',
+                            customClass: {
+                                confirmButton: 'btn btn-success'
+                            }
                         });
+                        btnSubmit.prop('disabled', false);
                     }
                 });
             });
+
             //delete record
             $(document).on('click', '.delete-record', function () {
                 const id = $(this).data('id');

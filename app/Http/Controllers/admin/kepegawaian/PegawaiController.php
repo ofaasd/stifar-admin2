@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\admin\kepegawaian;
 
 use App\Http\Controllers\Controller;
+use App\Models\JabatanFungsional;
+use App\Models\JabatanStruktural;
 use Illuminate\Http\Request;
 use App\Models\Pegawai;
 use App\Models\PegawaiBiodatum;
@@ -27,7 +29,6 @@ class PegawaiController extends Controller
      */
     public function index()
     {
-        //
         $pegawai_biodata = PegawaiBiodatum::all();
         foreach($pegawai_biodata as $row){
             $pegawai = Pegawai::where('nama',$row->nama_lengkap)->first();
@@ -60,12 +61,14 @@ class PegawaiController extends Controller
             'L' => 'Laki-laki',
             'P' => 'Perempuan',
         ];
+        $jabatan_fungsional = JabatanFungsional::all();
+        $jabatan_struktural = JabatanStruktural::all();
         $progdi = Prodi::all();
         $jenis_pegawai = PegawaiJenis::all();
         $wilayah = Wilayah::where('id_induk_wilayah','000000')->get();
         $status = array('aktif','izin belajar','cuti','keluar','meninggal');
         $status_kawin = array("Lajang","Kawin");
-        return view("admin/kepegawaian/pegawai/create2", compact('title','jenis_kelamin','progdi','jenis_pegawai','wilayah','status','status_kawin'));
+        return view("admin/kepegawaian/pegawai/create2", compact('title','jenis_kelamin','progdi','jabatan_fungsional', 'jenis_pegawai', 'jabatan_struktural','wilayah','status','status_kawin'));
     }
 
     /**
@@ -73,7 +76,6 @@ class PegawaiController extends Controller
      */
     public function store(Request $request)
     {
-        //
         $id = $request->id;
         if(empty($id)){
             $user = User::create(
@@ -97,6 +99,8 @@ class PegawaiController extends Controller
                 [
                     'id_posisi_pegawai' => $request->posisi_pegawai,
                     'id_progdi' => $request->homebase,
+                    'id_jabfung' => $request->jabatan_fungsional,
+                    'id_jabstruk' => $request->jabatan_struktural,
                     'ktp' => $request->no_ktp,
                     'npp' => $request->npp,
                     'nidn' => $request->nidn,
@@ -130,6 +134,8 @@ class PegawaiController extends Controller
                 [
                     'id_posisi_pegawai' => $request->posisi_pegawai,
                     'id_progdi' => $request->homebase,
+                    'id_jabfung' => $request->jabatan_fungsional,
+                    'id_jabstruk' => $request->jabatan_struktural,
                     'ktp' => $request->no_ktp,
                     'npp' => $request->npp,
                     'nuptk' => $request->nuptk,
@@ -186,12 +192,16 @@ class PegawaiController extends Controller
         $user = User::where('id',$pegawai->user_id)->first();
         $progdi = Prodi::all();
         $jenis_pegawai = PegawaiJenis::all();
+        $jabatan_fungsional = JabatanFungsional::all();
+        $jabatan_struktural = JabatanStruktural::all();
         $wilayah = Wilayah::where('id_induk_wilayah','000000')->get();
         $status = array('aktif','izin belajar','cuti','keluar','meninggal');
         $status_kawin = array("Lajang","Kawin");
         $posisi = [];
         $pos = PegawaiPosisi::all();
         $curr_jenis_pegawai = PegawaiPosisi::where('id',$pegawai->id_posisi_pegawai)->first();
+        $curr_jabatan_fungsional = JabatanFungsional::where('id', $pegawai->id_jabfung)->first();
+        $curr_jabatan_struktural = JabatanStruktural::where('id', $pegawai->id_jabstruk)->first();
         $list_jenis = PegawaiPosisi::where('id_jenis_pegawai',$curr_jenis_pegawai->id_jenis_pegawai)->get();
         foreach($pos as $row){
             $posisi[$row->id] = $row->nama;
@@ -205,7 +215,7 @@ class PegawaiController extends Controller
         if($pegawai->kecamatan != 0 && !empty($pegawai->kecamatan)){
             $kecamatan = Wilayah::where('id_induk_wilayah', $pegawai->kotakab)->get();
         }
-        return view("admin/kepegawaian/pegawai/edit", compact('kota','kecamatan','title','pegawai','posisi','jenis_pegawai','curr_jenis_pegawai','list_jenis','wilayah','status','status_kawin','progdi','jenis_kelamin','id','user'));
+        return view("admin/kepegawaian/pegawai/edit", compact('kota','kecamatan','title','pegawai','posisi', 'jabatan_fungsional', 'curr_jabatan_struktural', 'jabatan_struktural', 'curr_jabatan_fungsional','jenis_pegawai','curr_jenis_pegawai','list_jenis','wilayah','status','status_kawin','progdi','jenis_kelamin','id','user'));
 
     }
     public function user_update(Request $request){

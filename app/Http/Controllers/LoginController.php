@@ -21,7 +21,7 @@ class LoginController extends Controller
         if (Auth::check()) {
             $role = Auth::User()->roles->pluck('name');
             if($role[0] == "mhs"){
-                return redirect('mhs/dashboard');
+                return redirect('mhs/ ');
             }elseif($role[0] == "pegawai"){
                 return redirect('dsn/dashboard');
             }else{
