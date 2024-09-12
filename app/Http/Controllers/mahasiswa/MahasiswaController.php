@@ -137,8 +137,15 @@ class MahasiswaController extends Controller
   public function detail($nim){
     $title = "Detail Mahasiswa";
     $detail = Mahasiswa::where('nim', $nim)->get();
-
-    return view('mahasiswa.detail', compact('title', 'detail'));
+    $status = array(
+        1 => 'aktif',
+        2 => 'cuti',
+        3 => 'Keluar',
+        4 => 'lulus',
+        5 => 'meninggal',
+        6 => 'DO'
+      );
+    return view('mahasiswa.detail', compact('title', 'detail', 'status'));
   }
   public function store(Request $request){
     $id = $request->id;
