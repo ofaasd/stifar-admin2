@@ -29,6 +29,17 @@
                         <table class="table">
                             <tr>
                                 <td>
+                                    Foto Mahasiswa
+                                </td>
+                                <td>
+                                    :
+                                </td>
+                                <td>
+                                    <img class="img-100 b-r-8" alt="" src="{{ (!empty($detail[0]['foto_mhs']))?asset('assets/images/mahasiswa/' . $detail[0]['foto_mhs']):asset('assets/images/user/7.jpg') }}">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
                                     Nomor Induk Mahasiswa
                                 </td>
                                 <td>
@@ -90,7 +101,7 @@
                                     :
                                 </td>
                                 <td>
-                                    {{ $detail[0]['status'] }}
+                                    {{ $status[$detail[0]['status']] }}
                                 </td>
                             </tr>
                         </table>

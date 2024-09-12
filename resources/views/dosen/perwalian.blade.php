@@ -48,14 +48,16 @@
                                     <td>{{ $row_mhs['email'] }}</td>
                                     <td>{{ $row_mhs['status'] == 1? 'Aktif':'Tidak Aktif' }}</td>
                                     <td>
-                                        <a href="{{ URL::to('/mahasiswa/' . $row_mhs['nim']) . "/edit/" }}" class="btn btn-info btn-xs">
-                                          <i class="fa fa-eye"></i>
-                                            Biodata
-                                        </a>
-                                        <a href="{{ URL::to('/dosen/' . $row_mhs['id']) . "/krs/" }}" class="btn btn-success btn-xs">
-                                          <i class="fa fa-list"></i>
-                                            KRS
-                                        </a>
+                                        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                            <a href="{{ URL::to('/mahasiswa/detail/' . $row_mhs['nim']) }}" class="btn btn-info btn-xs">
+                                            <i class="fa fa-eye"></i>
+                                                Biodata
+                                            </a>
+                                            <a href="{{ URL::to('/dosen/' . $row_mhs['id']) . "/krs/" }}" class="btn btn-success btn-xs">
+                                            <i class="fa fa-list"></i>
+                                                KRS
+                                            </a>
+                                        </div>
                                     </td>
                                   </tr>
                                 @endforeach

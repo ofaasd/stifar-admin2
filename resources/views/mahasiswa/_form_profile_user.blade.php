@@ -135,7 +135,7 @@
                     <select name="kotakab" id="kotakab" class="form-control" >
                         <option selected="" disabled="">Pilih Kota/Kabupaten</option>
                         @foreach($kota as $w)
-                            <option value="{{ $w->id_wil }}" {{(!empty($mahasiswa->kotakab) && $mahasiswa->kotakab == $w->id_wil)?"selected":""}}>{{$w->nm_wil}}</option>
+                            <option value="{{ $w->id_wil }}" {{(!empty($mahasiswa->kokab) && $mahasiswa->kokab == $w->id_wil)?"selected":""}}>{{$w->nm_wil}}</option>
                         @endforeach
                     </select>
                 </p>

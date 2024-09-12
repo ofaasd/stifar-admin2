@@ -37,7 +37,7 @@ class ProfileController extends Controller
 
         $kecamatan = [];
         if($mahasiswa->kecamatan != 0 && !empty($mahasiswa->kecamatan)){
-            $kecamatan = Wilayah::where('id_induk_wilayah', $mahasiswa->kotakab)->get();
+            $kecamatan = Wilayah::where('id_induk_wilayah', $mahasiswa->kokab)->get();
         }
 
         $status = array(

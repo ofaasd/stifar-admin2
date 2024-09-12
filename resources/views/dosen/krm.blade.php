@@ -56,8 +56,10 @@
                                             <td>{{ $jad['tp'] }}</td>
                                             <td>{{ $jad['kuota'] }}</td>
                                             <td>
-                                                <a href="{{ url('/dosen/absensi/'.$jad['id'].'/input') }}" class="btn btn-info btn-sm"><i class="fa fa-list"></i> Absensi</a>
-                                                <a href="{{ url('/dosen/nilai/'.$jad['id'].'/input') }}" class="btn btn-success btn-sm"><i class="fa fa-inbox"></i> Nilai</a>
+                                                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                                    <a href="{{ url('/dosen/absensi/'.$jad['id'].'/input') }}" class="btn btn-info btn-xs"><i class="fa fa-list"></i>Absensi</a>
+                                                    <a href="{{ url('/dosen/nilai/'.$jad['id'].'/input') }}" class="btn btn-success btn-xs"><i class="fa fa-inbox"></i>Nilai</a>
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach

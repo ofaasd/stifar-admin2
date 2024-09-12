@@ -40,11 +40,11 @@ class KrmController extends Controller
                         ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
                         ->leftJoin('mata_kuliahs', 'mata_kuliahs.id', '=', 'jadwals.id_mk')
                         ->where([ 'jadwals.id' => $id, 'jadwals.status' => 'Aktif'])->first();
-                        
+
         $daftar_mhs = Krs::select('krs.*', 'mhs.nim', 'mhs.nama', 'mhs.foto_mhs')
                          ->leftJoin('mahasiswa as mhs', 'mhs.id', '=', 'krs.id_mhs')
                          ->where('krs.id_jadwal', $id)->get();
-        
+
         $no = 1;
         return view('dosen.daftar_mhs', compact('title', 'jadwal', 'daftar_mhs', 'no'));
     }
@@ -70,11 +70,11 @@ class KrmController extends Controller
         return view('dosen.input_absen_satuan', compact('title', 'pertemuan', 'jadwal', 'mhs', 'no', 'prodi'));
     }
     public function saveAbsensiSatuan(Request $request){
-        $id_jadwal = $request->id_jadwal; 
-        $id_pertemuan = $request->id_pertemuan; 
-        $id_mhs = $request->id_mhs; 
-        $type = $request->type; 
-        
+        $id_jadwal = $request->id_jadwal;
+        $id_pertemuan = $request->id_pertemuan;
+        $id_mhs = $request->id_mhs;
+        $type = $request->type;
+
         $cek = AbsensiModel::where(['id_jadwal' => $id_jadwal, 'id_pertemuan' => $id_pertemuan, 'id_mhs' => $id_mhs])->first();
 
         if ($cek) {
@@ -102,18 +102,18 @@ class KrmController extends Controller
     public function pertemuanAbsensi(Request $request){
         $id_pertemuan = $request->id_pertemuan;
         $pertemuan = Pertemuan::find($id_pertemuan);
-        $daftar_mhs = DB::select('select 
-                                        krs.*, 
-                                        mahasiswa.nim, 
-                                        mahasiswa.nama, 
-                                        (select 
-                                            type 
-                                        from absensi_models 
-                                        where id_pertemuan = '. $id_pertemuan .' and id_mhs = krs.id_mhs) as type 
-                                        from krs 
+        $daftar_mhs = DB::select('select
+                                        krs.*,
+                                        mahasiswa.nim,
+                                        mahasiswa.nama,
+                                        (select
+                                            type
+                                        from absensi_models
+                                        where id_pertemuan = '. $id_pertemuan .' and id_mhs = krs.id_mhs) as type
+                                        from krs
                                     left join mahasiswa on krs.id_mhs = mahasiswa.id
                                     where krs.id_jadwal = '. $pertemuan->id_jadwal);
-        
+
         $capaian = $pertemuan->capaian;
         $no = 1;
         return view('dosen._view_pertemuan_absensi_', compact('no', 'daftar_mhs', 'capaian', 'id_pertemuan'));
@@ -122,7 +122,7 @@ class KrmController extends Controller
         $id_pertemuan = $request->id_pertemuan;
         $capaian = $request->capaian;
         Pertemuan::where('id', $id_pertemuan)->update(['capaian' => $capaian]);
-        
+
         return json_encode(['msg' => 'ok']);
     }
     public function daftarMhsNilai($id){
@@ -170,8 +170,8 @@ class KrmController extends Controller
             $kontrak_tugas = $kontrak['tugas']??0;
             $kontrak_uts = $kontrak['uts']??0;
             $kontrak_uas = $kontrak['uas']??0;
-            $na = (floatval($cek['ntugas']??0) * floatval(($kontrak_tugas / 100))) + 
-                  (floatval($cek['nuts']??0) * floatval(($kontrak_uts / 100))) + 
+            $na = (floatval($cek['ntugas']??0) * floatval(($kontrak_tugas / 100))) +
+                  (floatval($cek['nuts']??0) * floatval(($kontrak_uts / 100))) +
                   (floatval($cek['nuas']??0) * floatval(($kontrak_uas / 100)));
             $nh = 'E';
             if(($na >= 85) && ($na <= 100)){
@@ -195,7 +195,7 @@ class KrmController extends Controller
             if(($na >= 0) && ($na < 50)){
                 $nh = 'E';
             }
-            
+
             master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs])->update(['nakhir' => $na, 'nhuruf' => $nh]);
             return json_encode(['kode' => 200, 'na' => $na, 'nh' => $nh]);
         }else{
@@ -212,8 +212,8 @@ class KrmController extends Controller
             $kontrak_tugas = $kontrak['tugas']??0;
             $kontrak_uts = $kontrak['uts']??0;
             $kontrak_uas = $kontrak['uas']??0;
-            $na = (floatval($cek['ntugas']??0) * floatval(($kontrak_tugas / 100))) + 
-                  (floatval($cek['nuts']??0) * floatval(($kontrak_uts / 100))) + 
+            $na = (floatval($cek['ntugas']??0) * floatval(($kontrak_tugas / 100))) +
+                  (floatval($cek['nuts']??0) * floatval(($kontrak_uts / 100))) +
                   (floatval($cek['nuas']??0) * floatval(($kontrak_uas / 100)));
             $nh = 'E';
             if(($na >= 85) && ($na <= 100)){
