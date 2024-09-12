@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Data Pegawai')
+@section('title', 'Berkas Dosen')
 
 @section('css')
 
@@ -16,7 +16,7 @@
 
 @section('breadcrumb-items')
     <li class="breadcrumb-item">Kepegawaian</li>
-    <li class="breadcrumb-item active">Data Pegawai</li>
+    <li class="breadcrumb-item active">Berkas Dosen</li>
 @endsection
 
 @section('content')
@@ -25,9 +25,6 @@
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
                 <div class="card">
-                    <div class="card-header pb-0 card-no-border">
-                        <a href="{{URL::to('admin/kepegawaian/pegawai/create')}}" class="btn btn-primary">+ Tambah Pegawai</a>
-                    </div>
                     <div class="card-body">
                         <div class="table-responsive" id="my-table">
                             <table class="display" id="pegawai-table">
@@ -36,12 +33,6 @@
                                         <th>ID</th>
                                         <th>NIY-NIDN-NUPTK</th>
                                         <th>Nama Pegawai</th>
-                                        <th>Status Homebase</th>
-                                        <th>Strata</th>
-                                        <th>Gol/PG</th>
-                                        <th>J.Fung</th>
-                                        <th>J.Struk</th>
-                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -50,18 +41,6 @@
                                         <td>{{++$fake_id}}</td>
                                         <td>{{$row->npp}} - {{$row->nidn}} - {{$row->nuptk}}</td>
                                         <td>{{$row->nama_lengkap}}</td>
-                                        <td>{{$homebase[$row->homebase]}}</td>
-                                        <td>{{$row->pendTerakhir}}</td>
-                                        <td>{{$row->golongan}}</td>
-                                        <td>{{$row->jabFung}}</td>
-                                        <td>{{$row->jabStruk}}</td>
-                                        {{-- <td>{{($row['nakhir']+$row['ntambahan'])}}</td> --}}
-                                        <td>
-                                            <div class="d-inline-block text-nowrap">
-                                                <a href="{{URL::to('admin/kepegawaian/pegawai/' . $row->id .'/edit')}}" title="edit Pegawai" id="edit_pegawai" class="btn btn-sm btn-icon edit-record text-primary"><i class="fa fa-pencil"></i></a>
-                                                <button class="btn btn-sm btn-icon delete-record text-danger" data-id="{{$row->id}}"><i class="fa fa-trash"></i></button>
-                                            </div>
-                                        </td>
                                     </tr>
                                     @endforeach
                                 </tbody>

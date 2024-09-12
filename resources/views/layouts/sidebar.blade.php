@@ -52,6 +52,19 @@
                     <li><a href="{{URL::to('admin/masterdata/waktu')}}">Waktu</a></li>
                     {{-- <li><a href="{{URL::to('admin/masterdata/rumpun')}}">Rumpun</a></li> --}}
                     {{-- <li><a href="{{URL::to('admin/masterdata/fakultas')}}">Fakultas</a></li> --}}
+                    <li>
+                        <a class="submenu-title" href="#">
+                            <span>Aset</span>
+                        </a>
+                        <ul class="nav-sub-childmenu submenu-content">
+                            <li><a href="{{URL::to('admin/masterdata/aset/kategori-aset')}}">Kategori</a></li>
+                            <li><a href="#">Unit Kerja</a></li>
+                            <li><a href="{{URL::to('admin/masterdata/aset/aset-label')}}">Label</a></li>
+                            <li><a href="{{URL::to('admin/masterdata/aset/aset-jenis-ruang')}}">Jenis Ruang</a></li>
+                            <li><a href="{{URL::to('admin/masterdata/aset/aset-gedung')}}">Gedung</a></li>
+                            <li><a href="{{URL::to('admin/masterdata/aset/aset-lantai')}}">Lantai</a></li>
+                        </ul>
+                    </li>
                 </ul>
             </li>
 
@@ -63,7 +76,15 @@
                     <li><a href="{{ URL::to('mahasiswa') }}">Data Mahasiswa</a></li>
                 </ul>
             </li>
-
+            <li class="sidebar-list">
+                <a class="sidebar-link sidebar-title" href="#">
+                    <span><i class="fa fa-file"></i> Berkas</span>
+                </a>
+                <ul class="sidebar-submenu">
+                    <li><a href="{{ URL::to('admin/berkas/dosen') }}">Dosen</a></li>
+                    <li><a href="{{ URL::to('admin/berkas/mahasiswa') }}">Mahasiswa</a></li>
+                </ul>
+            </li>
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
                 <span><i class="fa fa-file-text"></i> Admisi</span></a>
                 <ul class="sidebar-submenu">

@@ -79,6 +79,8 @@ class PegawaiBiodatum extends Model
 		'id_pegawai',
 		'id_posisi_pegawai',
 		'id_progdi',
+		'id_jabfung',
+		'id_jabstruk',
 		'ktp',
 		'expired_ktp',
 		'npp',

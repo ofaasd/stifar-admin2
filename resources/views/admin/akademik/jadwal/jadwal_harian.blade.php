@@ -23,6 +23,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <div class="container-fluid">
         <div class="row">
+            @include('admin.akademik.jadwal.note')
             <div class="col-md-12 project-list">
                 <div class="card">
                    <div class="row">
@@ -47,6 +48,7 @@
                         <ul class="simple-wrapper nav nav-tabs" id="myTab" role="tablist">
                             <li class="nav-item" role="presentation"><a class="nav-link txt-default" id="masterJadwal-tab" href="{{ url('/admin/masterdata/jadwal') }}" role="tab" aria-controls="masterJadwal" aria-selected="true">Jadwal Matakuliah</a></li>
                             <li class="nav-item" role="presentation"><a class="nav-link txt-default active" id="jadwalHarian-tab" href="{{ url('/admin/masterdata/jadwal-harian') }}" aria-controls="jadwalHarian" aria-selected="false">Jadwal Harian</a></li>
+                            <li class="nav-item" role="presentation"><a class="nav-link txt-default" id="distribusi-sks-tab" href="{{ url('/admin/masterdata/distribusi-sks') }}" aria-controls="distribusiSks" aria-selected="false">Distribusi SKS</a></li>
                         </ul>
                         <div class="tab-content" id="myTabContent">
                             <div class="tab-pane fade active show" id="jadwalHarian" role="tabpanel" aria-labelledby="jadwalHarian-tab">
@@ -85,6 +87,7 @@
                                                         <th>No.</th>
                                                         <th>Kode Jadwal</th>
                                                         <th>Hari & Waktu</th>
+                                                        <th>Dosen pengampu</th>
                                                         <th>Matakuliah</th>
                                                         <th>Ruang</th>
                                                         {{-- <th>Tahun Ajaran</th>
@@ -100,6 +103,7 @@
                                                             <td>{{ $no++ }}</td>
                                                             <td>{{ $jad['kode_jadwal'] }}</td>
                                                             <td>{{ $jad['hari'] }}, {{ $jad['nama_sesi'] }}</td>
+                                                            <td>{{ $jad['nama_dosen'] }}</td>
                                                             <td>[{{ $jad['kode_matkul'] }}] {{ $jad['nama_matkul'] }}</td>
                                                             <td>{{ $jad['nama_ruang'] }}</td>
                                                             {{-- <td>{{ $jad['kode_ta'] }}</td>
@@ -165,6 +169,7 @@
                                     <th>No.</th>
                                     <th>Kode Jadwal</th>
                                     <th>Hari & Waktu</th>
+                                    <th>Dosen Pengampu</th>
                                     <th>Matakuliah</th>
                                     <th>Ruang</th>
 
@@ -183,6 +188,7 @@
                                     <td>${ no }</td>
                                     <td>${ data[i].kode_jadwal }</td>
                                     <td>${ data[i].hari }, ${ data[i].nama_sesi }</td>
+                                    <td>${ data[i].nama_dosen }</td>
                                     <td>[${ data[i].kode_matkul }] ${ data[i].nama_matkul }</td>
                                     <td>${ data[i].nama_ruang }</td>
 

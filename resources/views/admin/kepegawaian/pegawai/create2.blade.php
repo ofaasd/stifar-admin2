@@ -61,6 +61,38 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-2">
+                                    <label class="col-sm-12 col-form-label">Jabatan Fungsional : </label>
+                                    <div class="col-sm-12">
+                                        <select class="form-control" name="jabatan_fungsional" id="jabatan_fungsional" required>
+                                        <option value="0">--- Pilih Jabatan Fungsional --- </option>
+                                        <?php
+                                            foreach($jabatan_fungsional as $row){
+                                                echo "<option value='" . $row->id . "''>" . $row->jabatan . "</option>";
+                                            }
+                                        ?>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-2">
+                                    <label class="col-sm-12 col-form-label">Jabatan Struktural : </label>
+                                    <div class="col-sm-12">
+                                        <select class="form-control" name="jabatan_struktural" id="jabatan_struktural" required>
+                                        <option value="0">--- Pilih Jabatan Struktural --- </option>
+                                        <?php
+                                            foreach($jabatan_struktural as $row){
+                                                echo "<option value='" . $row->id . "''>" . $row->jabatan . "</option>";
+                                            }
+                                        ?>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="mb-2">
                             <label class="col-sm-12 col-form-label">Nomor Induk Yayasan (NIY): </label>
                             <div class="col-sm-12">
