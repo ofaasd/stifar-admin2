@@ -38,7 +38,7 @@ class DosenController extends Controller
         // }
 
         $no = 1;
-        return view('dosen.perwalian', compact('title', 'mhs', 'no', 'jumlah_matkul','jumlah_sks_teori','jumlah_sks_praktek'));
+        return view('dosen.perwalian', compact('title', 'mhs', 'no', 'jumlah_sks_teori','jumlah_sks_praktek'));
     }
     public function detailKRS(Request $request){
         $mhs = Mahasiswa::where('id', $request->id)->first();
