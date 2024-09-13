@@ -9,6 +9,6 @@ class RefPembimbing extends Model
 {
     use HasFactory;
 
-    protected $table = 'ref_pembimbing';
-    protected $fillable = ['nip', 'sisa_kuota'];
+    protected $table = 'ref_pembimbing_skripsi';
+    protected $fillable = ['nip', 'kuota'];
 }

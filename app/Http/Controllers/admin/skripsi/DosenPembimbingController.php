@@ -16,10 +16,21 @@ class DosenPembimbingController extends Controller
         return view('admin.skripsi.dosbim.index');
     }
 
-    public function getListDosen(){
-        // Mengambil data dari model Dosen dengan sisa kuota yang tidak 0
-        $data = RefPembimbing::where('sisa_kuota', '!=', 0)->get();
-    
+    public function getListDosen()
+    {
+        // Mengambil data dari model RefPembimbing dengan sisa kuota yang tidak 0
+        $data = RefPembimbing::where('kuota', '!=', 0)->get();
+
+        // Jika data kosong, kirim response dengan pesan khusus
+        if ($data->isEmpty()) {
+            return response()->json([
+                'draw' => 0,
+                'recordsTotal' => 0,
+                'recordsFiltered' => 0,
+                'data' => []
+            ]);
+        }
+
         return \DataTables::of($data)
             ->addIndexColumn() // Menambahkan kolom DT_RowIndex
             ->addColumn('button', function ($row) {

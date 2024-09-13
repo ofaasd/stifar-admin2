@@ -26,14 +26,14 @@
                 <div class="card-body">
                     <button class="btn btn-primary mb-3" id="">Tambah Dosen Pembimbing</button>
                     <div class="table-responsive">
-                      <table class="display" id="basic-6">
+                      <table class="display" id="pembimbing-table">
                         <thead>
                           <tr>
                             <th>#</th>
                             <th>Nip</th>
                             <th>Nama</th>
                             <th>Kuota</th>
-                            <th>action</th>
+                            <th>Action</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -52,30 +52,26 @@
     <script src="{{asset('assets/js/sweet-alert/sweetalert.min.js')}}"></script>
 <script>
     $(document).ready(function () {
-        $("#basic-6").DataTable({
+    
+        $('#pembimbing-table').DataTable({
             processing: true,
             serverSide: true,
-            searching: true,
-            ajax: {
-                url: {{Route('admin.pembimbing.listDosen')}},
-                type: 'GET',
-                dataSrc: function (json) {
-                    return json.data;
-                },
-                error: function (xhr, error, thrown) {
-                    console.error("Failed to retrieve data:", xhr.responseText);
-                }
-            },
+            ajax: '{{ route('admin.pembimbing.listDosen') }}',
             columns: [
-                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                {data: 'nip', name: 'nip'},
-                {data: 'nama', name: 'nama'},
-                {data: 'sisa_kuota', name: 'sisa_kuota'},
-                {data: 'button', name: 'button'},
-                // {data: 'actions', name: 'actions'},
-            ]
-        });
-    });
+                { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
+                { data: 'nip', name: 'nip' },
+                { data: 'nama', name: 'nama' },
+                { data: 'kuota', name: 'kuota' },
+                { data: 'button', name: 'button', orderable: false, searchable: false }
+            ],
+            language: {
+                emptyTable: "Tidak ada data dosen pembimbing yang tersedia." // Pesan ketika data kosong
+            }
+            });
+            });
+            
+
+
 
 </script>
 @endsection
