@@ -20,8 +20,25 @@ class DosenController extends Controller
         $title = "Daftar Mahasiswa";
         $id_dsn = PegawaiBiodatum::where('user_id', Auth::id())->first();
         $mhs = Mahasiswa::where('id_dsn_wali', $id_dsn->id)->get();
+        $tahun_ajaran = TahunAjaran::where('status','Aktif')->first();
+        $ta = $tahun_ajaran->id;
+        $jumlah_sks_teori = [];
+        $jumlah_sks_praktek = [];
+        // foreach($mhs as $row){
+        //     $jumlah_sks_teori = Krs::leftJoin('jadwals as a', 'krs.id_jadwal', '=', 'a.id')
+        //     ->leftJoin('mata_kuliahs as b', 'a.id_mk', '=', 'b.id')
+        //     ->where('krs.id_tahun', $ta)
+        //     ->where('id_mhs',$row->id)
+        //     ->sum('sks_teori');
+        //     $jumlah_sks_praktek = Krs::leftJoin('jadwals as a', 'krs.id_jadwal', '=', 'a.id')
+        //     ->leftJoin('mata_kuliahs as b', 'a.id_mk', '=', 'b.id')
+        //     ->where('krs.id_tahun', $ta)
+        //     ->where('id_mhs',$row->id)
+        //     ->sum('sks_praktek');
+        // }
+
         $no = 1;
-        return view('dosen.perwalian', compact('title', 'mhs', 'no'));
+        return view('dosen.perwalian', compact('title', 'mhs', 'no', 'jumlah_matkul','jumlah_sks_teori','jumlah_sks_praktek'));
     }
     public function detailKRS(Request $request){
         $mhs = Mahasiswa::where('id', $request->id)->first();

@@ -110,7 +110,7 @@ class MahasiswaController extends Controller
     );
 
     $tagihan = DetailTagihan::where('nim', $nim)->first();
-    $statusTagihan = $tagihan->status == 1 ? true : false;
+    $statusTagihan = (!empty($tagihan) && $tagihan->status == 1) ? true : false;
 
     $sksTempuh = 0;
     $ipk = 0;
