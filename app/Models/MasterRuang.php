@@ -33,6 +33,8 @@ class MasterRuang extends Model
 	protected $fillable = [
 		'nama_ruang',
 		'kapasitas',
+		'lantai_id',
+		'jenis_id',
 		'luas',
 		'log_update'
 	];

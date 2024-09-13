@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Basic DataTables')
+@section('title', 'Data Pegawai')
 
 @section('css')
 
@@ -34,11 +34,13 @@
                                 <thead>
                                     <tr>
                                         <th>ID</th>
-                                        <th>NIY - NIDN</th>
+                                        <th>NIY-NIDN-NUPTK</th>
                                         <th>Nama Pegawai</th>
                                         <th>Status Homebase</th>
-                                        <th>Golongan</th>
-                                        <th>jabatan Fungsional</th>
+                                        <th>Strata</th>
+                                        <th>Gol/PG</th>
+                                        <th>J.Fung</th>
+                                        <th>J.Struk</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -46,11 +48,14 @@
                                     @foreach($pegawai as $row)
                                     <tr>
                                         <td>{{++$fake_id}}</td>
-                                        <td>{{$row->npp}} - {{$row->nidn}}</td>
+                                        <td>{{$row->npp}} - {{$row->nidn}} - {{$row->nuptk}}</td>
                                         <td>{{$row->nama_lengkap}}</td>
                                         <td>{{$homebase[$row->homebase]}}</td>
+                                        <td>{{$row->pendTerakhir}}</td>
                                         <td>{{$row->golongan}}</td>
-                                        <td>{{($row['nakhir']+$row['ntambahan'])}}</td>
+                                        <td>{{$row->jabFung}}</td>
+                                        <td>{{$row->jabStruk}}</td>
+                                        {{-- <td>{{($row['nakhir']+$row['ntambahan'])}}</td> --}}
                                         <td>
                                             <div class="d-inline-block text-nowrap">
                                                 <a href="{{URL::to('admin/kepegawaian/pegawai/' . $row->id .'/edit')}}" title="edit Pegawai" id="edit_pegawai" class="btn btn-sm btn-icon edit-record text-primary"><i class="fa fa-pencil"></i></a>

@@ -22,6 +22,7 @@
 @section('content')
     <div class="container-fluid">
         <div class="row">
+            @include('admin.akademik.jadwal.note')
             <div class="col-md-12 project-list">
                 <div class="card">
                    <div class="row">
@@ -47,6 +48,7 @@
                         <ul class="simple-wrapper nav nav-tabs" id="myTab" role="tablist">
                             <li class="nav-item" role="presentation"><a class="nav-link txt-default active" id="masterJadwal-tab" href="{{ url('/admin/masterdata/jadwal') }}" role="tab" aria-controls="masterJadwal" aria-selected="true">Jadwal Matakuliah</a></li>
                             <li class="nav-item" role="presentation"><a class="nav-link txt-default" id="jadwalHarian-tab" href="{{ url('/admin/masterdata/jadwal-harian') }}" aria-controls="jadwalHarian" aria-selected="false">Jadwal Harian</a></li>
+                            <li class="nav-item" role="presentation"><a class="nav-link txt-default" id="distribusi-sks-tab" href="{{ url('/admin/masterdata/distribusi-sks') }}" aria-controls="distribusiSks" aria-selected="false">Distribusi SKS</a></li>
                         </ul>
                         <div class="tab-content" id="myTabContent">
                             <div class="tab-pane fade active show" id="masterJadwal" role="tabpanel" aria-labelledby="masterJadwal-tab">

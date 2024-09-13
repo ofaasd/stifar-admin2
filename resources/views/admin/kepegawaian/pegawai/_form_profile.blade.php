@@ -27,6 +27,48 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-2">
+                    <label class="col-sm-12 col-form-label">Jabatan Fungsional : </label>
+                    <div class="col-sm-12">
+                        <select class="form-control" name="jabatan_fungsional" id="jabatan_fungsional" required>
+                            @if (!is_null($curr_jabatan_fungsional))
+                                <option value="0">--- Pilih Jabatan Fungsional --- </option>
+                                @foreach($jabatan_fungsional as $row)
+                                    <option value='{{$row->id}}' {{($curr_jabatan_fungsional->id == $row->id)?"selected" : "" }}>{{$row->jabatan }}</option>
+                                @endforeach
+                            @else
+                                <option value="0" selected>Pilih Jabatan Fungsional</option>
+                                @foreach($jabatan_fungsional as $row)
+                                    <option value='{{$row->id}}'>{{$row->jabatan }}</option>
+                                @endforeach
+                            @endif
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-2">
+                    <label class="col-sm-12 col-form-label">Jabatan Struktural</label>
+                    <div class="col-sm-12">
+                        <select class="form-control" name="jabatan_struktural" id="jabatan_struktural" required>
+                            @if (!is_null($curr_jabatan_struktural))
+                                <option value="0">--- Pilih Jabatan Struktural --- </option>
+                                @foreach($jabatan_struktural as $row)
+                                    <option value='{{$row->id}}' {{($curr_jabatan_struktural->id == $row->id)?"selected" : "" }}>{{$row->jabatan }}</option>
+                                @endforeach
+                            @else
+                                <option value="0" selected>Pilih Jabatan Struktural</option>
+                                @foreach($jabatan_struktural as $row)
+                                    <option value='{{$row->id}}'>{{$row->jabatan }}</option>
+                                @endforeach
+                            @endif
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="mb-2">
             <label class="col-sm-12 col-form-label">Nomor Induk Yayasan(NIY): </label>
             <div class="col-sm-12">

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\mahasiswa;
 
 use App\Http\Controllers\Controller;
+use App\Models\DetailTagihan;
 use Illuminate\Http\Request;
 use App\Models\Mahasiswa;
 use App\Models\Prodi;
@@ -64,15 +65,21 @@ class MahasiswaController extends Controller
   }
   public function edit($nim){
     $title = "Mahasiswa";
-    $mahasiswa = Mahasiswa::where('nim', $nim)->first();
+    $mahasiswa = Mahasiswa::select('mahasiswa.*', 'pegawai_biodata.nama_lengkap as dosenWali')
+    ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'mahasiswa.id_dsn_wali')
+    ->where('nim', $nim)
+    ->first();
+
     if(empty($mahasiswa)){
         return view('errors.404');
     }
+
     $program_studi = Prodi::all();
     $prodi = [];
     foreach($program_studi as $row){
         $prodi[$row->id] = $row->nama_prodi;
     }
+
     $agama = array('1'=>'Islam','Kristen','Katolik','Hindu','Budha','Konghuchu','Lainnya');
     $wilayah = Wilayah::where('id_induk_wilayah','000000')->get();
 
@@ -86,6 +93,13 @@ class MahasiswaController extends Controller
         $kecamatan = Wilayah::where('id_induk_wilayah', $mahasiswa->kokab)->get();
     }
 
+    $tagihan = DetailTagihan::where('nim', $nim)->first();
+    $statusTagihan = $tagihan->status == 1 ? true : false;
+
+    $sksTempuh = 0;
+    $ipk = 0;
+    $sksAktif = 0;
+
     $status = array(
       1 => 'aktif',
       2 => 'cuti',
@@ -94,10 +108,34 @@ class MahasiswaController extends Controller
       5 => 'meninggal',
       6 => 'DO'
     );
-    $dosen = PegawaiBiodatum::where('id_posisi_pegawai',1)->get();
-    $user = User::where('id',$mahasiswa->user_id)->first();
 
-    return view('mahasiswa.edit', compact('user','status','dosen','kecamatan','wilayah','kota','title', 'mahasiswa','prodi','agama'));
+    $tagihan = DetailTagihan::where('nim', $nim)->first();
+    $statusTagihan = $tagihan->status == 1 ? true : false;
+
+    $sksTempuh = 0;
+    $ipk = 0;
+    $sksAktif = 0;
+
+
+    // $dosen = PegawaiBiodatum::where('id_posisi_pegawai', 1)->get();
+    $user = User::where('id', $mahasiswa->user_id)->first();
+
+    return view('mahasiswa.edit', compact
+    (
+        'user',
+        'status',
+        'kecamatan',
+        'wilayah',
+        'kota',
+        'title',
+        'mahasiswa',
+        'prodi',
+        'agama',
+        'statusTagihan',
+        'sksTempuh',
+        'ipk',
+        'sksAktif',
+    ));
   }
   public function create(){
     $title = "Mahasiswa";
@@ -137,8 +175,15 @@ class MahasiswaController extends Controller
   public function detail($nim){
     $title = "Detail Mahasiswa";
     $detail = Mahasiswa::where('nim', $nim)->get();
-
-    return view('mahasiswa.detail', compact('title', 'detail'));
+    $status = array(
+        1 => 'aktif',
+        2 => 'cuti',
+        3 => 'Keluar',
+        4 => 'lulus',
+        5 => 'meninggal',
+        6 => 'DO'
+      );
+    return view('mahasiswa.detail', compact('title', 'detail', 'status'));
   }
   public function store(Request $request){
     $id = $request->id;

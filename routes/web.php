@@ -1,64 +1,71 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\admin\RuangController;
 use App\Http\Controllers\LoginController;
-use App\Http\Controllers\admin\DashboardController;
-use App\Http\Controllers\admin\AsalSekolahController;
-use App\Http\Controllers\admin\admisi\GelombangController;
-use App\Http\Controllers\admin\admisi\PmbPesertaController;
-use App\Http\Controllers\admin\admisi\PeringkatPmdpController;
-use App\Http\Controllers\admin\admisi\PmbNilaiTambahanController;
-use App\Http\Controllers\admin\admisi\DaftarSoalController;
-use App\Http\Controllers\admin\admisi\VerifikasiController;
-use App\Http\Controllers\admin\admisi\PengumumanController;
-use App\Http\Controllers\admin\admisi\PmbJalurController;
-use App\Http\Controllers\admin\admisi\UserGuestController;
-use App\Http\Controllers\admin\admisi\SlideController;
-use App\Http\Controllers\admin\kepegawaian\PegawaiController;
-use App\Http\Controllers\admin\kepegawaian\PegawaiJabatanStrukturalController;
-use App\Http\Controllers\admin\kepegawaian\PegawaiJabatanFungsionalController;
-use App\Http\Controllers\admin\kepegawaian\PegawaiMengajarController;
-use App\Http\Controllers\admin\kepegawaian\PegawaiPenelitianController;
-use App\Http\Controllers\admin\kepegawaian\PegawaiPengabdianController;
-use App\Http\Controllers\admin\kepegawaian\PegawaiKaryaController;
-use App\Http\Controllers\admin\kepegawaian\PegawaiOrganisasiController;
-use App\Http\Controllers\admin\kepegawaian\PegawaiRepositoryController;
-use App\Http\Controllers\admin\kepegawaian\PegawaiPekerjaanController;
-use App\Http\Controllers\admin\kepegawaian\PegawaiPendidikanController;
-use App\Http\Controllers\admin\kepegawaian\JamkerjaController;
-use App\Http\Controllers\admin\kepegawaian\SuratIzinController;
-use App\Http\Controllers\admin\kepegawaian\PegawaiBerkasController;
-use App\Http\Controllers\pegawai\UserPegawaiController;
-use App\Http\Controllers\pegawai\RiwayatPegawaiController;
-use App\Http\Controllers\admin\WaktuController;
-use App\Http\Controllers\admin\FakultasController;
-use App\Http\Controllers\admin\RumpunController;
-use App\Http\Controllers\admin\TahunAjaranController;
+use App\Http\Controllers\admin\MkKurikulum;
+use App\Http\Controllers\dosen\KrmController;
 use App\Http\Controllers\admin\SesiController;
-use App\Http\Controllers\admin\krs\KrsController;
-use App\Http\Controllers\admin\ProdiController;
-use App\Http\Controllers\admin\KurikulumController;
-use App\Http\Controllers\admin\KelompokMatkulController;
-use App\Http\Controllers\admin\MatkulController;
 use App\Http\Controllers\admin\NilaiController;
-use App\Http\Controllers\admin\NilaiLamaController;
+use App\Http\Controllers\admin\ProdiController;
+use App\Http\Controllers\admin\RuangController;
+use App\Http\Controllers\admin\WaktuController;
+use App\Http\Controllers\dosen\DosenController;
+use App\Http\Controllers\admin\JadwalController;
+use App\Http\Controllers\admin\MatkulController;
+use App\Http\Controllers\admin\RumpunController;
+use App\Http\Controllers\admin\krs\KrsController;
+use App\Http\Controllers\admin\FakultasController;
+use App\Http\Controllers\admin\DashboardController;
+use App\Http\Controllers\admin\KurikulumController;
 use App\Http\Controllers\admin\master\PTController;
+use App\Http\Controllers\admin\NilaiLamaController;
+use App\Http\Controllers\admin\AsalSekolahController;
+use App\Http\Controllers\admin\master\UserController;
+use App\Http\Controllers\admin\TahunAjaranController;
+use App\Http\Controllers\mahasiswa\ProfileController;
+use App\Http\Controllers\admin\admisi\SlideController;
+use App\Http\Controllers\admin\master\LabelController;
+use App\Http\Controllers\admin\master\GedungController;
+use App\Http\Controllers\admin\master\LantaiController;
+use App\Http\Controllers\mahasiswa\MahasiswaController;
+use App\Http\Controllers\pegawai\UserPegawaiController;
+use App\Http\Controllers\admin\KelompokMatkulController;
+use App\Http\Controllers\admin\admisi\PmbJalurController;
+use App\Http\Controllers\admin\admisi\GelombangController;
+use App\Http\Controllers\admin\admisi\UserGuestController;
 use App\Http\Controllers\admin\master\AtributPTController;
 use App\Http\Controllers\admin\master\RenstraPTController;
-use App\Http\Controllers\admin\master\JabatanStrukturalController;
-use App\Http\Controllers\admin\master\UserController;
+use App\Http\Controllers\pegawai\RiwayatPegawaiController;
+use App\Http\Controllers\admin\admisi\DaftarSoalController;
+use App\Http\Controllers\admin\admisi\PengumumanController;
+use App\Http\Controllers\admin\admisi\PmbPesertaController;
+use App\Http\Controllers\admin\admisi\VerifikasiController;
+use App\Http\Controllers\admin\keuangan\KeuanganController;
+use App\Http\Controllers\admin\kepegawaian\PegawaiController;
+use App\Http\Controllers\admin\master\AsetKategoriController;
 use App\Http\Controllers\admin\master\AtributProdiController;
 use App\Http\Controllers\admin\master\RenstraProdiController;
+use App\Http\Controllers\admin\admisi\PeringkatPmdpController;
+use App\Http\Controllers\admin\kepegawaian\JamkerjaController;
+use App\Http\Controllers\admin\kepegawaian\SuratIzinController;
 use App\Http\Controllers\admin\master\ProdiAkreditasiController;
-use App\Http\Controllers\admin\JadwalController;
-use App\Http\Controllers\admin\MkKurikulum;
-use App\Http\Controllers\admin\keuangan\KeuanganController;
-use App\Http\Controllers\mahasiswa\MahasiswaController;
-use App\Http\Controllers\mahasiswa\ProfileController;
+use App\Http\Controllers\admin\admisi\PmbNilaiTambahanController;
+use App\Http\Controllers\admin\berkas\BerkasDosenController;
+use App\Http\Controllers\admin\berkas\BerkasMahasiswaController;
+use App\Http\Controllers\admin\kepegawaian\PegawaiKaryaController;
+use App\Http\Controllers\admin\master\JabatanStrukturalController;
+use App\Http\Controllers\admin\kepegawaian\PegawaiBerkasController;
+use App\Http\Controllers\admin\kepegawaian\PegawaiMengajarController;
 use App\Http\Controllers\mahasiswa\KrsController as mhsKrsController;
-use App\Http\Controllers\dosen\DosenController;
-use App\Http\Controllers\dosen\KrmController;
+use App\Http\Controllers\admin\kepegawaian\PegawaiPekerjaanController;
+use App\Http\Controllers\admin\kepegawaian\PegawaiOrganisasiController;
+use App\Http\Controllers\admin\kepegawaian\PegawaiPendidikanController;
+use App\Http\Controllers\admin\kepegawaian\PegawaiPenelitianController;
+use App\Http\Controllers\admin\kepegawaian\PegawaiPengabdianController;
+use App\Http\Controllers\admin\kepegawaian\PegawaiRepositoryController;
+use App\Http\Controllers\admin\kepegawaian\PegawaiJabatanFungsionalController;
+use App\Http\Controllers\admin\kepegawaian\PegawaiJabatanStrukturalController;
+use App\Http\Controllers\admin\master\JenisRuangController;
 
 /*
 |--------------------------------------------------------------------------
@@ -176,8 +183,21 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     Route::resource('admin/masterdata/jabatan_struktural', JabatanStrukturalController::class)->name('index', 'jabatan_struktural');
     Route::resource('admin/masterdata/user', UserController::class)->name('index', 'user');
 
+    // Aset
+    Route::resource('admin/masterdata/aset/kategori-aset', AsetKategoriController::class)->name('index', 'kategori-aset');
+    Route::resource('admin/masterdata/aset/aset-gedung', GedungController::class)->name('index', 'aset-gedung');
+    Route::resource('admin/masterdata/aset/aset-label', LabelController::class)->name('index', 'aset-label');
+    Route::resource('admin/masterdata/aset/aset-lantai', LantaiController::class)->name('index', 'aset-lantai');
+    Route::resource('admin/masterdata/aset/aset-jenis-ruang', JenisRuangController::class)->name('index', 'aset-jenis-ruang');
+
     // route MahasiswaModel
     Route::resource('/mahasiswa', MahasiswaController::class)->name('index', 'mahasiswa');
+
+    // route Berkas Mahasiswa
+    Route::resource('/admin/berkas/mahasiswa', BerkasMahasiswaController::class)->name('index', 'berkas-mahasiswa');
+
+    // route Berkas Dosen
+    Route::resource('/admin/berkas/dosen', BerkasDosenController::class)->name('index', 'berkas-dosen');
 
     // route Matakuliah
     Route::get('/admin/masterdata/matakuliah', [MatkulController::class, 'index']);
@@ -201,6 +221,7 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     Route::get('/admin/masterdata/jadwal/prodi/{id}', [JadwalController::class, 'jadwal_prodi']);
     Route::get('/admin/masterdata/jadwal-harian', [JadwalController::class, 'daftarJadwalHarian']);
     Route::get('/admin/masterdata/jadwal-harian/prodi/{id}', [JadwalController::class, 'daftarJadwalHarianProdi']);
+    Route::get('/admin/masterdata/distribusi-sks', [JadwalController::class, 'daftarDistribusiSks']);
     Route::get('/admin/masterdata/koordinator-mk/{id}', [JadwalController::class, 'koordinatorMK']);
     Route::get('/admin/masterdata/anggota-mk/{id}', [JadwalController::class, 'anggotaMK']);
     Route::get('/admin/masterdata/jadwal/create/{id}', [JadwalController::class, 'daftarJadwal']);
@@ -227,6 +248,7 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
 
     // route mkKurikulum
     Route::get('/admin/masterdata/matakuliah-kurikulum', [MkKurikulum::class, 'index']);
+    Route::get('/admin/masterdata/matakuliah-kurikulum/get_table', [MkKurikulum::class, 'get_table']);
     Route::post('/admin/masterdata/matakuliah-kurikulum/get', [MkKurikulum::class, 'daftarKur']);
     Route::post('/admin/masterdata/matakuliah-kurikulum/save', [MkKurikulum::class, 'simpandaftarKur']);
     Route::post('/admin/masterdata/matakuliah-kurikulum/update', [MkKurikulum::class, 'updateMK']);

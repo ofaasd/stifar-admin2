@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\JenisRuang;
+use App\Models\Lantai;
 use Illuminate\Http\Request;
 use App\Models\MasterRuang;
 
@@ -11,20 +13,24 @@ class RuangController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public $indexed = ['', 'id', 'nama_ruang', 'kapasitas', 'luas'];
+    public $indexed = ['', 'id', 'nama_ruang', 'nama_lantai', 'jenis_ruang', 'kapasitas', 'luas'];
     public function index(Request $request)
     {
         //
         if (empty($request->input('length'))) {
             $title = "Ruang";
             $indexed = $this->indexed;
-            return view('admin.master.ruang.index', compact('title','indexed'));
+            $lantais = Lantai::all();
+            $jenisRuangs = JenisRuang::all();
+            return view('admin.master.ruang.index', compact('title','indexed', 'jenisRuangs', 'lantais'));
         }else{
             $columns = [
                 1 => 'id',
                 2 => 'nama_ruang',
-                3 => 'kapasitas',
-                4 => 'luas',
+                3 => 'nama_lantai',
+                4 => 'jenis_ruang',
+                5 => 'kapasitas',
+                6 => 'luas',
             ];
 
             $search = [];
@@ -40,16 +46,21 @@ class RuangController extends Controller
 
 
             if (empty($request->input('search.value'))) {
-                $ruang = MasterRuang::offset($start)
-                    ->limit($limit)
-                    ->orderBy($order, $dir)
-                    ->get();
+                $ruang = MasterRuang::select('master_ruang.*', 'master_lantai.lantai as nama_lantai', 'master_jenis_ruang.nama as jenis_ruang')
+                ->leftJoin('master_lantai', 'master_lantai.id', '=', 'master_ruang.lantai_id')
+                ->leftJoin('master_jenis_ruang', 'master_jenis_ruang.id', '=', 'master_ruang.jenis_id')
+                ->offset($start)
+                ->limit($limit)
+                ->orderBy($order, $dir)
+                ->get();
             } else {
                 $search = $request->input('search.value');
 
                 $ruang = MasterRuang::where('id', 'LIKE', "%{$search}%")
                     ->orWhere('nama_ruang', 'LIKE', "%{$search}%")
                     ->orWhere('kapasitas', 'LIKE', "%{$search}%")
+                    ->orWhere('nama_lantai', 'LIKE', "%{$search}%")
+                    ->orWhere('jenis_ruang', 'LIKE', "%{$search}%")
                     ->orWhere('luas', 'LIKE', "%{$search}%")
                     ->offset($start)
                     ->limit($limit)
@@ -59,6 +70,8 @@ class RuangController extends Controller
                 $totalFiltered = MasterRuang::where('id', 'LIKE', "%{$search}%")
                 ->orWhere('nama_ruang', 'LIKE', "%{$search}%")
                 ->orWhere('kapasitas', 'LIKE', "%{$search}%")
+                ->orWhere('nama_lantai', 'LIKE', "%{$search}%")
+                ->orWhere('jenis_ruang', 'LIKE', "%{$search}%")
                 ->orWhere('luas', 'LIKE', "%{$search}%")
                 ->count();
             }
@@ -73,6 +86,8 @@ class RuangController extends Controller
                     $nestedData['id'] = $row->id;
                     $nestedData['fake_id'] = ++$ids;
                     $nestedData['nama_ruang'] = $row->nama_ruang;
+                    $nestedData['nama_lantai'] = $row->nama_lantai;
+                    $nestedData['jenis_ruang'] = $row->jenis_ruang;
                     $nestedData['kapasitas'] = $row->kapasitas;
                     $nestedData['luas'] = $row->luas;
                     $data[] = $nestedData;
@@ -116,7 +131,14 @@ class RuangController extends Controller
             // update the value
             $ruang = MasterRuang::updateOrCreate(
                 ['id' => $id],
-                ['nama_ruang' => $request->nama_ruang, 'kapasitas' => $request->kapasitas, 'luas' => $request->luas, 'log_date'=>date('Y-m-d H:i:s')]
+                [
+                    'nama_ruang' => $request->nama_ruang, 
+                    'kapasitas' => $request->kapasitas, 
+                    'lantai_id' => $request->lantai, 
+                    'jenis_id' => $request->jenis_ruang, 
+                    'luas' => $request->luas, 
+                    'log_date'=>date('Y-m-d H:i:s')
+                ]
             );
 
             // user updated
@@ -127,7 +149,14 @@ class RuangController extends Controller
 
             $ruang = MasterRuang::updateOrCreate(
                 ['id' => $id],
-                ['nama_ruang' => $request->nama_ruang, 'kapasitas' => $request->kapasitas, 'luas' => $request->luas, 'log_date'=>date('Y-m-d H:i:s')]
+                [
+                    'nama_ruang' => $request->nama_ruang, 
+                    'kapasitas' => $request->kapasitas, 
+                    'lantai_id' => $request->lantai, 
+                    'jenis_id' => $request->jenis_ruang, 
+                    'luas' => $request->luas, 
+                    'log_date'=>date('Y-m-d H:i:s')
+                ]
             );
             if ($ruang) {
                 // user created

@@ -43,6 +43,22 @@
                                                 <input type="text" name="nama_ruang" id="nama_ruang" class="form-control">
                                             </div>
                                             <div class="mb-3">
+                                                <label for="lantai" class="form-label">Lantai</label>
+                                                <select class="form-select" aria-label="Default select example" id="lantai_id" name="lantai">
+                                                    @foreach ($lantais as $row)
+                                                    <option value="{{ $row->id }}">{{ $row->lantai }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="jenis_ruang " class="form-label">Jenis Ruang</label>
+                                                <select class="form-select" aria-label="Default select example" id="jenis_id" name="jenis_ruang">
+                                                    @foreach ($jenisRuangs as $row)
+                                                    <option value="{{ $row->id }}">{{ $row->nama }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
                                                 <label for="kapasitas" class="form-label">Kapasitas</label>
                                                 <input type="text" name="kapasitas" id="kapasitas" class="form-control">
                                             </div>
@@ -69,6 +85,8 @@
                                         <th></th>
                                         <th>ID</th>
                                         <th>Nama Ruang</th>
+                                        <th>Lantai</th>
+                                        <th>Jenis Ruang</th>
                                         <th>Kapasitas</th>
                                         <th>Luas Ruang</th>
                                         <th>Actions</th>
@@ -107,7 +125,7 @@
                 my_data.push(data_obj);
             });
             //alert(data_obj);
-            console.log(my_data);
+            // console.log(my_data);
 
             const dt = $("#basic-1").DataTable({
                 processing: true,
@@ -173,6 +191,7 @@
                 },
             });
             $('#tambahModal').on('hidden.bs.modal', function () {
+                $('#id').val('');
                 $('#formAdd').trigger("reset");
             });
             //Edit Record
