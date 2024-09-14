@@ -45,18 +45,6 @@ class DosenController extends Controller
                 $jumlah_sks[$row->id] += $list_sks[$k->id_mk];
             }
         }
-        // foreach($mhs as $row){
-        //     $jumlah_sks_teori = Krs::leftJoin('jadwals as a', 'krs.id_jadwal', '=', 'a.id')
-        //     ->leftJoin('mata_kuliahs as b', 'a.id_mk', '=', 'b.id')
-        //     ->where('krs.id_tahun', $ta)
-        //     ->where('id_mhs',$row->id)
-        //     ->sum('sks_teori');
-        //     $jumlah_sks_praktek = Krs::leftJoin('jadwals as a', 'krs.id_jadwal', '=', 'a.id')
-        //     ->leftJoin('mata_kuliahs as b', 'a.id_mk', '=', 'b.id')
-        //     ->where('krs.id_tahun', $ta)
-        //     ->where('id_mhs',$row->id)
-        //     ->sum('sks_praktek');
-        // }
 
         $no = 1;
         return view('dosen.perwalian', compact('title', 'mhs', 'no', 'jumlah_sks'));

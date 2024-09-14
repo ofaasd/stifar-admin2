@@ -21,6 +21,7 @@ class KrmController extends Controller
 {
     public function index(){
         $title = "Daftar Jadwal Mengajar";
+        $id_tahun = TahunAjaran::where('status','Aktif')->first()->id;
         $id_dsn = PegawaiBiodatum::where('user_id', Auth::id())->first();
         $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
                         ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
@@ -30,7 +31,11 @@ class KrmController extends Controller
                         ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
                         ->where([ 'pengajars.id_dsn' => $id_dsn->id, 'jadwals.status' => 'Aktif'])->get();
         $no = 1;
-        return view('dosen.krm', compact('title', 'jadwal', 'no'));
+        $jumlah_input_krs = [];
+        foreach($jadwal as $row){
+            $jumlah_input_krs[$row->id] = Krs::where('id_jadwal',$row->id)->where('id_tahun',$id_tahun)->count();
+        }
+        return view('dosen.krm', compact('title', 'jadwal', 'no', 'jumlah_input_krs'));
     }
     public function daftarMhs($id){
         $title = "Daftar Mahasiswa";
