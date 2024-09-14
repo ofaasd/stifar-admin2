@@ -66,6 +66,7 @@ use App\Http\Controllers\admin\kepegawaian\PegawaiRepositoryController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiJabatanFungsionalController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiJabatanStrukturalController;
 use App\Http\Controllers\admin\master\JenisRuangController;
+use App\Http\Controllers\admin\akademik\PerwalianController;
 
 /*
 |--------------------------------------------------------------------------
@@ -88,6 +89,7 @@ Route::get('/logout', [LoginController::class, 'logout'])->name('logout')->middl
 Route::group(['middleware' => ['auth','role:super-admin']], function(){
     // route dosen
     Route::get('/dosen/perwalian', [DosenController::class, 'index'] )->name('Perwalian');
+    Route::get('/dosen/perwalian/{id}', [PerwalianController::class, 'show'] )->name('Perwalian_detail');
     Route::get('/dosen/{id}/krs', [DosenController::class, 'detailKRS'] )->name('detailKRS');
     Route::post('/dosen/validasi-krs-satuan', [DosenController::class, 'valiKrsSatuan'] );
     Route::post('/dosen/validasi-krs', [DosenController::class, 'valiKrs'] );
@@ -276,6 +278,8 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     Route::resource('admin/kepegawaian/berkas', PegawaiBerkasController::class)->name('index','berkas');
     Route::resource('admin/kepegawaian/jamkerja', JamkerjaController::class)->name('index','jamkerja');
     Route::resource('admin/kepegawaian/surat_izin', SuratIzinController::class)->name('index','surat_izin');
+
+    Route::resource('admin/akademik/perwalian', PerwalianController::class)->name('index','perwalian_admin');
 
     Route::resource('admin/keuangan', KeuanganController::class)->name('index','keuangan');
 

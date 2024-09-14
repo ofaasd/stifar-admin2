@@ -139,7 +139,7 @@
                     </li>
                      <li><a href="#">Perubahan Status Akademik</a></li>
                      <li><a href="#">Setting Pertemuan</a></li>
-                     <li><a href="#">Perwalian</a></li>
+                     <li><a href="{{Url::to('admin/akademik/perwalian')}}">Perwalian</a></li>
 
                      <li>
                         <a class="submenu-title" href="#">
