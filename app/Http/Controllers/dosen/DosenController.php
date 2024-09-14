@@ -22,8 +22,29 @@ class DosenController extends Controller
         $mhs = Mahasiswa::where('id_dsn_wali', $id_dsn->id)->get();
         $tahun_ajaran = TahunAjaran::where('status','Aktif')->first();
         $ta = $tahun_ajaran->id;
-        $jumlah_sks_teori = [];
-        $jumlah_sks_praktek = [];
+        $list_sks = [];
+        $get_prodi = Mahasiswa::where('id_dsn_wali', $id_dsn->id)->select('id_program_studi')->distinct()->get();
+        foreach($get_prodi as $row){
+            $prodi = Prodi::find($row->id_program_studi);
+            $get_kurikulum = Kurikulum::where('progdi',$prodi->kode_prodi)->get();
+            foreach($get_kurikulum as $kuri){
+                $matakuliah = MatakuliahKurikulum::select('mata_kuliahs.*')
+                    ->leftJoin('mata_kuliahs','mata_kuliahs.id','=','matakuliah_kurikulums.id_mk')
+                    ->where('id_kurikulum',$kuri->id)
+                    ->get();
+                foreach($matakuliah as $mata){
+                    $list_sks[$mata->id] = $mata->sks_teori + $mata->sks_praktek;
+                }
+            }
+        }
+        $jumlah_sks = [];
+        foreach($mhs as $row){
+            $krs = Krs::select('a.*')->join('jadwals as a', 'krs.id_jadwal', '=', 'a.id')->where('id_mhs',$row->id)->get();
+            $jumlah_sks[$row->id] = 0;
+            foreach($krs as $k){
+                $jumlah_sks[$row->id] += $list_sks[$k->id_mk];
+            }
+        }
         // foreach($mhs as $row){
         //     $jumlah_sks_teori = Krs::leftJoin('jadwals as a', 'krs.id_jadwal', '=', 'a.id')
         //     ->leftJoin('mata_kuliahs as b', 'a.id_mk', '=', 'b.id')
@@ -38,7 +59,7 @@ class DosenController extends Controller
         // }
 
         $no = 1;
-        return view('dosen.perwalian', compact('title', 'mhs', 'no', 'jumlah_sks_teori','jumlah_sks_praktek'));
+        return view('dosen.perwalian', compact('title', 'mhs', 'no', 'jumlah_sks'));
     }
     public function detailKRS(Request $request){
         $mhs = Mahasiswa::where('id', $request->id)->first();
