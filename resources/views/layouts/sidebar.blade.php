@@ -58,7 +58,7 @@
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
                             <li><a href="{{URL::to('admin/masterdata/aset/kategori-aset')}}">Kategori</a></li>
-                            <li><a href="#">Unit Kerja</a></li>
+                            <li><a href="#">Unit Kerja <label class="badge badge-light-danger">!</label></a></li>
                             <li><a href="{{URL::to('admin/masterdata/aset/aset-label')}}">Label</a></li>
                             <li><a href="{{URL::to('admin/masterdata/aset/aset-jenis-ruang')}}">Jenis Ruang</a></li>
                             <li><a href="{{URL::to('admin/masterdata/aset/aset-gedung')}}">Gedung</a></li>
@@ -96,10 +96,10 @@
                     <li><a href="{{URL::to('admin/admisi/verifikasi')}}">Verifikasi Pendaftaran</a></li>
                     <li><a href="{{URL::to('admin/admisi/verifikasi/pembayaran')}}">Verifikasi Pembayaran Daftar</a></li>
                     <li><a href="{{URL::to('admin/admisi/pengumuman')}}">Surat Pengumuman</a></li> {{-- Butuh format surat pengumuman resmi dari pihak kampus --}}
-                    <li><a href="#">KTM (s)</a></li>
-                    <li><a href="#">Statistik</a></li>
-                    <li><a href="#">Verifikasi Pembayaran Daftar Ulang</a></li>
-                    <li><a href="#">History PMB</a></li>
+                    <li><a href="#">KTM (s) <label class="badge badge-light-danger">!</label></a></li>
+                    <li><a href="#">Statistik <label class="badge badge-light-danger">!</label></a></li>
+                    <li><a href="#">Verifikasi Pembayaran Daftar Ulang <label class="badge badge-light-danger">!</label></a></li>
+                    <li><a href="#">History PMB <label class="badge badge-light-danger">!</label></a></li>
                     {{-- <li><a href="#">Berita Pendaftaran</a></li> --}}
                     <li><a href="{{URL::to('admin/admisi/slideshow')}}">Berita Gambar/Slideshow</a></li>
                     <li><a href="{{URL::to('admin/admisi/user_pmb')}}">User PMB Online</a></li> {{-- Daftar User pmb online--}}
@@ -118,82 +118,82 @@
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
                             <li><a href="{{ URL::to('admin/masterdata/krs') }}">Input KRS</a></li>
-                            <li><a href="#">Statistik KRS</a></li>
-                            <li><a href="#">Monitoring KRS</a></li>
+                            <li><a href="#">Statistik KRS <label class="badge badge-light-danger">!</label></a></li>
+                            <li><a href="#">Monitoring KRS <label class="badge badge-light-danger">!</label></a></li>
                         </ul>
                     </li>
-                     <li><a href="#">Semester Antara</a></li>
-                     <li><a href="#">Remidial</a></li>
-                     <li><a href="#">KHS</a></li>
+                     <li><a href="#">Semester Antara <label class="badge badge-light-danger">!</label></a></li>
+                     <li><a href="#">Remidial <label class="badge badge-light-danger">!</label></a></li>
+                     <li><a href="#">KHS <label class="badge badge-light-danger">!</label></a></li>
                      <li>
                         <a class="submenu-title" href="#">
-                            <span>Ujian</span>
+                            <span>Ujian <label class="badge badge-light-danger">!</label></span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
-                            <li><a href="#">Pengaturan</a></li>{{--  Ada menu untuk toggle ujian sedang dibuka atau ditutup--}}
-                            <li><a href="#">Input Nilai</a></li>
-                            <li><a href="#">Posting Nilai</a></li>
-                            <li><a href="#">Input Nilai Konversi</a></li>
-                            <li><a href="#">Komplain Nilai / Susulan</a></li>
+                            <li><a href="#">Pengaturan <label class="badge badge-light-danger">!</label></a></li>{{--  Ada menu untuk toggle ujian sedang dibuka atau ditutup--}}
+                            <li><a href="#">Input Nilai <label class="badge badge-light-danger">!</label></a></li>
+                            <li><a href="#">Posting Nilai <label class="badge badge-light-danger">!</label></a></li>
+                            <li><a href="#">Input Nilai Konversi <label class="badge badge-light-danger">!</label></a></li>
+                            <li><a href="#">Komplain Nilai / Susulan <label class="badge badge-light-danger">!</label></a></li>
                         </ul>
                     </li>
-                     <li><a href="#">Perubahan Status Akademik</a></li>
-                     <li><a href="#">Setting Pertemuan</a></li>
+                     <li><a href="#">Perubahan Status Akademik <label class="badge badge-light-danger">!</label></a></li>
+                     <li><a href="#">Setting Pertemuan <label class="badge badge-light-danger">!</label></a></li>
                      <li><a href="{{Url::to('admin/akademik/perwalian')}}">Perwalian</a></li>
 
                      <li>
                         <a class="submenu-title" href="#">
-                            <span>Presensi</span>
+                            <span>Presensi <label class="badge badge-light-danger">!</label></span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
-                            <li><a href="#">Input Presensi</a></li>
-                            <li><a href="#">Ganti Kuliah - Pengganti</a></li>
+                            <li><a href="#">Input Presensi <label class="badge badge-light-danger">!</label></a></li>
+                            <li><a href="#">Ganti Kuliah - Pengganti <label class="badge badge-light-danger">!</label></a></li>
 
                         </ul>
                     </li>
                     <li>
                         <a class="submenu-title" href="#">
-                            <span>Yuidisium</span>
+                            <span>Yuidisium <label class="badge badge-light-danger">!</label></span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
-                            <li><a href="#">Setting</a></li>
-                            <li><a href="#">Proses</a></li>
-                            <li><a href="#">Cetak</a></li>
+                            <li><a href="#">Setting <label class="badge badge-light-danger">!</label></a></li>
+                            <li><a href="#">Proses <label class="badge badge-light-danger">!</label></a></li>
+                            <li><a href="#">Cetak <label class="badge badge-light-danger">!</label></a></li>
 
                         </ul>
                     </li>
-                     <li><a href="#">Persuratan</a></li>
+                     <li><a href="#">Persuratan <label class="badge badge-light-danger">!</label></a></li>
                      <li>
                         <a class="submenu-title" href="#">
-                            <span>Transkrip / Ijazah</span>
+                            <span>Transkrip / Ijazah <label class="badge badge-light-danger">!</label></span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
-                            <li><a href="#">Print Ijazah</a></li>
-                            <li><a href="#">Print Transkrip</a></li>
-                            <li><a href="#">Legalisir</a></li>
+                            <li><a href="#">Print Ijazah <label class="badge badge-light-danger">!</label></a></li>
+                            <li><a href="#">Print Transkrip <label class="badge badge-light-danger">!</label></a></li>
+                            <li><a href="#">Legalisir <label class="badge badge-light-danger">!</label></a></li>
 
                         </ul>
                     </li>
                     <li>
                         <a class="submenu-title" href="#">
-                            <span>Skripsi</span>
+                            <span>Skripsi <label class="badge badge-light-danger">!</label></span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
-                            <li><a href="#">Manajemen Skripsi</a></li>
-                            <li><a href="#">Input Dosbing</a></li>
-                            <li><a href="#">Jadwal Sidang</a></li>
-                            <li><a href="#">Nilai</a></li>
+                            <li><a href="#">Manajemen Skripsi <label class="badge badge-light-danger">!</label></a></li>
+                            <li><a href="#">Input Dosbing <label class="badge badge-light-danger">!</label></a></li>
+                            <li><a href="#">Jadwal Sidang <label class="badge badge-light-danger">!</label></a></li>
+                            <li><a href="#">Nilai <label class="badge badge-light-danger">!</label></a></li>
                         </ul>
                     </li>
-                     <li><a href="#">Evaluasi Studi</a></li>
-                     <li><a href="#">Histori Jadwal</a></li>
+                     <li><a href="#">Evaluasi Studi <label class="badge badge-light-danger">!</label></a></li>
+                     <li><a href="#">Histori Jadwal <label class="badge badge-light-danger">!</label></a></li>
                      <li>
                         <a class="submenu-title" href="#">
-                            <span>Cetak Berkas</span>
+                            <span>Cetak Berkas <label class="badge badge-light-danger">!</label></span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
-                            <li><a href="#">Absensi</a></li>
-                            <li><a href="#">Ujian</a></li>
+                            <li><a href="#">Absensi <label class="badge badge-light-danger">!</label></a></li>
+                            <li><a href="#">Ujian <label class="badge badge-light-danger">!</label></a></li>
                         </ul>
                     </li>
                  </ul>
@@ -203,11 +203,11 @@
                 <ul class="sidebar-submenu">
                     <li><a href="{{URL::to('admin/kepegawaian/pegawai')}}">Data Pegawai</a></li>
                     {{-- <li><a href="#">Profil Pegawai</a></li> --}}
-                    <li><a href="#">Absensi</a></li>
+                    <li><a href="#">Absensi <label class="badge badge-light-danger">!</label></a></li>
                     <li><a href="{{URL::to('admin/kepegawaian/jamkerja')}}">Jam Kerja Dosen</a></li>
-                    <li><a href="#">Keterlambatan</a></li>
-                    <li><a href="#">Statistik</a></li>
-                    <li><a href="#">Struktur</a></li>
+                    <li><a href="#">Keterlambatan <label class="badge badge-light-danger">!</label></a></li>
+                    <li><a href="#">Statistik <label class="badge badge-light-danger">!</label></a></li>
+                    <li><a href="#">Struktur <label class="badge badge-light-danger">!</label></a></li>
                     {{-- <li>
                         <a class="submenu-title" href="#">
                             <span>Riwayat</span>
@@ -234,45 +234,45 @@
                 <span><i class="fa fa-money"></i> Keuangan</span></a>
                 <ul class="sidebar-submenu">
                     <li><a href="{{URL::to('admin/keuangan')}}">Buka Tutup KRS</a></li> {{-- Menu dasar untuk buka tutup krs --}}
-                    <li><a href="#">Setting SKS - UKT</a></li> {{-- Untuk setting pembayaran sks dalam bentuk paket --}}
-                    <li><a href="#">Input Laporan Pembayaran</a></li>
-                    <li><a href="#">Buat Tagihan</a></li> {{--Buat dan Publish Tagihan --}}
-                    <li><a href="#">Statistik</a></li>
-                    <li><a href="#">Cetak</a></li>
-                    <li><a href="#">Sync</a></li>
-                    <li><a href="#">Pembayaran Lain-lain</a></li>
+                    <li><a href="#">Setting SKS - UKT <label class="badge badge-light-danger">!</label></a></li> {{-- Untuk setting pembayaran sks dalam bentuk paket --}}
+                    <li><a href="#">Input Laporan Pembayaran <label class="badge badge-light-danger">!</label></a></li>
+                    <li><a href="#">Buat Tagihan <label class="badge badge-light-danger">!</label></a></li> {{--Buat dan Publish Tagihan --}}
+                    <li><a href="#">Statistik <label class="badge badge-light-danger">!</label></a></li>
+                    <li><a href="#">Cetak <label class="badge badge-light-danger">!</label></a></li>
+                    <li><a href="#">Sync <label class="badge badge-light-danger">!</label></a></li>
+                    <li><a href="#">Pembayaran Lain-lain <label class="badge badge-light-danger">!</label></a></li>
                 </ul>
             </li>
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#">
                 <span><i class="fa fa-support"></i> Aset</span></a>
                 <ul class="sidebar-submenu">
                     <li><a href="{{URL::to('admin/masterdata/ruang')}}">Ruang</a></li>
-                    <li><a href="#">Kendaraan</a></li>
-                    <li><a href="#">Tanah & Bangunan</a></li>
-                    <li><a href="#">Elektronik</a></li>
-                    <li><a href="#">Pengajuan</a></li>
-                    <li><a href="#">Monev</a></li>
+                    <li><a href="#">Kendaraan <label class="badge badge-light-danger">!</label></a></li>
+                    <li><a href="#">Tanah & Bangunan <label class="badge badge-light-danger">!</label></a></li>
+                    <li><a href="#">Elektronik <label class="badge badge-light-danger">!</label></a></li>
+                    <li><a href="#">Pengajuan <label class="badge badge-light-danger">!</label></a></li>
+                    <li><a href="#">Monev <label class="badge badge-light-danger">!</label></a></li>
                 </ul>
             </li>
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#">
                 <span><i class="fa fa-support"></i> Setting</span></a>
                 <ul class="sidebar-submenu">
-                    <li><a href="#">Pengaturan Pengguna</a></li>
-                    <li><a href="#">Preview Mahasiswa</a></li>
+                    <li><a href="#">Pengaturan Pengguna <label class="badge badge-light-danger">!</label></a></li>
+                    <li><a href="#">Preview Mahasiswa <label class="badge badge-light-danger">!</label></a></li>
                 </ul>
             </li>
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#">
                 <span><i class="fa fa-support"></i> Support</span></a>
                 <ul class="sidebar-submenu">
-                    <li><a href="#">Kritik dan Saran</a></li>
-                    <li><a href="#">Export Data</a></li>
+                    <li><a href="#">Kritik dan Saran <label class="badge badge-light-danger">!</label></a></li>
+                    <li><a href="#">Export Data <label class="badge badge-light-danger">!</label></a></li>
                 </ul>
             </li>
-            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{URL::to('dosen/perwalian')}}" >
+            {{-- <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{URL::to('dosen/perwalian')}}" >
                 <span><i class="fa fa-users"></i> Perwalian</span></a>
             </li>
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{URL::to('dosen/krm')}}" >
-                <span><i class="fa fa-folder"></i> KRM</span></a>
+                <span><i class="fa fa-folder"></i> KRM</span></a> --}}
             </li>
           </ul>
         </div>
