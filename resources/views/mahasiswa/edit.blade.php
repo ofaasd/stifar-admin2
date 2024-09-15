@@ -71,18 +71,18 @@
                     <label class="form-label">Website</label>
                     <input class="form-control" placeholder="http://Uplor .com">
                   </div> --}}
-                  {{-- <div class="form-footer"> --}}
-                      {{-- <div class="row"> --}}
-                          {{-- <div class="col-md-6 mb-4"> --}}
-                              {{-- <a href="#" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-original-title="test" data-bs-target="#ubahPasswordModal"><i class="fa fa-key"></i></a> --}}
-                            {{-- </div> --}}
+                  <div class="form-footer">
+                      <div class="row">
+                            <div class="col-md-6 mb-4">
+                              <a href="#" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-original-title="test" data-bs-target="#ubahPasswordModal"><i class="fa fa-key"></i></a>
+                            </div>
                             @include('mahasiswa._form_ubah_password')
                             @include('mahasiswa._form_ubah_gambar')
                           {{-- <div class="col-md-6 mb-4"> --}}
                               {{-- <a href="#" class="btn btn-primary btn-sm btn-block" data-bs-toggle="modal" data-original-title="test" data-bs-target="#ubahFotoModal"><i class="fa fa-image"></i> Ubah Foto</a> --}}
                           {{-- </div> --}}
-                      {{-- </div> --}}
-                  {{-- </div> --}}
+                      </div>
+                  </div>
               </div>
             </div>
             <div class="row text-center">
@@ -131,7 +131,7 @@
               </div>
             </div>
           </div>
-          <div class="col-xl-8"> 
+          <div class="col-xl-8">
             <form class="card" id="formMahasiswa" action="javascript:void(0)">
               @csrf
               <div class="card-header">

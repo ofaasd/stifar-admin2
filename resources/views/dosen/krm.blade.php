@@ -54,7 +54,7 @@
                                             <td>{{ $jad['kode_ta'] }}</td>
                                             <td>{{ $jad['status'] }}</td>
                                             <td>{{ $jad['tp'] }}</td>
-                                            <td>{{ $jad['kuota'] }}</td>
+                                            <td>{{$jumlah_input_krs[$jad['id']]}} / {{ $jad['kuota'] }}</td>
                                             <td>
                                                 <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                                                     <a href="{{ url('/dosen/absensi/'.$jad['id'].'/input') }}" class="btn btn-info btn-xs"><i class="fa fa-list"></i>Absensi</a>
