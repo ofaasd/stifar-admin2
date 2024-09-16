@@ -110,8 +110,9 @@
                 <ul class="sidebar-submenu">
                      <li><a href="{{URL::to('admin/masterdata/matakuliah')}}">Matakuliah</a></li>
                      <li><a href="{{URL::to('admin/masterdata/jadwal')}}">Jadwal</a></li>
-                     <li><a href="#">Plot Jadwal Ajar</a></li>
+                     {{-- <li><a href="#">Plot Jadwal Ajar</a></li> --}}
                      <li><a href="{{URL::to('admin/masterdata/jadwal-harian')}}">Kontrol Jadwal</a></li>
+                     <li><a href="{{URL::to('admin/akademik/setting-pertemuan')}}">Setting Pertemuan</a></li>
                      <li>
                         <a class="submenu-title" href="#">
                             <span>KRS</span>  {{--  Ada menu untuk toggle krs sedang dibuka atau ditutup--}}
@@ -138,7 +139,7 @@
                         </ul>
                     </li>
                      <li><a href="#">Perubahan Status Akademik <label class="badge badge-light-danger">!</label></a></li>
-                     <li><a href="#">Setting Pertemuan <label class="badge badge-light-danger">!</label></a></li>
+
                      <li><a href="{{Url::to('admin/akademik/perwalian')}}">Perwalian</a></li>
 
                      <li>
