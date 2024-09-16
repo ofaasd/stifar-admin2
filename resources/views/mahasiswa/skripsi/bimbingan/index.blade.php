@@ -82,70 +82,6 @@
     <script src="{{ asset('assets/js/select2/select3-custom.js') }}"></script>
     <script>
         $(document).ready(function() {
-            var nip = $("#nip");
-            var tagify;
-
-            // Fungsi untuk menginisialisasi Tagify
-            function initializeTagify() {
-                tagify = new Tagify(nip[0], {
-                    enforceWhitelist: true,
-                    mode: "select",
-                    whitelist: []
-                });
-            }
-
-            // Inisialisasi Tagify
-            initializeTagify();
-
-            // Ambil data dan update whitelist Tagify
-            $(document).on('click', '#tambahDosbim', function() {
-                nip.val('');
-                nip.prop('disabled', false);
-                $('#kuotaDosen').val('');
-
-                $.ajax({
-                    url: '{{ route('admin.pembimbing.getNppDosen') }}',
-                    method: 'GET',
-                    success: function(response) {
-                        // Mengambil data dari respons dan menyiapkan whitelist untuk Tagify
-                        var whitelistData = response.map(function(dosen) {
-                            return {
-                                value: dosen.npp + ' - ' + dosen.nama
-                            };
-                        });
-
-                        // Update whitelist Tagify setelah data tersedia
-                        tagify.whitelist = whitelistData;
-                        tagify.addTags(whitelistData.map(item => item.value));
-                    },
-                    error: function(xhr) {
-                        alert('Terjadi kesalahan saat mengambil data');
-                        console.log(xhr.responseText);
-                    }
-                });
-            });
-
-            $(document).on('click', '.edit-btn', function() {
-                var nip = $(this).data('id');
-
-                $.ajax({
-                    url: '{{ route('admin.pembimbing.editDosen', '') }}/' + nip,
-                    method: 'GET',
-                    success: function(response) {
-                        console.log(response)
-                        $('#nip').val(response.nip);
-                        $('#nip').prop('disabled', true);
-                        $('#kuotaDosen').val(response.kuota);
-                        $('#FormModal').modal('show');
-                    },
-                    error: function(xhr) {
-                        alert('Terjadi kesalahan saat mengambil data');
-                        console.log(xhr.responseText);
-                    }
-                });
-            });
-
-
             $('#pembimbing-table').DataTable({
                 processing: true,
                 serverSide: true,
@@ -178,46 +114,6 @@
                 language: {
                     emptyTable: "Tidak ada data dosen pembimbing yang tersedia." // Pesan ketika data kosong
                 }
-            });
-
-            $('#formDosbim').on('submit', function(e) {
-                e.preventDefault(); // Mencegah default form submission
-                // Pastikan Tagify sudah terinisialisasi
-                if (!tagify) {
-                    initializeTagify();
-                }
-
-                var nipTagify = tagify ? tagify.value : []; // Ambil nilai dari Tagify
-
-                // Pastikan ada nilai yang dipilih
-                var nip = nipTagify.length > 0 ? nipTagify[0].value.split(' - ')[0] : '';
-
-                // Siapkan data untuk dikirim
-                var formData = {
-                    nip: nip, // Masukkan NIP yang sudah dibersihkan
-                    kuota: $('#kuotaDosen').val(),
-                    _token: '{{ csrf_token() }}'
-                };
-                $.ajax({
-                    url: '{{ route('admin.pembimbing.updateKuota') }}',
-                    method: 'POST',
-                    data: formData, // Serializes form data
-                    success: function(response) {
-                        if (response.success) {
-                            alert(response.message); // Tampilkan pesan sukses
-                            $('#FormModal').modal('hide'); // Tutup modal
-                            $('#pembimbing-table').DataTable().ajax
-                                .reload(); // Reload DataTables
-
-                        } else {
-                            alert(response.message); // Tampilkan pesan error
-                        }
-                    },
-                    error: function(xhr) {
-                        alert('Terjadi kesalahan saat menyimpan data');
-                        console.log(xhr.responseText); // Untuk debugging
-                    }
-                });
             });
         });
     </script>

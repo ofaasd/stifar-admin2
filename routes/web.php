@@ -68,6 +68,7 @@ use App\Http\Controllers\admin\kepegawaian\PegawaiJabatanStrukturalController;
 use App\Http\Controllers\admin\master\JenisRuangController;
 use App\Http\Controllers\admin\skripsi\DosenPembimbingController;
 use App\Http\Controllers\admin\akademik\PerwalianController;
+use App\Http\Controllers\mahasiswa\skripsi\PembimbingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -300,6 +301,18 @@ Route::group(['middleware' => ['auth', 'role:super-admin']], function () {
     Route::resource('riwayat', RiwayatPegawaiController::class)->name('index', 'pegawai');
 
     Route::resource('admin/nilai_lama', NilaiLamaController::class)->name('index', 'nilai_lama');
+
+
+    Route::group(['prefix' => 'admin/skripsi/pembimbing', 'as' => 'admin.pembimbing.', 'controller' => DosenPembimbingController::class], function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/list-dosen', 'getListDosen')->name('listDosen');
+        Route::get('/get-data', 'getData')->name('getData');
+        Route::post('/acc-dosen', 'accDosen')->name('accDosen');
+        Route::get('/edit-dosen/{nip}', 'edit')->name('editDosen');
+        Route::post('/update-kuota', 'updateKuota')->name('updateKuota');
+        Route::get('/getNpp', 'getNppDosen')->name('getNppDosen');
+    });
+
 });
 
 Route::group(['middleware' => ['auth', 'role:mhs|super-admin']], function () {
@@ -321,13 +334,14 @@ Route::group(['middleware' => ['auth', 'role:mhs|super-admin']], function () {
 
     Route::get('/admin/masterdata/krs/admin/download/{id}', [KrsController::class, 'downloadkrs']);
 
-    Route::group(['prefix' => 'admin/skripsi/pembimbing', 'as' => 'admin.pembimbing.', 'controller' => DosenPembimbingController::class], function () {
+    Route::group(['prefix' => 'mahasiswa/skripsi/pembimbing', 'as' => 'mhs.pembimbing.', 'controller' => PembimbingController::class], function () {
         Route::get('/', 'index')->name('index');
-        Route::get('/list-dosen', 'getListDosen')->name('listDosen');
-        Route::get('/get-data', 'getData')->name('getData');
-        Route::post('/acc-dosen', 'accDosen')->name('accDosen');
-        Route::get('/edit-dosen/{nip}', 'edit')->name('editDosen');
-        Route::post('/update-kuota', 'updateKuota')->name('updateKuota');
+        Route::get('/list-dosen', 'getDaftarPembimbing')->name('getDaftarPembimbing');
+        // Route::get('/get-data', 'getData')->name('getData');
+        Route::post('/pengajuan', 'pengajuan')->name('pengajuan');
+        // Route::get('/edit-dosen/{nip}', 'edit')->name('editDosen');
+        // Route::post('/update-kuota', 'updateKuota')->name('updateKuota');
+        // Route::get('/getNpp', 'getNppDosen')->name('getNppDosen');
     });
 
     //Route::post('admin/admisi/peserta/daftar_kota',[PmbPesertaController::class, 'daftar_kota'] )->name('daftar_kota');

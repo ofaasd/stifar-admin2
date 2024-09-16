@@ -25,9 +25,6 @@
         <div class="row">
             <div class="card">
                 <div class="card-body">
-                    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#FormModal"
-                        id="tambahDosbim">Tambah Dosen
-                        Pembimbing</button>
                     <div class="table-responsive">
                         <table class="display" id="pembimbing-table">
                             <thead>
@@ -53,16 +50,13 @@
                 <div class="modal-content">
                     <div class="modal-body">
                         <form class="row g-3 needs-validation custom-input" id="formDosbim">
-                            <div class="col-md-12 position-relative">
-                                <label class="form-label" for="nip">Pilih Dosen</label>
-                                <input class="form-control" name="nip" id="nip" placeholder="Please select">
-                            </div>
+                                <input class="form-control" type="hidden" name="nip" id="nip" placeholder="Please select">
 
                             <div class="col-md-12 position-relative">
-                                <label class="form-label" for="validationTooltip03">Kuota</label>
-                                <input class="form-control" name="kuota" id="kuotaDosen" type="number" required="">
+                                <label class="form-label" for="validationTooltip03">Topik/Judul</label>
+                                <input class="form-control" name="topik" id="topik" type="text" required="">
                             </div>
-                            <div class="col-12">
+                            <div class="col-6">
                                 <button class="btn btn-primary" type="submit">Submit form</button>
                             </div>
                         </form>
@@ -82,74 +76,10 @@
     <script src="{{ asset('assets/js/select2/select3-custom.js') }}"></script>
     <script>
         $(document).ready(function() {
-            var nip = $("#nip");
-            var tagify;
-
-            // Fungsi untuk menginisialisasi Tagify
-            function initializeTagify() {
-                tagify = new Tagify(nip[0], {
-                    enforceWhitelist: true,
-                    mode: "select",
-                    whitelist: []
-                });
-            }
-
-            // Inisialisasi Tagify
-            initializeTagify();
-
-            // Ambil data dan update whitelist Tagify
-            $(document).on('click', '#tambahDosbim', function() {
-                nip.val('');
-                nip.prop('disabled', false);
-                $('#kuotaDosen').val('');
-
-                $.ajax({
-                    url: '{{ route('admin.pembimbing.getNppDosen') }}',
-                    method: 'GET',
-                    success: function(response) {
-                        // Mengambil data dari respons dan menyiapkan whitelist untuk Tagify
-                        var whitelistData = response.map(function(dosen) {
-                            return {
-                                value: dosen.npp + ' - ' + dosen.nama
-                            };
-                        });
-
-                        // Update whitelist Tagify setelah data tersedia
-                        tagify.whitelist = whitelistData;
-                        tagify.addTags(whitelistData.map(item => item.value));
-                    },
-                    error: function(xhr) {
-                        alert('Terjadi kesalahan saat mengambil data');
-                        console.log(xhr.responseText);
-                    }
-                });
-            });
-
-            $(document).on('click', '.edit-btn', function() {
-                var nip = $(this).data('id');
-
-                $.ajax({
-                    url: '{{ route('admin.pembimbing.editDosen', '') }}/' + nip,
-                    method: 'GET',
-                    success: function(response) {
-                        console.log(response)
-                        $('#nip').val(response.nip);
-                        $('#nip').prop('disabled', true);
-                        $('#kuotaDosen').val(response.kuota);
-                        $('#FormModal').modal('show');
-                    },
-                    error: function(xhr) {
-                        alert('Terjadi kesalahan saat mengambil data');
-                        console.log(xhr.responseText);
-                    }
-                });
-            });
-
-
             $('#pembimbing-table').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: '{{ route('admin.pembimbing.listDosen') }}',
+                ajax: '{{ route('mhs.pembimbing.getDaftarPembimbing') }}',
                 columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
@@ -178,39 +108,37 @@
                 language: {
                     emptyTable: "Tidak ada data dosen pembimbing yang tersedia." // Pesan ketika data kosong
                 }
+
+               
             });
 
-            $('#formDosbim').on('submit', function(e) {
+            $(document).on('click', '.btnModal', function() {
+                var nip = $(this).data('id');
+                $('#nip').val(nip); // Gunakan .val() untuk menetapkan nilai ke input
+            });
+
+
+            $('#FormModal').on('submit', function(e) {
                 e.preventDefault(); // Mencegah default form submission
-                // Pastikan Tagify sudah terinisialisasi
-                if (!tagify) {
-                    initializeTagify();
-                }
-
-                var nipTagify = tagify ? tagify.value : []; // Ambil nilai dari Tagify
-
-                // Pastikan ada nilai yang dipilih
-                var nip = nipTagify.length > 0 ? nipTagify[0].value.split(' - ')[0] : '';
-
+              
                 // Siapkan data untuk dikirim
                 var formData = {
-                    nip: nip, // Masukkan NIP yang sudah dibersihkan
-                    kuota: $('#kuotaDosen').val(),
+                    nip: $('#nip').val(), // Masukkan NIP yang sudah dibersihkan
+                    topik: $('#topik').val(),
                     _token: '{{ csrf_token() }}'
                 };
                 $.ajax({
-                    url: '{{ route('admin.pembimbing.updateKuota') }}',
+                    url: '{{ route('mhs.pembimbing.pengajuan') }}',
                     method: 'POST',
                     data: formData, // Serializes form data
                     success: function(response) {
                         if (response.success) {
-                            alert(response.message); // Tampilkan pesan sukses
                             $('#FormModal').modal('hide'); // Tutup modal
-                            $('#pembimbing-table').DataTable().ajax
-                                .reload(); // Reload DataTables
-
+                            $('#pembimbing-table').DataTable().ajax.reload(); 
+                        swal("Success", "Berhasi Menambahkan Dosen Pembimbing", "success");
                         } else {
-                            alert(response.message); // Tampilkan pesan error
+                        swal("Failed", response.message, "error");
+                            console.log(response.message); // Tampilkan pesan error
                         }
                     },
                     error: function(xhr) {
