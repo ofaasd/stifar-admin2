@@ -123,6 +123,16 @@
                             <li><a href="#">Monitoring KRS <label class="badge badge-light-danger">!</label></a></li>
                         </ul>
                     </li>
+                    <li>
+                        <a class="submenu-title" href="#">
+                            <span>Presensi</span>
+                        </a>
+                        <ul class="nav-sub-childmenu submenu-content">
+                            <li><a href="{{Url::to('admin/akademik/list-absensi')}}">Input Presensi</a></li>
+                            <li><a href="#">Ganti Kuliah - Pengganti <label class="badge badge-light-danger">!</label></a></li>
+
+                        </ul>
+                    </li>
                      <li><a href="#">Semester Antara <label class="badge badge-light-danger">!</label></a></li>
                      <li><a href="#">Remidial <label class="badge badge-light-danger">!</label></a></li>
                      <li><a href="#">KHS <label class="badge badge-light-danger">!</label></a></li>
@@ -142,16 +152,7 @@
 
                      <li><a href="{{Url::to('admin/akademik/perwalian')}}">Perwalian</a></li>
 
-                     <li>
-                        <a class="submenu-title" href="#">
-                            <span>Presensi <label class="badge badge-light-danger">!</label></span>
-                        </a>
-                        <ul class="nav-sub-childmenu submenu-content">
-                            <li><a href="#">Input Presensi <label class="badge badge-light-danger">!</label></a></li>
-                            <li><a href="#">Ganti Kuliah - Pengganti <label class="badge badge-light-danger">!</label></a></li>
 
-                        </ul>
-                    </li>
                     <li>
                         <a class="submenu-title" href="#">
                             <span>Yuidisium <label class="badge badge-light-danger">!</label></span>
