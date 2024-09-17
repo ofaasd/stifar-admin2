@@ -63,7 +63,7 @@
                                         </div>
                                         <div class="modal-footer">
                                             <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
-                                            <button class="btn btn-primary" type="submit">Simpan</button>
+                                            <button class="btn btn-primary btn-save" type="submit">Simpan</button>
                                         </div>
                                     </form>
                                 </div>
@@ -162,11 +162,14 @@
                             );
                         }else{
                             return (
-                            '<div class="d-inline-block text-nowrap">' +
-                            '<button class="btn btn-sm btn-icon edit-record text-primary" data-id="'
+                            '<div class="btn-group" >' +
+                            '<button class="btn btn-sm btn-primary edit-record" data-id="'
                                 .concat(full['id'], '" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal"')
-                                .concat(title, '"><i class="fa fa-pencil"></i></button>') +
-                            '<button class="btn btn-sm btn-icon delete-record text-primary" data-id="'.concat(
+                                .concat(title, '" style="margin-right:0"><i class="fa fa-pencil"></i></button>') +
+                            '<button class="btn btn-sm btn-info edit-password" data-id="'
+                                .concat(full['id'], '" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal"')
+                                .concat(title, '" style="margin-right:0"><i class="fa fa-key"></i></button>') +
+                            '<button class="btn btn-sm btn-danger delete-record" data-id="'.concat(
                                 full['id'],
                                 '"><i class="fa fa-trash"></i></button>'
                             )
@@ -203,6 +206,9 @@
             });
             $(document).on('click', '.edit-record', function () {
                 const id = $(this).data('id');
+                $("#name").attr("readonly",false);
+                $("#email").attr("readonly",false);
+                $("#role_id").attr("readonly",false);
                 $("#password_field").hide();
 
                 // changing the title of offcanvas
@@ -224,9 +230,36 @@
                 });
                 });
             });
+            $(document).on('click', '.edit-password', function () {
+                const id = $(this).data('id');
+                $("#name").attr("readonly",true);
+                $("#email").attr("readonly",true);
+                $("#role_id").attr("readonly",true);
+                $("#password_field").show();
+                // get data
+                $.get(''.concat(baseUrl).concat(page, '/').concat(id, '/edit'), function (data) {
+                Object.keys(data[0]).forEach(key => {
+                    //console.log(key);
+                    if(key !== "password"){
+                        $('#' + key)
+                        .val(data[0][key])
+                        .trigger('change');
+                    }
+                });
+                Object.keys(data[1]).forEach(key => {
+                    //console.log(key);
+                    if(key !== "password"){
+                        $('#' + key)
+                        .val(data[1][key])
+                        .trigger('change');
+                    }
+                });
+                });
+            });
             //save record
             $('#formAdd').on('submit',function(e){
                 e.preventDefault();
+                $(".btn-save").attr("disabled",true);
                 const myFormData = new FormData(document.getElementById('formAdd'));
                 $.ajax({
                     data: myFormData,
@@ -246,6 +279,7 @@
                             confirmButton: 'btn btn-success'
                         }
                         });
+                        $(".btn-save").attr("disabled",false);
                     },
                     error: function error(err) {
                         offCanvasForm.offcanvas('hide');
@@ -257,6 +291,7 @@
                             confirmButton: 'btn btn-success'
                         }
                         });
+                        $(".btn-save").attr("disabled",false);
                     }
                 });
             });

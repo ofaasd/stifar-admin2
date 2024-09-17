@@ -123,14 +123,22 @@ class UserController extends Controller
         //
         $id = $request->id;
         if($id){
-
-            $user  = User::updateOrCreate(
-                ['id' => $id],
-                [
-                    'name' => $request->name,
-                    'email' => $request->email,
-                ]
-            );
+            if(empty($request->password)){
+                $user  = User::updateOrCreate(
+                    ['id' => $id],
+                    [
+                        'name' => $request->name,
+                        'email' => $request->email,
+                    ]
+                );
+            }else{
+                $user  = User::updateOrCreate(
+                    ['id' => $id],
+                    [
+                        'password' => Hash::make($request->password),
+                    ]
+                );
+            }
             $user_id = $user->id;
 
             $role = ModelHasRole::where('model_id',$user_id);

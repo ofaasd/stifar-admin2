@@ -1,0 +1,76 @@
+
+<form id="form_set_pertemuan" action="javascript:void(0)" method="POST">
+<div id="tablePertemuan">
+    <input type="hidden" name="id_jadwal" value="{{$jadwal->id}}">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Pertemuan</th>
+                <th>Tanggal Pertemuan</th>
+                <th>Dosen Pengampu</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for($i=1; $i<=14; $i++)
+            <tr>
+                <td>Pertemuan ke {{$i}}</td>
+                <input type="hidden" name="no_pertemuan[]" value={{$i}}>
+                <td><input type="date" name="tanggal_pertemuan[]" value="{{$list_pertemuan[$i]['tanggal_pertemuan']}}" class="form-control"></td>
+                <td>
+                    <select name="id_dosen[]" class="form-control">
+                        <option value="0">--Pilih Dosen Pengampu</option>
+                        @foreach($anggota as $row)
+                            <option value="{{$row->id_pegawai_bio}}" {{($row->id_pegawai_bio == $list_pertemuan[$i]['id_dosen'])?"selected":""}}>{{$row->nama_lengkap}}</option>
+                        @endforeach
+                    </select>
+                </td>
+            </tr>
+            @endfor
+        </tbody>
+    </table>
+
+</div>
+<hr>
+<button type="submit" class="btn btn-primary btn-save"><i class="fa fa-save"></i> Tambah Pertemuan</button>
+</form>
+<script>
+$("#form_set_pertemuan").submit(function(){
+    $(".btn-save").attr('disabled',true);
+    const data = $(this).serialize();
+    const url = {!! json_encode(url('/')) !!};
+    $.ajax({
+        url: url+'/jadwal/tambah-pertemuan2',
+        type: 'post',
+        data: data,
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        dataType: 'json',
+        success: function(res){
+            var result = res.kode
+            var list = res.pertemuan
+            if(result == 200){
+                swal({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: 'Setting Pertemuan Berhasil Dibuat',
+                    customClass: {
+                        confirmButton: 'btn btn-success'
+                    }
+                });
+                $(".btn-save").attr('disabled',false);
+                $(".pertemuan-location").html('');
+                $('#modalPertemuan').modal('hide');
+            }else{
+                swal({
+                    icon: 'error',
+                    title: 'galat',
+                    text: 'Data Gagal disimpan',
+                    customClass: {
+                        confirmButton: 'btn btn-danger'
+                    }
+                });
+                $(".btn-save").attr('disabled',false);
+            }
+        }
+    })
+});
+</script>

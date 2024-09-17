@@ -110,7 +110,107 @@
                                                             <td>{{ $jad['status'] }}</td> --}}
                                                             <td>{{ $jad['tp'] }}</td>
                                                             <td>{{$jumlah_input_krs[$jad->id]}} / {{ $jad['kuota'] }}</td>
-                                                            <td>#</td>
+                                                            <td>
+                                                                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                                                    #
+                                                                    {{-- <a href="#" class="btn btn-warning btn-sm btn-icon edit-record" data-bs-toggle="modal" data-original-title="test" data-bs-target="#jadwalEdit{{ $jad['id'] }}">
+                                                                        <i class="fa fa-edit"></i>
+                                                                    </a> --}}
+                                                                    <div class="modal fade" id="jadwalEdit{{ $jad['id'] }}" tabindex="-1" aria-labelledby="tambahbaru" aria-hidden="true">
+                                                                        <div class="modal-dialog" role="document">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-body">
+                                                                                    <div class="modal-toggle-wrapper">
+                                                                                        <h5 style="text-align: center">Edit Jadwal</h5>
+                                                                                        <div class="mt-2"></div>
+                                                                                        <div class="mb-3">
+                                                                                            <label for="kode_jadwal" class="form-label">Kode Jadwal</label>
+                                                                                            <input type="text" name="kode_jadwal" id="kode_jadwal{{ $jad['id'] }}" value="{{ $jad['kode_jadwal'] }}" class="form-control">
+                                                                                            <input type="text" name="id_mk" id="id_mk{{ $jad['id'] }}" value="{{ $jad['id_mk'] }}" hidden="">
+                                                                                        </div>
+                                                                                        <div class="mb-3">
+                                                                                            <label for="hari" class="form-label">Hari</label>
+                                                                                            <select name="hari" id="hari{{ $jad['id'] }}" class="form-control">
+                                                                                                @foreach($days as $h)
+                                                                                                    <option value="{{ $h['hari'] }}" {{ $h['hari'] == $jad['hari'] ? 'selected=""':'' }}>{{ $h['hari'] }}</option>
+                                                                                                @endforeach
+                                                                                            </select>
+                                                                                        </div>
+                                                                                        <div class="mb-3">
+                                                                                            <label for="ruang" class="form-label">Ruang</label>
+                                                                                            <select name="ruang" id="ruang{{ $jad['id'] }}" class="form-control">
+                                                                                                @foreach($ruang as $r)
+                                                                                                    <option value="{{ $r['id'] }}" {{ $r['id'] == $jad['id_ruang'] ? 'selected=""':'' }}>{{ $r['nama_ruang'] }}</option>
+                                                                                                @endforeach
+                                                                                            </select>
+                                                                                        </div>
+                                                                                        <div class="mb-3">
+                                                                                            <label for="sesi" class="form-label">Sesi</label>
+                                                                                            <select name="sesi" id="sesi{{ $jad['id'] }}" class="form-control">
+                                                                                                @foreach($sesi as $s)
+                                                                                                    <option value="{{ $s['id'] }}" {{ $s['id'] == $jad['id_sesi'] ? 'selected=""':'' }}>{{ $s['nama_sesi'] }}</option>
+                                                                                                @endforeach
+                                                                                            </select>
+                                                                                        </div>
+                                                                                        <div class="mb-3">
+                                                                                            <label for="tp" class="form-label">T/P</label>
+                                                                                            <select name="tp" id="tp{{ $jad['id'] }}" class="form-control">
+                                                                                                <option value="T" {{ $jad['tp'] == 'T' ? 'selected=""':'' }}>T</option>
+                                                                                                <option value="P" {{ $jad['tp'] == 'P' ? 'selected=""':'' }}>P</option>
+                                                                                                <option value="TP" {{ $jad['tp'] == 'TP' ? 'selected=""':'' }}>TP</option>
+                                                                                            </select>
+                                                                                        </div>
+                                                                                        <div class="mb-3">
+                                                                                            <label for="kel" class="form-label">Kelompok/Kelas</label>
+                                                                                            <select name="kel" id="kel{{ $jad['id'] }}" class="form-control">
+                                                                                                <option value="A" {{ $jad['kel'] == 'A' ? 'selected=""':'' }}>A</option>
+                                                                                                <option value="B" {{ $jad['kel'] == 'B' ? 'selected=""':'' }}>B</option>
+                                                                                                <option value="C" {{ $jad['kel'] == 'C' ? 'selected=""':'' }}>C</option>
+                                                                                                <option value="D" {{ $jad['kel'] == 'D' ? 'selected=""':'' }}>D</option>
+                                                                                                <option value="E" {{ $jad['kel'] == 'E' ? 'selected=""':'' }}>E</option>
+                                                                                                <option value="F" {{ $jad['kel'] == 'F' ? 'selected=""':'' }}>F</option>
+                                                                                                <option value="G" {{ $jad['kel'] == 'G' ? 'selected=""':'' }}>G</option>
+                                                                                                <option value="H" {{ $jad['kel'] == 'H' ? 'selected=""':'' }}>H</option>
+                                                                                                <option value="I" {{ $jad['kel'] == 'I' ? 'selected=""':'' }}>I</option>
+                                                                                                <option value="J" {{ $jad['kel'] == 'J' ? 'selected=""':'' }}>J</option>
+                                                                                                <option value="K" {{ $jad['kel'] == 'K' ? 'selected=""':'' }}>K</option>
+                                                                                                <option value="L" {{ $jad['kel'] == 'L' ? 'selected=""':'' }}>L</option>
+                                                                                                <option value="M" {{ $jad['kel'] == 'M' ? 'selected=""':'' }}>M</option>
+                                                                                                <option value="N" {{ $jad['kel'] == 'N' ? 'selected=""':'' }}>N</option>
+                                                                                                <option value="N" {{ $jad['kel'] == 'O' ? 'selected=""':'' }}>O</option>
+                                                                                            </select>
+                                                                                        </div>
+                                                                                        <div class="mb-3">
+                                                                                            <label for="kuota" class="form-label">Kuota</label>
+                                                                                            <input type="text" name="kuota" id="kuota{{ $jad['id'] }}" value="{{ $jad['kuota'] }}" class="form-control">
+                                                                                        </div>
+                                                                                        <div class="mb-3">
+                                                                                            <label for="status" class="form-label">Status</label>
+                                                                                            <select name="status" id="status{{ $jad['id'] }}" class="form-control">
+                                                                                                <option value="Aktif" {{ $jad['status'] == 'Aktif' ? 'selected=""':'' }}>Aktif</option>
+                                                                                                <option value="Tidak Aktif" {{ $jad['status'] == 'Tidak Aktif' ? 'selected=""':'' }}>Tidak Aktif</option>
+                                                                                            </select>
+                                                                                        </div>
+                                                                                        <div class="mb-3">
+                                                                                            <label for="tahun_ajaran" class="form-label">Tahun Ajaran</label>
+                                                                                            <select name="tahun_ajaran" id="tahun_ajaran{{ $jad['id'] }}" class="form-control">
+                                                                                                <option value="" selected disabled>Tahun Ajaran</option>
+                                                                                                @foreach ($ta as $t)
+                                                                                                    <option value="{{ $t['id'] }}" {{ $t['id'] == $jad['id_tahun'] ? 'selected=""':'' }}>{{ $t['kode_ta'] }}</option>
+                                                                                                @endforeach
+                                                                                            </select>
+                                                                                        </div>
+                                                                                        <button type="button" onclick="editJadwal({{$jad['id']}})" class="btn btn-primary btn-sm"><i class="fa fa-save"></i> Edit Jadwal</button>
+
+                                                                                        <button class="btn bg-danger d-flex align-items-center gap-2 text-light ms-auto btn-sm" type="button" data-bs-dismiss="modal">Tutup</button>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                            </td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
@@ -126,6 +226,7 @@
             <!-- Zero Configuration  Ends-->
         </div>
     </div>
+
 @endsection
 
 @section('script')
@@ -133,6 +234,7 @@
     <script src="{{asset('assets/js/sweet-alert/sweetalert.min.js')}}"></script>
 
     <script>
+
         const baseUrl = {!! json_encode(url('/')) !!};
         $(function() {
             $("#myTable").DataTable({
@@ -194,7 +296,14 @@
 
                                     <td>${ data[i].tp }</td>
                                     <td>${ jumlah_input[data[i].id]} / ${ data[i].kuota }</td>
-                                    <td>#</td>
+
+                                    <td>
+                                        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                            <a href="#" class="btn btn-primary btn-xs">Edit</a>
+                                            <a href="#" class="btn btn-success btn-xs">Setting Pertemuan</a>
+                                        </div>
+
+                                    </td>
                                 </tr>
                                 `
                     }
