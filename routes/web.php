@@ -67,6 +67,7 @@ use App\Http\Controllers\admin\kepegawaian\PegawaiJabatanFungsionalController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiJabatanStrukturalController;
 use App\Http\Controllers\admin\master\JenisRuangController;
 use App\Http\Controllers\admin\akademik\PerwalianController;
+use App\Http\Controllers\mahasiswa\MahasiswaBerkasController;
 
 /*
 |--------------------------------------------------------------------------
@@ -166,6 +167,8 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     Route::get('mahasiswa/get_mhs', [MahasiswaController::class, 'get_mhs'])->name('get_mhs');
 
     Route::get('mhs/profile', [ProfileController::class, 'index'])->name('index');
+    
+    Route::get('mhs/berkas', [MahasiswaBerkasController::class, 'index']);
 
     Route::get('mhs/input_krs', [mhsKrsController::class, 'input'])->name('input');
 

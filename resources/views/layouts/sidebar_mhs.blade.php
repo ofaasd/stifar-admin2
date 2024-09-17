@@ -18,6 +18,9 @@
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/profile')}}" >
                 <span><i class="fa fa-user"></i> Profile</span></a>
             </li>
+            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/berkas')}}" >
+                <span><i class="fa fa-file"></i> Berkas</span></a>
+            </li>
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/input_krs')}}" >
                 <span><i class="fa fa-pencil-square-o"></i> Input KRS</span></a>
             </li>

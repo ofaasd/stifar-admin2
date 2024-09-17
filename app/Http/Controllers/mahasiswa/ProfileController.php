@@ -21,7 +21,12 @@ class ProfileController extends Controller
         $mhs = Mahasiswa::where('user_id',Auth::id())->first();
         $nim = $mhs->nim;
         $title = "Mahasiswa";
-        $mahasiswa = Mahasiswa::where('nim', $nim)->first();
+        $mahasiswa = Mahasiswa::select('mahasiswa.*', 'pegawai_biodata.nama_lengkap as dosenWali', 'mahasiswa_berkas_pendukung.*')
+        ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'mahasiswa.id_dsn_wali')
+        ->leftJoin('mahasiswa_berkas_pendukung', 'mahasiswa_berkas_pendukung.nim', '=', 'mahasiswa.nim')
+        ->where('mahasiswa.nim', $nim)
+        ->first();
+        
         $program_studi = Prodi::all();
         $prodi = [];
         foreach($program_studi as $row){

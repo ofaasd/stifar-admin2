@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers\mahasiswa;
 
-use App\Http\Controllers\Controller;
-use App\Models\DetailTagihan;
-use Illuminate\Http\Request;
-use App\Models\Mahasiswa;
+use stdClass;
+use App\Models\User;
 use App\Models\Prodi;
 use App\Models\Wilayah;
-use App\Models\PegawaiBiodatum;
+use App\Models\Mahasiswa;
 use App\Models\ModelHasRole;
-use App\Models\User;
+use Illuminate\Http\Request;
+use App\Models\DetailTagihan;
+use App\Models\PegawaiBiodatum;
+use Spatie\Permission\Models\Role;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
 
 class MahasiswaController extends Controller
 {

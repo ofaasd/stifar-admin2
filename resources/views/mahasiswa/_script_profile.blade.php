@@ -13,12 +13,13 @@
                 swal({
                     icon: 'success',
                     title: 'Successfully '.concat(data.status, '!'),
-                    text: ''.concat(data.status, ' Successfully.'),
+                    text: ''.concat(data.status, ' Successfully.'),z
                     customClass: {
                         confirmButton: 'btn btn-success'
                     }
                 }).then(function(){
-                    //window.location = "{{URL::to('/mahasiswa/')}}" + '/' + data.id + '/edit';
+                    // window.location = "{{URL::to('/mahasiswa/')}}" + '/' + data.id + '/edit';
+                    window.location = "{{URL::to('/mahasiswa/')}}";
                 });
             },
             error: function error(err) {

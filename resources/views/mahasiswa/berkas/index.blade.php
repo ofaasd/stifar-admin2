@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Basic DataTables')
+@section('title', 'Berkas Mahasiswa')
 
 @section('css')
 
@@ -55,22 +55,6 @@
                       </div>
                     </div>
                   </div>
-                  {{-- <div class="mb-3">
-                    <h6 class="form-label">Bio</h6>
-                    <textarea class="form-control" rows="5">On the other hand, we denounce with righteous indignation</textarea>
-                  </div>
-                  <div class="mb-3">
-                    <label class="form-label">Alamat Email</label>
-                    <input class="form-control" placeholder="your-email@domain.com" value="{{$mahasiswa->email1}}">
-                  </div>
-                  <div class="mb-3">
-                    <label class="form-label">Ubah Password</label>
-                    <input class="form-control" type="password" value="password">
-                  </div>
-                   <div class="mb-3">
-                    <label class="form-label">Website</label>
-                    <input class="form-control" placeholder="http://Uplor .com">
-                  </div> --}}
                   <div class="form-footer">
                       <div class="row">
                           <div class="col-md-12 mb-4">

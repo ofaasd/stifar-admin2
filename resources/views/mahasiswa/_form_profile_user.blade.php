@@ -184,7 +184,7 @@
                 </div>
             </div>
         </div>
-        <div class="mb-2">
+        {{-- <div class="mb-2">
             <label class="col-sm-10 col-form-label">Dosen Wali :</label>
             <div class="col-sm-12">
                 <p>
@@ -196,7 +196,7 @@
                     </select>
                 </p>
             </div>
-        </div>
+        </div> --}}
 
     </div>
 </div>
