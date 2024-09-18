@@ -74,7 +74,6 @@ class PembimbingController extends Controller
             'topik_judul' => $request->input('topik'), // Mengambil nilai topik dari request
             'status' => 0, // Mengambil nilai topik dari request
         ]);
-    
         // Mengembalikan response dalam bentuk JSON
         return response()->json([
             'success' => true,

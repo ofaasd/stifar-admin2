@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\RefPembimbing;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Models\PegawaiBiodatum;
 
 class DosenPembimbingController extends Controller
 {
@@ -20,8 +21,8 @@ class DosenPembimbingController extends Controller
     public function getListDosen()
     {
         // Mengambil data dosen pembimbing dengan kuota yang tidak 0 dan join ke tabel pegawai
-        $data = RefPembimbing::join('pegawai', 'pegawai.npp', '=', 'ref_pembimbing_skripsi.nip')
-            ->select('pegawai.nama', 'pegawai.npp', 'kuota')
+        $data = RefPembimbing::join('pegawai_biodata as pegawai', 'pegawai.npp', '=', 'ref_pembimbing_skripsi.nip')
+            ->select('pegawai.nama_lengkap AS nama', 'pegawai.npp', 'kuota')
             ->get();
 
         // Jika data kosong, kirim response dengan pesan khusus
@@ -46,7 +47,7 @@ class DosenPembimbingController extends Controller
 
     public function getData()
     {
-        $data = Pegawai::get(); // Mengambil data dari model Pegawai
+        $data = PegawaiBiodatum::get(); // Mengambil data dari model Pegawai
 
         return \DataTables::of($data)
             ->addIndexColumn() // Menambahkan kolom DT_RowIndex
@@ -59,7 +60,7 @@ class DosenPembimbingController extends Controller
 
     public function getNppDosen()
     {
-        $data = Pegawai::select('npp', 'nama')->get();
+        $data = PegawaiBiodatum::select('npp', 'nama_lengkap')->get();
 
         return response()->json($data);
     }

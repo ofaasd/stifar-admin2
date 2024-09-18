@@ -110,7 +110,7 @@
                         // Mengambil data dari respons dan menyiapkan whitelist untuk Tagify
                         var whitelistData = response.map(function(dosen) {
                             return {
-                                value: dosen.npp + ' - ' + dosen.nama
+                                value: dosen.npp + ' - ' + dosen.nama_lengkap
                             };
                         });
 
