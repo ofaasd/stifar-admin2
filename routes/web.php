@@ -68,6 +68,7 @@ use App\Http\Controllers\admin\kepegawaian\PegawaiJabatanStrukturalController;
 use App\Http\Controllers\admin\master\JenisRuangController;
 use App\Http\Controllers\admin\skripsi\DosenPembimbingController;
 use App\Http\Controllers\admin\akademik\PerwalianController;
+use App\Http\Controllers\dosen\skripsi\PengajuanBimbinganController;
 use App\Http\Controllers\mahasiswa\skripsi\PembimbingController;
 
 /*
@@ -372,6 +373,16 @@ Route::group(['middleware' => ['auth', 'role:pegawai|super-admin']], function ()
     Route::post('dosen/simpan-absensi-satuan', [KrmController::class, 'saveAbsensiSatuan']);
     Route::post('dosen/simpan-kontrak', [KrmController::class, 'saveKontrak']);
     Route::post('dosen/simpan-nilai', [KrmController::class, 'saveNilai']);
+
+    Route::group(['prefix' => 'dosen/skripsi/pengajuan', 'as' => 'dosen.pengajuan.', 'controller' => PengajuanBimbinganController::class], function () {
+        Route::get('/', 'index')->name('index');
+        // Route::get('/list-dosen', 'getDaftarPembimbing')->name('getDaftarPembimbing');
+        // Route::get('/get-data', 'getData')->name('getData');
+        // Route::post('/pengajuan', 'pengajuan')->name('pengajuan');
+        // Route::get('/edit-dosen/{nip}', 'edit')->name('editDosen');
+        // Route::post('/update-kuota', 'updateKuota')->name('updateKuota');
+        // Route::get('/getNpp', 'getNppDosen')->name('getNppDosen');
+    });
 
     //Route::resource('admin/kepegawaian/pegawai', PegawaiController::class)->name('index','pegawai');
     Route::post('admin/kepegawaian/pegawai', [PegawaiController::class, 'store'])->name('input_pegawai');

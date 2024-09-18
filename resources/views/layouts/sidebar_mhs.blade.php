@@ -24,6 +24,9 @@
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/khs')}}" >
                 <span><i class="fa fa-list-alt"></i> KHS</span></a>
             </li>
+            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{Route(('mhs.pembimbing.index'))}}" >
+                <span><i class="fa fa-list-alt"></i> Tugas Akhir</span></a>
+            </li>
           </ul>
         </div>
         <div class="right-arrow" id="right-arrow"><i data-feather="arrow-right"></i></div>
