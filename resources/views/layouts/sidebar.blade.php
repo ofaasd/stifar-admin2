@@ -133,10 +133,7 @@
 
                         </ul>
                     </li>
-                     <li><a href="#">Semester Antara <label class="badge badge-light-danger">!</label></a></li>
-                     <li><a href="#">Remidial <label class="badge badge-light-danger">!</label></a></li>
-                     <li><a href="#">KHS <label class="badge badge-light-danger">!</label></a></li>
-                     <li>
+                    <li>
                         <a class="submenu-title" href="#">
                             <span>Ujian <label class="badge badge-light-danger">!</label></span>
                         </a>
@@ -148,6 +145,10 @@
                             <li><a href="#">Komplain Nilai / Susulan <label class="badge badge-light-danger">!</label></a></li>
                         </ul>
                     </li>
+                     <li><a href="#">Semester Antara <label class="badge badge-light-danger">!</label></a></li>
+                     <li><a href="#">Remidial <label class="badge badge-light-danger">!</label></a></li>
+                     <li><a href="#">KHS <label class="badge badge-light-danger">!</label></a></li>
+
                      <li><a href="#">Perubahan Status Akademik <label class="badge badge-light-danger">!</label></a></li>
 
                      <li><a href="{{Url::to('admin/akademik/perwalian')}}">Perwalian</a></li>
