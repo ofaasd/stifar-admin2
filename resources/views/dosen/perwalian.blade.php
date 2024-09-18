@@ -48,7 +48,7 @@
                                     <td>{{ $row_mhs['hp'] }}</td>
                                     <td>{{ $row_mhs['status'] == 1? 'Aktif':'Tidak Aktif' }}</td>
                                     <td>{{($jumlah_sks[$row_mhs['id']])}}</td>
-                                    <td>{{($jumlah_sks_validasi[$row_mhs['id']])}}</td>
+                                    <td>{{($jumlah_sks_validasi[$row_mhs['id']])}} {!!($jumlah_sks_validasi[$row_mhs['id']] == $jumlah_sks[$row_mhs['id']])?'<i class="fa fa-check-square text-success"></i>':'<i class="fa fa-times-circle text-danger"></i>'!!}</td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                                             <a href="{{ URL::to('/mahasiswa/detail/' . $row_mhs['nim']) }}" class="btn btn-info btn-xs">
