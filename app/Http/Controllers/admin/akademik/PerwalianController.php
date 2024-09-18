@@ -44,15 +44,19 @@ class PerwalianController extends Controller
             }
         }
         $jumlah_sks = [];
+        $jumlah_sks_validasi = [];
         foreach($mhs as $row){
             $krs = Krs::select('a.*')->join('jadwals as a', 'krs.id_jadwal', '=', 'a.id')->where('id_mhs',$row->id)->get();
             $jumlah_sks[$row->id] = 0;
             foreach($krs as $k){
                 $jumlah_sks[$row->id] += $list_sks[$k->id_mk];
+                if($k->is_publish == 1){
+                    $jumlah_sks_validasi[$row->id] += $list_sks[$k->id_mk];
+                }
             }
         }
 
         $no = 1;
-        return view('dosen.perwalian', compact('title', 'mhs', 'no', 'jumlah_sks'));
+        return view('dosen.perwalian', compact('title', 'mhs', 'no', 'jumlah_sks', 'jumlah_sks_validasi'));
     }
 }

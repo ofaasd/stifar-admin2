@@ -34,9 +34,9 @@
                                         <th>NIM</th>
                                         <th>Nama Mahasiswa</th>
                                         <th>HP</th>
-                                        <th>Email</th>
                                         <th>Status Mahasiswa</th>
                                         <th>SKS diambil</th>
+                                        <th>SKS divalidasi</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -46,9 +46,9 @@
                                     <td>{{ $row_mhs['nim'] }}</td>
                                     <td>{{ $row_mhs['nama'] }}</td>
                                     <td>{{ $row_mhs['hp'] }}</td>
-                                    <td>{{ $row_mhs['email'] }}</td>
                                     <td>{{ $row_mhs['status'] == 1? 'Aktif':'Tidak Aktif' }}</td>
                                     <td>{{($jumlah_sks[$row_mhs['id']])}}</td>
+                                    <td>{{($jumlah_sks_validasi[$row_mhs['id']])}}</td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                                             <a href="{{ URL::to('/mahasiswa/detail/' . $row_mhs['nim']) }}" class="btn btn-info btn-xs">
