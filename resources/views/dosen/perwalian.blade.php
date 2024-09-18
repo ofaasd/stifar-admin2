@@ -55,7 +55,7 @@
                                             <i class="fa fa-eye"></i>
                                                 Biodata
                                             </a>
-                                            <a href="{{ URL::to('/dosen/' . $row_mhs['id']) . "/krs/" }}" class="btn btn-success btn-xs">
+                                            <a href="{{ URL::to('/dosen/' . $row_mhs['id']) . "/krs/" }}" class="btn {!!($jumlah_sks_validasi[$row_mhs['id']] == $jumlah_sks[$row_mhs['id']])?'btn-success':'btn-danger'!!} btn-xs">
                                             <i class="fa fa-list"></i>
                                                 KRS
                                             </a>

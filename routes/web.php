@@ -69,6 +69,7 @@ use App\Http\Controllers\admin\master\JenisRuangController;
 use App\Http\Controllers\admin\akademik\PerwalianController;
 use App\Http\Controllers\admin\akademik\AbsensiController;
 use App\Http\Controllers\admin\akademik\NilaiController as nilaiakademik;
+use App\Http\Controllers\admin\akademik\PengaturanUjianController;
 
 /*
 |--------------------------------------------------------------------------
@@ -246,6 +247,9 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     Route::get('/admin/akademik/nilai', [nilaiakademik::class, 'index']);
     Route::get('/admin/akademik/nilai/prodi/{id}', [nilaiakademik::class, 'index']);
 
+    Route::get('/admin/akademik/pengaturan-ujian', [PengaturanUjianController::class, 'index']);
+    Route::get('/admin/akademik/pengaturan-ujian/prodi/{id}', [PengaturanUjianController::class, 'index']);
+
 
     // route KRS
     Route::get('/admin/masterdata/krs', [KrsController::class, 'index']);
@@ -295,9 +299,6 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
 
     Route::resource('admin/keuangan', KeuanganController::class)->name('index','keuangan');
 
-    Route::resource('pegawai', UserPegawaiController::class)->name('index','pegawai');
-    Route::resource('riwayat', RiwayatPegawaiController::class)->name('index','pegawai');
-
     Route::resource('admin/nilai_lama', NilaiLamaController::class)->name('index','nilai_lama');
 });
 
@@ -333,8 +334,9 @@ Route::group(['middleware' => ['auth','role:pegawai|super-admin']], function(){
     Route::post('/dosen/tampil-pertemuan-absensi',[KrmController::class, 'pertemuanAbsensi'] )->name('dashboard_pegawai');
     Route::post('/dosen/simpan-capaian',[KrmController::class, 'simpanCapaian'] )->name('dashboard_pegawai');
 
+    Route::get('pegawai',[UserPegawaiController::class, 'index'] );
     Route::resource('pegawai', UserPegawaiController::class)->name('index','pegawai');
-    Route::resource('riwayat', RiwayatPegawaiController::class)->name('index','pegawai');
+    Route::resource('riwayat', RiwayatPegawaiController::class)->name('index','riwayat');
 
     Route::get('dosen/perwalian', [DosenController::class, 'index'] )->name('Perwalian');
     Route::get('dosen/{id}/krs', [DosenController::class, 'detailKRS'] )->name('detailKRS');
