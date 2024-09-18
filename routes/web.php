@@ -68,6 +68,7 @@ use App\Http\Controllers\admin\kepegawaian\PegawaiJabatanStrukturalController;
 use App\Http\Controllers\admin\master\JenisRuangController;
 use App\Http\Controllers\admin\akademik\PerwalianController;
 use App\Http\Controllers\admin\akademik\AbsensiController;
+use App\Http\Controllers\admin\akademik\NilaiController as nilaiakademik;
 
 /*
 |--------------------------------------------------------------------------
@@ -241,6 +242,9 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
 
     Route::get('/admin/akademik/list-absensi', [AbsensiController::class, 'index']);
     Route::get('/admin/akademik/list-absensi/prodi/{id}', [AbsensiController::class, 'index']);
+
+    Route::get('/admin/akademik/nilai', [nilaiakademik::class, 'index']);
+    Route::get('/admin/akademik/nilai/prodi/{id}', [nilaiakademik::class, 'index']);
 
 
     // route KRS
