@@ -68,8 +68,14 @@ use App\Http\Controllers\admin\kepegawaian\PegawaiJabatanStrukturalController;
 use App\Http\Controllers\admin\master\JenisRuangController;
 use App\Http\Controllers\admin\skripsi\DosenPembimbingController;
 use App\Http\Controllers\admin\akademik\PerwalianController;
+<<<<<<< HEAD
 use App\Http\Controllers\dosen\skripsi\PengajuanBimbinganController;
 use App\Http\Controllers\mahasiswa\skripsi\PembimbingController;
+=======
+use App\Http\Controllers\admin\akademik\AbsensiController;
+use App\Http\Controllers\admin\akademik\NilaiController as nilaiakademik;
+use App\Http\Controllers\admin\akademik\PengaturanUjianController;
+>>>>>>> origin/main
 
 /*
 |--------------------------------------------------------------------------
@@ -115,8 +121,14 @@ Route::group(['middleware' => ['auth', 'role:super-admin']], function () {
     Route::post('/dosen/simpan-absensi-satuan', [KrmController::class, 'saveAbsensiSatuan'] );
     Route::post('/dosen/simpan-kontrak', [KrmController::class, 'saveKontrak'] );
 
+<<<<<<< HEAD
     //Route::middleware('auth')->group(function(){
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+=======
+//Route::middleware('auth')->group(function(){
+    Route::get('/dashboard',[DashboardController::class, 'index'] )->name('dashboard');
+    Route::get('/dashboard_akademik',[DashboardController::class, 'akademik'] )->name('dashboard_akademik');
+>>>>>>> origin/main
 
     Route::post('admin/admisi/peserta/daftar_kota', [PmbPesertaController::class, 'daftar_kota'])->name('daftar_kota');
     Route::post('admin/admisi/peserta/get_gelombang', [PmbPesertaController::class, 'get_gelombang'])->name('get_gelombang');
@@ -252,6 +264,15 @@ Route::group(['middleware' => ['auth', 'role:super-admin']], function () {
     Route::get('/admin/akademik/setting-pertemuan', [JadwalController::class, 'settingPertemuan']);
     Route::get('/admin/akademik/setting-pertemuan/prodi/{id}', [JadwalController::class, 'settingPertemuan']);
 
+    Route::get('/admin/akademik/list-absensi', [AbsensiController::class, 'index']);
+    Route::get('/admin/akademik/list-absensi/prodi/{id}', [AbsensiController::class, 'index']);
+
+    Route::get('/admin/akademik/nilai', [nilaiakademik::class, 'index']);
+    Route::get('/admin/akademik/nilai/prodi/{id}', [nilaiakademik::class, 'index']);
+
+    Route::get('/admin/akademik/pengaturan-ujian', [PengaturanUjianController::class, 'index']);
+    Route::get('/admin/akademik/pengaturan-ujian/prodi/{id}', [PengaturanUjianController::class, 'index']);
+
 
     // route KRS
     Route::get('/admin/masterdata/krs', [KrsController::class, 'index']);
@@ -302,6 +323,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin']], function () {
 
     Route::resource('admin/keuangan', KeuanganController::class)->name('index','keuangan');
 
+<<<<<<< HEAD
     Route::resource('pegawai', UserPegawaiController::class)->name('index', 'pegawai');
     Route::resource('riwayat', RiwayatPegawaiController::class)->name('index', 'pegawai');
 
@@ -318,6 +340,9 @@ Route::group(['middleware' => ['auth', 'role:super-admin']], function () {
         Route::get('/getNpp', 'getNppDosen')->name('getNppDosen');
     });
 
+=======
+    Route::resource('admin/nilai_lama', NilaiLamaController::class)->name('index','nilai_lama');
+>>>>>>> origin/main
 });
 
 Route::group(['middleware' => ['auth', 'role:mhs|super-admin']], function () {
@@ -362,8 +387,14 @@ Route::group(['middleware' => ['auth', 'role:pegawai|super-admin']], function ()
     Route::post('/dosen/tampil-pertemuan-absensi', [KrmController::class, 'pertemuanAbsensi'])->name('dashboard_pegawai');
     Route::post('/dosen/simpan-capaian', [KrmController::class, 'simpanCapaian'])->name('dashboard_pegawai');
 
+<<<<<<< HEAD
     Route::resource('pegawai', UserPegawaiController::class)->name('index', 'pegawai');
     Route::resource('riwayat', RiwayatPegawaiController::class)->name('index', 'pegawai');
+=======
+    Route::get('pegawai',[UserPegawaiController::class, 'index'] );
+    Route::resource('pegawai', UserPegawaiController::class)->name('index','pegawai');
+    Route::resource('riwayat', RiwayatPegawaiController::class)->name('index','riwayat');
+>>>>>>> origin/main
 
     Route::get('dosen/perwalian', [DosenController::class, 'index'])->name('Perwalian');
     Route::get('dosen/{id}/krs', [DosenController::class, 'detailKRS'])->name('detailKRS');

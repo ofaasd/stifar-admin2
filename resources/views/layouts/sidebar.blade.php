@@ -119,39 +119,41 @@
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
                             <li><a href="{{ URL::to('admin/masterdata/krs') }}">Input KRS</a></li>
-                            <li><a href="#">Statistik KRS <label class="badge badge-light-danger">!</label></a></li>
+                            <li><a href="{{URL::to('dashboard_akademik')}}">Statistik KRS </a></li>
                             <li><a href="#">Monitoring KRS <label class="badge badge-light-danger">!</label></a></li>
                         </ul>
                     </li>
-                     <li><a href="#">Semester Antara <label class="badge badge-light-danger">!</label></a></li>
-                     <li><a href="#">Remidial <label class="badge badge-light-danger">!</label></a></li>
-                     <li><a href="#">KHS <label class="badge badge-light-danger">!</label></a></li>
-                     <li>
+                    <li>
+                        <a class="submenu-title" href="#">
+                            <span>Presensi</span>
+                        </a>
+                        <ul class="nav-sub-childmenu submenu-content">
+                            <li><a href="{{Url::to('admin/akademik/list-absensi')}}">Input Presensi</a></li>
+                            <li><a href="#">Ganti Kuliah - Pengganti <label class="badge badge-light-danger">!</label></a></li>
+
+                        </ul>
+                    </li>
+                    <li>
                         <a class="submenu-title" href="#">
                             <span>Ujian <label class="badge badge-light-danger">!</label></span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
                             <li><a href="#">Pengaturan <label class="badge badge-light-danger">!</label></a></li>{{--  Ada menu untuk toggle ujian sedang dibuka atau ditutup--}}
-                            <li><a href="#">Input Nilai <label class="badge badge-light-danger">!</label></a></li>
-                            <li><a href="#">Posting Nilai <label class="badge badge-light-danger">!</label></a></li>
-                            <li><a href="#">Input Nilai Konversi <label class="badge badge-light-danger">!</label></a></li>
+                            <li><a href="{{Url::to('admin/akademik/nilai')}}">Input Nilai</a></li>
+                            {{-- <li><a href="#">Posting Nilai <label class="badge badge-light-danger">!</label></a></li> --}}
+                            {{-- <li><a href="#">Input Nilai Konversi <label class="badge badge-light-danger">!</label></a></li> --}}
                             <li><a href="#">Komplain Nilai / Susulan <label class="badge badge-light-danger">!</label></a></li>
                         </ul>
                     </li>
+                     <li><a href="#">Semester Antara <label class="badge badge-light-danger">!</label></a></li>
+                     <li><a href="#">Remidial <label class="badge badge-light-danger">!</label></a></li>
+                     <li><a href="#">KHS <label class="badge badge-light-danger">!</label></a></li>
+
                      <li><a href="#">Perubahan Status Akademik <label class="badge badge-light-danger">!</label></a></li>
 
                      <li><a href="{{Url::to('admin/akademik/perwalian')}}">Perwalian</a></li>
 
-                     <li>
-                        <a class="submenu-title" href="#">
-                            <span>Presensi <label class="badge badge-light-danger">!</label></span>
-                        </a>
-                        <ul class="nav-sub-childmenu submenu-content">
-                            <li><a href="#">Input Presensi <label class="badge badge-light-danger">!</label></a></li>
-                            <li><a href="#">Ganti Kuliah - Pengganti <label class="badge badge-light-danger">!</label></a></li>
 
-                        </ul>
-                    </li>
                     <li>
                         <a class="submenu-title" href="#">
                             <span>Yuidisium <label class="badge badge-light-danger">!</label></span>

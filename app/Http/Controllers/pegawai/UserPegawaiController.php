@@ -15,6 +15,8 @@ use App\Models\PegawaiJabatanFungsional;
 use App\Models\PegawaiPosisi;
 use App\Models\Wilayah;
 use App\Models\ModelHasRole;
+use App\Models\JabatanFungsional;
+use App\Models\JabatanStruktural;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -29,6 +31,10 @@ class UserPegawaiController extends Controller
     {
         //
         $id = Auth::user()->id;
+        $jabatan_fungsional = JabatanFungsional::all();
+        $jabatan_struktural = JabatanStruktural::all();
+
+
 
         $title = "Data Pegawai";
         $pegawai = PegawaiBiodatum::where('user_id',$id)->first();
@@ -48,6 +54,8 @@ class UserPegawaiController extends Controller
         $posisi = [];
         $pos = PegawaiPosisi::all();
         $curr_jenis_pegawai = PegawaiPosisi::where('id',$pegawai->id_posisi_pegawai)->first();
+        $curr_jabatan_fungsional = JabatanFungsional::where('id', $pegawai->id_jabfung)->first();
+        $curr_jabatan_struktural = JabatanStruktural::where('id', $pegawai->id_jabstruk)->first();
         $list_jenis = PegawaiPosisi::where('id_jenis_pegawai',$curr_jenis_pegawai->id_jenis_pegawai)->get();
         foreach($pos as $row){
             $posisi[$row->id] = $row->nama;
@@ -61,7 +69,7 @@ class UserPegawaiController extends Controller
         if($pegawai->kecamatan != 0 && !empty($pegawai->kecamatan)){
             $kecamatan = Wilayah::where('id_induk_wilayah', $pegawai->kotakab)->get();
         }
-        return view("pegawai/profile/index", compact('kota','kecamatan','title','pegawai','posisi','jenis_pegawai','curr_jenis_pegawai','list_jenis','wilayah','status','status_kawin','progdi','jenis_kelamin','id','user'));
+        return view("pegawai/profile/index", compact('kota','kecamatan','title','pegawai','posisi','jenis_pegawai','curr_jenis_pegawai','curr_jabatan_fungsional','curr_jabatan_struktural','jabatan_fungsional','jabatan_struktural', 'list_jenis','wilayah','status','status_kawin','progdi','jenis_kelamin','id','user'));
     }
 
     /**
