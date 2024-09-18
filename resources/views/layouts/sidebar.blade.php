@@ -119,7 +119,7 @@
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
                             <li><a href="{{ URL::to('admin/masterdata/krs') }}">Input KRS</a></li>
-                            <li><a href="#">Statistik KRS <label class="badge badge-light-danger">!</label></a></li>
+                            <li><a href="{{URL::to('dashboard_akademik')}}">Statistik KRS </a></li>
                             <li><a href="#">Monitoring KRS <label class="badge badge-light-danger">!</label></a></li>
                         </ul>
                     </li>

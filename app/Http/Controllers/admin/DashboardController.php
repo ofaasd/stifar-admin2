@@ -92,4 +92,34 @@ class DashboardController extends Controller
         $no = 1;
         return view('index_pegawai',compact('perwalian','total_jadwal','jadwal','no'));
     }
+    public function akademik(){
+        $prodi = Prodi::all();
+        $list_jumlah_krs = [];
+        $list_total = [];
+        $angkatan = Mahasiswa::select('angkatan')->orderBy('angkatan','desc')->distinct()->get();
+        $list_prodi = '';
+        $list_jumlah_krs_valid = [];
+        $list_jumlah_krs_invalid = [];
+        $list_total_mahasiswa = [];
+        foreach($angkatan as $value){
+            $list_total_mahasiswa[$value->angkatan] = '';
+            $list_jumlah_krs[$value->angkatan] = '';
+            $list_jumlah_krs_valid[$value->angkatan] = '';
+            $list_jumlah_krs_invalid[$value->angkatan] = '';
+        }
+
+        foreach($prodi as $row){
+            $list_prodi .= "'" . $row->nama_prodi . "',";
+            foreach($angkatan as $value){
+                $total = Mahasiswa::where('angkatan',$value->angkatan)->where('id_program_studi',$row->id)->count();
+                $total_input = Krs::join('mahasiswa','mahasiswa.id','=','krs.id_mhs')->where('mahasiswa.angkatan',$value->angkatan)->where('id_program_studi', $row->id)->distinct()->count('id_mhs');
+                $total_input_valid = Krs::join('mahasiswa','mahasiswa.id','=','krs.id_mhs')->where('mahasiswa.angkatan',$value->angkatan)->where('id_program_studi', $row->id)->where('is_publish',1)->distinct()->count('id_mhs');
+                $list_jumlah_krs[$value->angkatan] .=  $total_input . ',';
+                $list_total_mahasiswa[$value->angkatan] .= ($total - $total_input) . ',';
+                $list_jumlah_krs_valid[$value->angkatan] .= $total_input_valid . ',';
+                $list_jumlah_krs_invalid[$value->angkatan] .= ($total_input - $total_input_valid) . ',';
+            }
+        }
+        return view('admin.akademik.index_view',compact('prodi','list_jumlah_krs','list_total_mahasiswa','list_jumlah_krs_valid','list_jumlah_krs_invalid','list_prodi','angkatan'));
+    }
 }
