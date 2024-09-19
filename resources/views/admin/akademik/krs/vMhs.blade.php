@@ -1,12 +1,12 @@
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/vendors/datatables.css') }}">
-<div class="mt-2">
+{{-- <div class="mt-2">
     <label for="status_krs">Status KRS : </label>
     <select onchange="gantiStatus({{ $ta['id'] }})" name="status_krs" id="status_krs" class="form-control">
         <option value="" selected disabled>Status KRS</option>
         <option value="1" {{ $ta['krs'] == 1 ? 'selected=""':'' }}>Aktif</option>
         <option value="0" {{ $ta['krs'] == 0 ? 'selected=""':'' }}>Tidak Aktif</option>
     </select>
-</div>
+</div> --}}
 <div class="table-responsive mt-2">
     <table class="display" id="tableMK">
         <thead>
@@ -15,8 +15,10 @@
                 <th>NIM</th>
                 <th>Nama Mahasiswa</th>
                 <th>HP</th>
-                <th>Email</th>
+                <th>Dosen Wali</th>
                 <th>Status Mahasiswa</th>
+                <th>KRS Diambil</th>
+                <th>KRS Divalidasi</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -24,11 +26,22 @@
         @foreach($mhs as $row_mhs)
             <tr>
                 <td>{{ $no++ }}</td>
-                <td>{{ $row_mhs['nim'] }}</td>
+                <td><a href="{{ $ta['krs'] == 1 ? url('admin/masterdata/krs/admin/input/'.$row_mhs['id'].'/'.$ta['id']):'#' }}">{{ $row_mhs['nim'] }}</a></td>
                 <td>{{ $row_mhs['nama'] }}</td>
                 <td>{{ $row_mhs['hp'] }}</td>
-                <td>{{ $row_mhs['email'] }}</td>
+                <td><a href="{{url('dosen/perwalian/' . $row_mhs['id_dsn_wali'])}}">{{ $row_mhs['nama_dosen'] }}</a></td>
                 <td>{{ $row_mhs['status'] == 1? 'Aktif':'Tidak Aktif' }}</td>
+                <td><span class="badge {{ ($jumlah_sks[$row_mhs->id] == 0)?"badge-danger":"badge-primary" }} ">{{ $jumlah_sks[$row_mhs->id] }}</span></td>
+                <td>
+                    @if($jumlah_sks_validasi[$row_mhs->id] == 0)
+                        <span class="badge badge-danger">{{ $jumlah_sks_validasi[$row_mhs->id] }}</span>
+                    @elseif($jumlah_sks_validasi[$row_mhs->id] < $jumlah_sks[$row_mhs->id])
+                        <span class="badge badge-warning">{{ $jumlah_sks_validasi[$row_mhs->id] }}</span>
+                    @else
+                        <span class="badge badge-success">{{ $jumlah_sks_validasi[$row_mhs->id] }}</span>
+                    @endif
+
+                </td>
                 <td>
                     <a href="{{ $ta['krs'] == 1 ? url('admin/masterdata/krs/admin/input/'.$row_mhs['id'].'/'.$ta['id']):'#' }}" class="btn btn-success btn-xs">
                         <i class="fa fa-edit"></i>
@@ -43,7 +56,7 @@
 <script src="{{ asset('assets/js/datatable/datatables/jquery.dataTables.min.js') }}"></script>
 <script src="{{asset('assets/js/sweet-alert/sweetalert.min.js')}}"></script>
 <script>
-    const baseUrl = {!! json_encode(url('/')) !!};
+    var baseUrl2 = {!! json_encode(url('/')) !!};
     $(function() {
             $("#tableMK").DataTable({
                 responsive: true
@@ -51,7 +64,7 @@
         })
     function gantiStatus(id){
         $.ajax({
-            url: baseUrl+'/admin/masterdata/krs/ganti-status-krs',
+            url: baseUrl2+'/admin/masterdata/krs/ganti-status-krs',
             type: 'post',
             dataType: 'json',
             data: {
@@ -69,7 +82,7 @@
                                 confirmButton: 'btn btn-danger'
                             }
                         });
-                        window.location.href = baseUrl+'/admin/masterdata/krs';
+                        window.location.href = baseUrl2+'/admin/masterdata/krs';
                 }else{
                     swal({
                             icon: 'error',
@@ -85,7 +98,7 @@
     }
     function simpanData(){
         $.ajax({
-            url: baseUrl+'/admin/masterdata/matakuliah-kurikulum/save',
+            url: baseUrl2+'/admin/masterdata/matakuliah-kurikulum/save',
             type: 'post',
             dataType: 'json',
             data: {
@@ -117,9 +130,9 @@
         })
     }
     function updateData(id){
-        const baseUrl = {!! json_encode(url('/')) !!};
+        const baseUrl2 = {!! json_encode(url('/')) !!};
         $.ajax({
-            url: baseUrl+'/admin/masterdata/matakuliah-kurikulum/update',
+            url: baseUrl2+'/admin/masterdata/matakuliah-kurikulum/update',
             type: 'post',
             dataType: 'json',
             data: {

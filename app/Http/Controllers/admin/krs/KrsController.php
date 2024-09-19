@@ -8,7 +8,10 @@ use App\Models\TahunAjaran;
 use App\Models\Mahasiswa;
 use App\Models\MataKuliah;
 use App\Models\Krs;
+use App\Models\Prodi;
+use App\Models\Kurikulum;
 use App\Models\Jadwal;
+use App\Models\MatakuliahKurikulum;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Session;
 
@@ -18,13 +21,40 @@ class KrsController extends Controller
     {
         $title = "Master KRS";
         $tahun_ajaran = TahunAjaran::get();
-        return view('admin.akademik.krs.index', compact('title', 'tahun_ajaran'));
+        $prodi = Prodi::get();
+        $angkatan = Mahasiswa::select("angkatan")->distinct()->orderBy('angkatan','desc')->get();
+        return view('admin.akademik.krs.index', compact('title', 'tahun_ajaran','prodi','angkatan'));
     }
     public function listMhs(Request $request){
         $ta = TahunAjaran::where('id', $request->ta)->first();
-        $mhs = Mahasiswa::get();
+        $mhs = Mahasiswa::select('mahasiswa.*','pegawai_biodata.nama_lengkap as nama_dosen')->leftJoin('pegawai_biodata','pegawai_biodata.id','=','mahasiswa.id_dsn_wali')->where('id_program_studi',$request->prodi)->where('angkatan',$request->angkatan)->get();
+
+        $prodi = Prodi::find($request->prodi);
+        $get_kurikulum = Kurikulum::where('progdi',$prodi->kode_prodi)->get();
+        foreach($get_kurikulum as $kuri){
+            $matakuliah = MatakuliahKurikulum::select('mata_kuliahs.*')
+                ->leftJoin('mata_kuliahs','mata_kuliahs.id','=','matakuliah_kurikulums.id_mk')
+                ->where('id_kurikulum',$kuri->id)
+                ->get();
+            foreach($matakuliah as $mata){
+                $list_sks[$mata->id] = $mata->sks_teori + $mata->sks_praktek;
+            }
+        }
+        $jumlah_sks = [];
+        $jumlah_sks_validasi = [];
+        foreach($mhs as $row){
+            $krs = Krs::select('a.*','krs.is_publish')->join('jadwals as a', 'krs.id_jadwal', '=', 'a.id')->where('id_mhs',$row->id)->get();
+            $jumlah_sks[$row->id] = 0;
+            $jumlah_sks_validasi[$row->id] = 0;
+            foreach($krs as $k){
+                $jumlah_sks[$row->id] += $list_sks[$k->id_mk];
+                if($k->is_publish == 1){
+                    $jumlah_sks_validasi[$row->id] += $list_sks[$k->id_mk];
+                }
+            }
+        }
         $no = 1;
-        return view('admin.akademik.krs.vMhs', compact('ta', 'mhs', 'no'));
+        return view('admin.akademik.krs.vMhs', compact('ta', 'mhs', 'no','jumlah_sks','jumlah_sks_validasi'));
     }
     public function gantiStatus(Request $request){
         $id = $request->id;
