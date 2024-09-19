@@ -58,7 +58,36 @@
                         </div>
                     </div>
                     </div>
-
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <table class="table table-stripped">
+                                <thead>
+                                    <tr>
+                                        <th>Program Studi</th>
+                                        <th>Mhs Belum KRS</th>
+                                        <th>Mhs Sudah KRS</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $jumlah_krs = explode(",",$list_jumlah_krs[$row->angkatan]);
+                                        $blm_krs = explode(",",$list_total_mahasiswa[$row->angkatan]);
+                                        $i = 0;
+                                    @endphp
+                                    @foreach($prodi as $r)
+                                    <tr>
+                                        <td>{{$r->nama_prodi}}</td>
+                                        <td>{{$blm_krs[$i]}}</td>
+                                        <td>{{$jumlah_krs[$i]}}</td>
+                                    </tr>
+                                    @php
+                                        $i++;
+                                    @endphp
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
                 </div>
             </div>
@@ -84,6 +113,36 @@
                             </div>
                             </div>
                         </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-md-12">
+                                <table class="table table-stripped">
+                                    <thead>
+                                        <tr>
+                                            <th>Program Studi</th>
+                                            <th>Mhs Belum Validasi KRS</th>
+                                            <th>Mhs Sudah Validasi KRS</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @php
+                                            $krs_invalid = explode(",",$list_jumlah_krs_invalid[$row->angkatan]);
+                                            $krs_valid = explode(",",$list_jumlah_krs_valid[$row->angkatan]);
+                                            $i = 0;
+                                        @endphp
+                                        @foreach($prodi as $r)
+                                        <tr>
+                                            <td>{{$r->nama_prodi}}</td>
+                                            <td>{{$krs_invalid[$i]}}</td>
+                                            <td>{{$krs_valid[$i]}}</td>
+                                        </tr>
+                                        @php
+                                            $i++;
+                                        @endphp
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                     </div>
