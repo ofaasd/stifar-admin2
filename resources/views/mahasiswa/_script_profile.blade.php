@@ -19,6 +19,8 @@
                     }
                 }).then(function(){
                     //window.location = "{{URL::to('/mahasiswa/')}}" + '/' + data.id + '/edit';
+                    $(".update-btn").prop('disabled', false);
+                    $(".update-btn").html('Update Profile');
                 });
             },
             error: function error(err) {
