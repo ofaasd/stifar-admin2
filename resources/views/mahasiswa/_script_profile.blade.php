@@ -20,7 +20,7 @@
                 }).then(function(){
                     //window.location = "{{URL::to('/mahasiswa/')}}" + '/' + data.id + '/edit';
                     $(".update-btn").prop('disabled', false);
-                    $(".update-btn").html('Update Profile');
+                    $(".update-btn").html('Simpan');
                 });
             },
             error: function error(err) {
@@ -34,7 +34,7 @@
                 }
                 });
                 $(".update-btn").prop('disabled', false);
-                $(".update-btn").html('Update Profile');
+                $(".update-btn").html('Simpan');
             }
         });
     });
