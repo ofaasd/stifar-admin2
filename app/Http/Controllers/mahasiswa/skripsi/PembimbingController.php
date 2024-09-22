@@ -28,13 +28,13 @@ class PembimbingController extends Controller
         $user = Auth::user();
         $mhs = Mahasiswa::where('id',$user->id)->select('nim')->first();
         $nim = $mhs->nim;        $data = RefPembimbing::where('kuota', '!=', 0)
-        ->join('pegawai', 'pegawai.npp', '=', 'ref_pembimbing_skripsi.nip') 
+        ->join('pegawai_biodata AS pegawai', 'pegawai.npp', '=', 'ref_pembimbing_skripsi.nip') 
         ->leftJoin('master_pembimbing_skripsi', function($join) use ($nim) {
             $join->on('master_pembimbing_skripsi.nip', '=', 'ref_pembimbing_skripsi.nip')
                  ->where('master_pembimbing_skripsi.nim', '=', $nim);
         })
         ->whereNull('master_pembimbing_skripsi.nim')
-        ->select('pegawai.nama', 'pegawai.npp', 'ref_pembimbing_skripsi.kuota') // Pastikan kuota diambil dari ref_pembimbing_skripsi
+        ->select('pegawai.nama_lengkap', 'pegawai.npp', 'ref_pembimbing_skripsi.kuota') // Pastikan kuota diambil dari ref_pembimbing_skripsi
         ->get();
         // Jika data kosong, kirim response dengan pesan khusus
           if ($data->isEmpty()) {

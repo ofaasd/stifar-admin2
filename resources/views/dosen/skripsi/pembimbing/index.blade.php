@@ -30,9 +30,9 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>Npp</th>
+                                    <th>Judul / Topik</th>
+                                    <th>Nim</th>
                                     <th>Nama</th>
-                                    <th>Kuota</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -50,7 +50,8 @@
                 <div class="modal-content">
                     <div class="modal-body">
                         <form class="row g-3 needs-validation custom-input" id="formDosbim">
-                                <input class="form-control" type="hidden" name="nip" id="nip" placeholder="Please select">
+                            <input class="form-control" type="hidden" name="nip" id="nip"
+                                placeholder="Please select">
 
                             <div class="col-md-12 position-relative">
                                 <label class="form-label" for="validationTooltip03">Topik/Judul</label>
@@ -79,7 +80,7 @@
             $('#pembimbing-table').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: '{{ route('mhs.pembimbing.getDaftarPembimbing') }}',
+                ajax: '{{ route('dosen.pengajuan.getDataMahasiswa') }}',
                 columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
@@ -87,16 +88,16 @@
                         searchable: false
                     },
                     {
-                        data: 'npp',
-                        name: 'npp'
+                        data: 'judul',
+                        name: 'judul'
                     },
                     {
-                        data: 'nama_lengkap',
-                        name: 'nama_lengkap'
+                        data: 'nim',
+                        name: 'nim'
                     },
                     {
-                        data: 'kuota',
-                        name: 'kuota'
+                        data: 'nama',
+                        name: 'nama'
                     },
                     {
                         data: 'button',
@@ -109,44 +110,46 @@
                     emptyTable: "Tidak ada data dosen pembimbing yang tersedia." // Pesan ketika data kosong
                 }
 
-               
-            });
 
-            $(document).on('click', '.btnModal', function() {
-                var nip = $(this).data('id');
-                $('#nip').val(nip); // Gunakan .val() untuk menetapkan nilai ke input
             });
 
 
-            $('#FormModal').on('submit', function(e) {
-                e.preventDefault(); // Mencegah default form submission
-              
-                // Siapkan data untuk dikirim
-                var formData = {
-                    nip: $('#nip').val(), // Masukkan NIP yang sudah dibersihkan
-                    topik: $('#topik').val(),
-                    _token: '{{ csrf_token() }}'
-                };
+            $(document).on('click', '.btn-info', function() {
+                var id = $(this).data('id');
+
                 $.ajax({
-                    url: '{{ route('mhs.pembimbing.pengajuan') }}',
-                    method: 'POST',
-                    data: formData, // Serializes form data
+                    url: '{{ route('dosen.pengajuan.acc', '') }}/' + id,
+                    method: 'GET',
                     success: function(response) {
-                        if (response.success) {
-                            $('#FormModal').modal('hide'); // Tutup modal
-                            $('#pembimbing-table').DataTable().ajax.reload(); 
-                        swal("Success", "Berhasi Menambahkan Dosen Pembimbing", "success");
-                        } else {
-                        swal("Failed", response.message, "error");
-                            console.log(response.message); // Tampilkan pesan error
-                        }
+                        swal("Success", "Acc Mahasiswa Berhasil ", "success");
+                        $('#pembimbing-table').DataTable().ajax
+                                .reload(); // Reload DataTables
                     },
                     error: function(xhr) {
-                        alert('Terjadi kesalahan saat menyimpan data');
-                        console.log(xhr.responseText); // Untuk debugging
+                        swal("error", "Gagal Menerima mahasiswa ", "error");
+                        console.log(xhr.responseText);
                     }
                 });
             });
+            $(document).on('click', '.btn-danger', function() {
+                var nip = $(this).data('id');
+
+                $.ajax({
+                    url: '{{ route('dosen.pengajuan.delete', '') }}/' + nip,
+                    method: 'GET',
+                    success: function(response) {
+                        swal("Success", "Delete Mahasiswa Berhasil ", "success");
+                        $('#pembimbing-table').DataTable().ajax
+                                .reload(); // Reload DataTables
+                    },
+                    error: function(xhr) {
+                        swal("error", "Gagal menghapus data mahasiswa ", "error");
+                        console.log(xhr.responseText);
+                    }
+                });
+            });
+
+
         });
     </script>
 @endsection
