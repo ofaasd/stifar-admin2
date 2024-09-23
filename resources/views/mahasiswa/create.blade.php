@@ -8,6 +8,7 @@
 @section('style')
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/vendors/datatables.css') }}">
 <link rel="stylesheet" type="text/css" href="{{asset('assets/css/vendors/sweetalert2.css')}}">
+<link rel="stylesheet" type="text/css" href="{{asset('assets/css/vendors/select2.css')}}">
 @endsection
 
 @section('breadcrumb-title')
@@ -47,5 +48,7 @@
 @section('script')
     <script src="{{ asset('assets/js/datatable/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{asset('assets/js/sweet-alert/sweetalert.min.js')}}"></script>
+    <script src="{{asset('assets/js/select2/select2.full.min.js')}}"></script>
+    <script src="{{asset('assets/js/select2/select2-custom.js')}}"></script>
     @include('mahasiswa._script_profile')
 @endsection

@@ -18,7 +18,9 @@
                         confirmButton: 'btn btn-success'
                     }
                 }).then(function(){
-                    // window.location = "{{URL::to('/mahasiswa/')}}" + '/' + data.id + '/edit';
+                    //window.location = "{{URL::to('/mahasiswa/')}}" + '/' + data.id + '/edit';
+                    $(".update-btn").prop('disabled', false);
+                    $(".update-btn").html('Simpan');
                     window.location = "{{URL::to('/mahasiswa/')}}";
                 });
             },
@@ -33,7 +35,7 @@
                 }
                 });
                 $(".update-btn").prop('disabled', false);
-                $(".update-btn").html('Update Profile');
+                $(".update-btn").html('Simpan');
             }
         });
     });

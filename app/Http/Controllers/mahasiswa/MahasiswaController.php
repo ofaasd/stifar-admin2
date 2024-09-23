@@ -121,6 +121,8 @@ class MahasiswaController extends Controller
     // $dosen = PegawaiBiodatum::where('id_posisi_pegawai', 1)->get();
     $user = User::where('id', $mahasiswa->user_id)->first();
 
+    $dosen = PegawaiBiodatum::where('id_posisi_pegawai',1)->get();
+
     return view('mahasiswa.edit', compact
     (
         'user',
@@ -136,6 +138,7 @@ class MahasiswaController extends Controller
         'sksTempuh',
         'ipk',
         'sksAktif',
+        'dosen',
     ));
   }
   public function create(){
