@@ -121,7 +121,7 @@ class GelombangController extends Controller
                     'tgl_mulai' => $request->tgl_mulai,
                     'tgl_akhir' => $request->tgl_akhir,
                     'ta_awal' => $request->ta_awal,
-                    'ta_akhit' => $request->ta_akhit,
+                    'ta_akhir' => $request->ta_akhir,
                     'ujian' => $request->ujian,
                     'id_jalur' => $request->id_jalur
                 ]
@@ -139,7 +139,7 @@ class GelombangController extends Controller
                     'tgl_akhir' => $request->tgl_akhir,
                     'ujian' => $request->ujian,
                     'ta_awal' => $request->ta_awal,
-                    'ta_akhit' => $request->ta_akhit,
+                    'ta_akhir' => $request->ta_akhir,
                     'id_jalur' => $request->id_jalur
                 ]
             );
