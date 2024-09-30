@@ -28,6 +28,8 @@ class gelombang extends Model
         'jenis',
         'pmb_online',
         'id_jalur',
+        'ta_awal',
+		'ta_akhir',
     ];
     public function jalur() : BelongsTo
     {
