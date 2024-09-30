@@ -47,6 +47,10 @@
                                                 <input type="date" name="tgl_awal" id="tgl_awal" class="form-control">
                                             </div>
                                             <div class="mb-3">
+                                                <label for="tgl_awal_kuliah" class="form-label">Tanggal Awal Kuliah</label>
+                                                <input type="date" name="tgl_awal_kuliah" id="tgl_awal_kuliah" class="form-control">
+                                            </div>
+                                            <div class="mb-3">
                                                 <label for="tgl_akhir" class="form-label">Tanggal Akhir Tahun Ajaran</label>
                                                 <input type="date" name="tgl_akhir" id="tgl_akhir" class="form-control">
                                             </div>
@@ -81,6 +85,7 @@
                                         <th>ID</th>
                                         <th>Kode TA</th>
                                         <th>Tanggal Awal</th>
+                                        <th>Tanggal Awal Kuliah</th>
                                         <th>Tanggal Akhir</th>
                                         <th>Status</th>
                                         <th>Keterangan</th>

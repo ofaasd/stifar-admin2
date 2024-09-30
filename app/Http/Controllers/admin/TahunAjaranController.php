@@ -8,7 +8,7 @@ use App\Models\TahunAjaran;
 
 class TahunAjaranController extends Controller
 {
-    public $indexed = ['', 'id', 'kode_ta', 'tgl_awal', 'tgl_akhir', 'status','keterangan'];
+    public $indexed = ['', 'id', 'kode_ta', 'tgl_awal','tgl_awal_kuliah', 'tgl_akhir', 'status','keterangan'];
     public function index(Request $request)
     {
         //
@@ -22,9 +22,10 @@ class TahunAjaranController extends Controller
                 1 => 'id',
                 2 => 'kode_ta',
                 3 => 'tgl_awal',
-                4 => 'tgl_akhir',
-                5 => 'status',
-                6 => 'keterangan'
+                4 => 'tgl_awal_kuliah',
+                5 => 'tgl_akhir',
+                6 => 'status',
+                7 => 'keterangan'
             ];
 
             $search = [];
@@ -76,6 +77,7 @@ class TahunAjaranController extends Controller
                     $nestedData['fake_id'] = ++$ids;
                     $nestedData['kode_ta'] = $row->kode_ta;
                     $nestedData['tgl_awal'] = $row->tgl_awal;
+                    $nestedData['tgl_awal_kuliah'] = $row->tgl_awal_kuliah;
                     $nestedData['tgl_akhir'] = $row->tgl_akhir;
                     $nestedData['status'] = $row->status;
                     $nestedData['keterangan'] = $row->keterangan;
@@ -111,6 +113,7 @@ class TahunAjaranController extends Controller
                 [
                     'kode_ta' => $request->kode_ta,
                     'tgl_awal' => $request->tgl_awal,
+                    'tgl_awal_kuliah' => $request->tgl_awal_kuliah,
                     'tgl_akhir' => $request->tgl_akhir,
                     'status' => $request->status,
                     'keterangan' => $request->keterangan
@@ -124,6 +127,7 @@ class TahunAjaranController extends Controller
                 [
                     'kode_ta' => $request->kode_ta,
                     'tgl_awal' => $request->tgl_awal,
+                    'tgl_awal_kuliah' => $request->tgl_awal_kuliah,
                     'tgl_akhir' => $request->tgl_akhir,
                     'status' => $request->status,
                     'keterangan' => $request->keterangan
