@@ -19,14 +19,28 @@ class VerifikasiController extends Controller
     //
     public $indexed = ['', 'id','nama' , 'nopen', 'gelombang', 'pilihan1','pilihan2','ttl','is_verifikasi'];
     public $indexed2 = ['', 'id','nama' , 'nopen', 'gelombang', 'pilihan1','pilihan2','ttl','is_bayar'];
-    public function index(Request $request)
+    public function index(Request $request,$id_gelombang=0)
     {
         //
+
+        $ta_min = PmbGelombang::selectRaw('min(ta_awal) as ta_min')->limit(1)->first()->ta_min;
+        $curr_ta = $ta_min;
+        if($id_gelombang == 0){
+            $curr_gelombang = PmbGelombang::where('ta_awal',$ta_min)->limit(1)->first();
+            $id_gelombang = $curr_gelombang->id;
+            $gelombang = PmbGelombang::where('ta_awal',$ta_min)->get();
+        }else{
+            $curr_ta = PmbGelombang::where('id',$id_gelombang)->first()->ta_awal;
+            $gelombang = PmbGelombang::where('ta_awal',$curr_ta)->get();
+            $request->session()->put('gelombang', $id_gelombang);
+        }
+
         if (empty($request->input('length'))) {
             $title = "Verifikasi";
             $title2 = "Verifikasi Peserta";
             $indexed = $this->indexed;
-            return view('admin.admisi.verifikasi.index', compact('title','title2','indexed'));
+            $ta_max = PmbGelombang::selectRaw('max(ta_awal) as ta_max')->limit(1)->first()->ta_max;
+            return view('admin.admisi.verifikasi.index', compact('id_gelombang','curr_ta','gelombang','ta_max','ta_min','title','title2','indexed'));
         }else{
 
             $gelombang = PmbGelombang::all();
@@ -35,10 +49,11 @@ class VerifikasiController extends Controller
                 $gel[$row->id] = $row->nama_gel;
             }
 
-            $prodi = PmbJalurProdi::select('pmb_jalur_prodi.*','program_studi.nama_jurusan')->join('program_studi','program_studi.id','pmb_jalur_prodi.id_program_studi')->get();
+            $prodi = PmbJalurProdi::select('pmb_jalur_prodi.*','program_studi.nama_prodi')->join('program_studi','program_studi.id','pmb_jalur_prodi.id_program_studi')->get();
             $prod = [];
-            foreach($prodi as $row){
-                $prod[$row->id] = $row->nama_jurusan . " " . $row->keterangan;
+            $all_prodi = Prodi::all();
+            foreach($all_prodi as $row){
+                $prod[$row->id] = $row->nama_prodi . " " . $row->keterangan;
             }
 
             $columns = [
@@ -65,7 +80,8 @@ class VerifikasiController extends Controller
 
 
             if (empty($request->input('search.value'))) {
-                $peserta = PmbPesertaOnline::offset($start)
+                $peserta = PmbPesertaOnline::where('gelombang',$id_gelombang)
+                    ->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
                     ->get();
@@ -74,6 +90,7 @@ class VerifikasiController extends Controller
 
                 $peserta = PmbPesertaOnline::select('pmb_peserta_online.*','pmb_gelombang.nama_gel')
                     ->join('pmb_gelombang','pmb_gelombang.id','=','pmb_peserta_online.gelombang')
+                    ->where('gelombang',$id_gelombang)
                     ->where(function ($query) use ($search) {
                     $query
                       ->where('pmb_peserta_online.id', 'LIKE', "%{$search}%")
@@ -87,6 +104,7 @@ class VerifikasiController extends Controller
 
                 $totalFiltered = PmbPesertaOnline::select('pmb_peserta_online.*','pmb_gelombang.nama_gel')
                     ->join('pmb_gelombang','pmb_gelombang.id','=','pmb_peserta_online.gelombang')
+                    ->where('gelombang',$id_gelombang)
                     ->where(function ($query) use ($search) {
                     $query
                       ->where('pmb_peserta_online.id', 'LIKE', "%{$search}%")
@@ -167,10 +185,10 @@ class VerifikasiController extends Controller
                 $gel[$row->id] = $row->nama_gel;
             }
 
-            $prodi = PmbJalurProdi::select('pmb_jalur_prodi.*','program_studi.nama_jurusan')->join('program_studi','program_studi.id','pmb_jalur_prodi.id_program_studi')->get();
+            $prodi = PmbJalurProdi::select('pmb_jalur_prodi.*','program_studi.nama_prodi')->join('program_studi','program_studi.id','pmb_jalur_prodi.id_program_studi')->get();
             $prod = [];
             foreach($prodi as $row){
-                $prod[$row->id] = $row->nama_jurusan . " " . $row->keterangan;
+                $prod[$row->id] = $row->nama_prodi . " " . $row->keterangan;
             }
 
             $columns = [

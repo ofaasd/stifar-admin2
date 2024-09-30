@@ -110,6 +110,7 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
 
     Route::post('admin/admisi/peserta/daftar_kota',[PmbPesertaController::class, 'daftar_kota'] )->name('daftar_kota');
     Route::post('admin/admisi/peserta/get_gelombang',[PmbPesertaController::class, 'get_gelombang'] )->name('get_gelombang');
+    Route::post('admin/admisi/peserta/get_gelombang_ta',[PmbPesertaController::class, 'get_gelombang_ta'] )->name('get_gelombang_ta');
     Route::post('admin/admisi/peserta/get_jurusan',[PmbPesertaController::class, 'get_jurusan'] )->name('get_jurusan');
     Route::get('admin/admisi/peserta/{id}/edit_gelombang', [PmbPesertaController::class, 'edit_gelombang'])->name('edit_gelombang');
     Route::get('admin/admisi/peserta/{id}/edit_asal_sekolah', [PmbPesertaController::class, 'edit_asal_sekolah'])->name('edit_asal_sekolah');
@@ -132,6 +133,7 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     Route::get('admin/admisi/verifikasi/pembayaran', [VerifikasiController::class, 'pembayaran'])->name('verifikasi_pembayaran');
     Route::get('admin/admisi/verifikasi/pembayaran/{id}/edit', [VerifikasiController::class, 'edit_verifikasi'])->name('edit_verifikasi');
     Route::post('admin/admisi/verifikasi/pembayaran', [VerifikasiController::class, 'update_pembayaran'])->name('update_pembayaran');
+    Route::get('admin/admisi/verifikasi/gelombang/{id}', [VerifikasiController::class, 'index'])->name('verifikasi_filter_gelombang');
 
     Route::get('admin/admisi/pengumuman', [PengumumanController::class, 'index'])->name('pengumuman');
     Route::get('admin/admisi/pengumuman/{id}/peserta', [PengumumanController::class, 'peserta'])->name('pengumuman_peserta');
