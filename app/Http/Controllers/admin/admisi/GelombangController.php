@@ -78,7 +78,7 @@ class GelombangController extends Controller
 
                 foreach ($gelombang as $row) {
                     $nestedData['id'] = $row->id;
-                    $nestedData['fake_id'] = ++$ids;
+                    $nestedData['fake_id'] = $row->id;
                     $nestedData['no_gel'] = $row->no_gel;
                     $nestedData['nama_gel'] = $row->nama_gel;
                     $nestedData['nama_gel_long'] = substr($row->nama_gel_long,0,40) . "...";
