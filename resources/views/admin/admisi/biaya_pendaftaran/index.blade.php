@@ -8,6 +8,7 @@
 @section('style')
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/vendors/datatables.css') }}">
 <link rel="stylesheet" type="text/css" href="{{asset('assets/css/vendors/sweetalert2.css')}}">
+<link rel="stylesheet" type="text/css" href="{{asset('assets/css/vendors/select2.css')}}">
 @endsection
 
 @section('breadcrumb-title')
@@ -16,7 +17,7 @@
 
 @section('breadcrumb-items')
     <li class="breadcrumb-item">Admisi</li>
-    <li class="breadcrumb-item active">Peserta</li>
+    <li class="breadcrumb-item active">Biaya Pendaftaran</li>
 @endsection
 
 @section('content')
@@ -25,57 +26,8 @@
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
                 <div class="card">
-                    <div class="card-header pb-0">
-                        <div class="row">
-                            <div class="col-md-6">
-
-                            </div>
-                            <div class="col-md-6">
-                                <form action="{{URL::to('admin/admisi/peserta')}}" method="get">
-                                    <div class="row">
-                                        <div class="col-4">
-                                            <select name="ta_awal" id="ta_awal" class="form-control">
-                                                @for($i=$ta_min;$i<=$ta_max;$i++)
-                                                <option value="{{$i}}" {{($i == $curr_ta)?"selected":""}}>TA {{$i}} - {{($i+1)}}</option>
-                                                @endfor
-                                            </select>
-                                        </div>
-                                        <div class="col-8">
-                                            <select name="filter_gelombang" id="filter_gelombang" class="form-control">
-                                                @foreach($gelombang as $row)
-                                                    <option value="{{$row->id}}" {{($row->id == $id_gelombang)?"selected":""}}>{{$row->nama_gel}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="card-body">
-                        <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
-                        <div class="table-responsive">
-                            <table class="display" id="basic-1">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>ID</th>
-                                        <th>Nama.</th>
-                                        <th>No. Pendaftaran</th>
-                                        <th>Gelombang</th>
-                                        <th>Pilihan1</th>
-                                        <th>Pilihan2</th>
-                                        <th>TTL</th>
-                                        <th>Verifikasi</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-
-                                </tbody>
-                            </table>
-                        </div>
+                    <div class="card-header pb-0 card-no-border">
+                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal" id="add-record">+ {{$title2}}</button>
                         <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
@@ -83,22 +35,36 @@
                                         @csrf
                                         <input type="hidden" name="id" id="id">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="ModalLabel">Update Status</h5>
+                                            <h5 class="modal-title" id="ModalLabel">Tambah {{$title2}}</h5>
                                             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
                                             <div class="mb-3">
-                                                <label for="nopen" class="form-label">Nomor Pendaftaran</label>
-                                                <input type="text" name="nopen" id="nopen" class="form-control">
+                                                <label for="tahun_ajaran" class="form-label">Tahun Ajaran</label>
+                                                <input type="text" name="tahun_ajaran" id="tahun_ajaran" class="form-control">
                                             </div>
+
                                             <div class="mb-3">
-                                                <label for="is_verifikasi" class="form-label">Verifikasi Data</label>
-                                                <select name="is_verifikasi" id="is_verifikasi" class="form-control">
-                                                    <option value="0">Belum Verifikasi</option>
-                                                    <option value="1">Verifikasi Diterima</option>
-                                                    <option value="2">Verifikasi Ditolak</option>
+                                                <label for="id_prodi" class="form-label">Program Studi</label>
+                                                <select name="id_program_studi" id="id_program_studi" class="js-example-basic-single col-sm-12">
+
+                                                    @foreach($prodi as $row)
+                                                        <option value="{{$row->id}}">{{$row->nama_prodi}}</option>
+                                                    @endforeach
                                                 </select>
                                             </div>
+                                            <div class="mb-3">
+                                                <label for="rpl" class="form-label">Mahasiswa RPL</label>
+                                                <select name="rpl" id="rpl" class="js-example-basic-single col-sm-12">
+                                                    <option value="0">Tidak</option>
+                                                    <option value="1">RPL</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="jumlah" class="form-label">Biaya (Rp)</label>
+                                                <input type="number" name="jumlah" id="jumlah" class="form-control">
+                                            </div>
+
                                         </div>
                                         <div class="modal-footer">
                                             <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
@@ -109,10 +75,30 @@
                             </div>
                         </div>
                     </div>
+                    <div class="card-body">
+                        <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
+                        <div class="table-responsive">
+                            <table class="display" id="basic-1">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>ID</th>
+                                        <th>Tahun Ajaran</th>
+                                        <th>Program Studi</th>
+                                        <th>RPL</th>
+                                        <th>Biaya (Rp)</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- Zero Configuration  Ends-->
-
         </div>
     </div>
 @endsection
@@ -120,14 +106,15 @@
 @section('script')
     <script src="{{ asset('assets/js/datatable/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{asset('assets/js/sweet-alert/sweetalert.min.js')}}"></script>
+    <script src="{{asset('assets/js/select2/select2.full.min.js')}}"></script>
+    <script src="{{asset('assets/js/select2/select2-custom.js')}}"></script>
 
     <script>
         $(function () {
-            const id_gelombang = {{$id_gelombang}};
+
             const baseUrl = {!! json_encode(url('/')) !!};
             const title = "{{strtolower($title)}}";
-            const page = '/'.concat("admin/admisi/").concat(title).concat('/gelombang/',id_gelombang);
-            const page_edel = '/'.concat("admin/admisi/").concat(title);
+            const page = '/'.concat("admin/admisi/").concat(title);
             var my_column = $('#my_column').val();
             const pecah = my_column.split('\n');
             let my_data = [];
@@ -160,27 +147,12 @@
                     }
                     },
                     {
-                        searchable: false,
-                        orderable: false,
-                        targets: 1,
-                        render: function render(data, type, full, meta) {
-                            return '<span>'.concat(full.fake_id, '</span>');
-                        }
-                    },
-                    {
-                        searchable: false,
-                        orderable: false,
-                        targets: 8,
-                        render: function render(data, type, full, meta) {
-                            if(full['is_verifikasi'] == "0"){
-                                return '<div class="col-md-12 text-center"><span class="text-center"><i class="fa fa-minus-circle fa-lg"></i></span></div>';
-                            }else if(full['is_verifikasi'] == "1"){
-                                return '<div class="col-md-12 text-center"><span class="text-success text-center"><i class="fa fa-check-circle fa-lg"></i></span></div>';
-                            }else{
-                                return '<div class="col-md-12 text-center"><span class="text-danger text-center"><i class="fa fa-times-circle fa-lg"></i></span></div>';
-                            }
-                            //return '<span>asdasdasd</span>';
-                        }
+                    searchable: false,
+                    orderable: false,
+                    targets: 1,
+                    render: function render(data, type, full, meta) {
+                        return '<span>'.concat(full.fake_id, '</span>');
+                    }
                     },
                     {
                     // Actions
@@ -190,10 +162,14 @@
                     orderable: false,
                     render: function render(data, type, full, meta) {
                         return (
-                            '<div class="d-inline-block text-nowrap">' +
-                            '<button class="btn btn-sm edit-record btn-primary" data-id="'
+                        '<div class="d-inline-block text-nowrap">' +
+                        '<button class="btn btn-sm btn-icon edit-record text-primary" data-id="'
                             .concat(full['id'], '" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal"')
-                            .concat(title, '"><i class="fa fa-pencil"></i></button></div>')
+                            .concat(title, '"><i class="fa fa-pencil"></i></button>') +
+                        '<button class="btn btn-sm btn-icon delete-record text-primary" data-id="'.concat(
+                            full['id'],
+                            '"><i class="fa fa-trash"></i></button>'
+                        )
                         );
                     }
                     }
@@ -213,23 +189,13 @@
                     search: '',
                     searchPlaceholder: 'Search..'
                 },
-                buttons : [
-                    {
-                        text:
-                            '<i class="mdi mdi-plus me-0 me-sm-2"></i><span class="d-none d-sm-inline-block">Add New ' +
-                            title +
-                            '</span>',
-                        className: 'add-new btn btn-primary',
-                        attr: {
-                            'data-bs-toggle': 'offcanvas',
-                            'data-bs-target': '#offcanvasAdd' + title
-                        }
-                    }
-                ]
             });
             $('#tambahModal').on('hidden.bs.modal', function () {
                 $('#formAdd').trigger("reset");
+                $(`#id_program_studi option`).prop("selected",false).trigger('change');
             });
+
+
             //Edit Record
             $(document).on('click', '.edit-record', function () {
                 const id = $(this).data('id');
@@ -238,13 +204,19 @@
                 $('#ModalLabel').html('Edit ' + title);
 
                 // get data
-                $.get(''.concat(baseUrl).concat(page_edel, '/').concat(id, '/edit'), function (data) {
-                Object.keys(data).forEach(key => {
-                    //console.log(key);
-                    $('#' + key)
-                        .val(data[key])
-                        .trigger('change');
-                });
+                $.get(''.concat(baseUrl).concat(page, '/').concat(id, '/edit'), function (data) {
+
+                    Object.keys(data[0]).forEach(key => {
+                        //console.log(key);
+                        $('#' + key)
+                            .val(data[0][key])
+                            .trigger('change');
+                    });
+                    data[1].forEach(value => {
+                        //console.log(key);
+                        $(`#id_program_studi option[value='${value.id_program_studi}']`).prop("selected",true).trigger('change');
+                    });
+
                 });
             });
             //save record
@@ -254,7 +226,7 @@
                 $("#btn_save").text('Tunggu Sebentar');
                 $.ajax({
                     data: $('#formAdd').serialize(),
-                    url: ''.concat(baseUrl).concat(page_edel),
+                    url: ''.concat(baseUrl).concat(page),
                     type: 'POST',
                     success: function success(status) {
                         dt.draw();
@@ -273,6 +245,7 @@
                         $("#btn_save").text('Simpan');
                     },
                     error: function error(err) {
+                        $('#tambahModal').modal('hide');
                         swal({
                         title: 'Duplicate Entry!',
                         text: title + ' Not Saved !',
@@ -286,19 +259,62 @@
                     }
                 });
             });
-            $("#ta_awal").on('change',function(){
-                const id = $(this).val();
-                const url = ''.concat(baseUrl).concat('/admin/admisi/peserta/get_gelombang_ta');
-                $.post(url,{"_token": "{{ csrf_token() }}",id:id}, (data) => {
-                    $("#filter_gelombang").html('<option value="0">Pilih Gelombang</option>');
-                    data.forEach(function(value) {
-                        $("#filter_gelombang").append(`<option value="${value.id}">${value.nama_gel}</option>`);
+            //delete record
+            $(document).on('click', '.delete-record', function () {
+                const id = $(this).data('id');
+                // sweetalert for confirmation of delete
+                swal({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                buttons: true,
+                dangerMode: true,
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                customClass: {
+                    confirmButton: 'btn btn-primary me-3',
+                    cancelButton: 'btn btn-label-secondary'
+                },
+                buttonsStyling: false
+                }).then(function (result) {
+                if (result) {
+
+                    // delete the data
+                    $.ajax({
+                    type: 'DELETE',
+                    url: ''.concat(baseUrl).concat(page, '/').concat(id),
+                    data:{
+                        'id': id,
+                        '_token': '{{ csrf_token() }}',
+                    },
+                    success: function success() {
+                        dt.draw();
+                    },
+                    error: function error(_error) {
+                        console.log(_error);
+                    }
                     });
-                }, "json");
-            });
-            $("#filter_gelombang").on('change',function(){
-                const id = $(this).val();
-                window.location.href = "{{URL::to('admin/admisi/verifikasi/gelombang')}}/"+id;
+
+                    // success sweetalert
+                    swal({
+                    icon: 'success',
+                    title: 'Deleted!',
+                    text: 'The Record has been deleted!',
+                    customClass: {
+                        confirmButton: 'btn btn-success'
+                    }
+                    });
+                } else {
+                    swal({
+                    title: 'Cancelled',
+                    text: 'The record is not deleted!',
+                    icon: 'error',
+                    customClass: {
+                        confirmButton: 'btn btn-success'
+                    }
+                    });
+                }
+                });
             });
         });
 

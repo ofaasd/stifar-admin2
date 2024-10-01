@@ -101,6 +101,7 @@
                     <li><a href="#">Verifikasi Pembayaran Daftar Ulang <label class="badge badge-light-danger">!</label></a></li>
                     <li><a href="#">History PMB <label class="badge badge-light-danger">!</label></a></li>
                     {{-- <li><a href="#">Berita Pendaftaran</a></li> --}}
+                    <li><a href="{{URL::to('admin/admisi/biaya_pendaftaran')}}">Biaya Pendaftaran</a></li>
                     <li><a href="{{URL::to('admin/admisi/slideshow')}}">Berita Gambar/Slideshow</a></li>
                     <li><a href="{{URL::to('admin/admisi/user_pmb')}}">User PMB Online</a></li> {{-- Daftar User pmb online--}}
                 </ul>

@@ -24,6 +24,7 @@ use App\Http\Controllers\admin\master\UserController;
 use App\Http\Controllers\admin\TahunAjaranController;
 use App\Http\Controllers\mahasiswa\ProfileController;
 use App\Http\Controllers\admin\admisi\SlideController;
+use App\Http\Controllers\admin\admisi\BiayaPendaftaranController;
 use App\Http\Controllers\admin\master\LabelController;
 use App\Http\Controllers\admin\master\GedungController;
 use App\Http\Controllers\admin\master\LantaiController;
@@ -282,6 +283,7 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     Route::resource('admin/admisi/jalur_pendaftaran', PmbJalurController::class)->name('index','jalur_pendaftaran');
     Route::resource('admin/admisi/user_pmb', UserGuestController::class)->name('index','user_pmb');
     Route::resource('admin/admisi/slideshow', SlideController::class)->name('index','slideshow');
+    Route::resource('admin/admisi/biaya_pendaftaran', BiayaPendaftaranController::class)->name('index','biaya_pendaftaran');
 
     Route::resource('admin/kepegawaian/pegawai', PegawaiController::class)->name('index','pegawai');
     Route::resource('admin/kepegawaian/struktural', PegawaiJabatanStrukturalController::class)->name('index','struktural');
