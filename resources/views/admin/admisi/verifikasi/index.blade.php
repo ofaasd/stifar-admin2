@@ -108,6 +108,21 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="modal fade" id="showModal" tabindex="-1" role="dialog" aria-labelledby="showModal" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        Detail Calon Mahasiswa Baru
+                                    </div>
+                                    <div class="modal-body">
+                                        <table id="detail_mahasiswa" class="table"></table>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -191,9 +206,12 @@
                     render: function render(data, type, full, meta) {
                         return (
                             '<div class="d-inline-block text-nowrap">' +
-                            '<button class="btn btn-sm edit-record btn-primary" data-id="'
+                            '<div class="btn-group"><a class="btn btn-sm  show-record btn-primary" data-id="'
+                            .concat(full['id'], '" data-bs-toggle="modal" data-original-title="show" data-bs-target="#showModal"')
+                            .concat(title, '"><i class="fa fa-eye"></i></a>'+
+                            '<a class="btn btn-sm edit-record btn-info" data-id="')
                             .concat(full['id'], '" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal"')
-                            .concat(title, '"><i class="fa fa-pencil"></i></button></div>')
+                            .concat(title, '"><i class="fa fa-pencil"></i></a></div></div>')
                         );
                     }
                     }
@@ -244,6 +262,21 @@
                     $('#' + key)
                         .val(data[key])
                         .trigger('change');
+                });
+                });
+            });
+            $(document).on('click', '.show-record', function () {
+                const id = $(this).data('id');
+
+                // changing the title of offcanvas
+                $('#ModalLabel').html('Edit ' + title);
+
+                // get data
+                $.get(''.concat(baseUrl).concat(page_edel, '/').concat(id, '/show'), function (data) {
+                $("#detail_mahasiswa").html('');
+                Object.keys(data).forEach(key => {
+                    //console.log(key);
+                    $("#detail_mahasiswa").append(`<tr><td>${key.replace(/_/g, ' ')}</td><td>:</td><td>${data[key]}</td></tr>`);
                 });
                 });
             });
