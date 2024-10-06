@@ -32,6 +32,36 @@ class LoginController extends Controller
             return view('login');
         }
     }
+    public function login_mhs(){
+        if (Auth::check()) {
+            $role = Auth::User()->roles->pluck('name');
+            if($role[0] == "mhs"){
+                return redirect('mhs/dashboard');
+            }elseif($role[0] == "pegawai"){
+                return redirect('dsn/dashboard');
+            }else{
+                return redirect('dashboard');
+            }
+
+        }else{
+            return view('login_mhs');
+        }
+    }
+    public function login_dsn(){
+        if (Auth::check()) {
+            $role = Auth::User()->roles->pluck('name');
+            if($role[0] == "mhs"){
+                return redirect('mhs/dashboard');
+            }elseif($role[0] == "pegawai"){
+                return redirect('dsn/dashboard');
+            }else{
+                return redirect('dashboard');
+            }
+
+        }else{
+            return view('login_dsn');
+        }
+    }
     public function register(){
         return view('register');
     }

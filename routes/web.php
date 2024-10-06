@@ -84,6 +84,8 @@ use App\Http\Controllers\admin\akademik\PengaturanUjianController;
 */
 
 Route::get('/', [LoginController::class, 'login'])->name('login');
+Route::get('/login_mhs', [LoginController::class, 'login_mhs'])->name('login_mhs');
+Route::get('/login_dsn', [LoginController::class, 'login_dsn'])->name('login_dsn');
 Route::post('/actionLogin', [LoginController::class, 'actionLogin'])->name('actionLogin');
 Route::get('/register', [LoginController::class, 'register'])->name('register');
 Route::get('/register_mahasiswa', [LoginController::class, 'register_mahasiswa'])->name('register_mahasiswa');
