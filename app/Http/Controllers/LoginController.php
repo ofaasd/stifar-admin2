@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\PegawaiBiodatum;
 use App\Models\ModelHasRole;
 use App\Models\Mahasiswa;
+use Illuminate\Support\Facades\URL;
 
 class LoginController extends Controller
 {
@@ -18,6 +19,8 @@ class LoginController extends Controller
         return view('landing');
     }
     public function login(){
+        $url = Url::to('/');
+
         if (Auth::check()) {
             $role = Auth::User()->roles->pluck('name');
             if($role[0] == "mhs"){
@@ -29,7 +32,13 @@ class LoginController extends Controller
             }
 
         }else{
-            return view('login');
+            if($url == 'mhs.stifar.id'){
+                return view('login_mhs');
+            }elseif($url == 'dsn.stifar.id'){
+                return view('login_dsn');
+            }else{
+                return view('login');
+            }
         }
     }
     public function login_mhs(){
