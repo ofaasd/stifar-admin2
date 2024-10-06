@@ -90,7 +90,7 @@
                 <ul class="sidebar-submenu">
                     <li><a href="{{URL::to('admin/admisi/jalur_pendaftaran')}}">Jalur Pendaftaran</a></li>
                     <li><a href="{{URL::to('admin/admisi/gelombang')}}">Gelombang</a></li>
-                    <li><a href="{{URL::to('admin/admisi/peserta')}}">Pendaftaran Mahasiswa Baru</a></li>
+                    <li><a href="{{(!empty(session('gelombang')))?URL::to('admin/admisi/peserta/gelombang/' . session('gelombang')):URL::to('admin/admisi/peserta')}}">Pendaftaran Mahasiswa Baru</a></li>
                     <li><a href="{{URL::to('admin/admisi/daftar_soal')}}">Pengaturan Ujian PMB</a></li>
                     <li><a href="{{URL::to('admin/admisi/peringkat')}}">Peringkat PMDP</a></li>  {{--  Ada menu untuk toggle krs sedang dibuka atau ditutup--}}
                     <li><a href="{{URL::to('admin/admisi/verifikasi')}}">Verifikasi Pendaftaran</a></li>
@@ -101,6 +101,7 @@
                     <li><a href="#">Verifikasi Pembayaran Daftar Ulang <label class="badge badge-light-danger">!</label></a></li>
                     <li><a href="#">History PMB <label class="badge badge-light-danger">!</label></a></li>
                     {{-- <li><a href="#">Berita Pendaftaran</a></li> --}}
+                    <li><a href="{{URL::to('admin/admisi/biaya_pendaftaran')}}">Biaya Pendaftaran</a></li>
                     <li><a href="{{URL::to('admin/admisi/slideshow')}}">Berita Gambar/Slideshow</a></li>
                     <li><a href="{{URL::to('admin/admisi/user_pmb')}}">User PMB Online</a></li> {{-- Daftar User pmb online--}}
                 </ul>

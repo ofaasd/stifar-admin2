@@ -24,6 +24,7 @@ use App\Http\Controllers\admin\master\UserController;
 use App\Http\Controllers\admin\TahunAjaranController;
 use App\Http\Controllers\mahasiswa\ProfileController;
 use App\Http\Controllers\admin\admisi\SlideController;
+use App\Http\Controllers\admin\admisi\BiayaPendaftaranController;
 use App\Http\Controllers\admin\master\LabelController;
 use App\Http\Controllers\admin\master\GedungController;
 use App\Http\Controllers\admin\master\LantaiController;
@@ -87,6 +88,8 @@ use App\Http\Controllers\mahasiswa\skripsi\BimbinganController;
 */
 
 Route::get('/', [LoginController::class, 'login'])->name('login');
+Route::get('/login_mhs', [LoginController::class, 'login_mhs'])->name('login_mhs');
+Route::get('/login_dsn', [LoginController::class, 'login_dsn'])->name('login_dsn');
 Route::post('/actionLogin', [LoginController::class, 'actionLogin'])->name('actionLogin');
 Route::get('/register', [LoginController::class, 'register'])->name('register');
 Route::get('/register_mahasiswa', [LoginController::class, 'register_mahasiswa'])->name('register_mahasiswa');
@@ -124,9 +127,10 @@ Route::group(['middleware' => ['auth', 'role:super-admin']], function () {
     Route::get('/dashboard',[DashboardController::class, 'index'] )->name('dashboard');
     Route::get('/dashboard_akademik',[DashboardController::class, 'akademik'] )->name('dashboard_akademik');
 
-    Route::post('admin/admisi/peserta/daftar_kota', [PmbPesertaController::class, 'daftar_kota'])->name('daftar_kota');
-    Route::post('admin/admisi/peserta/get_gelombang', [PmbPesertaController::class, 'get_gelombang'])->name('get_gelombang');
-    Route::post('admin/admisi/peserta/get_jurusan', [PmbPesertaController::class, 'get_jurusan'])->name('get_jurusan');
+    Route::post('admin/admisi/peserta/daftar_kota',[PmbPesertaController::class, 'daftar_kota'] )->name('daftar_kota');
+    Route::post('admin/admisi/peserta/get_gelombang',[PmbPesertaController::class, 'get_gelombang'] )->name('get_gelombang');
+    Route::post('admin/admisi/peserta/get_gelombang_ta',[PmbPesertaController::class, 'get_gelombang_ta'] )->name('get_gelombang_ta');
+    Route::post('admin/admisi/peserta/get_jurusan',[PmbPesertaController::class, 'get_jurusan'] )->name('get_jurusan');
     Route::get('admin/admisi/peserta/{id}/edit_gelombang', [PmbPesertaController::class, 'edit_gelombang'])->name('edit_gelombang');
     Route::get('admin/admisi/peserta/{id}/edit_asal_sekolah', [PmbPesertaController::class, 'edit_asal_sekolah'])->name('edit_asal_sekolah');
     Route::get('admin/admisi/peserta/{id}/edit_file_pendukung', [PmbPesertaController::class, 'edit_file_pendukung'])->name('edit_file_pendukung');
@@ -144,10 +148,14 @@ Route::group(['middleware' => ['auth', 'role:super-admin']], function () {
 
     Route::get('admin/admisi/verifikasi', [VerifikasiController::class, 'index'])->name('verifikasi');
     Route::get('admin/admisi/verifikasi/{id}/edit', [VerifikasiController::class, 'edit_verifikasi'])->name('edit_verifikasi');
+    Route::get('admin/admisi/verifikasi/{id}/edit_pembayaran', [VerifikasiController::class, 'edit_pembayaran'])->name('edit_pembayaran');
     Route::post('admin/admisi/verifikasi', [VerifikasiController::class, 'update_verifikasi'])->name('update_verifikasi');
     Route::get('admin/admisi/verifikasi/pembayaran', [VerifikasiController::class, 'pembayaran'])->name('verifikasi_pembayaran');
     Route::get('admin/admisi/verifikasi/pembayaran/{id}/edit', [VerifikasiController::class, 'edit_verifikasi'])->name('edit_verifikasi');
     Route::post('admin/admisi/verifikasi/pembayaran', [VerifikasiController::class, 'update_pembayaran'])->name('update_pembayaran');
+    Route::get('admin/admisi/verifikasi/gelombang/{id}', [VerifikasiController::class, 'index'])->name('verifikasi_filter_gelombang');
+    Route::get('admin/admisi/verifikasi/pembayaran/gelombang/{id}', [VerifikasiController::class, 'pembayaran'])->name('pembayaran_filter_gelombang');
+    Route::get('admin/admisi/verifikasi/{id}/show', [VerifikasiController::class, 'show'])->name('verifikasi_show');
 
     Route::get('admin/admisi/pengumuman', [PengumumanController::class, 'index'])->name('pengumuman');
     Route::get('admin/admisi/pengumuman/{id}/peserta', [PengumumanController::class, 'peserta'])->name('pengumuman_peserta');
@@ -290,12 +298,13 @@ Route::group(['middleware' => ['auth', 'role:super-admin']], function () {
     Route::get('/admin/masterdata/matakuliah-kurikulum/delete/{id}', [MkKurikulum::class, 'destroy']);
 
 
-    Route::resource('admin/admisi/gelombang', GelombangController::class)->name('index', 'gelombang');
-    Route::resource('admin/admisi/peserta', PmbPesertaController::class)->name('index', 'peserta');
-    Route::resource('admin/admisi/daftar_soal', DaftarSoalController::class)->name('index', 'daftar_soal');
-    Route::resource('admin/admisi/jalur_pendaftaran', PmbJalurController::class)->name('index', 'jalur_pendaftaran');
-    Route::resource('admin/admisi/user_pmb', UserGuestController::class)->name('index', 'user_pmb');
-    Route::resource('admin/admisi/slideshow', SlideController::class)->name('index', 'slideshow');
+    Route::resource('admin/admisi/gelombang', GelombangController::class)->name('index','gelombang');
+    Route::resource('admin/admisi/peserta', PmbPesertaController::class)->name('index','peserta');
+    Route::resource('admin/admisi/daftar_soal', DaftarSoalController::class)->name('index','daftar_soal');
+    Route::resource('admin/admisi/jalur_pendaftaran', PmbJalurController::class)->name('index','jalur_pendaftaran');
+    Route::resource('admin/admisi/user_pmb', UserGuestController::class)->name('index','user_pmb');
+    Route::resource('admin/admisi/slideshow', SlideController::class)->name('index','slideshow');
+    Route::resource('admin/admisi/biaya_pendaftaran', BiayaPendaftaranController::class)->name('index','biaya_pendaftaran');
 
     Route::resource('admin/kepegawaian/pegawai', PegawaiController::class)->name('index', 'pegawai');
     Route::resource('admin/kepegawaian/struktural', PegawaiJabatanStrukturalController::class)->name('index', 'struktural');

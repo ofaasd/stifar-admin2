@@ -56,7 +56,7 @@
                                                                 <input type="number" name="ta_awal" id="ta_awal" class="form-control" value='{{date('Y')}}'>
                                                             </div>
                                                             <div class="col-md-6">
-                                                                <input type="number" name="ta_awal" id="ta_awal" class="form-control" value='{{(date('Y')+1)}}'>
+                                                                <input type="number" name="ta_akhir" id="ta_akhir" class="form-control" value='{{(date('Y')+1)}}'>
                                                             </div>
                                                         </div>
                                                     </div>

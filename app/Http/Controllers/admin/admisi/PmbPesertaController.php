@@ -31,15 +31,18 @@ class PmbPesertaController extends Controller
         if($id_gelombang == 0){
             $curr_gelombang = PmbGelombang::where('ta_awal',$ta_min)->limit(1)->first();
             $id_gelombang = $curr_gelombang->id;
+            $gelombang = PmbGelombang::where('ta_awal',$ta_min)->get();
         }else{
             $curr_ta = PmbGelombang::where('id',$id_gelombang)->first()->ta_awal;
+            $gelombang = PmbGelombang::where('ta_awal',$curr_ta)->get();
+            $request->session()->put('gelombang', $id_gelombang);
         }
 
         if (empty($request->input('length'))) {
             $title = "Peserta";
             $indexed = $this->indexed;
             $ta_max = PmbGelombang::selectRaw('max(ta_awal) as ta_max')->limit(1)->first()->ta_max;
-            $gelombang = PmbGelombang::where('ta_awal',$ta_min)->get();
+
             return view('admin.admisi.peserta.index', compact('id_gelombang','curr_ta','gelombang','ta_max','ta_min','title','indexed'));
         }else{
             $gelombang = PmbGelombang::all();
@@ -50,7 +53,8 @@ class PmbPesertaController extends Controller
 
             $prodi = PmbJalurProdi::select('pmb_jalur_prodi.*','program_studi.nama_prodi')->join('program_studi','program_studi.id','pmb_jalur_prodi.id_program_studi')->get();
             $prod = [];
-            foreach($prodi as $row){
+            $all_prodi = Prodi::all();
+            foreach($all_prodi as $row){
                 $prod[$row->id] = $row->nama_prodi . " " . $row->keterangan;
             }
 
@@ -461,6 +465,11 @@ class PmbPesertaController extends Controller
     public function get_gelombang(Request $request){
         $id = $request->input('id');
         $gelombang = PmbGelombang::where("id_jalur",$id)->get();
+        echo json_encode($gelombang);
+    }
+    public function get_gelombang_ta(Request $request){
+        $id = $request->input('id');
+        $gelombang = PmbGelombang::where("ta_awal",$id)->get();
         echo json_encode($gelombang);
     }
     public function get_jurusan(Request $request){

@@ -8,15 +8,16 @@
 @section('style')
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/vendors/datatables.css') }}">
 <link rel="stylesheet" type="text/css" href="{{asset('assets/css/vendors/sweetalert2.css')}}">
+<link rel="stylesheet" type="text/css" href="{{asset('assets/css/vendors/select2.css')}}">
 @endsection
 
 @section('breadcrumb-title')
-    <h3>{{$title}}</h3>
+    <h3>{{$title2}}</h3>
 @endsection
 
 @section('breadcrumb-items')
     <li class="breadcrumb-item">Admisi</li>
-    <li class="breadcrumb-item active">Peserta</li>
+    <li class="breadcrumb-item active">Biaya Pendaftaran</li>
 @endsection
 
 @section('content')
@@ -25,33 +26,54 @@
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
                 <div class="card">
-                    <div class="card-header pb-0">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <a href="{{URL::to('admin/admisi/peserta/create')}}" class="btn btn-primary mb-4" >+ {{$title}}</a>
-                            </div>
-                            <div class="col-md-6">
-                                <form action="{{URL::to('admin/admisi/peserta')}}" method="get">
-                                    <div class="row">
-                                        <div class="col-4">
-                                            <select name="ta_awal" id="ta_awal" class="form-control">
-                                                @for($i=$ta_min;$i<=$ta_max;$i++)
-                                                <option value="{{$i}}" {{($i == $curr_ta)?"selected":""}}>TA {{$i}} - {{($i+1)}}</option>
-                                                @endfor
-                                            </select>
+                    <div class="card-header pb-0 card-no-border">
+                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal" id="add-record">+ {{$title2}}</button>
+                        <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <form action="javascript:void(0)" id="formAdd">
+                                        @csrf
+                                        <input type="hidden" name="id" id="id">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="ModalLabel">Tambah {{$title2}}</h5>
+                                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
-                                        <div class="col-8">
-                                            <select name="filter_gelombang" id="filter_gelombang" class="form-control">
-                                                @foreach($gelombang as $row)
-                                                    <option value="{{$row->id}}" {{($row->id == $id_gelombang)?"selected":""}}>{{$row->nama_gel}}</option>
-                                                @endforeach
-                                            </select>
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                <label for="tahun_ajaran" class="form-label">Tahun Ajaran</label>
+                                                <input type="text" name="tahun_ajaran" id="tahun_ajaran" class="form-control">
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="id_prodi" class="form-label">Program Studi</label>
+                                                <select name="id_program_studi" id="id_program_studi" class="js-example-basic-single col-sm-12">
+
+                                                    @foreach($prodi as $row)
+                                                        <option value="{{$row->id}}">{{$row->nama_prodi}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="rpl" class="form-label">Mahasiswa RPL</label>
+                                                <select name="rpl" id="rpl" class="js-example-basic-single col-sm-12">
+                                                    <option value="0">Tidak</option>
+                                                    <option value="1">RPL</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="jumlah" class="form-label">Biaya (Rp)</label>
+                                                <input type="number" name="jumlah" id="jumlah" class="form-control">
+                                            </div>
+
                                         </div>
-                                    </div>
-                                </form>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                                            <button class="btn btn-primary" type="submit" id="btn_save">Simpan</button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
-
                     </div>
                     <div class="card-body">
                         <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
@@ -61,12 +83,10 @@
                                     <tr>
                                         <th></th>
                                         <th>ID</th>
-                                        <th>Nama.</th>
-                                        <th>No. Pendaftaran</th>
-                                        <th>Gelombang</th>
-                                        <th>Pilihan1</th>
-                                        <th>Pilihan2</th>
-                                        <th>TTL</th>
+                                        <th>Tahun Ajaran</th>
+                                        <th>Program Studi</th>
+                                        <th>RPL</th>
+                                        <th>Biaya (Rp)</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -86,13 +106,15 @@
 @section('script')
     <script src="{{ asset('assets/js/datatable/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{asset('assets/js/sweet-alert/sweetalert.min.js')}}"></script>
+    <script src="{{asset('assets/js/select2/select2.full.min.js')}}"></script>
+    <script src="{{asset('assets/js/select2/select2-custom.js')}}"></script>
 
     <script>
         $(function () {
-            const id_gelombang = {{$id_gelombang}};
+
             const baseUrl = {!! json_encode(url('/')) !!};
             const title = "{{strtolower($title)}}";
-            const page = '/'.concat("admin/admisi/").concat(title).concat('/gelombang/',id_gelombang);
+            const page = '/'.concat("admin/admisi/").concat(title);
             var my_column = $('#my_column').val();
             const pecah = my_column.split('\n');
             let my_data = [];
@@ -102,7 +124,6 @@
                 //alert(data_obj.data);
                 my_data.push(data_obj);
             });
-
             //alert(data_obj);
             console.log(my_data);
 
@@ -141,10 +162,11 @@
                     orderable: false,
                     render: function render(data, type, full, meta) {
                         return (
-                        '<div class="btn-group">' +
-                        '<a href="'+baseUrl+'/admin/admisi/peserta/'+full['id']+'/edit" class="btn btn-sm btn-primary"'
-                            .concat(title, '"><i class="fa fa-pencil"></i></a>') +
-                        '<button class="btn btn-sm delete-record btn-danger" data-id="'.concat(
+                        '<div class="d-inline-block text-nowrap">' +
+                        '<button class="btn btn-sm btn-icon edit-record text-primary" data-id="'
+                            .concat(full['id'], '" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal"')
+                            .concat(title, '"><i class="fa fa-pencil"></i></button>') +
+                        '<button class="btn btn-sm btn-icon delete-record text-primary" data-id="'.concat(
                             full['id'],
                             '"><i class="fa fa-trash"></i></button>'
                         )
@@ -170,7 +192,10 @@
             });
             $('#tambahModal').on('hidden.bs.modal', function () {
                 $('#formAdd').trigger("reset");
+                $(`#id_program_studi option`).prop("selected",false).trigger('change');
             });
+
+
             //Edit Record
             $(document).on('click', '.edit-record', function () {
                 const id = $(this).data('id');
@@ -180,17 +205,25 @@
 
                 // get data
                 $.get(''.concat(baseUrl).concat(page, '/').concat(id, '/edit'), function (data) {
-                Object.keys(data).forEach(key => {
-                    //console.log(key);
-                    $('#' + key)
-                        .val(data[key])
-                        .trigger('change');
-                });
+
+                    Object.keys(data[0]).forEach(key => {
+                        //console.log(key);
+                        $('#' + key)
+                            .val(data[0][key])
+                            .trigger('change');
+                    });
+                    data[1].forEach(value => {
+                        //console.log(key);
+                        $(`#id_program_studi option[value='${value.id_program_studi}']`).prop("selected",true).trigger('change');
+                    });
+
                 });
             });
             //save record
             $('#formAdd').on('submit',function(e){
                 e.preventDefault();
+                $("#btn_save").prop('disabled',true);
+                $("#btn_save").text('Tunggu Sebentar');
                 $.ajax({
                     data: $('#formAdd').serialize(),
                     url: ''.concat(baseUrl).concat(page),
@@ -208,9 +241,11 @@
                             confirmButton: 'btn btn-success'
                         }
                         });
+                        $("#btn_save").prop('disabled',false);
+                        $("#btn_save").text('Simpan');
                     },
                     error: function error(err) {
-                        offCanvasForm.offcanvas('hide');
+                        $('#tambahModal').modal('hide');
                         swal({
                         title: 'Duplicate Entry!',
                         text: title + ' Not Saved !',
@@ -219,6 +254,8 @@
                             confirmButton: 'btn btn-success'
                         }
                         });
+                        $("#btn_save").prop('disabled',false);
+                        $("#btn_save").text('Simpan');
                     }
                 });
             });
@@ -278,20 +315,6 @@
                     });
                 }
                 });
-            });
-            $("#ta_awal").on('change',function(){
-                const id = $(this).val();
-                const url = ''.concat(baseUrl).concat('/admin/admisi/peserta/get_gelombang_ta');
-                $.post(url,{"_token": "{{ csrf_token() }}",id:id}, (data) => {
-                    $("#filter_gelombang").html('<option value="0">Pilih Gelombang</option>');
-                    data.forEach(function(value) {
-                        $("#filter_gelombang").append(`<option value="${value.id}">${value.nama_gel}</option>`);
-                    });
-                }, "json");
-            });
-            $("#filter_gelombang").on('change',function(){
-                const id = $(this).val();
-                window.location.href = "{{URL::to('admin/admisi/peserta/gelombang')}}/"+id;
             });
         });
 

@@ -13,20 +13,36 @@ use App\Models\PmbGelombang;
 use App\Models\PmbAsalSekolah;
 use App\Models\PmbNilaiRapor;
 use App\Models\Prodi;
+use App\Models\BuktiRegistrasi;
 
 class VerifikasiController extends Controller
 {
     //
     public $indexed = ['', 'id','nama' , 'nopen', 'gelombang', 'pilihan1','pilihan2','ttl','is_verifikasi'];
-    public $indexed2 = ['', 'id','nama' , 'nopen', 'gelombang', 'pilihan1','pilihan2','ttl','is_bayar'];
-    public function index(Request $request)
+    public $indexed2 = ['', 'id','nama' , 'nopen', 'gelombang', 'pilihan1','pilihan2','ttl','bukti_bayar','is_bayar'];
+    public function index(Request $request,$id_gelombang=0)
     {
         //
+
+        $ta_min = PmbGelombang::selectRaw('min(ta_awal) as ta_min')->limit(1)->first()->ta_min;
+        $ta_max = PmbGelombang::selectRaw('max(ta_awal) as ta_max')->limit(1)->first()->ta_max;
+        $curr_ta = $ta_max;
+        if($id_gelombang == 0){
+            $curr_gelombang = PmbGelombang::where('ta_awal',$curr_ta)->limit(1)->first();
+            $id_gelombang = $curr_gelombang->id;
+            $gelombang = PmbGelombang::where('ta_awal',$curr_ta)->get();
+        }else{
+            $curr_ta = PmbGelombang::where('id',$id_gelombang)->first()->ta_awal;
+            $gelombang = PmbGelombang::where('ta_awal',$curr_ta)->get();
+            $request->session()->put('gelombang', $id_gelombang);
+        }
+
         if (empty($request->input('length'))) {
             $title = "Verifikasi";
             $title2 = "Verifikasi Peserta";
             $indexed = $this->indexed;
-            return view('admin.admisi.verifikasi.index', compact('title','title2','indexed'));
+
+            return view('admin.admisi.verifikasi.index', compact('id_gelombang','curr_ta','gelombang','ta_max','ta_min','title','title2','indexed'));
         }else{
 
             $gelombang = PmbGelombang::all();
@@ -35,10 +51,11 @@ class VerifikasiController extends Controller
                 $gel[$row->id] = $row->nama_gel;
             }
 
-            $prodi = PmbJalurProdi::select('pmb_jalur_prodi.*','program_studi.nama_jurusan')->join('program_studi','program_studi.id','pmb_jalur_prodi.id_program_studi')->get();
+            $prodi = PmbJalurProdi::select('pmb_jalur_prodi.*','program_studi.nama_prodi')->join('program_studi','program_studi.id','pmb_jalur_prodi.id_program_studi')->get();
             $prod = [];
-            foreach($prodi as $row){
-                $prod[$row->id] = $row->nama_jurusan . " " . $row->keterangan;
+            $all_prodi = Prodi::all();
+            foreach($all_prodi as $row){
+                $prod[$row->id] = $row->nama_prodi . " " . $row->keterangan;
             }
 
             $columns = [
@@ -65,7 +82,8 @@ class VerifikasiController extends Controller
 
 
             if (empty($request->input('search.value'))) {
-                $peserta = PmbPesertaOnline::offset($start)
+                $peserta = PmbPesertaOnline::where('gelombang',$id_gelombang)
+                    ->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
                     ->get();
@@ -74,6 +92,7 @@ class VerifikasiController extends Controller
 
                 $peserta = PmbPesertaOnline::select('pmb_peserta_online.*','pmb_gelombang.nama_gel')
                     ->join('pmb_gelombang','pmb_gelombang.id','=','pmb_peserta_online.gelombang')
+                    ->where('gelombang',$id_gelombang)
                     ->where(function ($query) use ($search) {
                     $query
                       ->where('pmb_peserta_online.id', 'LIKE', "%{$search}%")
@@ -87,6 +106,7 @@ class VerifikasiController extends Controller
 
                 $totalFiltered = PmbPesertaOnline::select('pmb_peserta_online.*','pmb_gelombang.nama_gel')
                     ->join('pmb_gelombang','pmb_gelombang.id','=','pmb_peserta_online.gelombang')
+                    ->where('gelombang',$id_gelombang)
                     ->where(function ($query) use ($search) {
                     $query
                       ->where('pmb_peserta_online.id', 'LIKE', "%{$search}%")
@@ -141,6 +161,19 @@ class VerifikasiController extends Controller
         return response()->json($peserta);
 
     }
+    public function edit_pembayaran($id){
+        $where = ['id' => $id];
+
+        $peserta[0] = PmbPesertaOnline::where($where)->first();
+        $bukti = BuktiRegistrasi::where('nopen',$peserta[0]->nopen)->first();
+
+        if($bukti){
+            $peserta[1]['tgl_tf'] = date('Y-m-d',strtotime($bukti->tgl_tf));
+            $peserta[1]['bukti'] = $bukti->bukti;
+        }
+        return response()->json($peserta);
+
+    }
     public function update_verifikasi(Request $request){
         $id = $request->id;
         $peserta = PmbPesertaOnline::find($id);
@@ -153,12 +186,24 @@ class VerifikasiController extends Controller
         }
 
     }
-    public function pembayaran(Request $request){
+    public function pembayaran(Request $request,int $id_gelombang=0){
+        $ta_min = PmbGelombang::selectRaw('min(ta_awal) as ta_min')->limit(1)->first()->ta_min;
+        $ta_max = PmbGelombang::selectRaw('max(ta_awal) as ta_max')->limit(1)->first()->ta_max;
+        $curr_ta = $ta_max;
+        if($id_gelombang == 0){
+            $curr_gelombang = PmbGelombang::where('ta_awal',$curr_ta)->limit(1)->first();
+            $id_gelombang = $curr_gelombang->id;
+            $gelombang = PmbGelombang::where('ta_awal',$curr_ta)->get();
+        }else{
+            $curr_ta = PmbGelombang::where('id',$id_gelombang)->first()->ta_awal;
+            $gelombang = PmbGelombang::where('ta_awal',$curr_ta)->get();
+            $request->session()->put('gelombang', $id_gelombang);
+        }
         if (empty($request->input('length'))) {
-            $title = "Verifikasi";
+            $title = "verifikasi/pembayaran";
             $title2 = "Verifikasi Pembayaran Peserta";
             $indexed = $this->indexed2;
-            return view('admin.admisi.verifikasi.pembayaran', compact('title','title2','indexed'));
+            return view('admin.admisi.verifikasi.pembayaran', compact('id_gelombang','curr_ta','gelombang','ta_max','ta_min','title','title2','indexed'));
         }else{
 
             $gelombang = PmbGelombang::all();
@@ -167,10 +212,11 @@ class VerifikasiController extends Controller
                 $gel[$row->id] = $row->nama_gel;
             }
 
-            $prodi = PmbJalurProdi::select('pmb_jalur_prodi.*','program_studi.nama_jurusan')->join('program_studi','program_studi.id','pmb_jalur_prodi.id_program_studi')->get();
+            $prodi = PmbJalurProdi::select('pmb_jalur_prodi.*','program_studi.nama_prodi')->join('program_studi','program_studi.id','pmb_jalur_prodi.id_program_studi')->get();
+            $list_prodi = Prodi::all();
             $prod = [];
-            foreach($prodi as $row){
-                $prod[$row->id] = $row->nama_jurusan . " " . $row->keterangan;
+            foreach($list_prodi as $row){
+                $prod[$row->id] = $row->nama_prodi . " " . $row->keterangan;
             }
 
             $columns = [
@@ -181,7 +227,8 @@ class VerifikasiController extends Controller
                 5 => 'pilihan1',
                 6 => 'pilihan2',
                 7 => 'ttl',
-                8 => 'is_bayar',
+                8 => 'bukti_bayar',
+                9 => 'is_bayar',
             ];
 
             $search = [];
@@ -197,7 +244,7 @@ class VerifikasiController extends Controller
 
 
             if (empty($request->input('search.value'))) {
-                $peserta = PmbPesertaOnline::whereRaw('nopen <> ""')
+                $peserta = PmbPesertaOnline::where('gelombang',$id_gelombang)
                     ->where('is_verifikasi',1)
                     ->offset($start)
                     ->limit($limit)
@@ -208,7 +255,7 @@ class VerifikasiController extends Controller
 
                 $peserta = PmbPesertaOnline::select('pmb_peserta_online.*','pmb_gelombang.nama_gel')
                     ->join('pmb_gelombang','pmb_gelombang.id','=','pmb_peserta_online.gelombang')
-                    ->whereRaw('nopen <> ""')
+                    ->where('gelombang',$id_gelombang)
                     ->where('is_verifikasi',1)
                     ->where(function ($query) use ($search) {
                     $query
@@ -223,7 +270,7 @@ class VerifikasiController extends Controller
 
                 $totalFiltered = PmbPesertaOnline::select('pmb_peserta_online.*','pmb_gelombang.nama_gel')
                     ->join('pmb_gelombang','pmb_gelombang.id','=','pmb_peserta_online.gelombang')
-                    ->whereRaw('nopen <> ""')
+                    ->where('gelombang',$id_gelombang)
                     ->where('is_verifikasi',1)
                     ->where(function ($query) use ($search) {
                     $query
@@ -250,6 +297,7 @@ class VerifikasiController extends Controller
                     $nestedData['is_bayar'] = $row->is_bayar ?? '0';
                     $nestedData['pilihan1'] = $prod[$row->pilihan1] ?? '';
                     $nestedData['pilihan2'] = $prod[$row->pilihan2] ?? '';
+                    $nestedData['bukti_bayar'] = BuktiRegistrasi::where('nopen',$row->nopen)->count();
                     $nestedData['ttl'] = $row->tempat_lahir . ", " . date('d-m-Y', strtotime($row->tanggal_lahir));
                     $data[] = $nestedData;
                 }
@@ -277,10 +325,34 @@ class VerifikasiController extends Controller
         $peserta->no_refrensi = $request->no_refrensi;
         $peserta->is_bayar = $request->is_bayar;
         if($peserta->save()){
+            $bukti = BuktiRegistrasi::where('nopen',$peserta->nopen)->first();
+            if($bukti){
+                $update = BuktiRegistrasi::find($bukti->id);
+                $update->no_refrensi = $request->no_refrensi;
+                $update->verifikasi = $request->is_bayar;
+                $update->save();
+            }
             return response()->json('Updated');
         }else{
             return response()->json('Error');
         }
 
+    }
+    public function show(String $id){
+        $where = ['id' => $id];
+        $select = [
+            'nopen',
+            'noktp',
+            'nama',
+            'nama_ibu',
+            'nama_ayah',
+            'hp_ortu',
+            'tempat_lahir',
+            'tanggal_lahir',
+            'alamat',
+        ];
+        $peserta = PmbPesertaOnline::select($select)->where($where)->first();
+
+        return response()->json($peserta);
     }
 }
