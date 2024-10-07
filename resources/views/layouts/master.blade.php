@@ -32,7 +32,7 @@
     <div class="tap-top"><i data-feather="chevrons-up"></i></div>
     <!-- tap on tap ends-->
     <!-- page-wrapper Start-->
-    <div class="page-wrapper compact-wrapper" id="pageWrapper">
+    <div class="page-wrapper modern-layout" id="pageWrapper">
       <!-- Page Header Start-->
 
 
@@ -90,11 +90,11 @@
     @include('layouts.script')
     <!-- Plugin used-->
 
-    {{-- <script type="text/javascript">
+    <script type="text/javascript">
       if ($(".page-wrapper").hasClass("horizontal-wrapper")) {
             $(".according-menu.other" ).css( "display", "none" );
             $(".sidebar-submenu" ).css( "display", "block" );
       }
-    </script> --}}
+    </script>
   </body>
 </html>
