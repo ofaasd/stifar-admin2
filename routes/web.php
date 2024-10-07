@@ -74,6 +74,7 @@ use App\Http\Controllers\mahasiswa\skripsi\PembimbingController;
 use App\Http\Controllers\admin\akademik\AbsensiController;
 use App\Http\Controllers\admin\akademik\NilaiController as nilaiakademik;
 use App\Http\Controllers\admin\akademik\PengaturanUjianController;
+use App\Http\Controllers\admin\skripsi\ManajemenSkripsiController;
 use App\Http\Controllers\mahasiswa\skripsi\BimbinganController;
 
 /*
@@ -340,6 +341,17 @@ Route::group(['middleware' => ['auth', 'role:super-admin']], function () {
         Route::get('/edit-dosen/{nip}', 'edit')->name('editDosen');
         Route::post('/update-kuota', 'updateKuota')->name('updateKuota');
         Route::get('/getNpp', 'getNppDosen')->name('getNppDosen');
+    });
+    Route::group(['prefix' => 'admin/skripsi/manajemen', 'as' => 'admin.skripsi.manajemen.', 'controller' => ManajemenSkripsiController::class], function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/sidang', 'index_sidang')->name('sidang.index');
+        Route::get('/bimbingan', 'index_bimbingan')->name('bimbingan.index');
+        // Route::get('/list-dosen', 'getListDosen')->name('listDosen');
+        Route::get('/get-data/{nip}', 'getAllData')->name('getAllData');
+        // Route::post('/acc-dosen', 'accDosen')->name('accDosen');
+        // Route::get('/edit-dosen/{nip}', 'edit')->name('editDosen');
+        // Route::post('/update-kuota', 'updateKuota')->name('updateKuota');
+        // Route::get('/getNpp', 'getNppDosen')->name('getNppDosen');
     });
 
     Route::resource('admin/nilai_lama', NilaiLamaController::class)->name('index','nilai_lama');

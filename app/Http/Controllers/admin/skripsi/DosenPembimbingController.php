@@ -13,8 +13,6 @@ class DosenPembimbingController extends Controller
 {
     public function index()
     {
-
-
         return view('admin.skripsi.dosbim.index');
     }
 
@@ -95,13 +93,20 @@ class DosenPembimbingController extends Controller
     public function edit($nip)
     {
         // Ambil data dosen pembimbing berdasarkan nip
-        $dosen = RefPembimbing::where('nip', $nip)->join('pegawai','pegawai.npp','ref_pembimbing_skripsi.nip')->select('pegawai.nama','nip','kuota')->firstOrFail();
-
+        $dosen = RefPembimbing::where('nip', $nip)
+            ->join('pegawai_biodata AS pegawai','pegawai.npp', '=', 'ref_pembimbing_skripsi.nip')
+            ->select('pegawai.nama_lengkap','nip','kuota')
+            ->firstOrFail();
+    if($dosen){
         return response()->json([
-            'nip' => $dosen->nip . ' - '.$dosen->nama,
+            'nip' => $dosen->nip . ' - ' . $dosen->namanama_lengkap,
             'kuota' => $dosen->kuota
         ]);
+    }else{
+        return response()->json(['message' => 'Dosen Pembimbing Tidak Ditemukan'], 404);
     }
+    }
+    
 
     public function updateKuota(Request $request)
     {

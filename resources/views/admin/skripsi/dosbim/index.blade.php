@@ -139,8 +139,7 @@
                         $('#FormModal').modal('show');
                     },
                     error: function(xhr) {
-                        alert('Terjadi kesalahan saat mengambil data');
-                        console.log(xhr.responseText);
+                        console.log('Error:', xhr.responseJSON?.message || 'An error occurred');
                     }
                 });
             });
@@ -204,13 +203,13 @@
                     data: formData, // Serializes form data
                     success: function(response) {
                         if (response.success) {
-                            alert(response.message); // Tampilkan pesan sukses
+                        swal("Success", "Berhasil Update Kuota Dosen ", "success");
                             $('#FormModal').modal('hide'); // Tutup modal
                             $('#pembimbing-table').DataTable().ajax
                                 .reload(); // Reload DataTables
 
                         } else {
-                            alert(response.message); // Tampilkan pesan error
+                        swal("error", "Gagal Update Kuota Dosen ", "error");
                         }
                     },
                     error: function(xhr) {
