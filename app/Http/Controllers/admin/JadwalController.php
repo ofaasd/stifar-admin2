@@ -278,7 +278,7 @@ class JadwalController extends Controller
 
         // Return ke view dengan variabel yang berisi angkatan dan jumlah mahasiswa
         $no = 1;
-        return view('admin.akademik.jadwal.distribusi_sks', compact('title', 'ta','sesi','days','ruang','no', 'distribusiByDosen', 'angkatan', 'totalMahasiswa'));
+        return view('admin.akademik.jadwal.distribusi_sks', compact('title', 'no', 'distribusiByDosen', 'angkatan', 'totalMahasiswa'));
     }
     public function daftarJadwalHarianProdi(String $id){
         $id_tahun = TahunAjaran::where('status','Aktif')->first()->id;
@@ -342,7 +342,7 @@ class JadwalController extends Controller
             ->pluck('total', 'angkatan');
 
         $totalMahasiswa = $angkatan->sum();
-        return view('admin.akademik.jadwal.jadwal_harian', compact('title', 'mk', 'no', 'jadwal','id_prodi','prodi','nama','jumlah_input_krs', 'angkatan','totalMahasiswa'));
+        return view('admin.akademik.jadwal.jadwal_harian', compact('title', 'ta','sesi','days','ruang','mk', 'no', 'jadwal','id_prodi','prodi','nama','jumlah_input_krs', 'angkatan','totalMahasiswa'));
     }
     public function reqJadwalHarian(Request $request){
         $id_tahun = TahunAjaran::where('status','Aktif')->first()->id;
