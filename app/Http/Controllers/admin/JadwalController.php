@@ -201,12 +201,12 @@ class JadwalController extends Controller
         }
 
         // Mendapatkan jumlah mahasiswa untuk setiap angkatan
-        $mhs_angkatan = Mahasiswa::whereIn('angkatan', $angkatan)
+        $angkatan = Mahasiswa::whereIn('angkatan', $angkatan)
             ->select('angkatan', DB::raw('count(*) as total'))
             ->groupBy('angkatan')
             ->pluck('total', 'angkatan');
 
-        $totalMahasiswa = $mhs_angkatan->sum();
+        $totalMahasiswa = $angkatan->sum();
 
         return view('admin.akademik.jadwal.jadwal_harian', compact('title', 'ta','sesi','days','ruang','mk', 'no', 'jadwal','id_prodi','prodi','nama','jumlah_input_krs', 'angkatan', 'totalMahasiswa'));
     }
@@ -319,7 +319,26 @@ class JadwalController extends Controller
             $nama_prodi = explode(' ',$row->nama_prodi);
             $nama[$row->id] = $nama_prodi[0] . " " . $nama_prodi[1];
         }
-        return view('admin.akademik.jadwal.jadwal_harian', compact('title', 'mk', 'no', 'jadwal','id_prodi','prodi','nama','jumlah_input_krs'));
+
+        $angkatans = Mahasiswa::select('angkatan')
+            ->orderBy('angkatan', 'asc')
+            ->whereNotNull('angkatan')
+            ->distinct()
+            ->get();
+
+        $angkatan = [];
+        foreach ($angkatans as $item) {
+            $angkatan[] = $item->angkatan;
+        }
+
+        // Mendapatkan jumlah mahasiswa untuk setiap angkatan
+        $angkatan = Mahasiswa::whereIn('angkatan', $angkatan)
+            ->select('angkatan', DB::raw('count(*) as total'))
+            ->groupBy('angkatan')
+            ->pluck('total', 'angkatan');
+
+        $totalMahasiswa = $angkatan->sum();
+        return view('admin.akademik.jadwal.jadwal_harian', compact('title', 'mk', 'no', 'jadwal','id_prodi','prodi','nama','jumlah_input_krs', 'angkatan','totalMahasiswa'));
     }
     public function reqJadwalHarian(Request $request){
         $id_tahun = TahunAjaran::where('status','Aktif')->first()->id;
