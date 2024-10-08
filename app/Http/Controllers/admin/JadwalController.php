@@ -201,12 +201,12 @@ class JadwalController extends Controller
         }
 
         // Mendapatkan jumlah mahasiswa untuk setiap angkatan
-        $angkatan = Mahasiswa::whereIn('angkatan', $angkatan)
+        $mhs_angkatan = Mahasiswa::whereIn('angkatan', $angkatan)
             ->select('angkatan', DB::raw('count(*) as total'))
             ->groupBy('angkatan')
             ->pluck('total', 'angkatan');
 
-        $totalMahasiswa = $angkatan->sum();
+        $totalMahasiswa = $mhs_angkatan->sum();
 
         return view('admin.akademik.jadwal.jadwal_harian', compact('title', 'ta','sesi','days','ruang','mk', 'no', 'jadwal','id_prodi','prodi','nama','jumlah_input_krs', 'angkatan', 'totalMahasiswa'));
     }
