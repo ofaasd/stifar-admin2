@@ -28,9 +28,9 @@
                     <div class="card-body">
                         <ul class="simple-wrapper nav nav-tabs" id="myTab" role="tablist">
                             {{-- <li class="nav-item" role="presentation"><a class="nav-link txt-default" id="kelMK-tab" href="{{ url('admin/masterdata/kelompok-mk') }}" role="tab" aria-controls="kelMK" aria-selected="true">Kelompok Matakuliah</a></li> --}}
-                            <li class="nav-item" role="presentation"><a class="nav-link txt-default active" id="masterKur-tabs" href="{{ url('admin/masterdata/kurikulum') }}" role="tab" aria-controls="masterKur" aria-selected="false" tabindex="-1">Mahasiswa Bimbingan</a></li>
-                            <li class="nav-item" role="presentation"><a class="nav-link txt-default" id="MkKur-tab" href="{{ url('admin/masterdata/matakuliah-kurikulum') }}" role="tab" aria-controls="MkKur" aria-selected="false" tabindex="-1">Mahasiswa Sidang</a></li>
-                            <li class="nav-item" role="presentation"><a class="nav-link txt-default " href="#" role="tab"  aria-selected="false" tabindex="-1">Dosen Pembimbing</a></li>
+                            <li class="nav-item" role="presentation"><a class="nav-link txt-default active" id="masterKur-tabs" href="#" role="tab" aria-controls="masterKur" aria-selected="false" tabindex="-1">Mahasiswa Bimbingan</a></li>
+                            <li class="nav-item" role="presentation"><a class="nav-link txt-default" id="MkKur-tab" href="{{Route('admin.skripsi.manajemen.sidang.index') }}" role="tab" aria-controls="MkKur" aria-selected="false" tabindex="-1">Mahasiswa Sidang</a></li>
+                            <li class="nav-item" role="presentation"><a class="nav-link txt-default " href="Route('admin.skripsi.manajemen.index')" role="tab"  aria-selected="false" tabindex="-1">Dosen Pembimbing</a></li>
                         </ul>
                         <div class="tab-content" id="myTabContent">
                             <div class="tab-pane fade active show" id="masterMK" role="tabpanel" aria-labelledby="masterMK-tab">
