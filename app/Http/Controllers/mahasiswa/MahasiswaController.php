@@ -273,6 +273,7 @@ class MahasiswaController extends Controller
                 'email' => $request->email,
                 'hp' => $request->hp,
                 'id_dsn_wali' => $request->id_dsn_wali,
+                'status' => $request->status,
             ]
         );
         return response()->json('updated');
