@@ -94,8 +94,8 @@
                     <li><a href="{{URL::to('admin/admisi/daftar_soal')}}">Pengaturan Ujian PMB</a></li>
                     <li><a href="{{URL::to('admin/admisi/peringkat')}}">Peringkat PMDP</a></li>  {{--  Ada menu untuk toggle krs sedang dibuka atau ditutup--}}
                     <li><a href="{{URL::to('admin/admisi/verifikasi')}}">Verifikasi Pendaftaran</a></li>
-                    <li><a href="{{URL::to('admin/admisi/verifikasi/pembayaran')}}">Verifikasi Pembayaran Daftar</a></li>
-                    <li><a href="{{URL::to('admin/admisi/pengumuman')}}">Surat Pengumuman</a></li> {{-- Butuh format surat pengumuman resmi dari pihak kampus --}}
+                    <li><a href="{{URL::to('admin/admisi/verifikasi/pembayaran')}}">Verifikasi Pembayaran</a></li>
+                    <li><a href="{{URL::to('admin/admisi/pengumuman')}}">Pengumuman Peserta</a></li> {{-- Butuh format surat pengumuman resmi dari pihak kampus --}}
                     <li><a href="#">KTM (s) <label class="badge badge-light-danger">!</label></a></li>
                     <li><a href="#">Statistik <label class="badge badge-light-danger">!</label></a></li>
                     <li><a href="#">Verifikasi Pembayaran Daftar Ulang <label class="badge badge-light-danger">!</label></a></li>

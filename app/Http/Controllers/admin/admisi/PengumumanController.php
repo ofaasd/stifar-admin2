@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\PmbGelombang;
 use App\Models\PmbPesertaOnline;
 use App\Models\PmbJalurProdi;
+use App\Models\Prodi;
 
 class PengumumanController extends Controller
 {
@@ -43,10 +44,11 @@ class PengumumanController extends Controller
                 $gel[$row->id] = $row->nama_gel;
             }
 
-            $prodi = PmbJalurProdi::select('pmb_jalur_prodi.*','program_studi.nama_jurusan')->join('program_studi','program_studi.id','pmb_jalur_prodi.id_program_studi')->get();
+            $prodi = PmbJalurProdi::select('pmb_jalur_prodi.*','program_studi.nama_prodi')->join('program_studi','program_studi.id','pmb_jalur_prodi.id_program_studi')->get();
             $prod = [];
-            foreach($prodi as $row){
-                $prod[$row->id] = $row->nama_jurusan . " " . $row->keterangan;
+            $all_prodi = Prodi::all();
+            foreach($all_prodi as $row){
+                $prod[$row->id] = $row->nama_prodi . " " . $row->keterangan;
             }
 
             $columns = [
