@@ -10,6 +10,7 @@
             <div class="col-sm-12">
                 <div class="input-group">
                     <input type="text" name="nama" class="form-control" placeholder="Nama" id="nama"  value="{{$mahasiswa->nama}}">
+                    <input type="hidden" name="status" class="form-control" placeholder="status" id="status"  value="{{$mahasiswa->status}}">
                 </div>
             </div>
         </div>
