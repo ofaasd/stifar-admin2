@@ -5,7 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
-class pengajar extends Model
+class Pengajar extends Model
 {
     protected $fillable = [
         'id_jadwal',
