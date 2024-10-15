@@ -139,7 +139,7 @@
                             <span>Ujian <label class="badge badge-light-danger">!</label></span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
-                            <li><a href="#">Pengaturan <label class="badge badge-light-danger">!</label></a></li>{{--  Ada menu untuk toggle ujian sedang dibuka atau ditutup--}}
+                            <li><a href="{{Url::to('admin/akademik/pengaturan-ujian')}}">Pengaturan</a></li>{{--  Ada menu untuk toggle ujian sedang dibuka atau ditutup--}}
                             <li><a href="{{Url::to('admin/akademik/nilai')}}">Input Nilai</a></li>
                             {{-- <li><a href="#">Posting Nilai <label class="badge badge-light-danger">!</label></a></li> --}}
                             {{-- <li><a href="#">Input Nilai Konversi <label class="badge badge-light-danger">!</label></a></li> --}}

@@ -258,6 +258,7 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
 
     Route::get('/admin/akademik/pengaturan-ujian', [PengaturanUjianController::class, 'index']);
     Route::get('/admin/akademik/pengaturan-ujian/prodi/{id}', [PengaturanUjianController::class, 'index']);
+    Route::post('/admin/akademik/pengaturan-ujian/setjadwal', [PengaturanUjianController::class, 'setJadwalUjian']);
 
 
     // route KRS
