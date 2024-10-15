@@ -16,7 +16,7 @@ use App\Models\PegawaiBiodatum;
 use App\Models\Sesi;
 use App\Models\Krs;
 use App\Models\Mahasiswa;
-use App\Models\Pengajar;
+use App\Models\Pengajars as Pengajar;
 use App\Models\TblJadwalUjian;
 use Illuminate\Support\Facades\DB;
 

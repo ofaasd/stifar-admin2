@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @package App\Models
  */
-class Pengajar extends Model
+class Pengajars extends Model
 {
 	protected $table = 'pengajars';
 
