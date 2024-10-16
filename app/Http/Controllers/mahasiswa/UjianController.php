@@ -13,6 +13,7 @@ use App\Models\Mahasiswa;
 use App\Models\Prodi;
 use App\Models\MatakuliahKurikulum;
 use App\Models\MasterKeuanganMh;
+use App\Models\MasterRuang;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
 
@@ -34,6 +35,12 @@ class UjianController extends Controller
                 $mk[] = MatakuliahKurikulum::select('mata_kuliahs.*')->join('mata_kuliahs','mata_kuliahs.id','=','matakuliah_kurikulums.id_mk')->where('mata_kuliahs.status','Aktif')->where('id_kurikulum',$row->id)->get();
             }
         }
+        $list_ruang = [];
+        $list_ruang[0] = '-';
+        $ruang = MasterRuang::all();
+        foreach($ruang as $row){
+            $list_ruang[$row->id] = $row->nama_ruang;
+        }
         //$mk = MataKuliah::get();
         $krs = Krs::select('krs.*', 'a.hari', 'a.kel', 'a.kode_jadwal', 'b.nama_matkul', 'b.sks_teori', 'b.sks_praktek','b.kode_matkul', 'c.nama_sesi', 'd.nama_ruang','tbl_jadwal_ujian.tanggal_uts', 'tbl_jadwal_ujian.jam_mulai_uts','tbl_jadwal_ujian.jam_selesai_uts','tbl_jadwal_ujian.id_ruang_uts','tbl_jadwal_ujian.tanggal_uas','tbl_jadwal_ujian.jam_mulai_uas','tbl_jadwal_ujian.jam_selesai_uas','tbl_jadwal_ujian.id_ruang_uas')
                     ->leftJoin('jadwals as a', 'krs.id_jadwal', '=', 'a.id')
@@ -46,6 +53,6 @@ class UjianController extends Controller
                     ->get();
         $no = 1;
         $permission = MasterKeuanganMh::where('id_mahasiswa',$idmhs)->first();
-        return view('mahasiswa.ujian.index', compact('mhs','title', 'permission','mk', 'krs', 'no', 'ta', 'idmhs'));
+        return view('mahasiswa.ujian.index', compact('mhs','title', 'permission','mk', 'krs', 'no', 'ta', 'idmhs','list_ruang'));
     }
 }

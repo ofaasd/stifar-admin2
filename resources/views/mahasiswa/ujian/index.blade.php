@@ -54,7 +54,7 @@
                                         <td>Hari, Waktu (UTS)</td>
                                         <td>Ruang (UTS)</td>
                                         
-                                        <td>Validasi Dosen</td>
+                                        <td>Izin Dosen Pengampu</td>
                                     </thead>
                                     <tbody>
                                         @php
@@ -68,10 +68,10 @@
                                                 <td>{{ $row['kel'] }}</td>
                                                 <td>{{ ($row->sks_teori+$row->sks_praktek) }}</td>
                                                 <!-- <td>{{ $row['sks_teori'] }}T/ {{ $row['sks_praktek'] }}P</td> -->
-                                                <td>{{ $row['tanggal_uts'] ?? '' }}, {{ $row['jam_mulai_uts'] ?? '' }} - {{ $row['jam_selesai_uts'] ?? '' }}</td>
-                                                <td>{{ $row['id_ruang_uts'] ?? '' }}</td>
+                                                <td>{{ (!empty($row['tanggal_uts']))?date('d-m-Y',strtotime($row['tanggal_uts'])) : '' }}, {{ $row['jam_mulai_uts'] ?? '' }} - {{ $row['jam_selesai_uts'] ?? '' }}</td>
+                                                <td>{{ $list_ruang[$row['id_ruang_uts'] ?? 0] }}</td>
                                                 
-                                                <td>{!!($row->is_publish == 0)?'<p class="btn btn-secondary btn-sm" style="font-size:8pt;">Menunggu Validasi Dosen</p>':'<p class="btn btn-success btn-sm" style="font-size:8pt;">Sudah Divalidasi</p>'!!}</td>
+                                                <td>{!!($row->is_uts == 0)?'<p class="btn btn-secondary btn-sm" style="font-size:8pt;">Tidak Diizinkan</p>':'<p class="btn btn-success btn-sm" style="font-size:8pt;">Sudah Diizinkan</p>'!!}</td>
                                                 
                                             </tr>
                                             
@@ -81,7 +81,7 @@
                             </div>
                             @endif
 
-                            @if($permission->uts == 0 )
+                            @if($permission->uas == 0 )
                                 <div class="alert alert-danger">Anda belum diizinkan untuk melihat dan mencetak kartu ujian UTS harap menghubungi admin sistem / BAAK</div>
                             @else
                             <div class="mt-4">
@@ -97,12 +97,10 @@
                                         <td>Kelas</td>
                                         <td>SKS</td>
                                         <!-- <td>SKS</td> -->
-                                        <td>Hari, Waktu (UTS)</td>
-                                        <td>Ruang (UTS)</td>
                                         <td>Hari, Waktu (UAS)</td>
                                         <td>Ruang (UAS)</td>
                                         
-                                        <td>Validasi Dosen</td>
+                                        <td>Izin Dosen Pengampu</td>
                                     </thead>
                                     <tbody>
                                         @php
@@ -117,11 +115,9 @@
                                                 <td>{{ $row['kel'] }}</td>
                                                 <td>{{ ($row->sks_teori+$row->sks_praktek) }}</td>
                                                 <!-- <td>{{ $row['sks_teori'] }}T/ {{ $row['sks_praktek'] }}P</td> -->
-                                                <td>{{ $row['tanggal_uas'] ?? '' }}, {{ $row['jam_mulai_uas'] ?? '' }} - {{ $row['jam_selesai_uas'] ?? '' }}</td>
-                                                <td>{{ $row['id_ruang_uas'] ?? '' }}</td>
-                                                
-                                                <td>{!!($row->is_publish == 0)?'<p class="btn btn-secondary btn-sm" style="font-size:8pt;">Menunggu Validasi Dosen</p>':'<p class="btn btn-success btn-sm" style="font-size:8pt;">Sudah Divalidasi</p>'!!}</td>
-                                                
+                                                <td>{{ (!empty($row['tanggal_uas']))?date('d-m-Y',strtotime($row['tanggal_uas'])) : '' }}, {{ $row['jam_mulai_uas'] ?? '' }} - {{ $row['jam_selesai_uas'] ?? '' }}</td>
+                                                <td>{{ $list_ruang[$row['id_ruang_uas'] ?? 0] }}</td>
+                                                <td>{!!($row->is_uas == 0)?'<p class="btn btn-secondary btn-sm" style="font-size:8pt;">Tidak Diizinkan</p>':'<p class="btn btn-success btn-sm" style="font-size:8pt;">Sudah Diizinkan</p>'!!}</td>
                                             </tr>
                                             
                                         @endforeach

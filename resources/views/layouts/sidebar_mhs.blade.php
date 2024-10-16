@@ -34,7 +34,9 @@
                     <li class="submenu-title"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/input_krs')}}" >
                         <span> Input KRS</span></a>
                     </li>
-
+                    <li class="submenu-title"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/ujian')}}" >
+                        <span> Ujian</span></a>
+                    </li>
                     <li class="submenu-title"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/khs')}}" >
                         <span> KHS</span></a>
                     </li>
