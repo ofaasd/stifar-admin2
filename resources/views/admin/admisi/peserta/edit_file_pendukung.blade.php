@@ -65,7 +65,7 @@
                                     <label for="info_pmb">Upload File Pendukung</label>
                                     <input type='file' class="form-control" name="foto" />
                                     <p>Maksimal 5 MB dengan format pdf.</p>
-                                    <a href="{{(!empty($peserta->file_pendukung))?asset('assets/pdf/pmb/' . $peserta->file_pendukung ):""}}" class="btn btn-primary" target="_blank">Lihat File Upload</a>
+                                    <a target="_blank" href="{{(!empty($peserta->file_pendukung))?'https://pendaftaran.stifar.ac.id/assets/file_pmb/' .  $peserta->file_pendukung :""}}" class="btn btn-primary" target="_blank">Lihat File Upload</a>
                                 </div>
                             </div>
                             <div class="col-md-12 mb-4">
