@@ -24,7 +24,7 @@
 @section('content')
 <div class="container-fluid">
     <div class="row widget-grid">
-      <div class="col-xxl-4 col-sm-6 box-col-6">
+      <div class="col-xxl-6 col-sm-6 box-col-6">
         <div class="card profile-box">
           <div class="card-body">
             <div class="media">

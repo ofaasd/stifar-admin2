@@ -71,6 +71,7 @@ use App\Http\Controllers\admin\akademik\PerwalianController;
 use App\Http\Controllers\admin\akademik\AbsensiController;
 use App\Http\Controllers\admin\akademik\NilaiController as nilaiakademik;
 use App\Http\Controllers\admin\akademik\PengaturanUjianController;
+use App\Http\Controllers\mahasiswa\UjianController;
 
 /*
 |--------------------------------------------------------------------------
@@ -331,6 +332,7 @@ Route::group(['middleware' => ['auth','role:mhs|super-admin']], function(){
     Route::get('/admin/masterdata/krs/input/{id}/{mhs}', [KrsController::class, 'tambahadminKRS']);
 
 
+    Route::get('mhs/ujian', [UjianController::class, 'index'])->name('i dnex');
 
     //Route::post('admin/admisi/peserta/daftar_kota',[PmbPesertaController::class, 'daftar_kota'] )->name('daftar_kota');
 });

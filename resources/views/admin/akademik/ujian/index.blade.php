@@ -204,33 +204,36 @@
         }
         $(function() {
             $("#myTable").DataTable({
-                responsive: true
+                responsive: true,
+                drawCallback: function (settings) {
+                    $(".tanggal-ujian").change(function(){
+                        update_ujian($(this).data('id'),'tanggal_uts',$(this).val())
+                    });
+                    $(".waktu_mulai").change(function(){
+                        update_ujian($(this).data('id'),'jam_mulai_uts',$(this).val())
+                    });
+                    $(".waktu_selesai").change(function(){
+                        update_ujian($(this).data('id'),'jam_selesai_uts',$(this).val())
+                    });
+                    $(".ruang_uts").change(function(){
+                        update_ujian($(this).data('id'),'id_ruang_uts',$(this).val())
+                    });
+                    $(".tanggal-ujian-uas").change(function(){
+                        update_ujian($(this).data('id'),'tanggal_uas',$(this).val())
+                    });
+                    $(".waktu_mulai-uas").change(function(){
+                        update_ujian($(this).data('id'),'jam_mulai_uas',$(this).val())
+                    });
+                    $(".waktu_selesai-uas").change(function(){
+                        update_ujian($(this).data('id'),'jam_selesai_uas',$(this).val())
+                    });
+                    $(".ruang_uas").change(function(){
+                        update_ujian($(this).data('id'),'id_ruang_uas',$(this).val())
+                    });
+                },
             })
             
-            $(".tanggal-ujian").change(function(){
-                update_ujian($(this).data('id'),'tanggal_uts',$(this).val())
-            });
-            $(".waktu_mulai").change(function(){
-                update_ujian($(this).data('id'),'jam_mulai_uts',$(this).val())
-            });
-            $(".waktu_selesai").change(function(){
-                update_ujian($(this).data('id'),'jam_selesai_uts',$(this).val())
-            });
-            $(".ruang_uts").change(function(){
-                update_ujian($(this).data('id'),'id_ruang_uts',$(this).val())
-            });
-            $(".tanggal-ujian-uas").change(function(){
-                update_ujian($(this).data('id'),'tanggal_uas',$(this).val())
-            });
-            $(".waktu_mulai-uas").change(function(){
-                update_ujian($(this).data('id'),'jam_mulai_uas',$(this).val())
-            });
-            $(".waktu_selesai-uas").change(function(){
-                update_ujian($(this).data('id'),'jam_selesai_uas',$(this).val())
-            });
-            $(".ruang_uas").change(function(){
-                update_ujian($(this).data('id'),'id_ruang_uas',$(this).val())
-            });
+            
 
         })
     </script>
