@@ -86,7 +86,8 @@ class UjianController extends Controller
             'tahun_ajar' => $tahun_ajar,
             'smt' => $smt,
             'semester' => $semester,
-            'logo' => public_path('/assets/images/logo/logo-icon.png')
+            'logo' => public_path('/assets/images/logo/logo-icon.png'),
+            'foto' => public_path('/assets/images/mahasiswa/' . $mhs->foto_mhs)
         ];
  
     	$pdf = PDF::loadview('mahasiswa/ujian/cetak_uts',$data);
