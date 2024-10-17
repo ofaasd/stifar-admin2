@@ -79,6 +79,7 @@ class UjianController extends Controller
                     ->where(['krs.id_tahun' => $ta, 'krs.id_mhs' => $id])
                     ->get();
         $filename = $mhs->nim.'-krs.pdf';
+        $cek_foto = (!empty($mhs->foto_mhs))?'assets/images/mahasiswa/' . $mhs->foto_mhs:'assets/images/user/7.jpg';
         $data = [
             'mhs' => $mhs,
             'krs' => $krs,
@@ -87,7 +88,7 @@ class UjianController extends Controller
             'smt' => $smt,
             'semester' => $semester,
             'logo' => public_path('/assets/images/logo/logo-icon.png'),
-            'foto' => public_path('/assets/images/mahasiswa/' . $mhs->foto_mhs)
+            'foto' => public_path('/' . $cek_foto)
         ];
  
     	$pdf = PDF::loadview('mahasiswa/ujian/cetak_uts',$data);
