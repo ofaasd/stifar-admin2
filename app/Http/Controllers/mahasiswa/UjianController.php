@@ -79,7 +79,7 @@ class UjianController extends Controller
                     ->where(['krs.id_tahun' => $ta, 'krs.id_mhs' => $id])
                     ->get();
         $filename = $mhs->nim.'-krs.pdf';
-        $cek_foto = (!empty($mhs->foto_mhs))?'assets/images/mahasiswa/' . $mhs->foto_mhs:'assets/images/user/7.jpg';
+        $cek_foto = (!empty($mhs->foto_mhs))?'assets/images/mahasiswa/' . $mhs->foto_mhs:'assets/images/logo/logo-icon.png';
         $data = [
             'mhs' => $mhs,
             'krs' => $krs,
