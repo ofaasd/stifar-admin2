@@ -16,6 +16,7 @@ use App\Models\MasterKeuanganMh;
 use App\Models\MasterRuang;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
+use PDF;
 
 class UjianController extends Controller
 {
@@ -26,7 +27,7 @@ class UjianController extends Controller
         $tahun_ajaran = TahunAjaran::where('status','Aktif')->first();
         $ta = $tahun_ajaran->id;
 
-        $title = 'Input KRS';
+        $title = 'Ujian UTS / UAS';
         $kd_prodi_mhs = Prodi::where('id',$mhs->id_program_studi)->first()->kode_prodi;
         $kurikulum = Kurikulum::where('progdi',$kd_prodi_mhs)->where('angkatan','<=',$mhs->angkatan)->where('angkatan_akhir','>=',$mhs->angkatan)->get();
         $mk = [];
@@ -50,9 +51,45 @@ class UjianController extends Controller
                     ->leftJoin('tbl_jadwal_ujian', 'tbl_jadwal_ujian.id_jadwal', '=', 'a.id')
                     ->where('krs.id_tahun', $ta)
                     ->where('id_mhs',$idmhs)
+                    ->where('is_publish',1)
                     ->get();
         $no = 1;
         $permission = MasterKeuanganMh::where('id_mahasiswa',$idmhs)->first();
         return view('mahasiswa.ujian.index', compact('mhs','title', 'permission','mk', 'krs', 'no', 'ta', 'idmhs','list_ruang'));
+    }
+    public function cetak_uts(){
+        $mhs = Mahasiswa::where('user_id',Auth::id())->first();
+        $id = $mhs->id;
+        $mhs = Mahasiswa::select('mahasiswa.nama', 'mahasiswa.nim', 'pegawai_biodata.nama_lengkap as dsn_wali', 'program_studi.nama_prodi')
+                          ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'mahasiswa.id_dsn_wali')
+                          ->leftJoin('program_studi', 'program_studi.id', '=', 'mahasiswa.id_program_studi')
+                          ->where('mahasiswa.id', $id)->first();
+        $tahun_ajaran = TahunAjaran::where('status','Aktif')->first();
+        $ta = $tahun_ajaran->id;
+        $thn_awal = explode('-', $tahun_ajaran->tgl_awal);
+        $thn_akhir = explode('-', $tahun_ajaran->tgl_akhir);
+        $tahun_ajar = $thn_awal[0].'-'.$thn_akhir[0];
+        $semester = ['', 'Ganjil', 'Ganjil', 'Antara'];
+        $smt = substr($tahun_ajaran->kode_ta, 4);
+        $krs = Krs::select('krs.*', 'a.hari','a.kode_jadwal', 'a.kel', 'b.nama_matkul', 'b.sks_teori', 'b.sks_praktek', 'c.nama_sesi', 'd.nama_ruang')
+                    ->leftJoin('jadwals as a', 'krs.id_jadwal', '=', 'a.id')
+                    ->leftJoin('mata_kuliahs as b', 'a.id_mk', '=', 'b.id')
+                    ->leftJoin('waktus as c', 'a.id_sesi', '=', 'c.id')
+                    ->leftJoin('master_ruang as d', 'a.id_ruang', '=', 'd.id')
+                    ->where(['krs.id_tahun' => $ta, 'krs.id_mhs' => $id])
+                    ->get();
+        $filename = $mhs->nim.'-krs.pdf';
+        $data = [
+            'mhs' => $mhs,
+            'krs' => $krs,
+            'no' => 1,
+            'tahun_ajar' => $tahun_ajar,
+            'smt' => $smt,
+            'semester' => $semester,
+            'logo' => public_path('/assets/images/logo/logo-icon.png')
+        ];
+ 
+    	$pdf = PDF::loadview('mahasiswa/ujian/cetak_uts',$data);
+    	return $pdf->download('Kartu-uts-' . $mhs->nim . '.pdf');
     }
 }
