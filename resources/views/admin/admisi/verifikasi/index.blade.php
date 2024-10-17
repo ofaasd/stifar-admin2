@@ -68,6 +68,7 @@
                                         <th>Pilihan2</th>
                                         <th>TTL</th>
                                         <th>Verifikasi</th>
+                                        <th>No. VA</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -87,6 +88,7 @@
                                             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
+                                            <div id="alert"></div>
                                             <div class="mb-3">
                                                 <label for="nopen" class="form-label">Nomor Pendaftaran</label>
                                                 <input type="text" name="nopen" id="nopen" class="form-control">
@@ -123,6 +125,40 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="modal fade" id="ListVaModal" tabindex="-1" role="dialog" aria-labelledby="showModal" aria-hidden="true">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        List All VA
+                                    </div>
+                                    <div class="modal-body">
+                                        <table id="vaTable" class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>No. VA</th>
+                                                    <th>No. Pendaftaran</th>
+                                                    <th>status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($bank as $row)
+                                                <tr>
+                                                    <td>{{$row->id}}</td>
+                                                    <td>{{$row->no_va}}</td>
+                                                    <td>{{$row->nopen}}</td>
+                                                    <td>{{($row->status == 0)?'Belum Dipakai':'Sudah Dipakai'}}</td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -138,6 +174,9 @@
 
     <script>
         $(function () {
+            $("#vaTable").DataTable({
+                responsive: true,
+            });
             const id_gelombang = {{$id_gelombang}};
             const baseUrl = {!! json_encode(url('/')) !!};
             const title = "{{strtolower($title)}}";
@@ -198,6 +237,15 @@
                         }
                     },
                     {
+                        searchable: false,
+                        orderable: false,
+                        targets: 9,
+                        render: function render(data, type, full, meta) {
+                            return '91291' + full['nopen'];
+                            //return '<span>asdasdasd</span>';
+                        }
+                    },
+                    {
                     // Actions
                     targets: -1,
                     title: 'Actions',
@@ -205,13 +253,17 @@
                     orderable: false,
                     render: function render(data, type, full, meta) {
                         return (
-                            '<div class="d-inline-block text-nowrap">' +
+                            
                             '<div class="btn-group"><a class="btn btn-sm  show-record btn-primary" data-id="'
                             .concat(full['id'], '" data-bs-toggle="modal" data-original-title="show" data-bs-target="#showModal"')
                             .concat(title, '"><i class="fa fa-eye"></i></a>'+
+                            
                             '<a class="btn btn-sm edit-record btn-info" data-id="')
                             .concat(full['id'], '" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal"')
-                            .concat(title, '"><i class="fa fa-pencil"></i></a></div></div>')
+                            .concat(title, '"><i class="fa fa-pencil"></i></a>')+ 
+                            '<a class="btn btn-sm  list-va btn-success" title="Cek List VA" data-id="'
+                            .concat(full['id'], '" data-bs-toggle="modal" data-original-title="show" data-bs-target="#ListVaModal"')
+                            .concat(title, '"><i class="fa fa-list-alt"></i></a></div>')
                         );
                     }
                     }
@@ -247,6 +299,7 @@
             });
             $('#tambahModal').on('hidden.bs.modal', function () {
                 $('#formAdd').trigger("reset");
+                $("#alert").html('');
             });
             //Edit Record
             $(document).on('click', '.edit-record', function () {
@@ -254,16 +307,28 @@
 
                 // changing the title of offcanvas
                 $('#ModalLabel').html('Edit ' + title);
+                
 
                 // get data
                 $.get(''.concat(baseUrl).concat(page_edel, '/').concat(id, '/edit'), function (data) {
-                Object.keys(data).forEach(key => {
-                    //console.log(key);
+                Object.keys(data[0]).forEach(key => {
+                    if(key == 'is_verifikasi' && data[0]['is_verifikasi'] != 1){
+                        if(data[1] == 0){
+                            $("#alert").html('<div class="alert alert-danger mb-4">No. Pendaftaran Sudah Di pakai</div>');
+                        }else{
+                            $("#alert").html('<div class="alert alert-success mb-4">No. Pendaftaran Tersedia dan dapat digunakan</div>');
+                        }
+                    }
+                    console.log(key);
                     $('#' + key)
-                        .val(data[key])
+                        .val(data[0][key])
                         .trigger('change');
+                    });
+                    
+                    
                 });
-                });
+                
+                
             });
             $(document).on('click', '.show-record', function () {
                 const id = $(this).data('id');
