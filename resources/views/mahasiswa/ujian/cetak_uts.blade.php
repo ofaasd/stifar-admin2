@@ -56,7 +56,7 @@
             <td>Semester</td>
             <td>:</td>
             <td>{{ $semester[$smt] }} - {{ $tahun_ajar }}</td>
-            <td rowspan="4" style="text-align: right"><img style="width:150px;" alt="" src="{{ $foto }}"></td>
+            <td rowspan="4" style="text-align: right"><img style="width:100px;" alt="" src="{{ (!empty($mhs->foto_mhs))?asset('assets/images/mahasiswa/' . $mhs->foto_mhs):asset('assets/images/user/7.jpg') }}"></td>
         </tr>
         <tr>
             <td>Jurusan/Prodi</td>
