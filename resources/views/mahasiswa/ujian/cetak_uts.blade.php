@@ -102,7 +102,7 @@
                 <td>{{ $no++ }}</td>
                 <td>{{ $row_krs['kode_jadwal'] }}</td>
                 <td>{{ $row_krs['nama_matkul'] }}</td>
-                <td>0</td>
+                <td style="background:#ddd; width:40px" ></td>
                 <td>{{ $row_krs['sks_praktek'] + $row_krs['sks_teori'] }}</td>
                 <td></td>
             </tr>
@@ -116,17 +116,6 @@
     </table>
     <hr>
     <br>
-   
-    <table align="right" class="customers">
-        <tr>
-            <td>Bag. Keuangan</td>
-            <td>Ka Sub. BAAK</td>
-        </tr>
-        <tr>
-            <td height="50" valign="top">Lunas UPP</td>
-            <td valign="top">Pengesahan</td>
-        </tr>
-    </table>
 </body>
 
 </html>
