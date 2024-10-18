@@ -87,7 +87,7 @@
                             <div class="mt-4">
                                 <h3>Jadwal Ujian UAS : </h3>
                                 
-                                <a href="{{ url('mhs/ujian/cetak_uas') }}" class="btn btn-info btn-sm m-4" style="float: right;"><i class="fa fa-download"></i> Download Kartu Ujian UAS</a>
+                                <a href="#" class="btn btn-info btn-sm m-4" style="float: right;"><i class="fa fa-download"></i> Download Kartu Ujian UAS</a>
                                 <div class="mt-2"></div>
                                 <table class="table" id="tablekrs">
                                     <thead>

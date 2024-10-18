@@ -45,7 +45,7 @@
             <td width="90%" style="padding-left: 30px;">
                 <center>
                     <b>SEKOLAH TINGGI ILMU FARMASI YAYASAN PHARMASI SEMARANG</b>
-                    <br><b>KARTU UJIAN</b>
+                    <br><b>KARTU UJIAN UTS</b>
                 </center>
             </td>
         </tr>
