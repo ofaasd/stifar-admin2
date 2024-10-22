@@ -15,8 +15,8 @@
 @endsection
 
 @section('breadcrumb-items')
-    <li class="breadcrumb-item">Admisi</li>
-    <li class="breadcrumb-item active">Peserta</li>
+    <li class="breadcrumb-item">Mahasiswa</li>
+    <li class="breadcrumb-item active">{{$title2}}</li>
 @endsection
 
 @section('content')
@@ -25,59 +25,68 @@
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
                 <div class="card">
-                    <div class="card-header pb-0">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <a href="{{URL::to('admin/admisi/peserta/create')}}" class="btn btn-primary mb-4" >+ {{$title}}</a>
-                            </div>
-                            <div class="col-md-6">
-                                <form action="{{URL::to('admin/admisi/peserta')}}" method="get">
-                                    <div class="row">
-                                        <div class="col-4">
-                                            <select name="ta_awal" id="ta_awal" class="form-control">
-                                                @for($i=$ta_min;$i<=$ta_max;$i++)
-                                                <option value="{{$i}}" {{($i == $curr_ta)?"selected":""}}>TA {{$i}} - {{($i+1)}}</option>
-                                                @endfor
-                                            </select>
-                                        </div>
-                                        <div class="col-8">
-                                            <select name="filter_gelombang" id="filter_gelombang" class="form-control">
-                                                @foreach($gelombang as $row)
-                                                    <option value="{{$row->id}}" {{($row->id == $id_gelombang)?"selected":""}}>{{$row->nama_gel}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-
+                    <div class="card-header pb-0 card-no-border">
+                        Bank Data VA
                     </div>
                     <div class="card-body">
                         <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal">
+                            <i class="fa fa-plus"></i>
+                            Import VA
+                        </button>
+                        <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="alert alert-warning">
+                                        Sebelum melakukan import va pastikan data yang dimasukan belum tersedia pada database VA
+                                    </div>
+                                    <form action="" method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        <input type="hidden" name="id" id="id">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="ModalLabel">Import VA</h5>
+                                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                <label for="excel" class="form-label">Import File Excel</label>
+                                                <input type="file" name="file_excel" id="file_excel" class="form-control">
+                                                <a href="admin/keuangan/bank_data_va/index" class="btn btn-wrning">Download Format Excel</a>
+                                            </div>
+                                            {{-- <div class="mb-3">
+                                                <textarea id="previewExcel" class="form-control"></textarea>
+                                            </div> --}}
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                                            <button class="btn btn-primary" type="submit">Simpan</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                         <div class="table-responsive">
                             <table class="display" id="basic-1">
                                 <thead>
                                     <tr>
                                         <th></th>
                                         <th>ID</th>
-                                        <th>Nama.</th>
+                                        <th>No. VA</th>
+                                        <th>Keterangan</th>
                                         <th>No. Pendaftaran</th>
-                                        <th>Gelombang</th>
-                                        <th>Pilihan1</th>
-                                        <th>Pilihan2</th>
-                                        <th>TTL</th>
-                                        <th>Actions</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-
+                                    
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
             </div>
+
             <!-- Zero Configuration  Ends-->
         </div>
     </div>
@@ -89,10 +98,10 @@
 
     <script>
         $(function () {
-            const id_gelombang = {{$id_gelombang}};
+
             const baseUrl = {!! json_encode(url('/')) !!};
             const title = "{{strtolower($title)}}";
-            const page = '/'.concat("admin/admisi/").concat(title).concat('/gelombang/',id_gelombang);
+            const page = '/'.concat("admin/keuangan/bank_data_va");
             var my_column = $('#my_column').val();
             const pecah = my_column.split('\n');
             let my_data = [];
@@ -102,9 +111,6 @@
                 //alert(data_obj.data);
                 my_data.push(data_obj);
             });
-
-            //alert(data_obj);
-            console.log(my_data);
 
             const dt = $("#basic-1").DataTable({
                 processing: true,
@@ -142,9 +148,10 @@
                     render: function render(data, type, full, meta) {
                         return (
                         '<div class="btn-group">' +
-                        '<a href="'+baseUrl+'/admin/admisi/peserta/'+full['id']+'/edit" class="btn btn-sm btn-primary"'
-                            .concat(title, '"><i class="fa fa-pencil"></i></a>') +
-                        '<button class="btn btn-sm delete-record btn-danger" data-id="'.concat(
+                        '<button class="btn btn-sm btn-primary edit-record" data-id="'
+                            .concat(full['id'], '" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal"')
+                            .concat(title, '"><i class="fa fa-pencil"></i></button>') +
+                        '<button class="btn btn-sm btn-danger delete-record" data-id="'.concat(
                             full['id'],
                             '"><i class="fa fa-trash"></i></button>'
                         )
@@ -182,19 +189,46 @@
                 $.get(''.concat(baseUrl).concat(page, '/').concat(id, '/edit'), function (data) {
                 Object.keys(data).forEach(key => {
                     //console.log(key);
-                    $('#' + key)
-                        .val(data[key])
-                        .trigger('change');
+                    if(key == "krs" || key == "uts" || key == "uas"){
+                        if(data[key] == 1){
+                            $("#"+key).prop('checked',true);
+                        }else{
+                            $("#"+key).prop('checked',false);
+                        }
+                    }else{
+                        $('#' + key)
+                            .val(data[key])
+                            .trigger('change');
+                    }
                 });
                 });
             });
             //save record
             $('#formAdd').on('submit',function(e){
+                const myFormData = new FormData(document.getElementById("formAdd"));
+                let krs_value = 0;
+                if($('#krs').prop('checked')){
+                    krs_value = 1;
+                }
+                let uts_value = 0;
+                if($('#uts').prop('checked')){
+                    uts_value = 1;
+                }
+                let uas_value = 0;
+                if($('#uas').prop('checked')){
+                    uas_value = 1;
+                }
+
+                myFormData.append('krs_value',krs_value)
+                myFormData.append('uts_value',uts_value)
+                myFormData.append('uas_value',uas_value)
                 e.preventDefault();
                 $.ajax({
-                    data: $('#formAdd').serialize(),
+                    data: myFormData,
                     url: ''.concat(baseUrl).concat(page),
                     type: 'POST',
+                    processData: false,
+                    contentType: false,
                     success: function success(status) {
                         dt.draw();
                         $("#tambahModal").modal('hide');
@@ -222,7 +256,6 @@
                     }
                 });
             });
-            //delete record
             $(document).on('click', '.delete-record', function () {
                 const id = $(this).data('id');
                 // sweetalert for confirmation of delete
@@ -245,7 +278,7 @@
                     // delete the data
                     $.ajax({
                     type: 'DELETE',
-                    url: ''.concat(baseUrl).concat('/admin/admisi/peserta/').concat(id),
+                    url: ''.concat(baseUrl).concat('/admin/keuangan/bank_data_va/').concat(id),
                     data:{
                         'id': id,
                         '_token': '{{ csrf_token() }}',
@@ -278,20 +311,6 @@
                     });
                 }
                 });
-            });
-            $("#ta_awal").on('change',function(){
-                const id = $(this).val();
-                const url = ''.concat(baseUrl).concat('/admin/admisi/peserta/get_gelombang_ta');
-                $.post(url,{"_token": "{{ csrf_token() }}",id:id}, (data) => {
-                    $("#filter_gelombang").html('<option value="0">Pilih Gelombang</option>');
-                    data.forEach(function(value) {
-                        $("#filter_gelombang").append(`<option value="${value.id}">${value.nama_gel}</option>`);
-                    });
-                }, "json");
-            });
-            $("#filter_gelombang").on('change',function(){
-                const id = $(this).val();
-                window.location.href = "{{URL::to('admin/admisi/peserta/gelombang')}}/"+id;
             });
         });
 

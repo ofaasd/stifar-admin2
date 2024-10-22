@@ -245,6 +245,7 @@
                     <li><a href="#">Cetak <label class="badge badge-light-danger">!</label></a></li>
                     <li><a href="#">Sync <label class="badge badge-light-danger">!</label></a></li>
                     <li><a href="#">Pembayaran Lain-lain <label class="badge badge-light-danger">!</label></a></li>
+                    <li><a href="{{URL::to('admin/keuangan/bank_data_va')}}">Bank Data VA</a></li> {{-- Menu dasar untuk buka tutup krs --}}
                 </ul>
             </li>
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#">

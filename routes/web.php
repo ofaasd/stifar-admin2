@@ -71,6 +71,7 @@ use App\Http\Controllers\admin\akademik\PerwalianController;
 use App\Http\Controllers\admin\akademik\AbsensiController;
 use App\Http\Controllers\admin\akademik\NilaiController as nilaiakademik;
 use App\Http\Controllers\admin\akademik\PengaturanUjianController;
+use App\Http\Controllers\admin\keuangan\VaController;
 use App\Http\Controllers\mahasiswa\UjianController;
 
 /*
@@ -159,6 +160,8 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     //Route::get('admin/masterdata/pt/renstra/detail/{id}', [RenstraPTController::class, 'index'])->name('renstra_detail');
 
     Route::get('admin/nilai_lama/{id}/{id_ta}', [NilaiLamaCOntroller::class, 'index'])->name('nilai_lama');
+
+    Route::post('admin/keuangan/bank_data_va/import', [VaController::class, 'import'])->name('import');
 
 
     Route::resource('admin/masterdata/pt', PTController::class)->name('index','pt');
@@ -309,7 +312,9 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
 
     Route::resource('admin/akademik/perwalian', PerwalianController::class)->name('index','perwalian_admin');
 
+    Route::resource('admin/keuangan/bank_data_va', VaController::class)->name('index','index_va');
     Route::resource('admin/keuangan', KeuanganController::class)->name('index','keuangan');
+    
 
     Route::resource('admin/nilai_lama', NilaiLamaController::class)->name('index','nilai_lama');
 });
