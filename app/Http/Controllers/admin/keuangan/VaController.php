@@ -99,12 +99,50 @@ class VaController extends Controller
               }
         }
     }
+    public function store(Request $request){
+        $id = $request->id;
 
-    public function store(Request $request) 
+        if ($id) {
+            $gel = BankDataVa::updateOrCreate(
+                ['id' => $id],
+                [
+                    'no_va' => $request->no_va,
+                    'keterangan' => $request->keterangan,
+                    'nopen' => $request->nopen,
+                    'status' => $request->status,
+                ]
+            );
+
+            return response()->json('Updated');
+        } else {
+            $gel = BankDataVa::updateOrCreate(
+                ['id' => $id],
+                [
+                    'no_va' => $request->no_va,
+                    'keterangan' => $request->keterangan,
+                    'nopen' => $request->nopen,
+                    'status' => $request->status,
+                ]
+            );
+            if ($gel) {
+                return response()->json('Created');
+            } else {
+                return response()->json('Failed Create VA');
+            }
+        }
+    }
+    public function import(Request $request) 
     {
         Excel::import(new BankDataVaImport, $request->file('file_excel'));
         
         return redirect('/admin/keuangan/bank_data_va')->with('success', 'All good!');
+    }
+    public function edit($id){
+        $where = ['id' => $id];
+
+        $BankDataVa = BankDataVa::where($where)->first();
+
+        return response()->json($BankDataVa);
     }
 
     public function destroy(string $id)

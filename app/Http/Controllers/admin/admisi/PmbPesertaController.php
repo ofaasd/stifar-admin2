@@ -21,7 +21,7 @@ class PmbPesertaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public $indexed = ['', 'id','nama' , 'nopen', 'gelombang', 'pilihan1','pilihan2','ttl'];
+    public $indexed = ['', 'id','nama' , 'nopen', 'gelombang', 'pilihan1','pilihan2','ttl','admin_input_date'];
     public function index(Request $request,$id_gelombang=0)
     {
         //
@@ -66,6 +66,7 @@ class PmbPesertaController extends Controller
                 5 => 'pilihan1',
                 6 => 'pilihan2',
                 7 => 'ttl',
+                8 => 'admin_input_date',
             ];
 
             $search = [];
@@ -94,7 +95,6 @@ class PmbPesertaController extends Controller
                         $query->where('id', 'LIKE', "%{$search}%")
                         ->orWhere('nama', 'LIKE', "%{$search}%")
                         ->orWhere('nopen', 'LIKE', "%{$search}%")
-                        ->orWhere('gelombang', 'LIKE', "%{$search}%")
                         ->orWhere('pilihan1', 'LIKE', "%{$search}%")
                         ->orWhere('pilihan2', 'LIKE', "%{$search}%")
                     )->offset($start)
@@ -107,7 +107,6 @@ class PmbPesertaController extends Controller
                     $query->where('id', 'LIKE', "%{$search}%")
                     ->orWhere('nama', 'LIKE', "%{$search}%")
                     ->orWhere('nopen', 'LIKE', "%{$search}%")
-                    ->orWhere('gelombang', 'LIKE', "%{$search}%")
                     ->orWhere('pilihan1', 'LIKE', "%{$search}%")
                     ->orWhere('pilihan2', 'LIKE', "%{$search}%")
                 )
@@ -129,6 +128,7 @@ class PmbPesertaController extends Controller
                     $nestedData['pilihan1'] = $prod[$row->pilihan1] ?? '';
                     $nestedData['pilihan2'] = $prod[$row->pilihan2] ?? '';
                     $nestedData['ttl'] = $row->tempat_lahir . ", " . date('d-m-Y', strtotime($row->tanggal_lahir));
+                    $nestedData['admin_input_date'] = date('d-m-Y', strtotime($row->admin_input_date));
                     $data[] = $nestedData;
                 }
             }

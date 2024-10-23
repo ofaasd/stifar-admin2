@@ -30,17 +30,17 @@
                     </div>
                     <div class="card-body">
                         <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal">
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-original-title="test" data-bs-target="#importModal">
                             <i class="fa fa-plus"></i>
                             Import VA
                         </button>
-                        <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
+                        <div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="importModal" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="alert alert-warning">
                                         Sebelum melakukan import va pastikan data yang dimasukan belum tersedia pada database VA
                                     </div>
-                                    <form action="" method="POST" enctype="multipart/form-data">
+                                    <form action="{{url('admin/keuangan/bank_data_va/import')}}" method="POST" enctype="multipart/form-data">
                                         @csrf
                                         <input type="hidden" name="id" id="id">
                                         <div class="modal-header">
@@ -51,7 +51,50 @@
                                             <div class="mb-3">
                                                 <label for="excel" class="form-label">Import File Excel</label>
                                                 <input type="file" name="file_excel" id="file_excel" class="form-control">
-                                                <a href="admin/keuangan/bank_data_va/index" class="btn btn-wrning">Download Format Excel</a>
+                                                <a href="" class="btn btn-wrning">Download Format Excel</a>
+                                            </div>
+                                            {{-- <div class="mb-3">
+                                                <textarea id="previewExcel" class="form-control"></textarea>
+                                            </div> --}}
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                                            <button class="btn btn-primary" type="submit">Simpan</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    
+                                    <form action="javascript:void(0)" method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        <input type="hidden" name="id" id="id">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="ModalLabel">Import VA</h5>
+                                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                <label for="no_va" class="form-label">No. VA</label>
+                                                <input type="text" name="no_va" id="no_va" class="form-control">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="keterangan" class="form-label">Keterangan</label>
+                                                <input type="text" name="keterangan" id="keterangan" class="form-control">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="nopen" class="form-label">No. Pendaftaran</label>
+                                                <input type="text" name="nopen" id="nopen" class="form-control">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="status" class="form-label">Status</label>
+                                                <select name="nopen" id="nopen" class="form-control">
+                                                    <option value="0">Belum Aktif</option>
+                                                    <option value="1">Aktif</option>
+                                                </select>
                                             </div>
                                             {{-- <div class="mb-3">
                                                 <textarea id="previewExcel" class="form-control"></textarea>
@@ -206,22 +249,6 @@
             //save record
             $('#formAdd').on('submit',function(e){
                 const myFormData = new FormData(document.getElementById("formAdd"));
-                let krs_value = 0;
-                if($('#krs').prop('checked')){
-                    krs_value = 1;
-                }
-                let uts_value = 0;
-                if($('#uts').prop('checked')){
-                    uts_value = 1;
-                }
-                let uas_value = 0;
-                if($('#uas').prop('checked')){
-                    uas_value = 1;
-                }
-
-                myFormData.append('krs_value',krs_value)
-                myFormData.append('uts_value',uts_value)
-                myFormData.append('uas_value',uas_value)
                 e.preventDefault();
                 $.ajax({
                     data: myFormData,
