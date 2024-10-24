@@ -42,7 +42,6 @@
                                     </div>
                                     <form action="{{url('admin/keuangan/bank_data_va/import')}}" method="POST" enctype="multipart/form-data">
                                         @csrf
-                                        <input type="hidden" name="id" id="id">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="ModalLabel">Import VA</h5>
                                             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -69,7 +68,7 @@
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     
-                                    <form action="javascript:void(0)" method="POST" enctype="multipart/form-data">
+                                    <form id="formAdd" action="javascript:void(0)" method="POST" enctype="multipart/form-data">
                                         @csrf
                                         <input type="hidden" name="id" id="id">
                                         <div class="modal-header">
@@ -91,7 +90,7 @@
                                             </div>
                                             <div class="mb-3">
                                                 <label for="status" class="form-label">Status</label>
-                                                <select name="nopen" id="nopen" class="form-control">
+                                                <select name="status" id="status" class="form-control">
                                                     <option value="0">Belum Aktif</option>
                                                     <option value="1">Aktif</option>
                                                 </select>
@@ -102,7 +101,7 @@
                                         </div>
                                         <div class="modal-footer">
                                             <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
-                                            <button class="btn btn-primary" type="submit">Simpan</button>
+                                            <button class="btn btn-primary" type="submit" id="btn_save">Simpan</button>
                                         </div>
                                     </form>
                                 </div>
@@ -231,24 +230,18 @@
                 // get data
                 $.get(''.concat(baseUrl).concat(page, '/').concat(id, '/edit'), function (data) {
                 Object.keys(data).forEach(key => {
-                    //console.log(key);
-                    if(key == "krs" || key == "uts" || key == "uas"){
-                        if(data[key] == 1){
-                            $("#"+key).prop('checked',true);
-                        }else{
-                            $("#"+key).prop('checked',false);
-                        }
-                    }else{
-                        $('#' + key)
-                            .val(data[key])
-                            .trigger('change');
-                    }
+                    console.log(key);
+                    $('#' + key)
+                        .val(data[key])
+                        .trigger('change');
                 });
                 });
             });
             //save record
             $('#formAdd').on('submit',function(e){
                 const myFormData = new FormData(document.getElementById("formAdd"));
+                $("#btn_save").prop('disabled',true);
+                $("#btn_save").val('Tunggu Sebentar');
                 e.preventDefault();
                 $.ajax({
                     data: myFormData,
@@ -269,9 +262,11 @@
                             confirmButton: 'btn btn-success'
                         }
                         });
+                        $("#btn_save").prop('disabled',false);
+                        $("#btn_save").val('Simpan');
                     },
                     error: function error(err) {
-                        offCanvasForm.offcanvas('hide');
+                        $("#tambahModal").modal('hide');
                         swal({
                         title: 'Duplicate Entry!',
                         text: title + ' Not Saved !',
@@ -280,6 +275,8 @@
                             confirmButton: 'btn btn-success'
                         }
                         });
+                        $("#btn_save").prop('disabled',false);
+                        $("#btn_save").val('Simpan');
                     }
                 });
             });
