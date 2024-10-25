@@ -130,9 +130,10 @@
 
     <script>
         $(function() {
-            $("#tablekrs").DataTable({
-                responsive: true
-            })
+            // $("#tablekrs").DataTable({
+            //     responsive: true,
+            //     pageLength: 15,
+            // })
         })
         function getmk(){
             const baseUrl = {!! json_encode(url('/')) !!};
