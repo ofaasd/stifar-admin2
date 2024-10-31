@@ -70,17 +70,17 @@
                                             <label for='prodi'>Program Studi {{$i}}</label>
                                             <select name='prodi[]' class="form-control">
                                                 @foreach($prodi as $row)
-                                                <option value='{{$row->id}}'
+                                                <option value='{{$row->id_program_studi}}'
                                                 @if($i == 1)
-                                                    @if($peserta->pilihan1 == $row->id)
+                                                    @if($peserta->pilihan1 == $row->id_program_studi)
                                                         selected
                                                     @endif
                                                 @else
-                                                    @if($peserta->pilihan2 == $row->id)
+                                                    @if($peserta->pilihan2 == $row->id_program_studi)
                                                     selected
                                                     @endif
                                                 @endif
-                                                >{{$row->nama_jurusan}} {{$row->keterangan}}</option>
+                                                >{{$row->nama_prodi}} {{$row->keterangan ?? ''}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
