@@ -138,7 +138,7 @@ const get_jurusan = () =>
                 temp += `<div class="mb-2"> <label for='prodi'>Program Studi ${index + 1}</label>
                 <select name='prodi[]' class="form-control">`;
                 item.forEach((item2, index2) => {
-                    temp += `<option value='${item2.id_program_studi}'>${item2.nama_prodi} ${item2.keterangan}</option>`;
+                    temp += `<option value='${item2.id_program_studi}'>${item2.nama_prodi} ${item2.keterangan ? $item2.keterangan : ""}</option>`;
                 });
                 temp += `</select></div>`;
             });
