@@ -66,15 +66,18 @@
                             <div class="col-sm-6">
                                 <table>
                                     <tr>
-                                        <td><button class="btn btn-info btn-sm">Publish Tugas</button></td>
+                                        <td colspan=2>{{(empty($daftar_mhs))?"<div class='alert alert-danger'>Belum ada data nilai yang di input</div>":""}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><button class="btn btn-info btn-sm publish-btn" data-id="{{$id}}" data-status="tugas" data-action="{{$action[1]}}">{{($action[1] == 0)?"Publish":"UnPublish"}} Tugas</button></td>
                                         <td style="padding-left: 10px;"><button class="btn btn-info btn-sm">Validasi Tugas</button></td>
                                     </tr>
                                     <tr>
-                                        <td><button class="btn btn-info btn-sm">Publish UTS</button></td>
+                                        <td><button class="btn btn-info btn-sm publish-btn" data-id="{{$id}}"  data-status="uts" data-action="{{$action[2]}}">{{($action[2] == 0)?"Publish":"UnPublish"}} UTS</button></td>
                                         <td style="padding-left: 10px;"><button class="btn btn-info btn-sm">Validasi UTS</button></td>
                                     </tr>
                                     <tr>
-                                        <td><button class="btn btn-info btn-sm">Publish UAS</button></td>
+                                        <td><button class="btn btn-info btn-sm publish-btn" data-id="{{$id}}"  data-status="uas" data-action="{{$action[3]}}">{{($action[3] == 0)?"Publish":"UnPublish"}} UAS</button></td>
                                         <td style="padding-left: 10px;"><button class="btn btn-info btn-sm">Validasi UAS</button></td>
                                     </tr>
                                 </table>
@@ -137,6 +140,48 @@
         $(function() {
             $("#myTable").DataTable({
                 responsive: true
+            })
+
+            $(".publish-btn").click(function(){
+                $(this).attr("disabled",true);
+                const status = $(this).data('status');
+                const id_jadwal = $(this).data('id');
+                const action = $(this).data('action');
+                $.ajax({
+                url: baseUrl+'/dosen/publish-nilai',
+                type: 'post',
+                data: {
+                    id_jadwal: id_jadwal,
+                    status: status,
+                    action: action,
+                },
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                dataType: 'json',
+                success: function(res){
+                    if(res.kode == 200){
+                        swal({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: 'Berhasil disimpan.',
+                            customClass: {
+                                confirmButton: 'btn btn-success'
+                            }
+                        }).then(function(){
+                            window.reload();
+                        });
+                    }else{
+                        swal({
+                            icon: 'warning',
+                            title: 'Galat!',
+                            text: 'Server Error.',
+                            customClass: {
+                                confirmButton: 'btn btn-danger'
+                            }
+                        });
+                        $(this).attr("disabled",false);
+                    }
+                }
+            })
             })
         })
         function simpanNilai(idmhs, idjadwal, tipe, nilai){

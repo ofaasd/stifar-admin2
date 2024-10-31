@@ -362,6 +362,7 @@ Route::group(['middleware' => ['auth','role:pegawai|super-admin']], function(){
     Route::post('dosen/validasi-krs-satuan', [DosenController::class, 'valiKrsSatuan'] );
     Route::post('dosen/validasi-krs', [DosenController::class, 'valiKrs'] );
     Route::get('dosen/krm', [KrmController::class, 'index'] );
+    Route::get('dosen/input_nilai', [KrmController::class, 'input_nilai'] );
     Route::get('dosen/absensi/{id}/input', [KrmController::class, 'daftarMhs'] );
     Route::get('dosen/nilai/{id}/input', [KrmController::class, 'daftarMhsNilai'] );
     Route::get('dosen/{id}/set-pertemuan', [KrmController::class, 'setPertemuan'] );
@@ -369,6 +370,8 @@ Route::group(['middleware' => ['auth','role:pegawai|super-admin']], function(){
     Route::post('dosen/simpan-absensi-satuan', [KrmController::class, 'saveAbsensiSatuan'] );
     Route::post('dosen/simpan-kontrak', [KrmController::class, 'saveKontrak'] );
     Route::post('dosen/simpan-nilai', [KrmController::class, 'saveNilai'] );
+    Route::post('dosen/publish-nilai', [KrmController::class, 'publishNilai'] );
+    Route::post('dosen/validasi-nilai', [KrmController::class, 'validasiNilai'] );
 
     //Route::resource('admin/kepegawaian/pegawai', PegawaiController::class)->name('index','pegawai');
     Route::post('admin/kepegawaian/pegawai', [PegawaiController::class, 'store'])->name('input_pegawai');
