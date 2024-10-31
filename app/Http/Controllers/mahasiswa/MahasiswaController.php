@@ -14,6 +14,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class MahasiswaController extends Controller
 {
@@ -353,24 +355,39 @@ class MahasiswaController extends Controller
     public function foto_update(Request $request){
         $id = $request->id;
         if ($request->file('foto')) {
-
+            
             $photo = $request->file('foto');
-            $filename = date('YmdHi') . $photo->getClientOriginalName();
-            $tujuan_upload = 'assets/images/mahasiswa';
-            $photo->move($tujuan_upload,$filename);
-            $mahasiswa = Mahasiswa::updateOrCreate(
-                [
-                    'id' => $id
-                ],
-                [
-                    'foto_mhs' => $filename,
-                ]
-            );
-            $data = [
-                'status' => 'updated',
-                'pegawai' => Mahasiswa::find($id),
-            ];
-            return response()->json($data);
+            if(strtolower($photo->extension()) ==  'jpg' || strtolower($photo->extension()) ==  'png' || strtolower($photo->extension()) ==  'gif' || strtolower($photo->extension()) ==  'jpeg'){
+                $filename = date('YmdHi') . $photo->getClientOriginalName();
+                $tujuan_upload = 'assets/images/mahasiswa';
+                // create image manager with desired driver
+                $manager = new ImageManager(new Driver());
+
+                // read image from file system
+                $image = $manager->read($request->file('foto')->getPathName());
+
+                // resize image proportionally to 300px width
+                $image->scale(width: 400);
+
+                // save modified image in new format 
+                $image->save($tujuan_upload . '/' . $filename);
+                //$photo->move($tujuan_upload,$filename);
+                $mahasiswa = Mahasiswa::updateOrCreate(
+                    [
+                        'id' => $id
+                    ],
+                    [
+                        'foto_mhs' => $filename,
+                    ]
+                );
+                $data = [
+                    'status' => 'updated',
+                    'pegawai' => Mahasiswa::find($id),
+                ];
+                return response()->json($data);
+            }else{
+                return response()->json('Wrong extension. Extension must be jpg, jpeg, or png');
+            }
         }else{
             return response()->json('Failed');
         }
