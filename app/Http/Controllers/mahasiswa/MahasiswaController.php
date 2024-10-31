@@ -367,7 +367,7 @@ class MahasiswaController extends Controller
                 $image = $manager->read($request->file('foto')->getPathName());
 
                 // resize image proportionally to 300px width
-                $image->scale(width: 400);
+                $image->scale(width: 600);
 
                 // save modified image in new format 
                 $image->save($tujuan_upload . '/' . $filename);
@@ -386,7 +386,7 @@ class MahasiswaController extends Controller
                 ];
                 return response()->json($data);
             }else{
-                return response()->json('Wrong extension. Extension must be jpg, jpeg, or png');
+                return response()->json('Wrong extension. Extension must be jpg, jpeg, or png', 500);
             }
         }else{
             return response()->json('Failed');
