@@ -129,6 +129,8 @@
 @section('script')
     <script src="{{ asset('assets/js/datatable/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{asset('assets/js/sweet-alert/sweetalert.min.js')}}"></script>
+    <script src="{{asset('assets/js/notify/bootstrap-notify.min.js')}}"></script>
+    <script src="{{asset('assets/js/notify/notify-script.js')}}"></script>
 
     <script>
         const baseUrl = {!! json_encode(url('/')) !!};
@@ -152,12 +154,31 @@
                 success: function(res){
                     console.log(res)
                     if(res.kode == 200){
-                        swal({
-                            icon: 'success',
-                            title: 'Berhasil!',
-                            text: 'Berhasil disimpan.',
-                            customClass: {
-                                confirmButton: 'btn btn-success'
+                        $.notify({
+                            title:'Berhasil !',
+                            message:'Data Berhasil disimpan'
+                        },
+                        {
+                            type:'primary',
+                            allow_dismiss:false,
+                            newest_on_top:false ,
+                            mouse_over:false,
+                            showProgressbar:false,
+                            spacing:10,
+                            timer:2000,
+                            placement:{
+                                from:'top',
+                                align:'right'
+                            },
+                            offset:{
+                                x:30,
+                                y:30
+                            },
+                            delay:1000 ,
+                            z_index:10000,
+                            animate:{
+                                enter:'animated fadeIn',
+                                exit:'animated fadeOut'
                             }
                         });
                         $('#na').html(`<span>${ res.na } | ${ res.nh }</span>`)

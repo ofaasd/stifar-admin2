@@ -152,6 +152,7 @@ class KrmController extends Controller
     public function saveNilai(Request $request){
         $id_jadwal = $request->id_jadwal;
         $id_mhs = $request->id_mhs;
+        $mahasiswa = Mahasiswa::find($id_mhs);
         $tipe = $request->tipe;
         $nilai = $request->nilai;
 
@@ -163,15 +164,15 @@ class KrmController extends Controller
 
         if ($cek) {
             if ($tipe == 1) {
-                master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs])->update(['ntugas' => $nilai]);
+                master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs, 'nim' => $mahasiswa->nim])->update(['ntugas' => $nilai]);
             }
             if ($tipe == 2) {
-                master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs])->update(['nuts' => $nilai]);
+                master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs, 'nim' => $mahasiswa->nim])->update(['nuts' => $nilai]);
             }
             if ($tipe == 3) {
-                master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs])->update(['nuas' => $nilai]);
+                master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs, 'nim' => $mahasiswa->nim])->update(['nuas' => $nilai]);
             }
-            $cek = master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs])->first();
+            $cek = master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs, 'nim' => $mahasiswa->nim])->first();
             $kontrak_tugas = $kontrak['tugas']??0;
             $kontrak_uts = $kontrak['uts']??0;
             $kontrak_uas = $kontrak['uas']??0;
@@ -201,19 +202,19 @@ class KrmController extends Controller
                 $nh = 'E';
             }
 
-            master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs])->update(['nakhir' => $na, 'nhuruf' => $nh]);
+            master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs, 'nim' => $mahasiswa->nim])->update(['nakhir' => $na, 'nhuruf' => $nh]);
             return json_encode(['kode' => 200, 'na' => $na, 'nh' => $nh]);
         }else{
             if ($tipe == 1) {
-                master_nilai::create(['id_jadwal' => $id_jadwal, 'id_tahun' => $tahun_ajaran['id'], 'id_mhs' => $id_mhs, 'ntugas' => $nilai]);
+                master_nilai::create(['id_jadwal' => $id_jadwal, 'id_tahun' => $tahun_ajaran['id'], 'id_mhs' => $id_mhs, 'ntugas' => $nilai, 'nim' => $mahasiswa->nim]);
             }
             if ($tipe == 2) {
-                master_nilai::where(['id_jadwal' => $id_jadwal, 'id_tahun' => $tahun_ajaran['id'], 'id_mhs' => $id_mhs, 'nuts' => $nilai]);
+                master_nilai::create(['id_jadwal' => $id_jadwal, 'id_tahun' => $tahun_ajaran['id'], 'id_mhs' => $id_mhs, 'nuts' => $nilai, 'nim' => $mahasiswa->nim]);
             }
             if ($tipe == 3) {
-                master_nilai::where(['id_jadwal' => $id_jadwal, 'id_tahun' => $tahun_ajaran['id'], 'id_mhs' => $id_mhs, 'nuas' => $nilai]);
+                master_nilai::create(['id_jadwal' => $id_jadwal, 'id_tahun' => $tahun_ajaran['id'], 'id_mhs' => $id_mhs, 'nuas' => $nilai, 'nim' => $mahasiswa->nim]);
             }
-            $cek = master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs])->first();
+            $cek = master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs, 'nim' => $mahasiswa->nim])->first();
             $kontrak_tugas = $kontrak['tugas']??0;
             $kontrak_uts = $kontrak['uts']??0;
             $kontrak_uas = $kontrak['uas']??0;
@@ -242,7 +243,7 @@ class KrmController extends Controller
             if(($na >= 0) && ($na < 50)){
                 $nh = 'E';
             }
-            master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs])->update(['nakhir' => $na, 'nhuruf' => $nh]);
+            master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs, 'nim' => $mahasiswa->nim])->update(['nakhir' => $na, 'nhuruf' => $nh]);
             return json_encode(['kode' => 200, 'na' => $na, 'nh' => $nh]);
         }
     }
