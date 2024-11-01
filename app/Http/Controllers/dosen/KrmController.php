@@ -166,9 +166,12 @@ class KrmController extends Controller
         $action[1] = $daftar_mhs[0]->publish_tugas ?? 0;
         $action[2] = $daftar_mhs[0]->publish_uts ?? 0;
         $action[3] = $daftar_mhs[0]->publish_uas ?? 0;
+        $actionvalid[1] = $daftar_mhs[0]->validasi_tugas ?? 0;
+        $actionvalid[2] = $daftar_mhs[0]->validasi_uts ?? 0;
+        $actionvalid[3] = $daftar_mhs[0]->validasi_uas ?? 0;
         $kontrak = KontrakKuliahModel::where('id_jadwal', $id)->first();
         $no = 1;
-        return view('dosen.daftar_mhs_nilai', compact('title', 'jadwal', 'daftar_mhs', 'no', 'id', 'kontrak','action'));
+        return view('dosen.daftar_mhs_nilai', compact('title', 'jadwal', 'daftar_mhs', 'no', 'id', 'kontrak','action','actionvalid'));
     }
     public function saveNilai(Request $request){
         $id_jadwal = $request->id_jadwal;
@@ -286,6 +289,19 @@ class KrmController extends Controller
         $isi = ($request->action == 0) ? 1 : 0;
         $data = [
             'publish_' . $request->status => $isi,
+        ];
+
+        $update = master_nilai::where(['id_jadwal'=>$request->id_jadwal])->update($data);
+        if($update){
+            return json_encode(['kode' => 200]);
+        }else{
+            return json_encode(['kode' => 500]);
+        }
+    }
+    public function validasiNilai(Request $request){
+        $isi = ($request->action == 0) ? 1 : 0;
+        $data = [
+            'validasi_' . $request->status => $isi,
         ];
 
         $update = master_nilai::where(['id_jadwal'=>$request->id_jadwal])->update($data);
