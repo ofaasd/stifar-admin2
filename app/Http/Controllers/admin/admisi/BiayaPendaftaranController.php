@@ -12,7 +12,7 @@ class BiayaPendaftaranController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public $indexed = ['', 'id', 'tahun_ajaran','id_prodi','rpl','jumlah'];
+    public $indexed = ['', 'id', 'tahun_ajaran','gelombang','id_prodi','rpl','jumlah','registrasi','tahap_awal','upp_yaphar','upp'];
     public function index(Request $request)
     {
         //
@@ -26,9 +26,14 @@ class BiayaPendaftaranController extends Controller
             $columns = [
                 1 => 'id',
                 2 => 'tahun_ajaran',
-                3 => 'id_prodi',
-                4 => 'rpl',
-                5 => 'jumlah',
+                3 => 'gelombang',
+                4 => 'id_prodi',
+                5 => 'rpl',
+                6 => 'jumlah',
+                7 => 'registrasi',
+                8 => 'tahap_awal',
+                9 => 'upp_yaphar',
+                10 => 'upp',
             ];
 
             $search = [];
@@ -81,8 +86,13 @@ class BiayaPendaftaranController extends Controller
                     $nestedData['fake_id'] = ++$ids;
                     $nestedData['id_prodi'] = $list_prodi[$row->id_prodi];
                     $nestedData['tahun_ajaran'] = $row->tahun_ajaran;
+                    $nestedData['gelombang'] = $row->gelombang;
                     $nestedData['rpl'] = ($row->rpl == 1)?"RPL":"Tidak";
                     $nestedData['jumlah'] = number_format($row->jumlah,0,",",".");
+                    $nestedData['registrasi'] = number_format($row->registrasi,0,",",".");
+                    $nestedData['tahap_awal'] = number_format($row->tahap_awal,0,",",".");
+                    $nestedData['upp_yaphar'] = number_format($row->upp_smk,0,",",".");
+                    $nestedData['upp'] = number_format($row->upp,0,",",".");
                     $data[] = $nestedData;
                 }
             }
@@ -129,6 +139,11 @@ class BiayaPendaftaranController extends Controller
                     'tahun_ajaran' => $request->tahun_ajaran,
                     'rpl' => $request->rpl,
                     'jumlah' => $request->jumlah,
+                    'gelombang' => $request->gelombang,
+                    'registrasi' => $request->registrasi,
+                    'tahap_awal' => $request->tahap_awal,
+                    'upp_smk' => $request->upp_smk,
+                    'upp' => $request->upp,
                 ]
             );
 
@@ -141,6 +156,11 @@ class BiayaPendaftaranController extends Controller
                     'tahun_ajaran' => $request->tahun_ajaran,
                     'rpl' => $request->rpl,
                     'jumlah' => $request->jumlah,
+                    'gelombang' => $request->gelombang,
+                    'registrasi' => $request->registrasi,
+                    'tahap_awal' => $request->tahap_awal,
+                    'upp_smk' => $request->upp_smk,
+                    'upp' => $request->upp,
                 ]
             );
             if ($biaya) {
