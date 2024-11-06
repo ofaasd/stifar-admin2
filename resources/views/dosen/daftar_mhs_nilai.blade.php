@@ -69,16 +69,16 @@
                                         <td colspan=2>{{(empty($daftar_mhs))?"<div class='alert alert-danger'>Belum ada data nilai yang di input</div>":""}}</td>
                                     </tr>
                                     <tr>
-                                        <td><button class="btn btn-info btn-sm publish-btn" data-id="{{$id}}" data-status="tugas" data-action="{{$action[1]}}">{{($action[1] == 0)?"Publish":"UnPublish"}} Tugas</button></td>
-                                        <td style="padding-left: 10px;"><button class="btn btn-info btn-sm validasi-btn" data-id="{{$id}}" data-status="tugas" data-action="{{$actionvalid[1]}}">{{($actionvalid[1] == 0)?"Validasi":"Batalkan Validasi"}}  Tugas</button></td>
+                                        <td><button class="btn btn-info btn-sm publish-btn" data-id="{{$id}}" data-status="tugas" data-action="{{$action[1]}}">{{($action[1] == 0)?"Publish":"UnPublish"}} TGS</button></td>
+                                        <td style="padding-left: 10px;"><button class="btn btn-info btn-sm validasi-btn" data-id="{{$id}}" data-status="tugas" data-action="{{$actionvalid[1]}}">{{($actionvalid[1] == 0)?"Validasi":"Batalkan Validasi"}}  TGS</button></td>
                                     </tr>
                                     <tr>
                                         <td><button class="btn btn-info btn-sm publish-btn" data-id="{{$id}}"  data-status="uts" data-action="{{$action[2]}}">{{($action[2] == 0)?"Publish":"UnPublish"}} UTS</button></td>
-                                        <td style="padding-left: 10px;"><button class="btn btn-info btn-sm validasi-btn" data-id="{{$id}}"  data-status="uts" data-action="{{$actionvalid[2]}}">{{($actionvalid[2] == 0)?"Validasi":"Batalkan Validasi"}} Validasi UTS</button></td>
+                                        <td style="padding-left: 10px;"><button class="btn btn-info btn-sm validasi-btn" data-id="{{$id}}"  data-status="uts" data-action="{{$actionvalid[2]}}">{{($actionvalid[2] == 0)?"Validasi":"Batalkan Validasi"}} UTS</button></td>
                                     </tr>
                                     <tr>
                                         <td><button class="btn btn-info btn-sm publish-btn" data-id="{{$id}}"  data-status="uas" data-action="{{$action[3]}}">{{($action[3] == 0)?"Publish":"UnPublish"}} UAS</button></td>
-                                        <td style="padding-left: 10px;"><button class="btn btn-info btn-sm validasi-btn" data-id="{{$id}}"  data-status="uas" data-action="{{$actionvalid[3]}}">{{($actionvalid[3] == 0)?"Validasi":"Batalkan Validasi"}} Validasi UAS</button></td>
+                                        <td style="padding-left: 10px;"><button class="btn btn-info btn-sm validasi-btn" data-id="{{$id}}"  data-status="uas" data-action="{{$actionvalid[3]}}">{{($actionvalid[3] == 0)?"Validasi":"Batalkan Validasi"}} UAS</button></td>
                                     </tr>
                                 </table>
                                 <div class="mt-4"></div>
@@ -86,7 +86,7 @@
                             </div>
                         </div>
                         <div class="table-responsive mt-4">
-                            <table class="display" id="myTable">
+                            <table class="table" id="myTable">
                                 <thead>
                                     <tr>
                                         <th>No.</th>
@@ -138,9 +138,6 @@
     <script>
         const baseUrl = {!! json_encode(url('/')) !!};
         $(function() {
-            $("#myTable").DataTable({
-                responsive: true
-            })
 
             $(".publish-btn").click(function(){
                 $(this).attr("disabled",true);
@@ -167,7 +164,7 @@
                                 confirmButton: 'btn btn-success'
                             }
                         }).then(function(){
-                            window.reload();
+                            location.reload();
                         });
                     }else{
                         swal({
@@ -208,7 +205,7 @@
                                 confirmButton: 'btn btn-success'
                             }
                         }).then(function(){
-                            window.reload();
+                            location.reload();
                         });
                     }else{
                         swal({

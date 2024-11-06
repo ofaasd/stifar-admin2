@@ -16,8 +16,8 @@
 @endsection
 
 @section('breadcrumb-items')
-    <li class="breadcrumb-item">Master Data</li>
-    <li class="breadcrumb-item active">Asal Sekolah PMB</li>
+    <li class="breadcrumb-item">Akademik</li>
+    <li class="breadcrumb-item active">Input KRS</li>
 @endsection
 
 @section('content')

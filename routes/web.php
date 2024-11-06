@@ -58,6 +58,7 @@ use App\Http\Controllers\admin\master\JabatanStrukturalController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiBerkasController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiMengajarController;
 use App\Http\Controllers\mahasiswa\KrsController as mhsKrsController;
+use App\Http\Controllers\mahasiswa\KhsController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiPekerjaanController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiOrganisasiController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiPendidikanController;
@@ -335,10 +336,12 @@ Route::group(['middleware' => ['auth','role:mhs|super-admin']], function(){
     Route::post('/admin/masterdata/krs/list-jadwal', [KrsController::class, 'showJadwal']);
     Route::get('/admin/masterdata/krs/admin/download/{id}', [KrsController::class, 'downloadkrs']);
     Route::get('/admin/masterdata/krs/input/{id}/{mhs}', [KrsController::class, 'tambahadminKRS']);
-
-
+    
     Route::get('mhs/ujian', [UjianController::class, 'index'])->name('index_ujian');
     Route::get('mhs/ujian/cetak_uts', [UjianController::class, 'cetak_uts'])->name('cetak_uts');
+
+    Route::get('mhs/khs', [KhsController::class, 'index'])->name('index_khs');
+
 
     //Route::post('admin/admisi/peserta/daftar_kota',[PmbPesertaController::class, 'daftar_kota'] )->name('daftar_kota');
 });
