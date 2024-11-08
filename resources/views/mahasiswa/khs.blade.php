@@ -33,7 +33,7 @@
                                 <h5><b>2024 - 2025 Ganjil (Aktif)</b></h5>
                             </div>
                             <div class="col-md-6">
-                                <a href="{{ url('admin/masterdata/krs/admin/download/'.$idmhs) }}" class="btn btn-info btn-sm" style="float: right;"><i class="fa fa-download"></i> Download KHS</a>
+                                <a href="{{ url('mhs/cetak_khs') }}" class="btn btn-info btn-sm" style="float: right;"><i class="fa fa-download"></i> Download KHS</a>
                             </div>
                         </div>
                     </div>
@@ -51,7 +51,6 @@
                                         <th>UTS</th>
                                         <th>UAS</th>
                                         <th>Nilai Akhir</th>
-                                        <th>Nilai Huruf</th>
                                     </thead>
                                     <tbody>
                                         @foreach($krs as $row_krs)
@@ -62,8 +61,7 @@
                                                 <td>{{ $nilai[$row_krs->id_jadwal][$ta][$mhs->nim]['nilai_tgs']}}</td>
                                                 <td>{{ $nilai[$row_krs->id_jadwal][$ta][$mhs->nim]['nilai_uts']}}</td>
                                                 <td>{{ $nilai[$row_krs->id_jadwal][$ta][$mhs->nim]['nilai_uas']}}</td>
-                                                <td>{{ $nilai[$row_krs->id_jadwal][$ta][$mhs->nim]['nilai_akhir']}}</td>
-                                                <td>{{ $nilai[$row_krs->id_jadwal][$ta][$mhs->nim]['nilai_huruf']}}</td>
+                                                <td>{{ $nilai[$row_krs->id_jadwal][$ta][$mhs->nim]['nilai_akhir']}} | {{ $nilai[$row_krs->id_jadwal][$ta][$mhs->nim]['nilai_huruf']}}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
