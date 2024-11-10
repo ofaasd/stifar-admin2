@@ -72,6 +72,7 @@ class DashboardController extends Controller
                     ->leftJoin('master_ruang as d', 'a.id_ruang', '=', 'd.id')
                     ->where('krs.id_tahun', $ta)
                     ->where('id_mhs',$mahasiswa->id)
+                    ->where('is_publish',1)
                     ->get();
         $no = 1;
         return view('index_mhs',compact('mahasiswa','krs','no'));

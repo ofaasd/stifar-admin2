@@ -46,6 +46,7 @@ class MatkulController extends Controller
                     'status_mk' => $request->status_mk,
                     'rumpun' => $request->rumpun,
                     'rps' => $filename,
+                    'rps_log' => date('Y-m-d H:i:s'),
                     'status' => $request->status
                 ]
             );
@@ -91,6 +92,7 @@ class MatkulController extends Controller
                 'status_mk' => $request->status_mk,
                 'rumpun' => $request->rumpun,
                 'rps' => $filename,
+                'rps_log' => date('Y-m-d H:i:s'),
                 'status' => $request->status
             ]);
         }else{
