@@ -22,8 +22,8 @@
                         <a href="{{URL::to('mhs/profile')}}" class="submenu-title">Data diri</a>
                     </li>
                     <li>
-                        <a class="submenu-title" href="#" >
-                             <span>Heregistrasi (Data Pendukung)</span> <label class="badge badge-light-danger">!</label>
+                        <a class="submenu-title" href="{{URL::to('mhs/heregistrasi')}}" >
+                             <span>Heregistrasi (Data Pendukung)</span>
                         </a>
                     </li>
                 </ul>

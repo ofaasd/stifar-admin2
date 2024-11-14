@@ -91,11 +91,14 @@
             <?php
                 $t = 0;
                 $p = 0;
+                $total_kualitas = 0;
             ?>
             @foreach($krs as $row_krs)
             <?php
                 $t += $row_krs['sks_teori'];
                 $p += $row_krs['sks_praktek'];
+                $kualitas = App\helpers::getKualitas($nilai[$row_krs->id_jadwal][$ta][$mhs->nim]['nilai_huruf']) * ($row_krs['sks_praktek'] + $row_krs['sks_teori']);
+                $total_kualitas += $kualitas;
             ?>
             <tr>
                 <td>{{ $no++ }}</td>
@@ -104,7 +107,7 @@
                 <td>{{ $nilai[$row_krs->id_jadwal][$ta][$mhs->nim]['nilai_akhir']}}</td>
                 <td>{{ $nilai[$row_krs->id_jadwal][$ta][$mhs->nim]['nilai_huruf']}}</td>
                 <td>{{ $row_krs['sks_praktek'] + $row_krs['sks_teori'] }}</td>
-                <td>0</td>
+                <td>{{ $kualitas }}</td>
             </tr>
             @endforeach
             <tr>
@@ -114,13 +117,13 @@
                 <td>
                     <span>{{$t+$p}}</span>
                 </td>
-                <td>0</td>
+                <td>{{$total_kualitas}}</td>
             </tr>
             <tr>
                 <td colspan=10>
                     <table>
-                        <tr><td>IP Semester</td><td>: 0</td></tr>
-                        <tr><td>IPK Sementara</td><td>: 0</td></tr>
+                        <tr><td>IP Semester</td><td>: {{number_format($total_kualitas / ($t+$p),2,',','')}}</td></tr>
+                        <tr><td>IPK Sementara</td><td>: {{number_format($total_kualitas / ($t+$p),2,',','')}}</td></tr>
                     </table>
                 </td>
             </tr>

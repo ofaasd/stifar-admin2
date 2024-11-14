@@ -176,13 +176,11 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
 
 
 
-    Route::get('/mahasiswa/detail/{nim}', [MahasiswaController::class, 'detail']);
-    Route::post('mahasiswa/user_update', [MahasiswaController::class, 'user_update'])->name('user_update');
-    Route::post('mahasiswa/user_update2', [MahasiswaController::class, 'user_update2'])->name('user_update2');
-    Route::post('mahasiswa/foto_update', [MahasiswaController::class, 'foto_update'])->name('foto_update');
-    Route::get('mahasiswa/get_mhs', [MahasiswaController::class, 'get_mhs'])->name('get_mhs');
-
-    Route::get('mhs/profile', [ProfileController::class, 'index'])->name('index');
+    // Route::get('/mahasiswa/detail/{nim}', [MahasiswaController::class, 'detail']);
+    // Route::post('mahasiswa/user_update', [MahasiswaController::class, 'user_update'])->name('user_update');
+    // Route::post('mahasiswa/user_update2', [MahasiswaController::class, 'user_update2'])->name('user_update2');
+    // Route::post('mahasiswa/foto_update', [MahasiswaController::class, 'foto_update'])->name('foto_update');
+    Route::get('mahasiswa/get_mhs', [MahasiswaController::class, 'get_mhs'])->name('get_mhs');    
 
     Route::get('mhs/input_krs', [mhsKrsController::class, 'input'])->name('input');
 
@@ -327,9 +325,11 @@ Route::group(['middleware' => ['auth','role:mhs|super-admin']], function(){
     Route::post('mahasiswa/user_update', [MahasiswaController::class, 'user_update'])->name('user_update');
     Route::post('mahasiswa/user_update2', [MahasiswaController::class, 'user_update2'])->name('user_update2');
     Route::post('mahasiswa/foto_update', [MahasiswaController::class, 'foto_update'])->name('foto_update');
+    Route::post('mahasiswa/berkas_update', [MahasiswaController::class, 'berkas_update'])->name('berkas_update');
     Route::post('mahasiswa', [MahasiswaController::class, 'store'])->name('input');
 
     Route::get('mhs/profile', [ProfileController::class, 'index'])->name('index');
+    Route::get('mhs/heregistrasi', [ProfileController::class, 'heregistrasi'])->name('index_heregistrasi');
 
     Route::get('mhs/input_krs', [mhsKrsController::class, 'input'])->name('input');
     Route::get('/admin/masterdata/krs/admin/hapus/{id}', [KrsController::class, 'hapusadminKRS']);

@@ -105,13 +105,13 @@
                                             <td>{{ $row['nims'] }}</td>
                                             <td>{{ $row['nama'] }}</td>
                                             <td>
-                                                <input type="number" onchange="simpanNilai({{ $row['idmhs'] }}, {{ $id }}, '1', $(this).val())" class="form-control" id="nilai_tugas" value="{{ $row['ntugas'] }}">
+                                                <input type="number" max="100" min="0" onchange="simpanNilai({{ $row['idmhs'] }}, {{ $id }}, '1', $(this).val())" class="form-control" id="nilai_tugas" value="{{ $row['ntugas'] }}">
                                             </td>
                                             <td>
-                                                <input type="number" onchange="simpanNilai({{ $row['idmhs'] }}, {{ $id }}, '2', $(this).val())" class="form-control" id="nilai_uts" value="{{ $row['nuts'] }}">
+                                                <input type="number" max="100" min="0" onchange="simpanNilai({{ $row['idmhs'] }}, {{ $id }}, '2', $(this).val())" class="form-control" id="nilai_uts" value="{{ $row['nuts'] }}">
                                             </td>
                                             <td>
-                                                <input type="number" onchange="simpanNilai({{ $row['idmhs'] }}, {{ $id }}, '3', $(this).val())" class="form-control" id="nilai_uas" value="{{ $row['nuas'] }}">
+                                                <input type="number" max="100" min="0" onchange="simpanNilai({{ $row['idmhs'] }}, {{ $id }}, '3', $(this).val())" class="form-control" id="nilai_uas" value="{{ $row['nuas'] }}">
                                             </td>
                                             <td>
                                                 <span id="na">{{ $row['nakhir'] }} | {{ $row['nhuruf'] }}  </span>

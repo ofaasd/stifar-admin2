@@ -11,6 +11,7 @@ use App\Models\Wilayah;
 use App\Models\PegawaiBiodatum;
 use App\Models\ModelHasRole;
 use App\Models\User;
+use App\Models\MahasiswaBerkasPendukung;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -391,5 +392,99 @@ class MahasiswaController extends Controller
         }else{
             return response()->json('Failed');
         }
+    }
+    public function berkas_update(Request $request){
+        $nim = $request->nim;
+        $id = MahasiswaBerkasPendukung::where("nim",$nim)->first()->id ?? '';
+        $data_upload = [
+            'nim'=>$nim
+        ];
+        $filename = ''; // kk
+        if ($request->file('kk') != null) {
+            $file = $request->file('kk');
+            $filename = 'kk' . date('YmdHi') . $file->getClientOriginalName();
+            $tujuan_upload = 'assets/file/berkas';
+            $file->move($tujuan_upload,$filename);
+            $data_upload['kk'] = $filename;
+        }
+
+        $filename2 = ''; // ktp
+        if ($request->file('ktp') != null) {
+            $file = $request->file('ktp');
+            $filename2 = 'ktp' . date('YmdHi') . $file->getClientOriginalName();
+            $tujuan_upload = 'assets/file/berkas';
+            $file->move($tujuan_upload,$filename2);
+            $data_upload['ktp'] = $filename2;
+        }
+
+        $filename3 = ''; // akta
+        if ($request->file('akta') != null) {
+            $file = $request->file('akta');
+            $filename3 = 'akta' . date('YmdHi') . $file->getClientOriginalName();
+            $tujuan_upload = 'assets/file/berkas';
+            $file->move($tujuan_upload,$filename3);
+            $data_upload['akta'] = $filename3;
+        }
+
+        $filename4 = ''; // ijazah_depan
+        if ($request->file('ijazah_depan') != null) {
+            $file = $request->file('ijazah_depan');
+            $filename4 = 'ijazah_depan' . date('YmdHi') . $file->getClientOriginalName();
+            $tujuan_upload = 'assets/file/berkas';
+            $file->move($tujuan_upload,$filename4);
+            $data_upload['ijazah_depan'] = $filename4;
+        }
+        $filename5 = ''; // ijazah_belakang
+        if ($request->file('ijazah_belakang') != null) {
+            $file = $request->file('ijazah_belakang');
+            $filename5 = 'ijazah_belakang' . date('YmdHi') . $file->getClientOriginalName();
+            $tujuan_upload = 'assets/file/berkas';
+            $file->move($tujuan_upload,$filename5);
+            $data_upload['ijazah_belakang'] = $filename5;
+        }
+        if($id){
+            
+            $berkas = MahasiswaBerkasPendukung::updateOrCreate(
+                ['id' => $id],
+                $data_upload
+            );
+            return response()->json('Updated');
+        }else{
+            $berkas = MahasiswaBerkasPendukung::updateOrCreate(
+                ['id' => $id],
+                $data_upload
+            );
+            if ($berkas) {
+                return response()->json('Created');
+            } else {
+                return response()->json('Failed Create Academic');
+            }
+        }
+        // if ($request->file('foto')) {
+            
+        //     $photo = $request->file('foto');
+        //     if(strtolower($photo->extension()) ==  'pdf'){
+        //         $filename = date('YmdHi') . $photo->getClientOriginalName();
+                
+        //         //$photo->move($tujuan_upload,$filename);
+        //         $mahasiswa = Mahasiswa::updateOrCreate(
+        //             [
+        //                 'id' => $id
+        //             ],
+        //             [
+        //                 'foto_mhs' => $filename,
+        //             ]
+        //         );
+        //         $data = [
+        //             'status' => 'updated',
+        //             'pegawai' => Mahasiswa::find($id),
+        //         ];
+        //         return response()->json($data);
+        //     }else{
+        //         return response()->json('Wrong extension. Extension must be jpg, jpeg, or png', 500);
+        //     }
+        // }else{
+        //     return response()->json('Failed');
+        // }
     }
 }

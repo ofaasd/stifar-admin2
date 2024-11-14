@@ -204,27 +204,7 @@ class KrmController extends Controller
                   (floatval($cek['nuts']??0) * floatval(($kontrak_uts / 100))) +
                   (floatval($cek['nuas']??0) * floatval(($kontrak_uas / 100)));
             $nh = 'E';
-            if(($na >= 85) && ($na <= 100)){
-                $nh = 'A';
-            }
-            if(($na >= 80) && ($na < 85)){
-                $nh = 'AB';
-            }
-            if(($na >= 70) && ($na < 80)){
-                $nh = 'B';
-            }
-            if(($na >= 65) && ($na < 70)){
-                $nh = 'BC';
-            }
-            if(($na >= 60) && ($na < 65)){
-                $nh = 'C';
-            }
-            if(($na >= 50) && ($na < 60)){
-                $nh = 'D';
-            }
-            if(($na >= 0) && ($na < 50)){
-                $nh = 'E';
-            }
+            $nh = \App\helpers::getNilaiHuruf($na);
 
             master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs, 'nim' => $mahasiswa->nim])->update(['nakhir' => $na, 'nhuruf' => $nh]);
             return json_encode(['kode' => 200, 'na' => $na, 'nh' => $nh]);
@@ -246,27 +226,7 @@ class KrmController extends Controller
                   (floatval($cek['nuts']??0) * floatval(($kontrak_uts / 100))) +
                   (floatval($cek['nuas']??0) * floatval(($kontrak_uas / 100)));
             $nh = 'E';
-            if(($na >= 85) && ($na <= 100)){
-                $nh = 'A';
-            }
-            if(($na >= 80) && ($na < 85)){
-                $nh = 'AB';
-            }
-            if(($na >= 70) && ($na < 80)){
-                $nh = 'B';
-            }
-            if(($na >= 65) && ($na < 70)){
-                $nh = 'BC';
-            }
-            if(($na >= 60) && ($na < 65)){
-                $nh = 'C';
-            }
-            if(($na >= 50) && ($na < 60)){
-                $nh = 'D';
-            }
-            if(($na >= 0) && ($na < 50)){
-                $nh = 'E';
-            }
+            $nh = \App\helpers::getNilaiHuruf($na);
             master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs, 'nim' => $mahasiswa->nim])->update(['nakhir' => $na, 'nhuruf' => $nh]);
             return json_encode(['kode' => 200, 'na' => $na, 'nh' => $nh]);
         }
