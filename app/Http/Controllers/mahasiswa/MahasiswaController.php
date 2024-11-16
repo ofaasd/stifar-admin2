@@ -402,45 +402,65 @@ class MahasiswaController extends Controller
         $filename = ''; // kk
         if ($request->file('kk') != null) {
             $file = $request->file('kk');
-            $filename = 'kk' . date('YmdHi') . $file->getClientOriginalName();
-            $tujuan_upload = 'assets/file/berkas';
-            $file->move($tujuan_upload,$filename);
-            $data_upload['kk'] = $filename;
+            if(strtolower($file->extension()) ==  'pdf'){
+                if($file->getSize() <= 2048000){
+                    $filename = 'kk' . date('YmdHi') . $file->getClientOriginalName();
+                    $tujuan_upload = 'assets/file/berkas';
+                    $file->move($tujuan_upload,$filename);
+                    $data_upload['kk'] = $filename;
+                }
+            }
         }
 
         $filename2 = ''; // ktp
         if ($request->file('ktp') != null) {
             $file = $request->file('ktp');
-            $filename2 = 'ktp' . date('YmdHi') . $file->getClientOriginalName();
-            $tujuan_upload = 'assets/file/berkas';
-            $file->move($tujuan_upload,$filename2);
-            $data_upload['ktp'] = $filename2;
+            if(strtolower($file->extension()) ==  'pdf'){
+                if($file->getSize() <= 2048000){
+                    $filename2 = 'ktp' . date('YmdHi') . $file->getClientOriginalName();
+                    $tujuan_upload = 'assets/file/berkas';
+                    $file->move($tujuan_upload,$filename2);
+                    $data_upload['ktp'] = $filename2;
+                }
+            }
         }
 
         $filename3 = ''; // akta
         if ($request->file('akta') != null) {
             $file = $request->file('akta');
-            $filename3 = 'akta' . date('YmdHi') . $file->getClientOriginalName();
-            $tujuan_upload = 'assets/file/berkas';
-            $file->move($tujuan_upload,$filename3);
-            $data_upload['akta'] = $filename3;
+            if(strtolower($file->extension()) ==  'pdf'){
+                if($file->getSize() <= 2048000){
+                    $filename3 = 'akta' . date('YmdHi') . $file->getClientOriginalName();
+                    $tujuan_upload = 'assets/file/berkas';
+                    $file->move($tujuan_upload,$filename3);
+                    $data_upload['akta'] = $filename3;
+                }
+            }
         }
 
         $filename4 = ''; // ijazah_depan
         if ($request->file('ijazah_depan') != null) {
             $file = $request->file('ijazah_depan');
-            $filename4 = 'ijazah_depan' . date('YmdHi') . $file->getClientOriginalName();
-            $tujuan_upload = 'assets/file/berkas';
-            $file->move($tujuan_upload,$filename4);
-            $data_upload['ijazah_depan'] = $filename4;
+            if(strtolower($file->extension()) ==  'pdf'){
+                if($file->getSize() <= 2048000){
+                    $filename4 = 'ijazah_depan' . date('YmdHi') . $file->getClientOriginalName();
+                    $tujuan_upload = 'assets/file/berkas';
+                    $file->move($tujuan_upload,$filename4);
+                    $data_upload['ijazah_depan'] = $filename4;
+                }
+            }
         }
         $filename5 = ''; // ijazah_belakang
         if ($request->file('ijazah_belakang') != null) {
             $file = $request->file('ijazah_belakang');
-            $filename5 = 'ijazah_belakang' . date('YmdHi') . $file->getClientOriginalName();
-            $tujuan_upload = 'assets/file/berkas';
-            $file->move($tujuan_upload,$filename5);
-            $data_upload['ijazah_belakang'] = $filename5;
+            if(strtolower($file->extension()) ==  'pdf'){
+                if($file->getSize() <= 2048000){
+                    $filename5 = 'ijazah_belakang' . date('YmdHi') . $file->getClientOriginalName();
+                    $tujuan_upload = 'assets/file/berkas';
+                    $file->move($tujuan_upload,$filename5);
+                    $data_upload['ijazah_belakang'] = $filename5;
+                }
+            }
         }
         if($id){
             

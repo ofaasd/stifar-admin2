@@ -180,7 +180,7 @@
                         confirmButton: 'btn btn-success'
                     }
                 }).then(function(){
-                    //location.reload();
+                    location.reload();
                 });
             },
             error: function error(err) {
@@ -193,7 +193,7 @@
                     confirmButton: 'btn btn-success'
                 }
                 }).then(function(){
-                    //location.reload();
+                    location.reload();
                 });
             }
         });
