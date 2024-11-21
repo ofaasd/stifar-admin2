@@ -71,6 +71,7 @@ use App\Http\Controllers\admin\master\JenisRuangController;
 use App\Http\Controllers\admin\akademik\PerwalianController;
 use App\Http\Controllers\admin\akademik\AbsensiController;
 use App\Http\Controllers\admin\akademik\NilaiController as nilaiakademik;
+use App\Http\Controllers\admin\akademik\KhsController as adminKhs;
 use App\Http\Controllers\admin\akademik\PengaturanUjianController;
 use App\Http\Controllers\admin\keuangan\VaController;
 use App\Http\Controllers\mahasiswa\UjianController;
@@ -259,6 +260,9 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     Route::get('/admin/akademik/nilai', [nilaiakademik::class, 'index']);
     Route::get('/admin/akademik/nilai/prodi/{id}', [nilaiakademik::class, 'index']);
 
+    Route::get('/admin/akademik/khs', [adminKhs::class, 'index']);
+    Route::get('/admin/akademik/get_tbl_khs', [adminKhs::class, 'get_table_khs']);
+
     Route::get('/admin/akademik/pengaturan-ujian', [PengaturanUjianController::class, 'index']);
     Route::get('/admin/akademik/pengaturan-ujian/prodi/{id}', [PengaturanUjianController::class, 'index']);
     Route::post('/admin/akademik/pengaturan-ujian/setjadwal', [PengaturanUjianController::class, 'setJadwalUjian']);
@@ -340,6 +344,7 @@ Route::group(['middleware' => ['auth','role:mhs|super-admin']], function(){
     Route::get('mhs/ujian', [UjianController::class, 'index'])->name('index_ujian');
     Route::get('mhs/ujian/cetak_uts', [UjianController::class, 'cetak_uts'])->name('cetak_uts');
 
+    Route::get('mhs/khs/{id}', [KhsController::class, 'index'])->name('index_khs');
     Route::get('mhs/khs', [KhsController::class, 'index'])->name('index_khs');
     Route::get('mhs/cetak_khs', [KhsController::class, 'cetak_khs'])->name('cetak_khs');
 

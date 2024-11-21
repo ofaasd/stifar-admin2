@@ -21,9 +21,15 @@ use PDF;
 class KhsController extends Controller
 {
     //
-    public function index(){
-        $mhs = Mahasiswa::where('user_id',Auth::id())->first();
-        $idmhs = $mhs->id;
+    public function index(int $idmhs=0){
+        if($idmhs == 0){
+            $mhs = Mahasiswa::where('user_id',Auth::id())->first();
+            $id = $mhs->id ?? 0;
+            $idmhs = $mhs->id ?? 0;
+            if($idmhs != 0){
+                dd('User not found');
+            }
+        }
         $tahun_ajaran = TahunAjaran::where('status','Aktif')->first();
         $ta = $tahun_ajaran->id;
 
@@ -74,9 +80,8 @@ class KhsController extends Controller
         return view('mahasiswa.khs', compact('mhs','title', 'permission','mk', 'krs', 'no', 'ta', 'idmhs','nilai'));
     }
     public function cetak_khs(){
-        $mhs = Mahasiswa::where('user_id',Auth::id())->first();
-        $id = $mhs->id;
-        $idmhs = $mhs->id;
+        
+        
         $tahun_ajaran = TahunAjaran::where('status','Aktif')->first();
         $ta = $tahun_ajaran->id;
         $mhs = Mahasiswa::select('mahasiswa.nama','mahasiswa.foto_mhs', 'mahasiswa.nim', 'pegawai_biodata.nama_lengkap as dsn_wali', 'program_studi.nama_prodi')
