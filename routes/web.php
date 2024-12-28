@@ -181,7 +181,7 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     // Route::post('mahasiswa/user_update', [MahasiswaController::class, 'user_update'])->name('user_update');
     // Route::post('mahasiswa/user_update2', [MahasiswaController::class, 'user_update2'])->name('user_update2');
     // Route::post('mahasiswa/foto_update', [MahasiswaController::class, 'foto_update'])->name('foto_update');
-    Route::get('mahasiswa/get_mhs', [MahasiswaController::class, 'get_mhs'])->name('get_mhs');    
+    Route::get('mahasiswa/get_mhs', [MahasiswaController::class, 'get_mhs'])->name('get_mhs');
 
     Route::get('mhs/input_krs', [mhsKrsController::class, 'input'])->name('input');
 
@@ -317,7 +317,7 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
 
     Route::resource('admin/keuangan/bank_data_va', VaController::class)->name('index','index_va');
     Route::resource('admin/keuangan', KeuanganController::class)->name('index','keuangan');
-    
+
 
     Route::resource('admin/nilai_lama', NilaiLamaController::class)->name('index','nilai_lama');
 });
@@ -340,9 +340,10 @@ Route::group(['middleware' => ['auth','role:mhs|super-admin']], function(){
     Route::post('/admin/masterdata/krs/list-jadwal', [KrsController::class, 'showJadwal']);
     Route::get('/admin/masterdata/krs/admin/download/{id}', [KrsController::class, 'downloadkrs']);
     Route::get('/admin/masterdata/krs/input/{id}/{mhs}', [KrsController::class, 'tambahadminKRS']);
-    
+
     Route::get('mhs/ujian', [UjianController::class, 'index'])->name('index_ujian');
     Route::get('mhs/ujian/cetak_uts', [UjianController::class, 'cetak_uts'])->name('cetak_uts');
+    Route::get('mhs/ujian/cetak_uas', [UjianController::class, 'cetak_uas'])->name('cetak_uas');
 
     Route::get('mhs/khs/{id}', [KhsController::class, 'index'])->name('index_khs');
     Route::get('mhs/khs', [KhsController::class, 'index'])->name('index_khs');
