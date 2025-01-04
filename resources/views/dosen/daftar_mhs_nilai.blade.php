@@ -105,16 +105,16 @@
                                             <td>{{ $row['nims'] }}</td>
                                             <td>{{ $row['nama'] }}</td>
                                             <td>
-                                                <input type="number" max="100" min="0" onchange="simpanNilai({{ $row['idmhs'] }}, {{ $id }}, '1', $(this).val())" class="form-control" id="nilai_tugas" value="{{ $row['ntugas'] }}">
+                                                <input type="number" max="100" min="0" onchange="simpanNilai({{ $row['idmhs'] }}, {{ $id }}, '1', $(this).val())" class="form-control" id="nilai_tugas{{ $row['idmhs'] }}" data-id="{{ $row['idmhs'] }}" value="{{ $row['ntugas'] }}">
                                             </td>
                                             <td>
-                                                <input type="number" max="100" min="0" onchange="simpanNilai({{ $row['idmhs'] }}, {{ $id }}, '2', $(this).val())" class="form-control" id="nilai_uts" value="{{ $row['nuts'] }}">
+                                                <input type="number" max="100" min="0" onchange="simpanNilai({{ $row['idmhs'] }}, {{ $id }}, '2', $(this).val())" class="form-control" id="nilai_uts{{ $row['idmhs'] }}" data-id="{{ $row['idmhs'] }}" value="{{ $row['nuts'] }}">
                                             </td>
                                             <td>
-                                                <input type="number" max="100" min="0" onchange="simpanNilai({{ $row['idmhs'] }}, {{ $id }}, '3', $(this).val())" class="form-control" id="nilai_uas" value="{{ $row['nuas'] }}">
+                                                <input type="number" max="100" min="0" onchange="simpanNilai({{ $row['idmhs'] }}, {{ $id }}, '3', $(this).val())" class="form-control" id="nilai_uas{{ $row['idmhs'] }}" data-id="{{ $row['idmhs'] }}" value="{{ $row['nuas'] }}">
                                             </td>
                                             <td>
-                                                <span id="na">{{ $row['nakhir'] }} | {{ $row['nhuruf'] }}  </span>
+                                                <span id="na{{ $row['idmhs'] }}">{{ $row['nakhir'] }} | {{ $row['nhuruf'] }}  </span>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -264,7 +264,7 @@
                                 exit:'animated fadeOut'
                             }
                         });
-                        $('#na').html(`<span>${ res.na } | ${ res.nh }</span>`)
+                        $('#na' + idmhs).html(`<span>${ res.na } | ${ res.nh }</span>`)
                     }else{
                         swal({
                             icon: 'warning',

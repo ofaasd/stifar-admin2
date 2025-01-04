@@ -15,6 +15,7 @@ use App\Models\Prodi;
 use App\Models\KontrakKuliahModel;
 use App\Models\master_nilai;
 use App\Models\TahunAjaran;
+use App\Models\MataKuliah;
 use Illuminate\Support\Facades\DB;
 
 class KrmController extends Controller
@@ -23,7 +24,7 @@ class KrmController extends Controller
         $title = "Kartu Rencana Mengajar";
         $id_tahun = TahunAjaran::where('status','Aktif')->first()->id;
         $id_dsn = PegawaiBiodatum::where('user_id', Auth::id())->first();
-        $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
+        $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul', 'mata_kuliahs.rps')
                         ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
                         ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
                         ->leftJoin('mata_kuliahs', 'mata_kuliahs.id', '=', 'jadwals.id_mk')
@@ -270,5 +271,21 @@ class KrmController extends Controller
         }else{
             return json_encode(['kode' => 500]);
         }
+    }
+    public function simpanRps(Request $request){
+        $id_matkul = $request->id_mk;
+        $filename = '';
+        if ($request->file('rps') != null) {
+            $file = $request->file('rps');
+            $filename = date('YmdHi') . $file->getClientOriginalName();
+            $tujuan_upload = 'assets/file/rps';
+            $file->move($tujuan_upload,$filename);
+
+            $matakuliah = MataKuliah::find($id_matkul);
+            $matakuliah->rps = $filename;
+            $matakuliah->rps_log = date('Y-m-d H:i:s');
+            $matakuliah->save();
+        }
+        return redirect('/dosen/krm');
     }
 }

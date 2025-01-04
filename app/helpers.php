@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App;
 
@@ -6,10 +6,10 @@ class helpers
 {
     public static function getNilaiHuruf(int $nilai)
     {
-        
+
         if($nilai > 75){
             return 'A';
-        }elseif($nilai > 71 && $nilai <= 75){
+        }elseif($nilai > 70 && $nilai <= 75){
             return 'AB';
         }elseif($nilai > 65 && $nilai <= 70){
             return 'B';
