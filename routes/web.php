@@ -381,6 +381,7 @@ Route::group(['middleware' => ['auth','role:pegawai|super-admin']], function(){
     Route::post('dosen/simpan-absensi-satuan', [KrmController::class, 'saveAbsensiSatuan'] );
     Route::post('dosen/simpan-kontrak', [KrmController::class, 'saveKontrak'] );
     Route::post('dosen/simpan-nilai', [KrmController::class, 'saveNilai'] );
+    Route::post('dosen/simpan-nilai-all', [KrmController::class, 'saveNilaiBatch'] );
     Route::post('dosen/publish-nilai', [KrmController::class, 'publishNilai'] );
     Route::post('dosen/validasi-nilai', [KrmController::class, 'validasiNilai'] );
 
