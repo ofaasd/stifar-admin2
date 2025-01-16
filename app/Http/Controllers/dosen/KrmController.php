@@ -260,7 +260,7 @@ class KrmController extends Controller
             $kontrak_uts = $kontrak['uts']??0;
             $kontrak_uas = $kontrak['uas']??0;
             if($cek_count > 1){
-                master_nilai::where(['  id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs[$key], 'nim' => $value])->delete();
+                master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs[$key], 'nim' => $value])->delete();
             }
             $cek = master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs[$key]])->first();
             if ($cek) {
