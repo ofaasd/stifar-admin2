@@ -68,15 +68,15 @@
                                         <td colspan=2>{{(empty($daftar_mhs))?"<div class='alert alert-danger'>Belum ada data nilai yang di input</div>":""}}</td>
                                     </tr>
                                     <tr>
-                                        <td><button class="btn btn-info btn-sm publish-btn" data-id="{{$id}}" data-status="tugas" data-action="{{$action[1]}}">{{($action[1] == 0)?"Publish":"UnPublish"}} TGS</button></td>
+                                        <td><button class="btn {{($action[1] == 0)?"btn-info":"btn-danger"}} btn-sm publish-btn" data-id="{{$id}}" data-status="tugas" data-action="{{$action[1]}}">{{($action[1] == 0)?"Publish":"UnPublish"}} TGS</button></td>
                                         <td style="padding-left: 10px;"><button class="btn btn-info btn-sm validasi-btn" data-id="{{$id}}" data-status="tugas" data-action="{{$actionvalid[1]}}">{{($actionvalid[1] == 0)?"Validasi":"Batalkan Validasi"}}  TGS</button></td>
                                     </tr>
                                     <tr>
-                                        <td><button class="btn btn-info btn-sm publish-btn" data-id="{{$id}}"  data-status="uts" data-action="{{$action[2]}}">{{($action[2] == 0)?"Publish":"UnPublish"}} UTS</button></td>
+                                        <td><button class="btn {{($action[2] == 0)?"btn-info":"btn-danger"}} btn-sm publish-btn" data-id="{{$id}}"  data-status="uts" data-action="{{$action[2]}}">{{($action[2] == 0)?"Publish":"UnPublish"}} UTS</button></td>
                                         <td style="padding-left: 10px;"><button class="btn btn-info btn-sm validasi-btn" data-id="{{$id}}"  data-status="uts" data-action="{{$actionvalid[2]}}">{{($actionvalid[2] == 0)?"Validasi":"Batalkan Validasi"}} UTS</button></td>
                                     </tr>
                                     <tr>
-                                        <td><button class="btn btn-info btn-sm publish-btn" data-id="{{$id}}"  data-status="uas" data-action="{{$action[3]}}">{{($action[3] == 0)?"Publish":"UnPublish"}} UAS</button></td>
+                                        <td><button class="btn {{($action[3] == 0)?"btn-info":"btn-danger"}} btn-sm publish-btn" data-id="{{$id}}"  data-status="uas" data-action="{{$action[3]}}">{{($action[3] == 0)?"Publish":"UnPublish"}} UAS</button></td>
                                         <td style="padding-left: 10px;"><button class="btn btn-info btn-sm validasi-btn" data-id="{{$id}}"  data-status="uas" data-action="{{$actionvalid[3]}}">{{($actionvalid[3] == 0)?"Validasi":"Batalkan Validasi"}} UAS</button></td>
                                     </tr>
                                 </table>
