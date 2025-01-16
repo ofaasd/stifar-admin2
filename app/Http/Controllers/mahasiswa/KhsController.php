@@ -60,19 +60,22 @@ class KhsController extends Controller
         $get_nilai = master_nilai::where(['nim'=>$mhs->nim,'id_tahun'=>$ta])->get();
         foreach($get_nilai as $row){
             if($row->publish_tugas == 1){
-                $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_tgs'] = $row->ntugas;
+                //$nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_tgs'] = $row->ntugas;
+                $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_tgs'] = "-";
             }
 
             if($row->publish_uts == 1){
-                $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uts'] = $row->nuts;
+                //$nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uts'] = $row->nuts;
+                $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uts'] = "-";
             }
             if($row->publish_uas == 1){
-                $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uas'] = $row->nuas;
+                //$nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uas'] = $row->nuas;
+                $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uas'] = '-';
             }
-            // if($row->publish_tugas == 1 && $row->publish_uts == 1 && $row->publish_uas == 1){
+            if($row->publish_tugas == 1 && $row->publish_uts == 1 && $row->publish_uas == 1){
                 $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_akhir'] = $row->nakhir;
                 $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_huruf'] = $row->nhuruf;
-            // }
+            }
         }
         $krs = $krs_now;
         $no = 1;
