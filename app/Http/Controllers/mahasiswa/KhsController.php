@@ -54,8 +54,8 @@ class KhsController extends Controller
             $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_tgs'] = 0;
             $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uts'] = 0;
             $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uas'] = 0;
-            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_akhir'] = 0;
-            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_huruf'] = 'E';
+            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_akhir'] = '-';
+            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_huruf'] = '-';
         }
         $get_nilai = master_nilai::where(['nim'=>$mhs->nim,'id_tahun'=>$ta])->get();
         foreach($get_nilai as $row){
@@ -115,8 +115,8 @@ class KhsController extends Controller
             $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_tgs'] = 0;
             $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uts'] = 0;
             $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uas'] = 0;
-            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_akhir'] = 0;
-            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_huruf'] = 'E';
+            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_akhir'] = '-';
+            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_huruf'] = '-';
         }
         $get_nilai = master_nilai::where(['nim'=>$mhs->nim,'id_tahun'=>$ta])->get();
         foreach($get_nilai as $row){
