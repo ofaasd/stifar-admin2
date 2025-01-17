@@ -208,6 +208,7 @@ class KrmController extends Controller
             $nh = \App\helpers::getNilaiHuruf($na);
 
             master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs, 'nim' => $mahasiswa->nim])->update(['nakhir' => $na, 'nhuruf' => $nh]);
+
             return json_encode(['kode' => 200, 'na' => $na, 'nh' => $nh]);
         }else{
             if ($tipe == 1) {
@@ -259,15 +260,17 @@ class KrmController extends Controller
             $kontrak_tugas = $kontrak['tugas']??0;
             $kontrak_uts = $kontrak['uts']??0;
             $kontrak_uas = $kontrak['uas']??0;
+            // echo "Kontrak Tugas : " . $kontrak_tugas . "<br />"; 
+            // echo "Kontrak UTS : " . $kontrak_uts . "<br />"; 
+            // echo "Kontrak UAS : " . $kontrak_uas . "<br />"; 
             if($cek_count > 1){
                 master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs[$key], 'nim' => $value])->delete();
             }
             $cek = master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs[$key]])->first();
             if ($cek) {
                 $na = (floatval($nilai_tugas[$value]??0) * floatval(($kontrak_tugas / 100))) +
-                        (floatval($nilai_tugas[$value]??0) * floatval(($kontrak_uts / 100))) +
+                        (floatval($nilai_uts[$value]??0) * floatval(($kontrak_uts / 100))) +
                         (floatval($nilai_uas[$value]??0) * floatval(($kontrak_uas / 100)));
-                
                 $nh = \App\helpers::getNilaiHuruf($na);
                 $data = [
                     'ntugas' => $nilai_tugas[$value],
@@ -279,7 +282,7 @@ class KrmController extends Controller
                 master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs[$key], 'nim' => $value])->update($data);
             }else{
                 $na = (floatval($nilai_tugas[$value]??0) * floatval(($kontrak_tugas / 100))) +
-                        (floatval($nilai_tugas[$value]??0) * floatval(($kontrak_uts / 100))) +
+                        (floatval($nilai_uts[$value]??0) * floatval(($kontrak_uts / 100))) +
                         (floatval($nilai_uas[$value]??0) * floatval(($kontrak_uas / 100)));
                 
                 $nh = \App\helpers::getNilaiHuruf($na);
@@ -295,7 +298,9 @@ class KrmController extends Controller
                     'nhuruf' => $nh
                 ];
                 master_nilai::create($data);
-            }  
+            } 
+            // echo "Nilai Akhir: " . $na;
+            // echo "<br /><br />"; 
         }
         return redirect('/dosen/nilai/' . $id_jadwal . '/input');
     }
