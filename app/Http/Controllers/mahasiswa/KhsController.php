@@ -51,9 +51,9 @@ class KhsController extends Controller
                     ->get();
         $nilai = [];
         foreach($krs_now as $row){
-            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_tgs'] = 0;
-            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uts'] = 0;
-            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uas'] = 0;
+            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_tgs'] = '-';
+            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uts'] = '-';
+            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uas'] = '-';
             $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_akhir'] = '-';
             $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_huruf'] = '-';
         }
@@ -112,9 +112,9 @@ class KhsController extends Controller
             ->get();
         $nilai = [];
         foreach($krs_now as $row){
-            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_tgs'] = 0;
-            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uts'] = 0;
-            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uas'] = 0;
+            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_tgs'] = '-';
+            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uts'] = '-';
+            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uas'] = '-';
             $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_akhir'] = '-';
             $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_huruf'] = '-';
         }
