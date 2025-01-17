@@ -137,7 +137,7 @@ class KhsController extends Controller
             if($row->publish_uas == 1){
                 $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uas'] = $row->nuas;
             }
-            if($row->validasi_tugas == 1 && $row->validasi_uts == 1 && $row->validasi_uas == 1){
+            if($row->publish_tugas == 1 && $row->publish_uts == 1 && $row->publish_uas == 1){
                 $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_akhir'] = $row->nakhir;
                 $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_huruf'] = $row->nhuruf;
             }
