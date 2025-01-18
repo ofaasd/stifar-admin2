@@ -280,7 +280,7 @@
                             if(key == 'tgl_tf') {
                                 $("#area_bukti").append(`<tr><td>Tanggal Transfer</td><td>: ${data[1][key]}</td></tr>`)
                             }else if(key == 'bukti') {
-                                $("#area_bukti").append(`<tr><td>Bukti Transfer</td><td>: <a href='https://pendaftaran.stifar.ac.id/assets/bukti/${data[1][key]}' class="btn btn-sm btn-primary">Lihat Bukti</a></td></tr>`)
+                                $("#area_bukti").append(`<tr><td>Bukti Transfer</td><td>: <a href='https://pendaftaran.stifar.ac.id/assets/bukti/${data[1][key]}' class="btn btn-sm btn-primary" target="_blank">Lihat Bukti</a></td></tr>`)
                             }
 
                         });
