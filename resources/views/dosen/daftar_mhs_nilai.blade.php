@@ -26,7 +26,6 @@
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
                 <div class="card">
-                    @csrf
                     <div class="card-body">
                         <div class="row">
                             <div class="col-sm-6">
@@ -69,15 +68,15 @@
                                         <td colspan=2>{{(empty($daftar_mhs))?"<div class='alert alert-danger'>Belum ada data nilai yang di input</div>":""}}</td>
                                     </tr>
                                     <tr>
-                                        <td><button class="btn btn-info btn-sm publish-btn" data-id="{{$id}}" data-status="tugas" data-action="{{$action[1]}}">{{($action[1] == 0)?"Publish":"UnPublish"}} TGS</button></td>
+                                        <td><button class="btn {{($action[1] == 0)?"btn-info":"btn-danger"}} btn-sm publish-btn" data-id="{{$id}}" data-status="tugas" data-action="{{$action[1]}}">{{($action[1] == 0)?"Publish":"UnPublish"}} TGS</button></td>
                                         <td style="padding-left: 10px;"><button class="btn btn-info btn-sm validasi-btn" data-id="{{$id}}" data-status="tugas" data-action="{{$actionvalid[1]}}">{{($actionvalid[1] == 0)?"Validasi":"Batalkan Validasi"}}  TGS</button></td>
                                     </tr>
                                     <tr>
-                                        <td><button class="btn btn-info btn-sm publish-btn" data-id="{{$id}}"  data-status="uts" data-action="{{$action[2]}}">{{($action[2] == 0)?"Publish":"UnPublish"}} UTS</button></td>
+                                        <td><button class="btn {{($action[2] == 0)?"btn-info":"btn-danger"}} btn-sm publish-btn" data-id="{{$id}}"  data-status="uts" data-action="{{$action[2]}}">{{($action[2] == 0)?"Publish":"UnPublish"}} UTS</button></td>
                                         <td style="padding-left: 10px;"><button class="btn btn-info btn-sm validasi-btn" data-id="{{$id}}"  data-status="uts" data-action="{{$actionvalid[2]}}">{{($actionvalid[2] == 0)?"Validasi":"Batalkan Validasi"}} UTS</button></td>
                                     </tr>
                                     <tr>
-                                        <td><button class="btn btn-info btn-sm publish-btn" data-id="{{$id}}"  data-status="uas" data-action="{{$action[3]}}">{{($action[3] == 0)?"Publish":"UnPublish"}} UAS</button></td>
+                                        <td><button class="btn {{($action[3] == 0)?"btn-info":"btn-danger"}} btn-sm publish-btn" data-id="{{$id}}"  data-status="uas" data-action="{{$action[3]}}">{{($action[3] == 0)?"Publish":"UnPublish"}} UAS</button></td>
                                         <td style="padding-left: 10px;"><button class="btn btn-info btn-sm validasi-btn" data-id="{{$id}}"  data-status="uas" data-action="{{$actionvalid[3]}}">{{($actionvalid[3] == 0)?"Validasi":"Batalkan Validasi"}} UAS</button></td>
                                     </tr>
                                 </table>
@@ -86,40 +85,50 @@
                             </div>
                         </div>
                         <div class="table-responsive mt-4">
-                            <table class="table" id="myTable">
-                                <thead>
-                                    <tr>
-                                        <th>No.</th>
-                                        <th>NIM</th>
-                                        <th>Nama Mahasiswa</th>
-                                        <th>Nilai Tugas</th>
-                                        <th>Nilai UTS</th>
-                                        <th>Nilai UAS</th>
-                                        <th>Nilai Akhir</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($daftar_mhs as $row)
+                            <form method="POST" action="{{url('dosen/simpan-nilai-all')}}">
+                                @csrf
+                                <input type="hidden" name="id_jadwal" value="{{$id}}">
+                                <table class="table" id="myTable">
+                                    <thead>
                                         <tr>
-                                            <td>{{ $no++ }}</td>
-                                            <td>{{ $row['nims'] }}</td>
-                                            <td>{{ $row['nama'] }}</td>
-                                            <td>
-                                                <input type="number" max="100" min="0" onchange="simpanNilai({{ $row['idmhs'] }}, {{ $id }}, '1', $(this).val())" class="form-control" id="nilai_tugas{{ $row['idmhs'] }}" data-id="{{ $row['idmhs'] }}" value="{{ $row['ntugas'] }}">
-                                            </td>
-                                            <td>
-                                                <input type="number" max="100" min="0" onchange="simpanNilai({{ $row['idmhs'] }}, {{ $id }}, '2', $(this).val())" class="form-control" id="nilai_uts{{ $row['idmhs'] }}" data-id="{{ $row['idmhs'] }}" value="{{ $row['nuts'] }}">
-                                            </td>
-                                            <td>
-                                                <input type="number" max="100" min="0" onchange="simpanNilai({{ $row['idmhs'] }}, {{ $id }}, '3', $(this).val())" class="form-control" id="nilai_uas{{ $row['idmhs'] }}" data-id="{{ $row['idmhs'] }}" value="{{ $row['nuas'] }}">
-                                            </td>
-                                            <td>
-                                                <span id="na{{ $row['idmhs'] }}">{{ $row['nakhir'] }} | {{ $row['nhuruf'] }}  </span>
-                                            </td>
+                                            <th>No.</th>
+                                            <th>NIM</th>
+                                            <th>Nama Mahasiswa</th>
+                                            <th>Nilai Tugas</th>
+                                            <th>Nilai UTS</th>
+                                            <th>Nilai UAS</th>
+                                            <th>Nilai Akhir</th>
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($daftar_mhs as $row)
+
+                                            <tr>
+                                                <td>{{ $no++ }}</td>
+                                                <td>
+                                                    <input type="hidden" name="nim[]" value="{{$row['nims']}}">
+                                                    <input type="hidden" name="id_mhs[]" value="{{$row['idmhs']}}">
+                                                    {{ $row['nims'] }}
+                                                </td>
+                                                <td>{{ $row['nama'] }}</td>
+                                                <td>
+                                                    <input type="number" max="100" min="0" onchange="simpanNilai({{ $row['idmhs'] }}, {{ $id }}, '1', $(this).val())" class="form-control" id="nilai_tugas{{ $row['idmhs'] }}" name="nilai_tugas[{{$row['nims']}}]" data-id="{{ $row['idmhs'] }}" value="{{ $row['ntugas'] }}">
+                                                </td>
+                                                <td>
+                                                    <input type="number" max="100" min="0" onchange="simpanNilai({{ $row['idmhs'] }}, {{ $id }}, '2', $(this).val())" class="form-control" id="nilai_uts{{ $row['idmhs'] }}" name="nilai_uts[{{$row['nims']}}]" data-id="{{ $row['idmhs'] }}" value="{{ $row['nuts'] }}">
+                                                </td>
+                                                <td>
+                                                    <input type="number" max="100" min="0" onchange="simpanNilai({{ $row['idmhs'] }}, {{ $id }}, '3', $(this).val())" class="form-control" id="nilai_uas{{ $row['idmhs'] }}" name="nilai_uas[{{$row['nims']}}]" data-id="{{ $row['idmhs'] }}" value="{{ $row['nuas'] }}">
+                                                </td>
+                                                <td>
+                                                    <span id="na{{ $row['idmhs'] }}">{{ $row['nakhir'] }} | {{ $row['nhuruf'] }}  </span>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                                <input type="submit" value="SIMPAN" class="btn btn-primary col-md-12 mt-2">
+                            </form>
                         </div>
                     </div>
                 </div>

@@ -40,7 +40,11 @@
                     <div class="card-body" style="padding:0">
                         <div class="mt-4">
                             <div class="mt-4">
-
+                                @if($jumlah_valid < $jumlah_matkul)
+                                    <div class="alert alert-warning">Nilai Masih Belum Valid dan dapat Berubah Sewaktu-waktu</div>
+                                @else
+                                    <div class="alert alert-success">Nilai sudah di validasi oleh dosen pengampu</div>
+                                @endif
                                 <div class="mt-2"></div>
                                 <table class="table table-hover table-border-horizontal mb-3" id="tablekrs">
                                     <thead>

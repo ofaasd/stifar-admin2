@@ -25,6 +25,7 @@ use App\Http\Controllers\admin\TahunAjaranController;
 use App\Http\Controllers\mahasiswa\ProfileController;
 use App\Http\Controllers\admin\admisi\SlideController;
 use App\Http\Controllers\admin\admisi\BiayaPendaftaranController;
+use App\Http\Controllers\admin\admisi\StatistikController as AdmisiStatistikController;
 use App\Http\Controllers\admin\master\LabelController;
 use App\Http\Controllers\admin\master\GedungController;
 use App\Http\Controllers\admin\master\LantaiController;
@@ -147,6 +148,7 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     Route::get('admin/admisi/verifikasi/gelombang/{id}', [VerifikasiController::class, 'index'])->name('verifikasi_filter_gelombang');
     Route::get('admin/admisi/verifikasi/pembayaran/gelombang/{id}', [VerifikasiController::class, 'pembayaran'])->name('pembayaran_filter_gelombang');
     Route::get('admin/admisi/verifikasi/{id}/show', [VerifikasiController::class, 'show'])->name('verifikasi_show');
+    Route::get('admin/admisi/statistik', [AdmisiStatistikController::class, 'index'])->name('admisi_statistik');
 
     Route::get('admin/admisi/pengumuman', [PengumumanController::class, 'index'])->name('pengumuman');
     Route::get('admin/admisi/pengumuman/{id}/peserta', [PengumumanController::class, 'peserta'])->name('pengumuman_peserta');
@@ -388,6 +390,7 @@ Route::group(['middleware' => ['auth','role:pegawai|super-admin']], function(){
     Route::post('dosen/simpan-absensi-satuan', [KrmController::class, 'saveAbsensiSatuan'] );
     Route::post('dosen/simpan-kontrak', [KrmController::class, 'saveKontrak'] );
     Route::post('dosen/simpan-nilai', [KrmController::class, 'saveNilai'] );
+    Route::post('dosen/simpan-nilai-all', [KrmController::class, 'saveNilaiBatch'] );
     Route::post('dosen/publish-nilai', [KrmController::class, 'publishNilai'] );
     Route::post('dosen/validasi-nilai', [KrmController::class, 'validasiNilai'] );
 

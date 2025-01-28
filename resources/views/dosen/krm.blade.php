@@ -62,7 +62,7 @@
                                                     <a href="javascript:void(0)" class="btn btn-success btn-xs" data-bs-toggle="modal" data-bs-target="#exampleModal{{$jad['id']}}"><i class="fa fa-inbox"></i>RPS</a>
                                                     <!-- Modal -->
                                                     <div class="modal fade" id="exampleModal{{$jad['id']}}" tabindex="-1" aria-labelledby="exampleModalLabel{{$jad['id']}}" aria-hidden="true">
-                                                        <div class="modal-dialog">
+                                                        <div class="modal-dialog modal-lg">
                                                         <div class="modal-content">
                                                             <form method="POST" action="{{ url('/dosen/simpan_rps') }}" enctype="multipart/form-data">
                                                                 <div class="modal-header">
@@ -77,8 +77,10 @@
                                                                     @if(empty($jad['rps']))
                                                                         <div class="alert alert-danger">File RPS Tidak Ditemukan</div>
                                                                     @else
-                                                                        <a href="{{url('/assets/file/rps/' . $jad->rps)}}" class="btn btn-primary" target="_blank">Lihat RPS</a> <br /><br />
+                                                                        <a href="{{url('/assets/file/rps/' . $jad->rps)}}" class="btn btn-primary" target="_blank">Lihat RPS</a> 
                                                                     @endif
+
+                                                                    <a href="{{url('/assets/file/rps/STIFAR - template RPS KPT 2024.docx')}}" class="btn btn-primary" target="_blank">Template RPS</a> <a href="{{url('/assets/file/rps/Kontrak perkuliahan Stifar 2024.docx')}}" class="btn btn-primary" target="_blank">Template Kontrak Perkuliahan</a><br /><br />
                                                                     <label for="rps">Upload RPS</label>
                                                                     <input type="file" name="rps" class="form-control">
                                                                 </div>

@@ -38,7 +38,7 @@
             <div class="media">
               <div class="media-body">
                 <div class="greeting-user">
-                  <h4 class="f-w-600">Selamat Datang Di SISTIFAR</h4>
+                  <h4 class="f-w-600">Selamat Datang Di MySTIFAR</h4>
                   <p>Lihat aktifitas terbaru anda</p><br />
                   <div class="whatsnew-btn"><a class="btn btn-outline-white">Lihat Sekarang</a></div>
                 </div>

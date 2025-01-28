@@ -44,40 +44,50 @@ class KhsController extends Controller
         }
         //$mk = MataKuliah::get();
         $krs_now = Krs::select('krs.*', 'a.hari', 'a.kel', 'b.nama_matkul', 'b.sks_teori', 'b.sks_praktek','b.kode_matkul')
-                    ->leftJoin('jadwals as a', 'krs.id_jadwal', '=', 'a.id')
-                    ->leftJoin('mata_kuliahs as b', 'a.id_mk', '=', 'b.id')
+                    ->join('jadwals as a', 'krs.id_jadwal', '=', 'a.id')
+                    ->join('mata_kuliahs as b', 'a.id_mk', '=', 'b.id')
                     ->where('krs.id_tahun', $ta)
                     ->where('id_mhs',$idmhs)
                     ->get();
         $nilai = [];
+        $jumlah_matkul=0;
         foreach($krs_now as $row){
-            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_tgs'] = 0;
-            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uts'] = 0;
-            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uas'] = 0;
-            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_akhir'] = 0;
-            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_huruf'] = 'E';
+            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_tgs'] = '-';
+            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uts'] = '-';
+            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uas'] = '-';
+            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_akhir'] = '-';
+            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_huruf'] = '-';
+            $jumlah_matkul++;
         }
         $get_nilai = master_nilai::where(['nim'=>$mhs->nim,'id_tahun'=>$ta])->get();
+        $jumlah_valid = 0;
         foreach($get_nilai as $row){
             if($row->publish_tugas == 1){
-                $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_tgs'] = $row->ntugas;
+                //$nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_tgs'] = $row->ntugas;
+                $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_tgs'] = "-";
             }
 
             if($row->publish_uts == 1){
-                $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uts'] = $row->nuts;
+                //$nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uts'] = $row->nuts;
+                $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uts'] = "-";
             }
             if($row->publish_uas == 1){
-                $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uas'] = $row->nuas;
+                //$nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uas'] = $row->nuas;
+                $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uas'] = '-';
             }
-            // if($row->publish_tugas == 1 && $row->publish_uts == 1 && $row->publish_uas == 1){
+            if($row->publish_tugas == 1 && $row->publish_uts == 1 && $row->publish_uas == 1){
                 $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_akhir'] = $row->nakhir;
                 $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_huruf'] = $row->nhuruf;
-            // }
+            }
+            if($row->validasi_tugas == 1 && $row->validasi_uts == 1 && $row->validasi_uas == 1){
+                $jumlah_valid++;
+            }
+            
         }
         $krs = $krs_now;
         $no = 1;
         $permission = MasterKeuanganMh::where('id_mahasiswa',$idmhs)->first();
-        return view('mahasiswa.khs', compact('mhs','title', 'permission','mk', 'krs', 'no', 'ta', 'idmhs','nilai'));
+        return view('mahasiswa.khs', compact('mhs','title', 'permission','mk', 'krs', 'no', 'ta', 'idmhs','nilai','jumlah_matkul','jumlah_valid'));
     }
     public function cetak_khs(int $idmhs = 0){
         if($idmhs == 0){
@@ -102,18 +112,18 @@ class KhsController extends Controller
         $semester = ['', 'Ganjil', 'Ganjil', 'Antara'];
         $smt = substr($tahun_ajaran->kode_ta, 4);
         $krs_now = Krs::select('krs.*', 'a.hari', 'a.kel', 'b.nama_matkul', 'b.sks_teori', 'b.sks_praktek','b.kode_matkul')
-            ->leftJoin('jadwals as a', 'krs.id_jadwal', '=', 'a.id')
-            ->leftJoin('mata_kuliahs as b', 'a.id_mk', '=', 'b.id')
+            ->join('jadwals as a', 'krs.id_jadwal', '=', 'a.id')
+            ->join('mata_kuliahs as b', 'a.id_mk', '=', 'b.id')
             ->where('krs.id_tahun', $ta)
             ->where('id_mhs',$idmhs)
             ->get();
         $nilai = [];
         foreach($krs_now as $row){
-            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_tgs'] = 0;
-            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uts'] = 0;
-            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uas'] = 0;
-            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_akhir'] = 0;
-            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_huruf'] = 'E';
+            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_tgs'] = '-';
+            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uts'] = '-';
+            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uas'] = '-';
+            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_akhir'] = '-';
+            $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_huruf'] = '-';
         }
         $get_nilai = master_nilai::where(['nim'=>$mhs->nim,'id_tahun'=>$ta])->get();
         foreach($get_nilai as $row){
@@ -127,10 +137,12 @@ class KhsController extends Controller
             if($row->publish_uas == 1){
                 $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uas'] = $row->nuas;
             }
-            // if($row->publish_tugas == 1 && $row->publish_uts == 1 && $row->publish_uas == 1){
-                $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_akhir'] = $row->nakhir;
-                $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_huruf'] = $row->nhuruf;
-            // }
+            if($row->publish_tugas == 1 && $row->publish_uts == 1 && $row->publish_uas == 1){
+                if($row->validasi_tugas == 1 && $row->validasi_uts == 1 && $row->validasi_uas == 1){
+                    $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_akhir'] = $row->nakhir;
+                    $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_huruf'] = $row->nhuruf;
+                }
+            }
         }
         $filename = $mhs->nim.'-krs.pdf';
         $cek_foto = (!empty($mhs->foto_mhs))?'assets/images/mahasiswa/' . $mhs->foto_mhs:'assets/images/logo/logo-icon.png';
