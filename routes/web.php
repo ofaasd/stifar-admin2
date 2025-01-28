@@ -70,6 +70,9 @@ use App\Http\Controllers\admin\kepegawaian\PegawaiJabatanStrukturalController;
 use App\Http\Controllers\admin\master\JenisRuangController;
 use App\Http\Controllers\admin\akademik\PerwalianController;
 use App\Http\Controllers\admin\akademik\AbsensiController;
+use App\Http\Controllers\admin\akademik\KuesionerController;
+use App\Http\Controllers\admin\akademik\SoalKuesionerController;
+use App\Http\Controllers\admin\akademik\NilaiKuesionerController;
 use App\Http\Controllers\admin\akademik\NilaiController as nilaiakademik;
 use App\Http\Controllers\admin\akademik\KhsController as adminKhs;
 use App\Http\Controllers\admin\akademik\PengaturanUjianController;
@@ -267,6 +270,9 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     Route::get('/admin/akademik/pengaturan-ujian/prodi/{id}', [PengaturanUjianController::class, 'index']);
     Route::post('/admin/akademik/pengaturan-ujian/setjadwal', [PengaturanUjianController::class, 'setJadwalUjian']);
 
+    Route::get('/admin/akademik/kuesioner', [KuesionerController::class, 'index']);
+    Route::get('/admin/akademik/list_soal/{id}', [SoalKuesionerController::class, 'index']);
+    Route::post('/admin/akademik/list-soal/simpan_status', [SoalKuesionerController::class, 'simpan_status']);
 
     // route KRS
     Route::get('/admin/masterdata/krs', [KrsController::class, 'index']);
@@ -314,6 +320,7 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     Route::resource('admin/kepegawaian/surat_izin', SuratIzinController::class)->name('index','surat_izin');
 
     Route::resource('admin/akademik/perwalian', PerwalianController::class)->name('index','perwalian_admin');
+    Route::resource('admin/akademik/list-soal', SoalKuesionerController::class)->name('index','list-soal');
 
     Route::resource('admin/keuangan/bank_data_va', VaController::class)->name('index','index_va');
     Route::resource('admin/keuangan', KeuanganController::class)->name('index','keuangan');

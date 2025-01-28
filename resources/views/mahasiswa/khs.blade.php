@@ -40,7 +40,7 @@
                     <div class="card-body" style="padding:0">
                         <div class="mt-4">
                             <div class="mt-4">
-                                
+
                                 <div class="mt-2"></div>
                                 <table class="table table-hover table-border-horizontal mb-3" id="tablekrs">
                                     <thead>
@@ -58,9 +58,9 @@
                                                 <td>{{ $row_krs['kode_matkul'] }}</td>
                                                 <td>{{ $row_krs['nama_matkul'] }}</td>
                                                 <td>{{ ($row_krs->sks_teori+$row_krs->sks_praktek) }}</td>
-                                                <td>{{ $nilai[$row_krs->id_jadwal][$ta][$mhs->nim]['nilai_tgs']}}</td>
-                                                <td>{{ $nilai[$row_krs->id_jadwal][$ta][$mhs->nim]['nilai_uts']}}</td>
-                                                <td>{{ $nilai[$row_krs->id_jadwal][$ta][$mhs->nim]['nilai_uas']}}</td>
+                                                <td>{{ ($nilai[$row_krs->id_jadwal][$ta][$mhs->nim]['nilai_tgs'] == 0)?"-":$nilai[$row_krs->id_jadwal][$ta][$mhs->nim]['nilai_tgs']}}</td>
+                                                <td>{{ ($nilai[$row_krs->id_jadwal][$ta][$mhs->nim]['nilai_uts'] == 0)?"-":$nilai[$row_krs->id_jadwal][$ta][$mhs->nim]['nilai_uts']}}</td>
+                                                <td>{{ ($nilai[$row_krs->id_jadwal][$ta][$mhs->nim]['nilai_uas'] == 0)?"-":$nilai[$row_krs->id_jadwal][$ta][$mhs->nim]['nilai_uas']}}</td>
                                                 <td>{{ $nilai[$row_krs->id_jadwal][$ta][$mhs->nim]['nilai_akhir']}} | {{ $nilai[$row_krs->id_jadwal][$ta][$mhs->nim]['nilai_huruf']}}</td>
                                             </tr>
                                         @endforeach
@@ -84,7 +84,7 @@
                     <div class="card-body" style="padding:0">
                         <div class="mt-4">
                             <div class="mt-4">
-                                
+
                                 <div class="mt-2"></div>
                                 <table class="table table-hover table-border-horizontal mb-3" id="tablekrs">
                                     <thead>
