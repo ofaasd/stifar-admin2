@@ -11,7 +11,7 @@ class KuesionerController extends Controller
     //
     public function index(){
         $ta = TahunAjaran::all();
-        $title = "Tahun Ajaran";
+        $title = "Kuesioner Mahasiswa";
         return view('admin.akademik.kuesioner.index', compact('title','ta'));
     }
 }

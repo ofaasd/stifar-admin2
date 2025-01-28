@@ -149,7 +149,7 @@
                      <li><a href="#">Semester Antara <label class="badge badge-light-danger">!</label></a></li>
                      <li><a href="#">Remidial <label class="badge badge-light-danger">!</label></a></li>
                      <li><a href="#">KHS <label class="badge badge-light-danger">!</label></a></li>
-
+                     <li><a href="{{Url::to('admin/akademik/kuesioner')}}">Kuesioner Mahasiswa</a></li>
                      <li><a href="#">Perubahan Status Akademik <label class="badge badge-light-danger">!</label></a></li>
 
                      <li><a href="{{Url::to('admin/akademik/perwalian')}}">Perwalian</a></li>
