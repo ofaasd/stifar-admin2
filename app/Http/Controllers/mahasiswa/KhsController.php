@@ -14,6 +14,7 @@ use App\Models\Prodi;
 use App\Models\MatakuliahKurikulum;
 use App\Models\MasterKeuanganMh;
 use App\Models\master_nilai;
+use App\Models\TblNilaiKuesioner;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
 use PDF;
@@ -33,6 +34,7 @@ class KhsController extends Controller
         $tahun_ajaran = TahunAjaran::where('status','Aktif')->first();
         $ta = $tahun_ajaran->id;
 
+
         $title = 'KHS Mahasiswa';
         $kd_prodi_mhs = Prodi::where('id',$mhs->id_program_studi)->first()->kode_prodi;
         $kurikulum = Kurikulum::where('progdi',$kd_prodi_mhs)->where('angkatan','<=',$mhs->angkatan)->where('angkatan_akhir','>=',$mhs->angkatan)->get();
@@ -49,6 +51,14 @@ class KhsController extends Controller
                     ->where('krs.id_tahun', $ta)
                     ->where('id_mhs',$idmhs)
                     ->get();
+        if($tahun_ajaran->kuesioner == 1){
+            $total_pertanyaan = count($krs_now);
+            $nilai_kuesioner = TblNilaiKuesioner::where('id_ta',$ta)->where('nim',$mhs->nim)->get();
+
+            if(count($nilai_kuesioner) < $total_pertanyaan){
+                return redirect('/mhs/kuesioner_mhs');
+            }
+        }
         $nilai = [];
         $jumlah_matkul=0;
         foreach($krs_now as $row){
@@ -82,7 +92,7 @@ class KhsController extends Controller
             if($row->validasi_tugas == 1 && $row->validasi_uts == 1 && $row->validasi_uas == 1){
                 $jumlah_valid++;
             }
-            
+
         }
         $krs = $krs_now;
         $no = 1;

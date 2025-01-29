@@ -196,13 +196,14 @@
                                                                                     <option value="6" {{ ($row->category == 6)?"selected":"" }}>Kepuasan Pelayanan Pengelola (STIFERA)</option>
                                                                                 </select>
                                                                             </div>
-                                                                            <div class="col-md-12">
+                                                                            {{-- <div class="col-md-12">
                                                                                 <label for="tipe_soal">Tipe Pertanyaan</label>
                                                                                 <select name="tipe_soal" class="form-control">
                                                                                     <option value="1" {{ ($row->tipe_soal == 1)?"selected":"" }}>Pilihan Ganda</option>
                                                                                     <option value="2" {{ ($row->tipe_soal == 2)?"selected":"" }}>Uraian</option>
                                                                                 </select>
-                                                                            </div>
+                                                                            </div> --}}
+                                                                            <input type="hidden" name="tipe_soal" value=1>
                                                                         </div>
                                                                     </div>
                                                                     <div class="modal-footer">

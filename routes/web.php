@@ -79,6 +79,7 @@ use App\Http\Controllers\admin\akademik\KhsController as adminKhs;
 use App\Http\Controllers\admin\akademik\PengaturanUjianController;
 use App\Http\Controllers\admin\keuangan\VaController;
 use App\Http\Controllers\mahasiswa\UjianController;
+use App\Http\Controllers\mahasiswa\KuesionerMhsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -274,6 +275,8 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
 
     Route::get('/admin/akademik/kuesioner', [KuesionerController::class, 'index']);
     Route::get('/admin/akademik/list_soal/{id}', [SoalKuesionerController::class, 'index']);
+    Route::get('/admin/akademik/list_jawaban/{id}', [NilaiKuesionerController::class, 'index']);
+    Route::post('/admin/akademik/list_jawaban/{id}', [NilaiKuesionerController::class, 'index']);
     Route::post('/admin/akademik/list-soal/simpan_status', [SoalKuesionerController::class, 'simpan_status']);
 
     // route KRS
@@ -356,6 +359,8 @@ Route::group(['middleware' => ['auth','role:mhs|super-admin']], function(){
 
     Route::get('mhs/khs/{id}', [KhsController::class, 'index'])->name('index_khs');
     Route::get('mhs/khs', [KhsController::class, 'index'])->name('index_khs');
+    Route::get('mhs/kuesioner_mhs', [KuesionerMhsController::class, 'index'])->name('index_kuesioner');
+    Route::post('mhs/kuesioner_mhs', [KuesionerMhsController::class, 'store'])->name('save_kuesioner');
     Route::get('mhs/cetak_khs', [KhsController::class, 'cetak_khs'])->name('cetak_khs');
 
 
