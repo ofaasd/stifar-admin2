@@ -47,7 +47,11 @@
           @endphp
           <div class="media profile-media"><img class="b-r-10 img-30" src="{{ (!empty($pegawai->foto))?asset('assets/images/pegawai/' . $pegawai->foto):asset('assets/images/dashboard/profile.png') }}" alt="">
             <div class="media-body"><span>{{Auth::user()->name}}</span>
-              <p class="mb-0 font-roboto">{{Auth::user()->roles->pluck('name')[0]}} <i class="middle fa fa-angle-down"></i></p>
+              @php
+                $id = Auth::user()->id;
+                $pegawai = PegawaiBiodatum::where('user_id',$id)->first();
+              @endphp
+              <p class="mb-0 font-roboto">{{$pegawai->nama_lengkap ?? Auth::user()->roles->pluck('name')[0]}} <i class="middle fa fa-angle-down"></i></p>
             </div>
           </div>
           <ul class="profile-dropdown onhover-show-div">
