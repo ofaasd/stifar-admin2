@@ -49,7 +49,7 @@
             <div class="media-body"><span>{{Auth::user()->name}}</span>
               @php
                 $id = Auth::user()->id;
-                $pegawai = PegawaiBiodatum::where('user_id',$id)->first();
+                $pegawai = \App\Models\PegawaiBiodatum::where('user_id',$id)->first();
               @endphp
               <p class="mb-0 font-roboto">{{$pegawai->nama_lengkap ?? Auth::user()->roles->pluck('name')[0]}} <i class="middle fa fa-angle-down"></i></p>
             </div>
