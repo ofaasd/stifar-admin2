@@ -20,7 +20,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="penyelenggara" class="form-label">Penyelenggara</label>
-                                <input type="text" name="penyelenggara" id="penyelenggara_penghargaan" class="form-control" placeholder="cth : DIKIT | Yayasan Farmasi">
+                                <input type="text" name="penyelenggara" id="penyelenggara_penghargaan" class="form-control" placeholder="cth : DIKTI | Yayasan Farmasi">
                             </div>
                             
                             <div class="mb-3">
@@ -54,7 +54,6 @@
                     <th>Nama penghargaan</th>
                     <th>Penyelenggara</th>
                     <th>Tanggal</th>
-                    <th>File</th>
                     <th>Actions</th>
                 </tr>
             </thead>

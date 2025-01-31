@@ -73,7 +73,7 @@ class PegawaiPenghargaanController extends Controller
                 //$data['file'] = $filename;
             }
 
-            $pegawai = PegawaiPenelitian::updateOrCreate(
+            $pegawai = PegawaiPenghargaan::updateOrCreate(
                 ['id' => $id],
                 [
                     'id_pegawai' => $request->id_pegawai,

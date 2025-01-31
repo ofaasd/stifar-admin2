@@ -32,7 +32,6 @@ class PegawaiPenghargaan extends Model
 
 	protected $casts = [
 		'id_pegawai' => 'int',
-		'tanggal' => 'datetime'
 	];
 
 	protected $fillable = [
