@@ -27,7 +27,7 @@
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body" style="overflow-x: scroll">
                         <div class="mt-4">
                             @if($permission->krs == 0)
                                 <div class="alert alert-danger">Anda belum diizinkan untuk melakukan input krs harap hubungi admin sistem</div>
