@@ -16,7 +16,7 @@ use App\Models\KontrakKuliahModel;
 use App\Models\master_nilai;
 use App\Models\TahunAjaran;
 use App\Models\MataKuliah;
-use App\Models\MasterNilai;
+use App\Models\master_nilai as MasterNilai;
 use Illuminate\Support\Facades\DB;
 
 class KrmController extends Controller
