@@ -39,7 +39,8 @@
                                         <th>Tahun Ajaran</th>
                                         <th>Status</th>
                                         <th>T/P</th>
-                                        <th>Kuota</th>
+                                        <th>Jumlah Mhs</th>
+                                        <th>Jumlah Nilai</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -54,7 +55,8 @@
                                             <td>{{ $jad['kode_ta'] }}</td>
                                             <td>{{ $jad['status'] }}</td>
                                             <td>{{ $jad['tp'] }}</td>
-                                            <td>{{$jumlah_input_krs[$jad['id']]}} / {{ $jad['kuota'] }}</td>
+                                            <td>{{$jumlah_input_krs[$jad['id']]}}</td>
+                                            <td>{{$nilaiValidasi[$jad['id']]}}</td>
                                             <td>
                                                 <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                                                     {{-- <a href="{{ url('/dosen/absensi/'.$jad['id'].'/input') }}" class="btn btn-info btn-xs"><i class="fa fa-list"></i>Absensi</a> --}}
