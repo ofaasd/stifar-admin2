@@ -303,7 +303,6 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     Route::post('/admin/masterdata/matakuliah-kurikulum/update', [MkKurikulum::class, 'updateMK']);
     Route::get('/admin/masterdata/matakuliah-kurikulum/delete/{id}', [MkKurikulum::class, 'destroy']);
 
-    Route::get('admin/akademik/khs', [adminKhs::class, 'index']);
     Route::get('admin/akademik/khs/{nim}', [adminKhs::class, 'show']);
 
 
