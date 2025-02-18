@@ -85,11 +85,13 @@ class KhsController extends Controller
                 //$nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uas'] = $row->nuas;
                 $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uas'] = '-';
             }
-            if($row->publish_tugas == 1 && $row->publish_uts == 1 && $row->publish_uas == 1){
+            // if($row->publish_tugas == 1 && $row->publish_uts == 1 && $row->publish_uas == 1){
+            //     $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_akhir'] = $row->nakhir;
+            //     $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_huruf'] = $row->nhuruf;
+            // }
+            if($row->validasi_tugas == 1 && $row->validasi_uts == 1 && $row->validasi_uas == 1){
                 $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_akhir'] = $row->nakhir;
                 $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_huruf'] = $row->nhuruf;
-            }
-            if($row->validasi_tugas == 1 && $row->validasi_uts == 1 && $row->validasi_uas == 1){
                 $jumlah_valid++;
             }
 
@@ -147,12 +149,12 @@ class KhsController extends Controller
             if($row->publish_uas == 1){
                 $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uas'] = $row->nuas;
             }
-            if($row->publish_tugas == 1 && $row->publish_uts == 1 && $row->publish_uas == 1){
+            // if($row->publish_tugas == 1 && $row->publish_uts == 1 && $row->publish_uas == 1){
                 if($row->validasi_tugas == 1 && $row->validasi_uts == 1 && $row->validasi_uas == 1){
                     $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_akhir'] = $row->nakhir;
                     $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_huruf'] = $row->nhuruf;
                 }
-            }
+            // }
         }
         $filename = $mhs->nim.'-krs.pdf';
         $cek_foto = (!empty($mhs->foto_mhs))?'assets/images/mahasiswa/' . $mhs->foto_mhs:'assets/images/logo/logo-icon.png';
