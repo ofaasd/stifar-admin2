@@ -161,12 +161,9 @@ class TahunAjaranController extends Controller
                         'keterangan' => $request->keterangan
                     ]
                 );
-                $id_new_ta = $ta->id;
-                $nonaktif = TahunAjaran::query()->update(['status'=>'Tidak Aktif']);
-                $new_ta = TahunAjaran::find($id_new_ta);
-                $new_ta->status = 'Aktif';
-                $new_ta->save();
                 //$id_new_ta = $ta->id;
+
+                $id_new_ta = $ta->id;
                 if ($ta) {
                     $aktif = TahunAjaran::where('status','Aktif')->first();
 
@@ -262,7 +259,11 @@ class TahunAjaranController extends Controller
                         }
                         //pointing id_jadwal di master_nilai dari id_jadwal_lama ke id_jadwal-arsip
                     }
-
+                    //adding nonaktif
+                    $nonaktif = TahunAjaran::query()->update(['status'=>'Tidak Aktif']);
+                    $new_ta = TahunAjaran::find($id_new_ta);
+                    $new_ta->status = 'Aktif';
+                    $new_ta->save();
                     //hapus record exists
                     $jadwal = Jadwal::truncate();
                     $krs = Krs::truncate();
