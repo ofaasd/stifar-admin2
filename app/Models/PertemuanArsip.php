@@ -9,4 +9,11 @@ class PertemuanArsip extends Model
 {
     use HasFactory;
     protected $table = 'pertemuan_arsip';
+    protected $fillable = [
+        'id_jadwal',
+        'capaian',
+        'no_pertemuan',
+        'tgl_pertemuan',
+        'id_dsn'
+    ];
 }
