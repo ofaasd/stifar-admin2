@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 use App\Models\TahunAjaran;
 use App\Models\Jadwal;
 use App\Models\Krs;
+use App\Models\Pertemuan;
+use App\Models\master_nilai as MasterNilai;
+use App\Models\AbsensiModel;
+use App\Models\KontrakKuliahModel as KontrakKuliah;
 use App\Models\JadwalsArsip;
 use App\Models\KrsArsip;
 use App\Models\PertemuanArsip;
@@ -115,7 +119,6 @@ class TahunAjaranController extends Controller
     {
         //
         $id = $request->id;
-        DB::beginTransaction();
         if ($id) {
             $ta = TahunAjaran::updateOrCreate(
                 ['id' => $id],
@@ -128,7 +131,6 @@ class TahunAjaranController extends Controller
                     'keterangan' => $request->keterangan
                 ]
             );
-            DB::commit();
             return response()->json('Updated');
         } else {
             $ta = TahunAjaran::updateOrCreate(
@@ -150,6 +152,10 @@ class TahunAjaranController extends Controller
                 $jadwal = Jadwal::all();
                 foreach($jadwal as $row){
                     $krs = Krs::where('id_jadwal',$row->id)->where('id_tahun',$aktif->id)->get();
+                    $pertemuan = Pertemuan::where('id_jadwal',$row->id)->get();
+                    $absensi_model = AbsensiModel::where('id_jadwal',$row->id)->get();
+                    $master_nilai = MasterNilai::where('id_jadwal',$row->id)->where('id_tahun',$aktif->id)->get();
+                    $kontrak_kuliah = KontrakKuliah::where('id_jadwal',$row->id)->get();
                     $insert = JadwalsArsip::create(
                         [
                             'kode_jadwal' => $row->kode_jadwal,
@@ -177,6 +183,62 @@ class TahunAjaranController extends Controller
                             ]
                         );
                     }
+                    foreach($absensi_model as $rows){
+                        $insert2 = AbsensiModelArsip::create(
+                            [
+                                'id_jadwal' => $new_jadwal_id,
+                                'id_pertemuan' => $rows->id_pertemuan,
+                                'id_mhs' => $rows->id_mhs,
+                                'type' => $rows->type,
+                            ]
+                        );
+                    }
+                    foreach($kontrak_kuliah as $rows){
+                        $insert2 = KontrakKuliahArsip::create(
+                            [
+                                'id_jadwal' => $new_jadwal_id,
+                                'tugas' => $rows->tugas,
+                                'uts' => $rows->uts,
+                                'uas' => $rows->uas,
+                            ]
+                        );
+                    }
+                    foreach($master_nilai as $rows){
+                        $insert2 = MasterNilaiArsip::create(
+                            [
+                                'id_jadwal' => $new_jadwal_id,
+                                'id_tahun' => $rows->id_tahun,
+                                'nim' => $rows->nim,
+                                'ntugas' => $rows->ntugas,
+                                'nuts' => $rows->nuts,
+                                'nuas' => $rows->nuas,
+                                'nakhir' => $rows->nakhir,
+                                'nhuruf' => $rows->nhuruf,
+                                'kualitas' => $rows->kualitas,
+                                'ndosen' => $rows->ndosen,
+                                'is_krs' => $rows->is_krs,
+                                'publish_tugas' => $rows->publish_tugas,
+                                'publish_uts' => $rows->publish_uts,
+                                'publish_uas' => $rows->publish_uas,
+                                'validasi_tugas' => $rows->validasi_tugas,
+                                'validasi_uts' => $rows->validasi_uts,
+                                'validasi_uas' => $rows->validasi_uas,
+                                'log_date' => $rows->log_date,
+                                'id_mhs' => $rows->id_mhs,
+                            ]
+                        );
+                    }
+                    foreach($pertemuan as $rows){
+                        $insert2 = KontrakKuliahArsip::create(
+                            [
+                                'id_jadwal' => $new_jadwal_id,
+                                'no_pertemuan' => $rows->no_pertemuan,
+                                'capaian' => $rows->capaian,
+                                'tgl_pertemuan' => $rows->tgl_pertemuan,
+                                'id_dsn' => $rows->id_dsn,
+                            ]
+                        );
+                    }
                     //pointing id_jadwal di master_nilai dari id_jadwal_lama ke id_jadwal-arsip
                 }
 
@@ -184,10 +246,16 @@ class TahunAjaranController extends Controller
                 $new_ta = TahunAjaran::find($id_new_ta);
                 $new_ta->status = 'Aktif';
                 $new_ta->save();
-                DB::commit();
+
+                //hapus record exists
+                $jadwal = Jadwal::truncate();
+                $krs = Krs::truncate();
+                $pertemuan = Pertemuan::truncate();
+                $absensi_model = AbsensiModel::truncate();
+                $master_nilai = MasterNilai::truncate();
+                $kontrak_kuliah = KontrakKuliah::truncate();
                 return response()->json('Created');
             } else {
-                DB::rollBack();
                 return response()->json('Failed Create Academic');
             }
         }

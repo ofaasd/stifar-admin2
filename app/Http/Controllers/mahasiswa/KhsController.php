@@ -107,6 +107,13 @@ class KhsController extends Controller
             if($idmhs == 0){
                 dd('User not found');
             }
+        }else{
+            $mhs = Mahasiswa::where('nim',$idmhs)->first();
+            $id = $mhs->id ?? 0;
+            $idmhs = $mhs->id ?? 0;
+            if($idmhs == 0){
+                dd('User not found');
+            }
         }
         $tahun_ajaran = TahunAjaran::where('status','Aktif')->first();
         $ta = $tahun_ajaran->id;

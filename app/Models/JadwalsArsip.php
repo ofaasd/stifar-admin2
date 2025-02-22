@@ -10,6 +10,7 @@ class JadwalsArsip extends Model
 {
     protected $table = 'jadwals_arsip';
     protected $fillable = [
+        'id_jadwal',
         'kode_jadwal',
         'id_tahun',
         'id_mk',

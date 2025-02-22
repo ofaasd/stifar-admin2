@@ -33,7 +33,7 @@
                                 <h5><b>2024 - 2025 Ganjil (Aktif)</b></h5>
                             </div>
                             <div class="col-md-6">
-                                <a href="{{ url('mhs/cetak_khs') }}" class="btn btn-info btn-sm" style="float: right;"><i class="fa fa-download"></i> Download KHS</a>
+                                <a href="{{ url('mhs/cetak_khs/')}}/{{$mhs->nim ?? ''}}" class="btn btn-info btn-sm" style="float: right;"><i class="fa fa-download"></i> Download KHS</a>
                             </div>
                         </div>
                     </div>
