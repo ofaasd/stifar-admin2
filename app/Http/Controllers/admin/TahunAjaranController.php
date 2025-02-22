@@ -161,6 +161,11 @@ class TahunAjaranController extends Controller
                         'keterangan' => $request->keterangan
                     ]
                 );
+                $id_new_ta = $ta->id;
+                $nonaktif = TahunAjaran::query()->update(['status'=>'Tidak Aktif']);
+                $new_ta = TahunAjaran::find($id_new_ta);
+                $new_ta->status = 'Aktif';
+                $new_ta->save();
                 //$id_new_ta = $ta->id;
                 // if ($ta) {
                 //     $aktif = TahunAjaran::where('status','Aktif')->first();
