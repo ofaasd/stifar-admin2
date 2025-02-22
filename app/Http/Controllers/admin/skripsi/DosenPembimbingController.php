@@ -59,7 +59,7 @@ class DosenPembimbingController extends Controller
     public function getNppDosen()
     {
         $data = PegawaiBiodatum::select('npp', 'nama_lengkap')->get();
-
+        // dd($data);
         return response()->json($data);
     }
 
@@ -99,7 +99,7 @@ class DosenPembimbingController extends Controller
             ->firstOrFail();
     if($dosen){
         return response()->json([
-            'nip' => $dosen->nip . ' - ' . $dosen->namanama_lengkap,
+            'nip' => $dosen->nip . ' - ' . $dosen->nama_lengkap,
             'kuota' => $dosen->kuota
         ]);
     }else{
@@ -115,11 +115,13 @@ class DosenPembimbingController extends Controller
             'nip' => 'required|string|max:255',
             'kuota' => 'required|integer|min:0'
         ]);
-
+        $nipFull = $request->input('nip'); // Contoh: "020399004 - Achmad Wildan, ST.,M.T"
+        $nip = explode(' - ', $nipFull)[0]; // Ambil bagian sebelum " - "
+      
         try {
             // Menggunakan updateOrCreate untuk menyederhanakan logika penyimpanan
             RefPembimbing::updateOrCreate(
-                ['nip' => $request->input('nip')],
+                ['nip' => $nip],
                 ['kuota' => $request->input('kuota')]
             );
 

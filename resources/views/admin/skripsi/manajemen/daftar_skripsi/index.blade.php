@@ -6,182 +6,239 @@
 @endsection
 
 @section('style')
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/css/vendors/datatables.css') }}">
-<link rel="stylesheet" type="text/css" href="{{asset('assets/css/vendors/sweetalert2.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/vendors/datatables.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/vendors/sweetalert2.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/vendors/animate.css') }}">
+    <style>
+        .widget-1 {
+            background-image: none;
+        }
+    </style>
 @endsection
 
 @section('breadcrumb-title')
-    <h3>{{$title}}</h3>
+    <h3>{{ $title }}</h3>
 @endsection
 
 @section('breadcrumb-items')
-    <li class="breadcrumb-item">Master Data</li>
-    <li class="breadcrumb-item active">Asal Sekolah PMB</li>
+    <li class="breadcrumb-item">Mahasiswa</li>
+    <li class="breadcrumb-item active">{{ $title }}</li>
 @endsection
 
 @section('content')
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Zero Configuration  Starts-->
-            <div class="col-sm-12">
-                <div class="card">
-                    <div class="card-body">
-                        <ul class="simple-wrapper nav nav-tabs" id="myTab" role="tablist">
-                            {{-- <li class="nav-item" role="presentation"><a class="nav-link txt-default" id="kelMK-tab" href="{{ url('admin/masterdata/kelompok-mk') }}" role="tab" aria-controls="kelMK" aria-selected="true">Kelompok Matakuliah</a></li> --}}
-                            <li class="nav-item" role="presentation"><a class="nav-link txt-default active" id="masterKur-tabs" href="{{ url('admin/masterdata/kurikulum') }}" role="tab" aria-controls="masterKur" aria-selected="false" tabindex="-1">Daftar Skripsi</a></li>
-                            <li class="nav-item" role="presentation"><a class="nav-link txt-default " id="masterKur-tabs" href="{{ Route('admin.skripsi.manajemen.bimbingan')}}" role="tab" aria-controls="masterKur" aria-selected="false" tabindex="-1">Mahasiswa Bimbingan</a></li>
-                            <li class="nav-item" role="presentation"><a class="nav-link txt-default" id="MkKur-tab" href="{{Route('admin.skripsi.manajemen.sidang.index') }}" role="tab" aria-controls="MkKur" aria-selected="false" tabindex="-1">Mahasiswa Sidang</a></li>
-                            <li class="nav-item" role="presentation"><a class="nav-link txt-default " href="#" role="tab"  aria-selected="false" tabindex="-1">Dosen Pembimbing</a></li>
-                        </ul>
-                        <div class="tab-content" id="myTabContent">
-                            <div class="tab-pane fade active show" id="masterMK" role="tabpanel" aria-labelledby="masterMK-tab">
-                                
-                                <div class="table-responsive mt-4">
-                                    <table class="display" id="tableMK">
-                                        <thead>
-                                            <tr>
-                                                <th>No</th>
-                                                <th>Nama Mahasiswa</th>
-                                                <th>Judul</th>
-                                                <th>Tanggal Daftar</th>
-                                                <th>Status</th>
-                                                <th>Aksi</th>
-                                                {{-- <th>Aksi</th> --}}
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($pembimbing as $dosen)
-                                                <tr>
-                                                    <td></td>
-                                                    <td>{{ $dosen['nama'] }}</td>
-                                                    <td>judul</td>
-                                                    <td>{{ $dosen['kuota'] }}</td>
-                                                    <td><span class="label p-1 label-warning">Pengajuan</span></td>
-                                                    <td>
-                                                        <div class="btn-group">
-                                                            <a href="#" class="btn btn-success btn-sm btn-icon edit-record">
-                                                                <i class="fa fa-check"></i>
-                                                            </a>
-                                                            <a href="#" class="btn btn-danger btn-sm btn-icon edit-record">
-                                                                <i class="fa fa-trash"></i>
-                                                            </a>
-                                                          
-                                                        </div>
 
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col">
+                <div class="card widget-1">
+                    <div class="card-body">
+                        <div class="widget-content">
+                            <div class="widget-round warning">
+                                <div class="bg-round">
+                                    <svg class="svg-fill">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#rate') }}"> </use>
+                                    </svg>
+                                    <svg class="half-circle svg-fill">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#halfcircle') }}"></use>
+                                    </svg>
                                 </div>
                             </div>
+                            <div>
+                                <h4>255 </h4><span class="f-light">Mahasiswa Skripsi</span>
+                            </div>
+                        </div>
+                        <div class="font-warning f-w-500"><i class="icon-arrow-down icon-rotate me-1"></i><span>-20%</span>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- Zero Configuration  Ends-->
+            <div class="col">
+                <div class="card widget-1">
+                    <div class="card-body">
+                        <div class="widget-content">
+                            <div class="widget-round warning">
+                                <div class="bg-round">
+                                    <svg class="svg-fill">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#rate') }}"> </use>
+                                    </svg>
+                                    <svg class="half-circle svg-fill">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#halfcircle') }}"></use>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div>
+                                <h4>255 </h4><span class="f-light">Dosen Pembimbing</span>
+                            </div>
+                        </div>
+                        <div class="font-warning f-w-500"><i class="icon-arrow-down icon-rotate me-1"></i><span>-20%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card widget-1">
+                    <div class="card-body">
+                        <div class="widget-content">
+                            <div class="widget-round warning">
+                                <div class="bg-round">
+                                    <svg class="svg-fill">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#rate') }}"> </use>
+                                    </svg>
+                                    <svg class="half-circle svg-fill">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#halfcircle') }}"></use>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div>
+                                <h4>255 </h4><span class="f-light">Topik Skripsi</span>
+                            </div>
+                        </div>
+                        <div class="font-warning f-w-500"><i class="icon-arrow-down icon-rotate me-1"></i><span>-20%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="display table-basic" >
+                      <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama Prodi</th>
+                            <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @foreach ($prodi as $prod)
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ e($prod->nama_prodi) }}</td>
+                            <td>
+                                <ul class="action">
+                                    <li class="detail" data-id="{{ $prod->id }}">
+                                        <a href="{{ route('admin.skripsi.manajemen.detail', $prod->id) }}">
+                                            <i class="icon-eye"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                    
+                    </table>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="display table-basic" >
+                      <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama Prodi</th>
+                            <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                            <td>No</td>
+                            <td>Nama Prodi</td>
+                                <td>
+                                    <ul class="action">
+                                        <li class="edit"> <a href="#"><i class="icon-eye"></i></a>
+                                        </li>
+                                    </ul>
+                                </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="display table-basic" >
+                      <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama Prodi</th>
+                            <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                            <td>No</td>
+                            <td>Nama Prodi</td>
+                                <td>
+                                    <ul class="action">
+                                        <li class="edit"> <a href="#"><i class="icon-eye"></i></a>
+                                        </li>
+                                    </ul>
+                                </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <div class="modal fade" id="formSKS" tabindex="-1" role="dialog" aria-labelledby="formSKS" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <form class="row g-3 needs-validation custom-input" id="formDosbim" method="POST"
+                        action="{{ Route('admin.skripsi.manajemen.daftar.sks') }}">
+                        @csrf
+                        <div class="col-md-12 position-relative">
+                            <label class="form-label" for="validationTooltip03">Total SKS</label>
+                            <input class="form-control" name="jml_sks" id="kuotaSKS" type="number" required>
+                        </div>
+                        <div class="col-md-12 position-relative">
+                            <label class="form-label" for="kodeProdi">Program Studi</label>
+                            <select class="form-select" name="kode_prodi" id="kodeProdi" required>
+                                <option value="" disabled selected>Pilih Program Studi</option>
+                                @foreach ($prodi as $kode_prodi)
+                                    <option value="{{ $kode_prodi->id }}">{{ $kode_prodi->nama_prodi }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <button class="btn btn-primary" type="submit">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 @endsection
 
 @section('script')
     <script src="{{ asset('assets/js/datatable/datatables/jquery.dataTables.min.js') }}"></script>
-    <script src="{{asset('assets/js/sweet-alert/sweetalert.min.js')}}"></script>
-
+    <script src="{{ asset('assets/js/datatable/datatables/datatable.custom.js') }}"></script>
+    <script src="{{ asset('assets/js/sweet-alert/sweetalert.min.js') }}"></script>
     <script>
         $(function() {
-            $("#tableMK").DataTable({
-                responsive: true
-            })
-        })
-        // function simpanMK(){
-        //     const baseUrl = {!! json_encode(url('/')) !!};
-        //     $.ajax({
-        //         url: baseUrl+'/admin/masterdata/matakuliah/save',
-        //         type: 'post',
-        //         dataType: 'json',
-        //         data: {
-        //             kode_matkul: $('#kode_matkul').val(),
-        //             nama_matkul: $('#nama_matkul').val(),
-        //             nama_inggris: $('#nama_inggris').val(),
-        //             kelompok: $('#kelompok').val(),
-        //             rumpun: $('#rumpun').val(),
-        //             semester: $('#semester').val(),
-        //             sks_teori: $('#sks_teori').val(),
-        //             sks_praktek: $('#sks_praktek').val(),
-        //             status_mk: $('#status_mk').val(),
-        //             status: $('#status').val()
-        //         },
-        //         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        //         success: function(res){
-        //             if(res.kode == 200){
-        //                 swal({
-        //                     icon: 'success',
-        //                     title: 'Berhasil!',
-        //                     text: 'Matakuliah Berhasil ditambahkan!',
-        //                     customClass: {
-        //                         confirmButton: 'btn btn-danger'
-        //                     }
-        //                 });
-        //                 window.location.href = baseUrl+'/admin/masterdata/matakuliah';
-        //             }else{
-        //                 swal({
-        //                     icon: 'error',
-        //                     title: 'Gagal!',
-        //                     text: 'Matakuliah Gagal ditambahkan!',
-        //                     customClass: {
-        //                         confirmButton: 'btn btn-danger'
-        //                     }
-        //                 });
-        //                 window.location.href = baseUrl+'/admin/masterdata/matakuliah';
-        //             }
-        //         }
-        //     })
-        // }
-        // function updateMK(kode){
-        //     const baseUrl = {!! json_encode(url('/')) !!};
-        //     $.ajax({
-        //         url: baseUrl+'/admin/masterdata/matakuliah/update',
-        //         type: 'post',
-        //         dataType: 'json',
-        //         data: {
-        //             id : $('#id_'+kode).val(),
-        //             kode_matkul: $('#kode_matkul_'+kode).val(),
-        //             nama_matkul: $('#nama_matkul_'+kode).val(),
-        //             nama_inggris: $('#nama_inggris_'+kode).val(),
-        //             kelompok: $('#kelompok_'+kode).val(),
-        //             rumpun: $('#rumpun_'+kode).val(),
-        //             semester: $('#semester_'+kode).val(),
-        //             sks_teori: $('#sks_teori_'+kode).val(),
-        //             sks_praktek: $('#sks_praktek_'+kode).val(),
-        //             status_mk: $('#status_mk_'+kode).val(),
-        //             status: $('#status_'+kode).val()
-        //         },
-        //         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        //         success: function(res){
-        //             if(res.kode == 200){
-        //                 swal({
-        //                     icon: 'success',
-        //                     title: 'Berhasil!',
-        //                     text: 'Matakuliah Berhasil ditambahkan!',
-        //                     customClass: {
-        //                         confirmButton: 'btn btn-danger'
-        //                     }
-        //                 });
-        //                 window.location.href = baseUrl+'/admin/masterdata/matakuliah';
-        //             }else{
-        //                 swal({
-        //                     icon: 'error',
-        //                     title: 'Gagal!',
-        //                     text: 'Matakuliah Gagal ditambahkan!',
-        //                     customClass: {
-        //                         confirmButton: 'btn btn-danger'
-        //                     }
-        //                 });
-        //                 window.location.href = baseUrl+'/admin/masterdata/matakuliah';
-        //             }
-        //         }
-        //     })
-        // }
+            $('.detail').on('click', function () {
+                // Ambil data-id dari elemen yang diklik
+                var id = $(this).data('id');
+                
+                // Simpan data-id ke localStorage
+                localStorage.setItem('idProdi', id);
+
+                console.log('ID disimpan ke localStorage:', id);
+            });
+            @if (session('success'))
+                swal("success", "{{ session('success') }}", "success");
+            @endif
+
+            @if (session('error'))
+                swal("error", "{{ session('error') }}", "error");
+            @endif
+        });
     </script>
 @endsection

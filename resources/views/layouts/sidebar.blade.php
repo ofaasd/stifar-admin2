@@ -282,10 +282,11 @@
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#">
                 <span><i class="fa fa-support"></i> Tugas Akhir</span></a>
                 <ul class="sidebar-submenu">
+                    <li><a href="#">Daftar Skripsi Mahasiswa</a></li>
                     <li><a href="{{Route('admin.pembimbing.index')}}">Daftar Dosen Pembimbing</a></li>
-                    <li><a href="#">Detail Dosen Pembimbing</a></li>
+                    <li><a href="#">Daftar Mahasiswa Bimbingan</a></li>
+                    <li><a href="#">Manajemen Bimbingan</a></li>
                     <li><a href="#">Berita Acara</a></li>
-                    <li><a href="#">Daftar Mahasiswa Sidang</a></li>
                 </ul>
             </li>
           </ul>

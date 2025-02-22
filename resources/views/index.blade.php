@@ -99,7 +99,7 @@
               <div class="card widget-1">
                 <div class="card-body">
                   <div class="widget-content">
-                    <div class="widget-round primary">
+                    <div class="widget-round warning">
                       <div class="bg-round">
                         <svg class="svg-fill">
                           <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-user') }}"> </use>

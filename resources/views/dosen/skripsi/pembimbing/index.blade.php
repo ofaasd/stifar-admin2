@@ -12,12 +12,12 @@
 @endsection
 
 @section('breadcrumb-title')
-    <h3>{{ 'Daftar Dosen Pembimbing' }}</h3>
+    <h3>{{ 'Daftar Mahasiwa Pengajuan' }}</h3>
 @endsection
 
 @section('breadcrumb-items')
-    <li class="breadcrumb-item">Master Data</li>
-    <li class="breadcrumb-item active">{{ 'Daftar Dosen Pembimbing' }}</li>
+    <li class="breadcrumb-item">Skripsi</li>
+    <li class="breadcrumb-item active">{{ 'Daftar Mahasiwa Pengajuan' }}</li>
 @endsection
 
 @section('content')
@@ -30,7 +30,6 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>Judul / Topik</th>
                                     <th>Nim</th>
                                     <th>Nama</th>
                                     <th>Action</th>
@@ -42,29 +41,48 @@
                     </div>
                 </div>
             </div>
-
         </div>
-        <!--Centered modal-->
-        <div class="modal fade" id="FormModal" tabindex="-1" role="dialog" aria-labelledby="FormModal" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <form class="row g-3 needs-validation custom-input" id="formDosbim">
-                            <input class="form-control" type="hidden" name="nip" id="nip"
-                                placeholder="Please select">
+    </div>
+      
+    
 
-                            <div class="col-md-12 position-relative">
-                                <label class="form-label" for="validationTooltip03">Topik/Judul</label>
-                                <input class="form-control" name="topik" id="topik" type="text" required="">
-                            </div>
-                            <div class="col-6">
-                                <button class="btn btn-primary" type="submit">Submit form</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+
+<div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+       <div class="modal-content">
+          <div class="modal-header">
+             <h5 class="modal-title" id="exampleModalLabel">Detail Mahasiswa</h5>
+             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+                <label for="judul">Judul Skripsi:</label>
+                <p id="judul">-</p>
+            </div>
+            <div class="form-group">
+                <label for="abstrak">Abstrak:</label>
+                <p id="abstrak">-</p>
+            </div>
+            <div class="form-group">
+                <label for="transkrip_nilai">Transkrip Nilai:</label>
+                <p id="transkrip_nilai">-</p>
+            </div>
+            <div class="form-group">
+                <label for="file_pendukung_1">File Pendukung 1:</label>
+                <p id="file_pendukung_1">-</p>
+            </div>
+            <div class="form-group">
+                <label for="file_pendukung_2">File Pendukung 2:</label>
+                <p id="file_pendukung_2">-</p>
             </div>
         </div>
+          <div class="modal-footer">
+             <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
+          </div>
+       </div>
+    </div>
+ </div>
+
     </div>
 @endsection
 
@@ -72,9 +90,6 @@
     <script src="{{ asset('assets/js/datatable/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/js/datatable/datatables/datatable.custom.js') }}"></script>
     <script src="{{ asset('assets/js/sweet-alert/sweetalert.min.js') }}"></script>
-    <script src="{{ asset('assets/js/select2/tagify.js') }}"></script>
-    <script src="{{ asset('assets/js/select2/tagify.polyfills.min.js') }}"></script>
-    <script src="{{ asset('assets/js/select2/select3-custom.js') }}"></script>
     <script>
         $(document).ready(function() {
             $('#pembimbing-table').DataTable({
@@ -86,10 +101,6 @@
                         name: 'DT_RowIndex',
                         orderable: false,
                         searchable: false
-                    },
-                    {
-                        data: 'judul',
-                        name: 'judul'
                     },
                     {
                         data: 'nim',
@@ -114,6 +125,37 @@
             });
 
 
+            $(document).on('click', '.btnShowModal', function() {
+        var nim = $(this).data('id'); // Get nim from button
+
+        // Fetch data using AJAX
+        $.ajax({
+            url: '{{ route('dosen.pengajuan.getDetailMhs', '') }}/' + nim,
+            method: 'GET',
+            success: function(data) {
+                // Fill modal fields with data
+                $('#judul').text(data.judul || '-');
+                $('#abstrak').text(data.abstrak || '-');
+                $('#transkrip_nilai').html(data.transkrip_nilai 
+                ? `<a href="{{ asset('storage/') }}/${data.transkrip_nilai}" target="_blank">Download</a>` 
+                : '-');
+            $('#file_pendukung_1').html(data.file_pendukung_1 
+                ? `<a href="{{ asset('storage/') }}/${data.file_pendukung_1}" target="_blank">Download</a>` 
+                : '-');
+            $('#file_pendukung_2').html(data.file_pendukung_2 
+                ? `<a href="{{ asset('storage/') }}/${data.file_pendukung_2}" target="_blank">Download</a>` 
+                : '-');
+
+                // Show modal
+                $('#detailModal').modal('show');
+            },
+            error: function(xhr) {
+                swal("Error", "Gagal mengambil data detail mahasiswa.", "error");
+                console.log(xhr.responseText);
+            }
+        });
+    });
+
             $(document).on('click', '.btn-info', function() {
                 var id = $(this).data('id');
 
@@ -121,7 +163,7 @@
                     url: '{{ route('dosen.pengajuan.acc', '') }}/' + id,
                     method: 'GET',
                     success: function(response) {
-                        swal("Success", "Acc Mahasiswa Berhasil ", "success");
+                        swal("Success", response.message, "success");
                         $('#pembimbing-table').DataTable().ajax
                                 .reload(); // Reload DataTables
                     },

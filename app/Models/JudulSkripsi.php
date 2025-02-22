@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class RefPembimbing extends Model
+class JudulSkripsi extends Model
 {
     use HasFactory;
 
-    protected $table = 'ref_pembimbing_skripsi';
-    protected $fillable = ['nip', 'kuota','id_progdi'];
+    protected $table = 'judul_skripsi';
+    protected $fillable = ['nim','judul','translate','abstrak'];
 }

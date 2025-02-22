@@ -34,7 +34,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Npp</th>
-                                    <th>Nama</th>
+                                    <th>Nama Dosen</th>
                                     <th>Kuota</th>
                                     <th>Action</th>
                                 </tr>
@@ -78,7 +78,6 @@
     <script src="{{ asset('assets/js/datatable/datatables/datatable.custom.js') }}"></script>
     <script src="{{ asset('assets/js/sweet-alert/sweetalert.min.js') }}"></script>
     <script src="{{ asset('assets/js/select2/tagify.js') }}"></script>
-    <script src="{{ asset('assets/js/select2/tagify.polyfills.min.js') }}"></script>
     <script src="{{ asset('assets/js/select2/select3-custom.js') }}"></script>
     <script>
         $(document).ready(function() {
@@ -90,17 +89,19 @@
                 tagify = new Tagify(nip[0], {
                     enforceWhitelist: true,
                     mode: "select",
-                    whitelist: []
+                    whitelist: [],
+                    dropdown: {
+                    maxItems: 50,
+                    }
                 });
             }
 
-            // Inisialisasi Tagify
-            initializeTagify();
 
             // Ambil data dan update whitelist Tagify
             $(document).on('click', '#tambahDosbim', function() {
                 nip.val('');
                 nip.prop('disabled', false);
+                initializeTagify();
                 $('#kuotaDosen').val('');
 
                 $.ajax({
@@ -108,9 +109,9 @@
                     method: 'GET',
                     success: function(response) {
                         // Mengambil data dari respons dan menyiapkan whitelist untuk Tagify
-                        var whitelistData = response.map(function(dosen) {
+                        var whitelistData = response.map(function(response) {
                             return {
-                                value: dosen.npp + ' - ' + dosen.nama_lengkap
+                                value: response.npp + ' - ' + response.nama_lengkap
                             };
                         });
 
@@ -127,7 +128,10 @@
 
             $(document).on('click', '.edit-btn', function() {
                 var nip = $(this).data('id');
-
+                console.log("test")
+                if (tagify) {
+                    tagify.destroy();
+                }
                 $.ajax({
                     url: '{{ route('admin.pembimbing.editDosen', '') }}/' + nip,
                     method: 'GET',
@@ -181,15 +185,16 @@
 
             $('#formDosbim').on('submit', function(e) {
                 e.preventDefault(); // Mencegah default form submission
-                // Pastikan Tagify sudah terinisialisasi
-                if (!tagify) {
-                    initializeTagify();
+
+                // Ambil nilai dari Tagify jika ada, atau gunakan nilai input langsung jika tidak ada
+                var nip = '';
+
+                if (tagify && tagify.value.length > 0) {
+                    var nipTagify = tagify.value; // Ambil nilai dari Tagify
+                    nip = nipTagify[0].value.split(' - ')[0]; // Ekstrak NIP dari Tagify
+                } else {
+                    nip = $('#nip').val(); // Fallback ke nilai input biasa jika Tagify kosong
                 }
-
-                var nipTagify = tagify ? tagify.value : []; // Ambil nilai dari Tagify
-
-                // Pastikan ada nilai yang dipilih
-                var nip = nipTagify.length > 0 ? nipTagify[0].value.split(' - ')[0] : '';
 
                 // Siapkan data untuk dikirim
                 var formData = {
@@ -197,19 +202,19 @@
                     kuota: $('#kuotaDosen').val(),
                     _token: '{{ csrf_token() }}'
                 };
+
                 $.ajax({
                     url: '{{ route('admin.pembimbing.updateKuota') }}',
                     method: 'POST',
                     data: formData, // Serializes form data
                     success: function(response) {
                         if (response.success) {
-                        swal("Success", "Berhasil Update Kuota Dosen ", "success");
+                            swal("Success", "Berhasil Update Kuota Dosen", "success");
                             $('#FormModal').modal('hide'); // Tutup modal
                             $('#pembimbing-table').DataTable().ajax
-                                .reload(); // Reload DataTables
-
+                        .reload(); // Reload DataTables
                         } else {
-                        swal("error", "Gagal Update Kuota Dosen ", "error");
+                            swal("Error", "Gagal Update Kuota Dosen", "error");
                         }
                     },
                     error: function(xhr) {
@@ -218,6 +223,7 @@
                     }
                 });
             });
+
         });
     </script>
 @endsection

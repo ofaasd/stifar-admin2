@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\mahasiswa\skripsi;
 
 use App\Models\Mahasiswa;
+use App\Models\RefPengajuanPembimbing;
 use Illuminate\Http\Request;
 use App\Models\RefPembimbing;
 use App\Models\MasterPembimbing;
@@ -15,10 +16,10 @@ class PembimbingController extends Controller
         $user = Auth::user();
         $mhs = Mahasiswa::where('id',$user->id)->select('nim')->first();
         $nim = $mhs->nim;
-        $data = MasterPembimbing::where('nim', $nim)->where('status',1)->get();
-        $totalPengajuan = MasterPembimbing::where('nim', $nim)->where('status',0)->count();
+        // $data = MasterPembimbing::where('nim', $nim)->where('status',1)->get();
+        $totalPengajuan = RefPengajuanPembimbing::where('nim', $nim)->count();
         return view('mahasiswa.skripsi.pembimbing.index', [
-            'data' => $data,
+            // 'data' => $data,
             'totalPengajuan' => $totalPengajuan
         ]);
 
@@ -27,14 +28,9 @@ class PembimbingController extends Controller
     public function getDaftarPembimbing(){
         $user = Auth::user();
         $mhs = Mahasiswa::where('id',$user->id)->select('nim')->first();
-        $nim = $mhs->nim;        $data = RefPembimbing::where('kuota', '!=', 0)
+         $data = RefPembimbing::where('kuota', '!=', 0)
         ->join('pegawai_biodata AS pegawai', 'pegawai.npp', '=', 'ref_pembimbing_skripsi.nip') 
-        ->leftJoin('master_pembimbing_skripsi', function($join) use ($nim) {
-            $join->on('master_pembimbing_skripsi.nip', '=', 'ref_pembimbing_skripsi.nip')
-                 ->where('master_pembimbing_skripsi.nim', '=', $nim);
-        })
-        ->whereNull('master_pembimbing_skripsi.nim')
-        ->select('pegawai.nama_lengkap', 'pegawai.npp', 'ref_pembimbing_skripsi.kuota') // Pastikan kuota diambil dari ref_pembimbing_skripsi
+        ->select('pegawai.nama_lengkap', 'pegawai.npp', 'ref_pembimbing_skripsi.kuota')
         ->get();
         // Jika data kosong, kirim response dengan pesan khusus
           if ($data->isEmpty()) {
@@ -50,7 +46,7 @@ class PembimbingController extends Controller
         return \DataTables::of($data)
             ->addIndexColumn() // Menambahkan kolom DT_RowIndex
             ->addColumn('button', function ($row) {
-                return '<button class="btn btn-primary btn-sm btnModal text-light" data-id="' . $row->npp . '" data-bs-toggle="modal" data-bs-target="#FormModal" >Ajukan</button>';
+                return '<span class="btnModal" data-id="' . $row->npp . '" ><i class="btn btn-primary btn-sm  fa-solid fa-plus"></i></span>';
             })
             ->rawColumns(['button'])
             ->make(true);
@@ -64,15 +60,13 @@ class PembimbingController extends Controller
         // Validasi input request
         $request->validate([
             'nip' => 'required', // Validasi npp sebagai string dan wajib diisi
-            'topik' => 'required|string', // Validasi topik sebagai string dan wajib diisi
         ]);
     
         // Menyimpan data ke dalam tabel MasterPembimbing
-        MasterPembimbing::create([
+        RefPengajuanPembimbing::create([
             'nim' => $nim, // Menggunakan variabel $nim dari user yang login
             'nip' => $request->input('nip'), // Mengambil nilai npp dari request
-            'topik_judul' => $request->input('topik'), // Mengambil nilai topik dari request
-            'status' => 0, // Mengambil nilai topik dari request
+            'created_at' => now(), // Mengambil nilai topik dari request
         ]);
         // Mengembalikan response dalam bentuk JSON
         return response()->json([

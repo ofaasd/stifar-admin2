@@ -24,9 +24,20 @@
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/khs')}}" >
                 <span><i class="fa fa-list-alt"></i> KHS</span></a>
             </li>
-            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{Route(('mhs.pembimbing.index'))}}" >
-                <span><i class="fa fa-list-alt"></i> Tugas Akhir</span></a>
-            </li>
+           <li class="sidebar-list">
+            <a class="sidebar-link sidebar-title" href="#">
+                <span><i class="fa fa-support"></i> Tugas Akhir</span>
+            </a>
+            <ul class="sidebar-submenu">
+              <li><a  href="{{Route('mhs.pembimbing.index')}}">Daftar Dosen Pembimbing</a></li>
+              <li><a href="{{ Route('mhs.bimbingan.index') }}">Bimbingan Skripsi</a></li>
+              <li><a href="{{ Route('mhs.skripsi.berkas.index') }}">Manajemen Berkas Skripsi</a></li>
+              <li><a href="#">Daftar Mahasiswa Bimbingan</a></li>
+              <li><a href="#">Manajemen Bimbingan</a></li>
+              <li><a href="#">Berita Acara</a></li>
+            </ul>
+        </li>
+          
           </ul>
         </div>
         <div class="right-arrow" id="right-arrow"><i data-feather="arrow-right"></i></div>
