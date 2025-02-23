@@ -183,7 +183,7 @@
                             <span>Skripsi <label class="badge badge-light-danger">!</label></span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
-                            <li><a href="#">Manajemen Skripsi <label class="badge badge-light-danger">!</label></a></li>
+                            <li><a href="{{ Route('admin.skripsi.manajemen.daftar.index') }}">Manajemen Skripsi <label class="badge badge-light-danger">!</label></a></li>
                             <li><a href="{{Route('admin.pembimbing.index')}}">Input Dosbing </a></li>
                             <li><a href="#">Jadwal Sidang <label class="badge badge-light-danger">!</label></a></li>
                             <li><a href="#">Nilai <label class="badge badge-light-danger">!</label></a></li>

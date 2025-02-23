@@ -23,33 +23,7 @@
 @endsection
 
 @section('content')
-    <div class="container-fluid">
-        <div class="row">
-            @foreach ($widgets as $widget)
-                <div class="col">
-                    <div class="card widget-1" @if ($widget['action']) data-bs-toggle="modal" data-bs-target="#formSKS" @endif>
-                        <div class="card-body">
-                            <div class="widget-content">
-                                <div class="widget-round warning">
-                                    <div class="bg-round">
-                                        <svg class="svg-fill">
-                                            <use href="{{ asset('assets/svg/icon-sprite.svg#rate') }}"></use>
-                                        </svg>
-                                        <svg class="half-circle svg-fill">
-                                            <use href="{{ asset('assets/svg/icon-sprite.svg#halfcircle') }}"></use>
-                                        </svg>
-                                    </div>
-                                </div>
-                                <div>
-                                    <h4>{{ $widget['value'] }}</h4><span class="f-light">{{ $widget['label'] }}</span>
-                                </div>
-                            </div>
-                            <div class="font-warning f-w-500"><i class="icon-arrow-down icon-rotate me-1"></i><span>-20%</span></div>
-                        </div>
-                    </div>
-                </div>
-            @endforeach
-        </div>
+
 
         <div class="row">
             <div class="card">
