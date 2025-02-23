@@ -25,8 +25,8 @@
                         </div>
                     @endif
                      <div class="form-group">
-                        <label class="col-form-label">Email Address</label>
-                        <input class="form-control" type="email" name="email" required="" placeholder="Test@gmail.com">
+                        <label class="col-form-label">Username</label>
+                        <input class="form-control" type="email" name="email" required="" placeholder="nim@mhs.stifar.id | niy@dsn.stifar.id">
                      </div>
                      <div class="form-group">
                         <label class="col-form-label">Password</label>

@@ -17,7 +17,7 @@
         <h2 class="headline font-success">403</h2>
       </div>
       <div class="col-md-8 offset-md-2">
-        <p class="sub-content">The page you are attempting to reach is currently not available. This may be because the page does not exist or has been moved.</p>
+        <p class="sub-content">The page you are attempting to reach is currently not available. The user not have access to this page.</p>
       </div>
       <div><a class="btn btn-success-gradien btn-lg" href="{{URL::to('/')}}">BACK TO HOME PAGE</a></div>
     </div>

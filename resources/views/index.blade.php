@@ -32,13 +32,13 @@
 @section('content')
 <div class="container-fluid">
     <div class="row widget-grid">
-      <div class="col-xxl-4 col-sm-6 box-col-6">
+      <div class="col-xxl-6 col-sm-6 box-col-6">
         <div class="card profile-box">
           <div class="card-body">
             <div class="media">
               <div class="media-body">
                 <div class="greeting-user">
-                  <h4 class="f-w-600">Selamat Datang Di SISTIFAR</h4>
+                  <h4 class="f-w-600">Selamat Datang Di MySTIFAR</h4>
                   <p>Lihat aktifitas terbaru anda</p><br />
                   <div class="whatsnew-btn"><a class="btn btn-outline-white">Lihat Sekarang</a></div>
                 </div>
@@ -168,7 +168,7 @@
         </div>
       </div>
     </div>
-    <div class="col-xxl-6 col-lg-12 box-col-12">
+    <div class="col-xxl-12 col-lg-12 box-col-12">
         <div class="card">
             <div class="card-header card-no-border">
               <h5>Program Studi</h5>

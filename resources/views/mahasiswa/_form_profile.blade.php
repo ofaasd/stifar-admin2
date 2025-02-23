@@ -208,6 +208,19 @@
             </div>
         </div>
         <div class="mb-2">
+            <label class="col-sm-10 col-form-label">Status Mahasiswa :</label>
+            <div class="col-sm-12">
+                <p>
+                    <select name="status" id="status" class="form-control js-example-basic-single" >
+                        <option value="0">Pilih Status</option>
+                        @foreach($status as $key=>$row)
+                            <option value="{{ $key }}" {{(!empty($mahasiswa->status) && $mahasiswa->status == $key)?"selected":""}}>{{$row}}</option>
+                        @endforeach
+                    </select>
+                </p>
+            </div>
+        </div>
+        <div class="mb-2">
             <label class="col-sm-10 col-form-label">Dosen Wali :</label>
             <div class="col-sm-12">
                 <p>

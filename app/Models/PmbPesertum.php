@@ -81,7 +81,7 @@ class PmbPesertum extends Model
 
 	protected $casts = [
 		'nopen' => 'int',
-		'jk' => 'bool',
+		'jk' => 'int',
 		'agama' => 'int',
 		'tinggi_badan' => 'int',
 		'berat_badan' => 'int',

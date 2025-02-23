@@ -15,15 +15,17 @@ use App\Models\Prodi;
 use App\Models\KontrakKuliahModel;
 use App\Models\master_nilai;
 use App\Models\TahunAjaran;
+use App\Models\MataKuliah;
+use App\Models\master_nilai as MasterNilai;
 use Illuminate\Support\Facades\DB;
 
 class KrmController extends Controller
 {
     public function index(){
-        $title = "Daftar Jadwal Mengajar";
+        $title = "Kartu Rencana Mengajar";
         $id_tahun = TahunAjaran::where('status','Aktif')->first()->id;
         $id_dsn = PegawaiBiodatum::where('user_id', Auth::id())->first();
-        $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
+        $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul', 'mata_kuliahs.rps')
                         ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
                         ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
                         ->leftJoin('mata_kuliahs', 'mata_kuliahs.id', '=', 'jadwals.id_mk')
@@ -36,6 +38,30 @@ class KrmController extends Controller
             $jumlah_input_krs[$row->id] = Krs::where('id_jadwal',$row->id)->where('id_tahun',$id_tahun)->count();
         }
         return view('dosen.krm', compact('title', 'jadwal', 'no', 'jumlah_input_krs'));
+    }
+    public function input_nilai(){
+        $title = "Daftar Matakuliah";
+        $id_tahun = TahunAjaran::where('status','Aktif')->first()->id;
+        $id_dsn = PegawaiBiodatum::where('user_id', Auth::id())->first();
+        $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
+                        ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
+                        ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
+                        ->leftJoin('mata_kuliahs', 'mata_kuliahs.id', '=', 'jadwals.id_mk')
+                        ->leftJoin('pengajars', 'pengajars.id_jadwal', '=', 'jadwals.id')
+                        ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
+                        ->where([ 'pengajars.id_dsn' => $id_dsn->id, 'jadwals.status' => 'Aktif'])->get();
+        $no = 1;
+        $nilaiPublish = [];
+        $nilaiValidasi = [];
+        foreach($jadwal as $row){
+            $nilaiValidasi[$row->id] = MasterNilai::where('id_jadwal',$row->id)->where(['validasi_tugas'=>1,'validasi_uts'=>1,'validasi_uas'=>1])->count();
+            $nilaiPublish[$row->id] = MasterNilai::where('id_jadwal',$row->id)->where(['publish_tugas'=>1,'publish_uts'=>1,'publish_uas'=>1])->count();
+        }
+        $jumlah_input_krs = [];
+        foreach($jadwal as $row){
+            $jumlah_input_krs[$row->id] = Krs::where('id_jadwal',$row->id)->where('id_tahun',$id_tahun)->count();
+        }
+        return view('dosen.input_nilai', compact('title','nilaiPublish','nilaiValidasi', 'jadwal', 'no', 'jumlah_input_krs'));
     }
     public function daftarMhs($id){
         $title = "Daftar Mahasiswa";
@@ -144,14 +170,21 @@ class KrmController extends Controller
                             $join->on('master_nilai.id_jadwal', '=', 'krs.id_jadwal');
                             $join->on('master_nilai.id_mhs', '=', 'mhs.id');
                          })
-                         ->where('krs.id_jadwal', $id)->get();
+                         ->where('krs.id_jadwal', $id)->orderBy('mhs.nim','asc')->get();
+        $action[1] = $daftar_mhs[0]->publish_tugas ?? 0;
+        $action[2] = $daftar_mhs[0]->publish_uts ?? 0;
+        $action[3] = $daftar_mhs[0]->publish_uas ?? 0;
+        $actionvalid[1] = $daftar_mhs[0]->validasi_tugas ?? 0;
+        $actionvalid[2] = $daftar_mhs[0]->validasi_uts ?? 0;
+        $actionvalid[3] = $daftar_mhs[0]->validasi_uas ?? 0;
         $kontrak = KontrakKuliahModel::where('id_jadwal', $id)->first();
         $no = 1;
-        return view('dosen.daftar_mhs_nilai', compact('title', 'jadwal', 'daftar_mhs', 'no', 'id', 'kontrak'));
+        return view('dosen.daftar_mhs_nilai', compact('title', 'jadwal', 'daftar_mhs', 'no', 'id', 'kontrak','action','actionvalid'));
     }
     public function saveNilai(Request $request){
         $id_jadwal = $request->id_jadwal;
         $id_mhs = $request->id_mhs;
+        $mahasiswa = Mahasiswa::find($id_mhs);
         $tipe = $request->tipe;
         $nilai = $request->nilai;
 
@@ -163,15 +196,15 @@ class KrmController extends Controller
 
         if ($cek) {
             if ($tipe == 1) {
-                master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs])->update(['ntugas' => $nilai]);
+                master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs, 'nim' => $mahasiswa->nim])->update(['ntugas' => $nilai]);
             }
             if ($tipe == 2) {
-                master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs])->update(['nuts' => $nilai]);
+                master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs, 'nim' => $mahasiswa->nim])->update(['nuts' => $nilai]);
             }
             if ($tipe == 3) {
-                master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs])->update(['nuas' => $nilai]);
+                master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs, 'nim' => $mahasiswa->nim])->update(['nuas' => $nilai]);
             }
-            $cek = master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs])->first();
+            $cek = master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs, 'nim' => $mahasiswa->nim])->first();
             $kontrak_tugas = $kontrak['tugas']??0;
             $kontrak_uts = $kontrak['uts']??0;
             $kontrak_uas = $kontrak['uas']??0;
@@ -179,41 +212,22 @@ class KrmController extends Controller
                   (floatval($cek['nuts']??0) * floatval(($kontrak_uts / 100))) +
                   (floatval($cek['nuas']??0) * floatval(($kontrak_uas / 100)));
             $nh = 'E';
-            if(($na >= 85) && ($na <= 100)){
-                $nh = 'A';
-            }
-            if(($na >= 80) && ($na < 85)){
-                $nh = 'AB';
-            }
-            if(($na >= 70) && ($na < 80)){
-                $nh = 'B';
-            }
-            if(($na >= 65) && ($na < 70)){
-                $nh = 'BC';
-            }
-            if(($na >= 60) && ($na < 65)){
-                $nh = 'C';
-            }
-            if(($na >= 50) && ($na < 60)){
-                $nh = 'D';
-            }
-            if(($na >= 0) && ($na < 50)){
-                $nh = 'E';
-            }
+            $nh = \App\helpers::getNilaiHuruf($na);
 
-            master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs])->update(['nakhir' => $na, 'nhuruf' => $nh]);
+            master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs, 'nim' => $mahasiswa->nim])->update(['nakhir' => $na, 'nhuruf' => $nh]);
+
             return json_encode(['kode' => 200, 'na' => $na, 'nh' => $nh]);
         }else{
             if ($tipe == 1) {
-                master_nilai::create(['id_jadwal' => $id_jadwal, 'id_tahun' => $tahun_ajaran['id'], 'id_mhs' => $id_mhs, 'ntugas' => $nilai]);
+                master_nilai::create(['id_jadwal' => $id_jadwal, 'id_tahun' => $tahun_ajaran['id'], 'id_mhs' => $id_mhs, 'ntugas' => $nilai, 'nim' => $mahasiswa->nim]);
             }
             if ($tipe == 2) {
-                master_nilai::where(['id_jadwal' => $id_jadwal, 'id_tahun' => $tahun_ajaran['id'], 'id_mhs' => $id_mhs, 'nuts' => $nilai]);
+                master_nilai::create(['id_jadwal' => $id_jadwal, 'id_tahun' => $tahun_ajaran['id'], 'id_mhs' => $id_mhs, 'nuts' => $nilai, 'nim' => $mahasiswa->nim]);
             }
             if ($tipe == 3) {
-                master_nilai::where(['id_jadwal' => $id_jadwal, 'id_tahun' => $tahun_ajaran['id'], 'id_mhs' => $id_mhs, 'nuas' => $nilai]);
+                master_nilai::create(['id_jadwal' => $id_jadwal, 'id_tahun' => $tahun_ajaran['id'], 'id_mhs' => $id_mhs, 'nuas' => $nilai, 'nim' => $mahasiswa->nim]);
             }
-            $cek = master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs])->first();
+            $cek = master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs, 'nim' => $mahasiswa->nim])->first();
             $kontrak_tugas = $kontrak['tugas']??0;
             $kontrak_uts = $kontrak['uts']??0;
             $kontrak_uas = $kontrak['uas']??0;
@@ -221,30 +235,81 @@ class KrmController extends Controller
                   (floatval($cek['nuts']??0) * floatval(($kontrak_uts / 100))) +
                   (floatval($cek['nuas']??0) * floatval(($kontrak_uas / 100)));
             $nh = 'E';
-            if(($na >= 85) && ($na <= 100)){
-                $nh = 'A';
-            }
-            if(($na >= 80) && ($na < 85)){
-                $nh = 'AB';
-            }
-            if(($na >= 70) && ($na < 80)){
-                $nh = 'B';
-            }
-            if(($na >= 65) && ($na < 70)){
-                $nh = 'BC';
-            }
-            if(($na >= 60) && ($na < 65)){
-                $nh = 'C';
-            }
-            if(($na >= 50) && ($na < 60)){
-                $nh = 'D';
-            }
-            if(($na >= 0) && ($na < 50)){
-                $nh = 'E';
-            }
-            master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs])->update(['nakhir' => $na, 'nhuruf' => $nh]);
+            $nh = \App\helpers::getNilaiHuruf($na);
+            master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs, 'nim' => $mahasiswa->nim])->update(['nakhir' => $na, 'nhuruf' => $nh]);
             return json_encode(['kode' => 200, 'na' => $na, 'nh' => $nh]);
         }
+    }
+    public function saveNilaiBatch(Request $request){
+        $id_jadwal = $request->id_jadwal;
+        $id_mhs = $request->id_mhs;
+        $mahasiswa = Mahasiswa::find($id_mhs);
+        $nim = $request->nim;
+        $nilai_tugas = $request->nilai_tugas;
+        $nilai_uts = $request->nilai_uts;
+        $nilai_uas = $request->nilai_uas;
+
+        foreach($nim as $key=>$value){
+            // echo "NIM : " . $value . "<br />";
+            // echo "id_mhs : " . $id_mhs[$key] . "<br />";
+            // echo "id jadwal : " . $id_jadwal . "<br />";
+            // echo "NIlai Tugas : " . $nilai_tugas[$value] . "<br />";
+            // echo "NIlai UTS : " . $nilai_uts[$value] . "<br />";
+            // echo "NIlai UAS : " . $nilai_uas[$value] . "<br />";
+            // echo "<br />";
+           
+            
+            $cek_count = master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs[$key]])->count();
+            $kontrak = KontrakKuliahModel::where('id_jadwal', $id_jadwal)->first();
+            $tahun_ajaran = TahunAjaran::where('status','Aktif')->first();
+            $na = 0;
+            $nh = 'E';
+            $kontrak_tugas = $kontrak['tugas']??0;
+            $kontrak_uts = $kontrak['uts']??0;
+            $kontrak_uas = $kontrak['uas']??0;
+            // echo "Kontrak Tugas : " . $kontrak_tugas . "<br />"; 
+            // echo "Kontrak UTS : " . $kontrak_uts . "<br />"; 
+            // echo "Kontrak UAS : " . $kontrak_uas . "<br />"; 
+            if($cek_count > 1){
+                master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs[$key], 'nim' => $value])->delete();
+            }
+            $cek = master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs[$key]])->first();
+            if ($cek) {
+                $na = (floatval($nilai_tugas[$value]??0) * floatval(($kontrak_tugas / 100))) +
+                        (floatval($nilai_uts[$value]??0) * floatval(($kontrak_uts / 100))) +
+                        (floatval($nilai_uas[$value]??0) * floatval(($kontrak_uas / 100)));
+                $nh = \App\helpers::getNilaiHuruf($na);
+                $data = [
+                    'ntugas' => $nilai_tugas[$value],
+                    'nuts' => $nilai_uts[$value],
+                    'nuas' => $nilai_uas[$value],
+                    'nakhir' => $na, 
+                    'nhuruf' => $nh
+                ];
+                master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs[$key], 'nim' => $value])->update($data);
+            }else{
+                $na = (floatval($nilai_tugas[$value]??0) * floatval(($kontrak_tugas / 100))) +
+                        (floatval($nilai_uts[$value]??0) * floatval(($kontrak_uts / 100))) +
+                        (floatval($nilai_uas[$value]??0) * floatval(($kontrak_uas / 100)));
+                
+                $nh = \App\helpers::getNilaiHuruf($na);
+                $data = [
+                    'id_jadwal' => $id_jadwal, 
+                    'id_mhs' => $id_mhs[$key], 
+                    'id_tahun' => $tahun_ajaran['id'],
+                    'nim' => $value,
+                    'ntugas' => $nilai_tugas[$value],
+                    'nuts' => $nilai_uts[$value],
+                    'nuas' => $nilai_uas[$value],
+                    'nakhir' => $na, 
+                    'nhuruf' => $nh
+                ];
+                master_nilai::create($data);
+            } 
+            // echo "Nilai Akhir: " . $na;
+            // echo "<br /><br />"; 
+        }
+        return redirect('/dosen/nilai/' . $id_jadwal . '/input');
     }
     public function saveKontrak(Request $request){
         $id_jadwal = $request->id_jadwal;
@@ -259,5 +324,47 @@ class KrmController extends Controller
             KontrakKuliahModel::create([ 'id_jadwal' => $id_jadwal, 'tugas' => $tugas, 'uts' => $uts, 'uas' => $uas ]);
         }
         return json_encode(['kode' => 200]);
+    }
+    public function publishNilai(Request $request){
+        $isi = ($request->action == 0) ? 1 : 0;
+        $data = [
+            'publish_' . $request->status => $isi,
+        ];
+
+        $update = master_nilai::where(['id_jadwal'=>$request->id_jadwal])->update($data);
+        if($update){
+            return json_encode(['kode' => 200]);
+        }else{
+            return json_encode(['kode' => 500]);
+        }
+    }
+    public function validasiNilai(Request $request){
+        $isi = ($request->action == 0) ? 1 : 0;
+        $data = [
+            'validasi_' . $request->status => $isi,
+        ];
+
+        $update = master_nilai::where(['id_jadwal'=>$request->id_jadwal])->update($data);
+        if($update){
+            return json_encode(['kode' => 200]);
+        }else{
+            return json_encode(['kode' => 500]);
+        }
+    }
+    public function simpanRps(Request $request){
+        $id_matkul = $request->id_mk;
+        $filename = '';
+        if ($request->file('rps') != null) {
+            $file = $request->file('rps');
+            $filename = date('YmdHi') . $file->getClientOriginalName();
+            $tujuan_upload = 'assets/file/rps';
+            $file->move($tujuan_upload,$filename);
+
+            $matakuliah = MataKuliah::find($id_matkul);
+            $matakuliah->rps = $filename;
+            $matakuliah->rps_log = date('Y-m-d H:i:s');
+            $matakuliah->save();
+        }
+        return redirect('/dosen/krm');
     }
 }

@@ -105,6 +105,11 @@
                                                                 <option value="Tidak Aktif">Tidak Aktif</option>
                                                             </select>
                                                         </div>
+                                                        <div class="form-group mt-2">
+                                                            <label for="rps">RPS :</label>
+                                                            <input type="file" class="form-control" name="rps"/>
+                                                            <div class="alert alert-warning">Kosongi jika tidak ada file upload</div>
+                                                        </div>
                                                         <div class="mt-2"></div>
                                                         <button type="button" onclick="simpanMK()" class="btn btn-primary btn-sm"><i class="fa fa-save"></i> Tambah Matakuliah</button>
                                                         <button class="btn bg-danger d-flex align-items-center gap-2 text-light ms-auto" type="button" data-bs-dismiss="modal">Tutup More<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></button>
@@ -153,7 +158,8 @@
                                                                 <div class="modal-content">
                                                                     <div class="modal-body">
                                                                         <div class="modal-toggle-wrapper">
-                                                                            <h5 style="text-align: center">Tambah Matakuliah</h5>
+                                                                            <h5 style="text-align: center">Update Matakuliah</h5>
+                                                                            <form method="POST" action="javascript:void(0)" id="updateMK{{$mk['kode_matkul']}}">
                                                                             @csrf
                                                                             <input type="hidden" name="id" id="id_{{ $mk['kode_matkul'] }}" value="{{$mk['id']}}">
                                                                             <div class="form-group mt-2">
@@ -216,6 +222,14 @@
                                                                                     <option value="Tidak Aktif">Tidak Aktif</option>
                                                                                 </select>
                                                                             </div>
+                                                                            <div class="form-group mt-2">
+                                                                                <label for="rps">RPS :</label>
+                                                                                <input type="file" class="form-control" name="rps"/>
+                                                                                <div class="alert alert-warning">Kosongi jika tidak ada file upload</div>
+                                                                                @if(!empty($mk['rps']))
+                                                                                <a href="{{url::to('/assets/file/rps/' . $mk['rps'])}}" class="btn btn-primary" target="_blank">Lihat File</a>
+                                                                                @endif
+                                                                            </div>
                                                                             <div class="mt-2 mb-2"></div>
                                                                             <hr>
                                                                             <div class="row">
@@ -226,6 +240,7 @@
                                                                                     <button class="btn bg-danger d-flex align-items-center gap-2 text-light ms-auto" type="button" data-bs-dismiss="modal">Tutup More<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></button>
                                                                                 </div>
                                                                             </div>
+                                                                            </form>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -304,23 +319,15 @@
         }
         function updateMK(kode){
             const baseUrl = {!! json_encode(url('/')) !!};
+            const location = "updateMK" + kode;
+            const myFormData = new FormData(document.getElementById(location));
             $.ajax({
                 url: baseUrl+'/admin/masterdata/matakuliah/update',
                 type: 'post',
+                data:myFormData,
+                processData: false,
+                contentType: false,
                 dataType: 'json',
-                data: {
-                    id : $('#id_'+kode).val(),
-                    kode_matkul: $('#kode_matkul_'+kode).val(),
-                    nama_matkul: $('#nama_matkul_'+kode).val(),
-                    nama_inggris: $('#nama_inggris_'+kode).val(),
-                    kelompok: $('#kelompok_'+kode).val(),
-                    rumpun: $('#rumpun_'+kode).val(),
-                    semester: $('#semester_'+kode).val(),
-                    sks_teori: $('#sks_teori_'+kode).val(),
-                    sks_praktek: $('#sks_praktek_'+kode).val(),
-                    status_mk: $('#status_mk_'+kode).val(),
-                    status: $('#status_'+kode).val()
-                },
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 success: function(res){
                     if(res.kode == 200){

@@ -16,8 +16,8 @@
 @endsection
 
 @section('breadcrumb-items')
-    <li class="breadcrumb-item">Master Data</li>
-    <li class="breadcrumb-item active">Asal Sekolah PMB</li>
+    <li class="breadcrumb-item">Akademik</li>
+    <li class="breadcrumb-item active">Input KRS</li>
 @endsection
 
 @section('content')
@@ -27,7 +27,7 @@
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body" style="overflow-x: scroll">
                         <div class="mt-4">
                             @if($permission->krs == 0)
                                 <div class="alert alert-danger">Anda belum diizinkan untuk melakukan input krs harap hubungi admin sistem</div>
@@ -130,9 +130,10 @@
 
     <script>
         $(function() {
-            $("#tablekrs").DataTable({
-                responsive: true
-            })
+            // $("#tablekrs").DataTable({
+            //     responsive: true,
+            //     pageLength: 15,
+            // })
         })
         function getmk(){
             const baseUrl = {!! json_encode(url('/')) !!};

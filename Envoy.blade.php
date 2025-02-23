@@ -8,4 +8,7 @@
     cd /var/www/mhs.stifar.id/public_html/
     git pull origin main
 
+    cd /var/www/dsn.stifar.id/public_html/
+    git pull origin main
+
 @endtask

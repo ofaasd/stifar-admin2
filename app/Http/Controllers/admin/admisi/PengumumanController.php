@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\PmbGelombang;
 use App\Models\PmbPesertaOnline;
 use App\Models\PmbJalurProdi;
+use App\Models\Prodi;
+use App\Models\TahunAjaran;
 
 class PengumumanController extends Controller
 {
@@ -15,7 +17,11 @@ class PengumumanController extends Controller
     public function index(Request $request){
         $title = "Surat Pengumuman Peserta";
         $date = date('Y-m-d');
-        $gelombang = PmbGelombang::where('tgl_mulai','<=',$date)->where('tgl_akhir','>=',$date)->get();
+        // $tahun_ajaran = TahunAjaran::where('status','Aktif')->first();
+        // $tahun = (int)substr($tahun_ajaran->kode_ta,0,4);
+        // $tahun_awal = $tahun+1;
+        $tahun_ajaran = PmbGelombang::orderBy('id','desc')->limit(1)->first();
+        $gelombang = PmbGelombang::where('ta_awal',$tahun_ajaran->ta_awal)->get();
         $jumlah_diterima = [];
         $jumlah_pendaftar = [];
         $jumlah_verifikasi = [];
@@ -43,10 +49,11 @@ class PengumumanController extends Controller
                 $gel[$row->id] = $row->nama_gel;
             }
 
-            $prodi = PmbJalurProdi::select('pmb_jalur_prodi.*','program_studi.nama_jurusan')->join('program_studi','program_studi.id','pmb_jalur_prodi.id_program_studi')->get();
+            $prodi = PmbJalurProdi::select('pmb_jalur_prodi.*','program_studi.nama_prodi')->join('program_studi','program_studi.id','pmb_jalur_prodi.id_program_studi')->get();
             $prod = [];
-            foreach($prodi as $row){
-                $prod[$row->id] = $row->nama_jurusan . " " . $row->keterangan;
+            $all_prodi = Prodi::all();
+            foreach($all_prodi as $row){
+                $prod[$row->id] = $row->nama_prodi . " " . $row->keterangan;
             }
 
             $columns = [

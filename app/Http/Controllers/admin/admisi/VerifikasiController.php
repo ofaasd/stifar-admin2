@@ -14,11 +14,12 @@ use App\Models\PmbAsalSekolah;
 use App\Models\PmbNilaiRapor;
 use App\Models\Prodi;
 use App\Models\BuktiRegistrasi;
+use App\Models\BankDataVa;
 
 class VerifikasiController extends Controller
 {
     //
-    public $indexed = ['', 'id','nama' , 'nopen', 'gelombang', 'pilihan1','pilihan2','ttl','is_verifikasi'];
+    public $indexed = ['', 'id','nama' , 'nopen', 'gelombang', 'pilihan1','pilihan2','ttl','is_verifikasi', 'no_va'];
     public $indexed2 = ['', 'id','nama' , 'nopen', 'gelombang', 'pilihan1','pilihan2','ttl','bukti_bayar','is_bayar'];
     public function index(Request $request,$id_gelombang=0)
     {
@@ -41,8 +42,9 @@ class VerifikasiController extends Controller
             $title = "Verifikasi";
             $title2 = "Verifikasi Peserta";
             $indexed = $this->indexed;
+            $bank = BankDataVa::all();
 
-            return view('admin.admisi.verifikasi.index', compact('id_gelombang','curr_ta','gelombang','ta_max','ta_min','title','title2','indexed'));
+            return view('admin.admisi.verifikasi.index', compact('id_gelombang','curr_ta','gelombang','ta_max','ta_min','title','title2','indexed','bank'));
         }else{
 
             $gelombang = PmbGelombang::all();
@@ -67,6 +69,7 @@ class VerifikasiController extends Controller
                 6 => 'pilihan2',
                 7 => 'is_verifikasi',
                 8 => 'ttl',
+                9=>'no_va',
             ];
 
             $search = [];
@@ -155,10 +158,20 @@ class VerifikasiController extends Controller
     }
     public function edit_verifikasi($id){
         $where = ['id' => $id];
+        $hasil = [];
+        
+        $hasil[0] = PmbPesertaOnline::where($where)->first();
+        if(!empty($hasil[0]->nopen)){
+            $cek_va = BankDataVa::where('no_va','like','%'. $hasil[0]->nopen . '%')->where('status',0)->count();
+            if($cek_va > 0){
+                $hasil[1] = 1; //tersedia
+            }else{
+                $hasil[1] = 0; //tidak tersedia
+            }
+        }
+        
 
-        $peserta = PmbPesertaOnline::where($where)->first();
-
-        return response()->json($peserta);
+        return response()->json($hasil);
 
     }
     public function edit_pembayaran($id){
@@ -176,14 +189,37 @@ class VerifikasiController extends Controller
     }
     public function update_verifikasi(Request $request){
         $id = $request->id;
-        $peserta = PmbPesertaOnline::find($id);
-        $peserta->nopen = $request->nopen;
-        $peserta->is_verifikasi = $request->is_verifikasi;
-        if($peserta->save()){
-            return response()->json('Updated');
+        $bank = BankDataVa::where('no_va','like','%' . $request->nopen . '%')->where('status',0)->count();
+        if($bank > 0 && $request->is_verifikasi == 1){
+            $peserta = PmbPesertaOnline::find($id);
+            $peserta->nopen = $request->nopen;
+            $peserta->is_verifikasi = $request->is_verifikasi;
+            $array = [
+                'status' => 1,
+                'nopen' => $request->nopen,
+            ];
+           
+            if($peserta->save()){
+                $bank = BankDataVa::where('no_va','like','%' . $request->nopen . '%')->where('status',0)->update($array);
+                return response()->json('Updated');
+            }else{
+                return response()->json('Error');
+            }
+        }elseif($request->is_verifikasi != 1){
+            $peserta = PmbPesertaOnline::find($id);
+            $peserta->nopen = $request->nopen;
+            $peserta->is_verifikasi = $request->is_verifikasi;
+            if($peserta->save()){
+                return response()->json('Updated');
+            }else{
+                return response()->json('Error');
+            }
         }else{
-            return response()->json('Error');
+            return response()->json('Error | va sudah digunakan atau tidak terdaftar');
         }
+        
+        
+        
 
     }
     public function pembayaran(Request $request,int $id_gelombang=0){

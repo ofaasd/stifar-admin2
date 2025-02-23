@@ -27,7 +27,7 @@ class KrsController extends Controller
     }
     public function listMhs(Request $request){
         $ta = TahunAjaran::where('id', $request->ta)->first();
-        $mhs = Mahasiswa::select('mahasiswa.*','pegawai_biodata.nama_lengkap as nama_dosen')->leftJoin('pegawai_biodata','pegawai_biodata.id','=','mahasiswa.id_dsn_wali')->where('id_program_studi',$request->prodi)->where('angkatan',$request->angkatan)->get();
+        $mhs = Mahasiswa::select('mahasiswa.*','pegawai_biodata.nama_lengkap as nama_dosen')->leftJoin('pegawai_biodata','pegawai_biodata.id','=','mahasiswa.id_dsn_wali')->where('id_program_studi',$request->prodi)->where('status',1)->where('angkatan',$request->angkatan)->get();
 
         $prodi = Prodi::find($request->prodi);
         $get_kurikulum = Kurikulum::where('progdi',$prodi->kode_prodi)->get();

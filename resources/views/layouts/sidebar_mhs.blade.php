@@ -15,14 +15,65 @@
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{ route('dashboard_mahasiswa')}}" >
                 <span><i class="fa fa-home"></i> Dashboard</span></a>
             </li>
-            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/profile')}}" >
+            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
                 <span><i class="fa fa-user"></i> Profile</span></a>
+                <ul class="sidebar-submenu">
+                    <li>
+                        <a href="{{URL::to('mhs/profile')}}" class="submenu-title">Data diri</a>
+                    </li>
+                    <li>
+                        <a class="submenu-title" href="{{URL::to('mhs/heregistrasi')}}" >
+                             <span>Heregistrasi (Data Pendukung)</span>
+                        </a>
+                    </li>
+                </ul>
             </li>
-            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/input_krs')}}" >
-                <span><i class="fa fa-pencil-square-o"></i> Input KRS</span></a>
+            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
+                <span><i class="fa fa-bar-chart"></i> Akademik</span></a>
+                <ul class="sidebar-submenu">
+                    <li class="submenu-title"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/input_krs')}}" >
+                        <span> Input KRS</span></a>
+                    </li>
+                    <li class="submenu-title"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/ujian')}}" >
+                        <span> Ujian</span></a>
+                    </li>
+                    <li class="submenu-title"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/khs')}}" >
+                        <span> KHS</span></a>
+                    </li>
+                    <li class="submenu-title"><a class="sidebar-link sidebar-title" href="#" >
+                        <span> Daftar Nilai</span><label class="badge badge-light-danger">!</label></a>
+                    </li>
+                </ul>
             </li>
-            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/khs')}}" >
-                <span><i class="fa fa-list-alt"></i> KHS</span></a>
+            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
+                <span><i class="fa fa-money"></i> Tagihan</span><label class="badge badge-light-danger">!</label></a>
+                <ul class="sidebar-submenu">
+                    <li class="submenu-title"><a class="sidebar-link sidebar-title" href="#" >
+                        <span> Info Tagihan</span><label class="badge badge-light-danger">!</label></a>
+                    </li>
+
+                    <li class="submenu-title"><a class="sidebar-link sidebar-title" href="#" >
+                        <span> Lapor Pembayaran</span><label class="badge badge-light-danger">!</label></a>
+                    </li>
+                </ul>
+            </li>
+            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
+                <span><i class="fa fa-clock-o"></i> Presensi</span><label class="badge badge-light-danger">!</label></a>
+                <ul class="sidebar-submenu">
+                    <li class="submenu-title"><a class="sidebar-link sidebar-title" href="#" >
+                        <span> Input Presensi</span><label class="badge badge-light-danger">!</label></a>
+                    </li>
+
+                    <li class="submenu-title"><a class="sidebar-link sidebar-title" href="#" >
+                        <span> Riwayat Presensi</span><label class="badge badge-light-danger">!</label></a>
+                    </li>
+                </ul>
+            </li>
+            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
+                <span><i class="fa fa-book"></i> Bimbingan</span><label class="badge badge-light-danger">!</label></a>
+            </li>
+            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
+                <span><i class="fa fa-bookmark"></i> Kuesioner Kepuasan Mahasiswa</span><label class="badge badge-light-danger">!</label></a>
             </li>
            <li class="sidebar-list">
             <a class="sidebar-link sidebar-title" href="#">

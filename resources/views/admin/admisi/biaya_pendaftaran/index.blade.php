@@ -43,10 +43,14 @@
                                                 <label for="tahun_ajaran" class="form-label">Tahun Ajaran</label>
                                                 <input type="text" name="tahun_ajaran" id="tahun_ajaran" class="form-control">
                                             </div>
+                                            <div class="mb-3">
+                                                <label for="tahun_ajaran" class="form-label">Gelombang</label>
+                                                <input type="number" name="gelombang" id="gelombang" class="form-control">
+                                            </div>
 
                                             <div class="mb-3">
                                                 <label for="id_prodi" class="form-label">Program Studi</label>
-                                                <select name="id_program_studi" id="id_program_studi" class="js-example-basic-single col-sm-12">
+                                                <select name="id_program_studi" id="id_prodi" class="js-example-basic-single col-sm-12">
 
                                                     @foreach($prodi as $row)
                                                         <option value="{{$row->id}}">{{$row->nama_prodi}}</option>
@@ -61,8 +65,24 @@
                                                 </select>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="jumlah" class="form-label">Biaya (Rp)</label>
+                                                <label for="jumlah" class="form-label">Biaya Pendaftaran (Rp)</label>
                                                 <input type="number" name="jumlah" id="jumlah" class="form-control">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="jumlah" class="form-label">Registrasi Awal (Rp)</label>
+                                                <input type="number" name="registrasi" id="registrasi" class="form-control">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="jumlah" class="form-label">Tahap Awal (Rp)</label>
+                                                <input type="number" name="tahap_awal" id="tahap_awal" class="form-control">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="jumlah" class="form-label">UPP SMK Yaphar (Rp)</label>
+                                                <input type="number" name="upp_smk" id="upp_smk" class="form-control">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="jumlah" class="form-label">UPP Umum (Rp)</label>
+                                                <input type="number" name="upp" id="upp" class="form-control">
                                             </div>
 
                                         </div>
@@ -84,9 +104,14 @@
                                         <th></th>
                                         <th>ID</th>
                                         <th>Tahun Ajaran</th>
+                                        <th>Gelombang</th>
                                         <th>Program Studi</th>
                                         <th>RPL</th>
-                                        <th>Biaya (Rp)</th>
+                                        <th>Pendaftaran (Rp)</th>
+                                        <th>Registrasi (Rp)</th>
+                                        <th>Awal (Rp)</th>
+                                        <th>UPP Yaphar (Rp)</th>
+                                        <th>UPP Umum (Rp)</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>

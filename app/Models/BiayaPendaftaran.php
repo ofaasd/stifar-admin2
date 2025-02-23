@@ -39,5 +39,10 @@ class BiayaPendaftaran extends Model
 		'tahun_ajaran',
 		'jumlah',
 		'rpl',
+		'gelombang',
+		'registrasi',
+		'tahap_awal',
+		'upp_smk',
+		'upp',
 	];
 }

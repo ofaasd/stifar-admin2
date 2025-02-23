@@ -31,7 +31,7 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-12 mb-2">
-                                <a href="#" class="btn btn-primary"><i class="fa fa-print"></i> Cetak Pengumuman</a>
+                                {{-- <a href="#" class="btn btn-primary"><i class="fa fa-print"></i> Cetak Pengumuman</a> --}}
                             </div>
                         </div>
                         <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
@@ -85,7 +85,7 @@
                                         </div>
                                         <div class="modal-footer">
                                             <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
-                                            <button class="btn btn-primary" type="submit">Simpan</button>
+                                            <button class="btn btn-primary" id="btn_save" type="submit">Simpan</button>
                                         </div>
                                     </form>
                                 </div>
@@ -244,6 +244,8 @@
             //save record
             $('#formAdd').on('submit',function(e){
                 e.preventDefault();
+                $("#btn_save").prop('disabled',true);
+                $("#btn_save").val('Tunggu Sebentar');
                 $.ajax({
                     data: $('#formAdd').serialize(),
                     url: ''.concat(baseUrl).concat('/admin/admisi/pengumuman/').concat(id, '/edit_peserta'),
@@ -261,6 +263,8 @@
                             confirmButton: 'btn btn-success'
                         }
                         });
+                        $("#btn_save").prop('disabled',false);
+                        $("#btn_save").val('Simpan');
                     },
                     error: function error(err) {
                         offCanvasForm.offcanvas('hide');
@@ -272,6 +276,8 @@
                             confirmButton: 'btn btn-success'
                         }
                         });
+                        $("#btn_save").prop('disabled',false);
+                        $("#btn_save").val('Simpan');
                     }
                 });
             });

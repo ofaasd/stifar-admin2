@@ -9,7 +9,7 @@
     <meta name="author" content="pixelstrap">
     <link rel="icon" href="{{asset('assets/images/logo/logo-icon.png')}}" type="image/x-icon">
     {{-- <link rel="shortcut icon" href="{{asset('assets/images/favicon.png')}}" type="image/x-icon"> --}}
-    <title>SISTIFAR - Sistem Informasi Manajemen STIFAR</title>
+    <title>MySTIFAR - {{$title ?? "Managing Your Study, Tools, Information, and Academic Resources"}}</title>
     <!-- Google font-->
     <link href="https://fonts.googleapis.com/css?family=Rubik:400,400i,500,500i,700,700i&amp;display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i,900&amp;display=swap" rel="stylesheet">
@@ -32,7 +32,7 @@
     <div class="tap-top"><i data-feather="chevrons-up"></i></div>
     <!-- tap on tap ends-->
     <!-- page-wrapper Start-->
-    <div class="page-wrapper compact-wrapper" id="pageWrapper">
+    <div class="page-wrapper modern-layout" id="pageWrapper">
       <!-- Page Header Start-->
 
 
@@ -90,11 +90,11 @@
     @include('layouts.script')
     <!-- Plugin used-->
 
-    {{-- <script type="text/javascript">
+    <script type="text/javascript">
       if ($(".page-wrapper").hasClass("horizontal-wrapper")) {
             $(".according-menu.other" ).css( "display", "none" );
             $(".sidebar-submenu" ).css( "display", "block" );
       }
-    </script> --}}
+    </script>
   </body>
 </html>

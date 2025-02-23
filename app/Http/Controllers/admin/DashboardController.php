@@ -93,13 +93,14 @@ class DashboardController extends Controller
         $mahasiswa = Mahasiswa::where('user_id',$user_id)->first();
         $tahun_ajaran = TahunAjaran::where('status','Aktif')->first();
         $ta = $tahun_ajaran->id;
-        $krs = Krs::select('krs.*', 'a.hari', 'a.kel', 'b.nama_matkul', 'b.sks_teori', 'b.sks_praktek','b.kode_matkul', 'c.nama_sesi', 'd.nama_ruang')
+        $krs = Krs::select('krs.*', 'a.hari', 'a.kel', 'b.nama_matkul', 'b.sks_teori', 'b.sks_praktek','b.kode_matkul', 'c.nama_sesi', 'd.nama_ruang', 'b.rps')
                     ->leftJoin('jadwals as a', 'krs.id_jadwal', '=', 'a.id')
                     ->leftJoin('mata_kuliahs as b', 'a.id_mk', '=', 'b.id')
                     ->leftJoin('waktus as c', 'a.id_sesi', '=', 'c.id')
                     ->leftJoin('master_ruang as d', 'a.id_ruang', '=', 'd.id')
                     ->where('krs.id_tahun', $ta)
                     ->where('id_mhs',$mahasiswa->id)
+                    ->where('is_publish',1)
                     ->get();
         $no = 1;
         return view('index_mhs',compact('mahasiswa','krs','no'));
@@ -139,7 +140,7 @@ class DashboardController extends Controller
         foreach($prodi as $row){
             $list_prodi .= "'" . $row->nama_prodi . "',";
             foreach($angkatan as $value){
-                $total = Mahasiswa::where('angkatan',$value->angkatan)->where('id_program_studi',$row->id)->count();
+                $total = Mahasiswa::where('angkatan',$value->angkatan)->where('status',1)->where('id_program_studi',$row->id)->count();
                 $total_input = Krs::join('mahasiswa','mahasiswa.id','=','krs.id_mhs')->where('mahasiswa.angkatan',$value->angkatan)->where('id_program_studi', $row->id)->distinct()->count('id_mhs');
                 $total_input_valid = Krs::join('mahasiswa','mahasiswa.id','=','krs.id_mhs')->where('mahasiswa.angkatan',$value->angkatan)->where('id_program_studi', $row->id)->where('is_publish',1)->distinct()->count('id_mhs');
                 $list_jumlah_krs[$value->angkatan] .=  $total_input . ',';

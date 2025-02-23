@@ -67,6 +67,7 @@
                                         <th>Pilihan1</th>
                                         <th>Pilihan2</th>
                                         <th>TTL</th>
+                                        <th>Tgl. Registrasi</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -152,7 +153,7 @@
                     }
                     }
                 ],
-                order: [[2, 'desc']],
+                order: [[8, 'desc']],
                 dom:
                     '<"row mx-2"' +
                     '<"col-md-2"<"me-3"l>>' +
@@ -245,7 +246,7 @@
                     // delete the data
                     $.ajax({
                     type: 'DELETE',
-                    url: ''.concat(baseUrl).concat(page, '/').concat(id),
+                    url: ''.concat(baseUrl).concat('/admin/admisi/peserta/').concat(id),
                     data:{
                         'id': id,
                         '_token': '{{ csrf_token() }}',
