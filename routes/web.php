@@ -80,6 +80,7 @@ use App\Http\Controllers\admin\akademik\NilaiKuesionerController;
 use App\Http\Controllers\admin\akademik\NilaiController as nilaiakademik;
 use App\Http\Controllers\admin\akademik\KhsController as adminKhs;
 use App\Http\Controllers\admin\akademik\PengaturanUjianController;
+use App\Http\Controllers\admin\akademik\NilaiSusulanController;
 use App\Http\Controllers\admin\keuangan\VaController;
 use App\Http\Controllers\mahasiswa\UjianController;
 use App\Http\Controllers\mahasiswa\KuesionerMhsController;
@@ -282,6 +283,7 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     Route::post('/admin/akademik/list_jawaban/{id}', [NilaiKuesionerController::class, 'index']);
     Route::post('/admin/akademik/list-soal/simpan_status', [SoalKuesionerController::class, 'simpan_status']);
 
+    Route::get('/admin/akademik/nilai_susulan', [NilaiSusulanController::class, 'index']);
     // route KRS
     Route::get('/admin/masterdata/krs', [KrsController::class, 'index']);
     Route::post('/admin/masterdata/krs/list-mhs', [KrsController::class, 'listMhs']);
