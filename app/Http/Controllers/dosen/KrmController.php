@@ -31,13 +31,35 @@ class KrmController extends Controller
                         ->leftJoin('mata_kuliahs', 'mata_kuliahs.id', '=', 'jadwals.id_mk')
                         ->leftJoin('pengajars', 'pengajars.id_jadwal', '=', 'jadwals.id')
                         ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
-                        ->where([ 'pengajars.id_dsn' => $id_dsn->id, 'jadwals.status' => 'Aktif'])->get();
+                        ->where([ 'pengajars.id_dsn' => $id_dsn->id, 'jadwals.status' => 'Aktif', 'jadwals.id_tahun' => $id_tahun])->get();
         $no = 1;
         $jumlah_input_krs = [];
         foreach($jadwal as $row){
-            $jumlah_input_krs[$row->id] = Krs::where('id_jadwal',$row->id)->where('id_tahun',$id_tahun)->count();
+            $jumlah_input_krs[$row->id] = Krs::where('id_jadwal',$row->id)->count();
         }
         return view('dosen.krm', compact('title', 'jadwal', 'no', 'jumlah_input_krs'));
+    }
+    public function krm_riwayat(){
+        $title = "Riwayat Mengajar";
+        $tahun_ajaran = TahunAjaran::where('status','Tidak Aktif')->get();
+        $id_dsn = PegawaiBiodatum::where('user_id', Auth::id())->first();
+        $jadwal = [];
+        $jumlah_input_krs = [];
+        foreach($tahun_ajaran as $ta){
+            $jadwal[$ta->id] = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul', 'mata_kuliahs.rps')
+                            ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
+                            ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
+                            ->leftJoin('mata_kuliahs', 'mata_kuliahs.id', '=', 'jadwals.id_mk')
+                            ->leftJoin('pengajars', 'pengajars.id_jadwal', '=', 'jadwals.id')
+                            ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
+                            ->where([ 'pengajars.id_dsn' => $id_dsn->id, 'jadwals.status' => 'Aktif', 'jadwals.id_tahun' => $ta->id])->get();
+            $no = 1;
+
+            foreach($jadwal[$ta->id] as $row){
+                $jumlah_input_krs[$ta->id][$row->id] = Krs::where('id_jadwal',$row->id)->count();
+            }
+        }
+        return view('dosen.krm_riwayat', compact('title', 'jadwal', 'no', 'jumlah_input_krs', 'tahun_ajaran'));
     }
     public function input_nilai(){
         $title = "Daftar Matakuliah";
@@ -61,7 +83,7 @@ class KrmController extends Controller
         foreach($jadwal as $row){
             $jumlah_input_krs[$row->id] = Krs::where('id_jadwal',$row->id)->where('id_tahun',$id_tahun)->count();
         }
-        return view('dosen.input_nilai', compact('title','nilaiPublish','nilaiValidasi', 'jadwal', 'no', 'jumlah_input_krs'));
+        return view('dosen.input_nilai', compact('title','nilaiPublish','nilaiValidasi', 'jadwal', 'no', 'jumlah_input_krs',));
     }
     public function daftarMhs($id){
         $title = "Daftar Mahasiswa";
@@ -257,8 +279,8 @@ class KrmController extends Controller
             // echo "NIlai UTS : " . $nilai_uts[$value] . "<br />";
             // echo "NIlai UAS : " . $nilai_uas[$value] . "<br />";
             // echo "<br />";
-           
-            
+
+
             $cek_count = master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs[$key]])->count();
             $kontrak = KontrakKuliahModel::where('id_jadwal', $id_jadwal)->first();
             $tahun_ajaran = TahunAjaran::where('status','Aktif')->first();
@@ -267,9 +289,9 @@ class KrmController extends Controller
             $kontrak_tugas = $kontrak['tugas']??0;
             $kontrak_uts = $kontrak['uts']??0;
             $kontrak_uas = $kontrak['uas']??0;
-            // echo "Kontrak Tugas : " . $kontrak_tugas . "<br />"; 
-            // echo "Kontrak UTS : " . $kontrak_uts . "<br />"; 
-            // echo "Kontrak UAS : " . $kontrak_uas . "<br />"; 
+            // echo "Kontrak Tugas : " . $kontrak_tugas . "<br />";
+            // echo "Kontrak UTS : " . $kontrak_uts . "<br />";
+            // echo "Kontrak UAS : " . $kontrak_uas . "<br />";
             if($cek_count > 1){
                 master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs[$key], 'nim' => $value])->delete();
             }
@@ -283,7 +305,7 @@ class KrmController extends Controller
                     'ntugas' => $nilai_tugas[$value],
                     'nuts' => $nilai_uts[$value],
                     'nuas' => $nilai_uas[$value],
-                    'nakhir' => $na, 
+                    'nakhir' => $na,
                     'nhuruf' => $nh
                 ];
                 master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs[$key], 'nim' => $value])->update($data);
@@ -291,23 +313,23 @@ class KrmController extends Controller
                 $na = (floatval($nilai_tugas[$value]??0) * floatval(($kontrak_tugas / 100))) +
                         (floatval($nilai_uts[$value]??0) * floatval(($kontrak_uts / 100))) +
                         (floatval($nilai_uas[$value]??0) * floatval(($kontrak_uas / 100)));
-                
+
                 $nh = \App\helpers::getNilaiHuruf($na);
                 $data = [
-                    'id_jadwal' => $id_jadwal, 
-                    'id_mhs' => $id_mhs[$key], 
+                    'id_jadwal' => $id_jadwal,
+                    'id_mhs' => $id_mhs[$key],
                     'id_tahun' => $tahun_ajaran['id'],
                     'nim' => $value,
                     'ntugas' => $nilai_tugas[$value],
                     'nuts' => $nilai_uts[$value],
                     'nuas' => $nilai_uas[$value],
-                    'nakhir' => $na, 
+                    'nakhir' => $na,
                     'nhuruf' => $nh
                 ];
                 master_nilai::create($data);
-            } 
+            }
             // echo "Nilai Akhir: " . $na;
-            // echo "<br /><br />"; 
+            // echo "<br /><br />";
         }
         return redirect('/dosen/nilai/' . $id_jadwal . '/input');
     }
