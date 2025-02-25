@@ -357,6 +357,7 @@ Route::group(['middleware' => ['auth','role:mhs|super-admin']], function(){
     Route::get('mhs/heregistrasi', [ProfileController::class, 'heregistrasi'])->name('index_heregistrasi');
 
     Route::get('mhs/input_krs', [mhsKrsController::class, 'input'])->name('input');
+    Route::get('mhs/riwayat_krs', [mhsKrsController::class, 'riwayat'])->name('riwayat_krs');
     Route::get('/admin/masterdata/krs/admin/hapus/{id}', [KrsController::class, 'hapusadminKRS']);
     Route::post('/admin/masterdata/krs/list-jadwal', [KrsController::class, 'showJadwal']);
     Route::get('/admin/masterdata/krs/admin/download/{id}', [KrsController::class, 'downloadkrs']);
@@ -368,6 +369,7 @@ Route::group(['middleware' => ['auth','role:mhs|super-admin']], function(){
 
     Route::get('mhs/khs/{id}', [KhsController::class, 'index'])->name('index_khs');
     Route::get('mhs/khs', [KhsController::class, 'index'])->name('index_khs');
+    Route::get('mhs/khs_riwayat', [KhsController::class, 'riwayat'])->name('khs_riwayat');
     Route::get('mhs/kuesioner_mhs', [KuesionerMhsController::class, 'index'])->name('index_kuesioner');
     Route::post('mhs/kuesioner_mhs', [KuesionerMhsController::class, 'store'])->name('save_kuesioner');
     Route::get('mhs/cetak_khs', [KhsController::class, 'cetak_khs'])->name('cetak_khs');
