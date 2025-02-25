@@ -25,8 +25,8 @@ class DashboardController extends Controller
         $ta = $tahun_ajaran->id;
         $jumlah_mhs = Mahasiswa::count();
         $jumlah_pegawai = PegawaiBiodatum::count();
-        $pendaftaran_online = PmbPesertaOnline::where('tahun_ajaran',$ta)->count();
-        $pendaftaran_offline = PmbPesertum::where('tahun_ajaran',$ta)->count();
+        $pendaftaran_online = PmbPesertaOnline::count();
+        $pendaftaran_offline = PmbPesertum::count();
         $total_pendaftar = $pendaftaran_offline + $pendaftaran_online;
         $jumlah_matkul = MataKuliah::count();
         $jumlah_kurikulum = Kurikulum::count();
