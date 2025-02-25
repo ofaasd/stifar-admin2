@@ -121,32 +121,23 @@ class TahunAjaranController extends Controller
         $id = $request->id;
 
         if ($id) {
-            try {
-                DB::beginTransaction();
-                $nonaktif = TahunAjaran::query()->update(['status'=>'Tidak Aktif']);
-                $ta = TahunAjaran::updateOrCreate(
-                    ['id' => $id],
-                    [
-                        'kode_ta' => $request->kode_ta,
-                        'tgl_awal' => $request->tgl_awal,
-                        'tgl_awal_kuliah' => $request->tgl_awal_kuliah,
-                        'tgl_akhir' => $request->tgl_akhir,
-                        'status' => 'Aktif',
-                        'keterangan' => $request->keterangan
-                    ]
-                );
-                DB::commit();
-                return response()->json('Updated');
-            } catch (Throwable $e) { // Catch any exceptions during the transaction
-                DB::rollBack(); // If any operation fails, rollback the transaction
-                echo "Transaction failed: " . $e->getMessage();
 
-                // Optionally, log the exception for debugging
-                \Log::error($e); // Make sure you have logging configured in your Laravel app
+                // DB::beginTransaction();
+            $nonaktif = TahunAjaran::query()->update(['status'=>'Tidak Aktif']);
+            $ta = TahunAjaran::updateOrCreate(
+                ['id' => $id],
+                [
+                    'kode_ta' => $request->kode_ta,
+                    'tgl_awal' => $request->tgl_awal,
+                    'tgl_awal_kuliah' => $request->tgl_awal_kuliah,
+                    'tgl_akhir' => $request->tgl_akhir,
+                    'status' => 'Aktif',
+                    'keterangan' => $request->keterangan
+                ]
+            );
+            // DB::commit();
+            return response()->json('Updated');
 
-                // Or, you can redirect back with an error message
-                // return redirect()->back()->with('error', 'Something went wrong. Please try again.');
-            }
         } else {
 
                 //DB::beginTransaction();
