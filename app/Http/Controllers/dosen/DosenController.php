@@ -40,7 +40,7 @@ class DosenController extends Controller
         $jumlah_sks = [];
         $jumlah_sks_validasi = [];
         foreach($mhs as $row){
-            $krs = Krs::select('krs.is_publish','a.*')->join('jadwals as a', 'krs.id_jadwal', '=', 'a.id')->where('id_mhs',$row->id)->get();
+            $krs = Krs::select('krs.is_publish','a.*')->join('jadwals as a', 'krs.id_jadwal', '=', 'a.id')->where('id_mhs',$row->id)->where('a.id_tahun',$ta)->get();
             $jumlah_sks[$row->id] = 0;
             $jumlah_sks_validasi[$row->id] = 0;
             foreach($krs as $k){
