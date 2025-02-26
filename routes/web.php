@@ -60,6 +60,7 @@ use App\Http\Controllers\admin\kepegawaian\PegawaiBerkasController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiMengajarController;
 use App\Http\Controllers\mahasiswa\KrsController as mhsKrsController;
 use App\Http\Controllers\mahasiswa\KhsController;
+use App\Http\Controllers\mahasiswa\DaftarNilaiController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiPekerjaanController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiOrganisasiController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiPendidikanController;
@@ -370,6 +371,7 @@ Route::group(['middleware' => ['auth','role:mhs|super-admin']], function(){
     Route::get('mhs/khs/{id}', [KhsController::class, 'index'])->name('index_khs');
     Route::get('mhs/khs', [KhsController::class, 'index'])->name('index_khs');
     Route::get('mhs/khs_riwayat', [KhsController::class, 'riwayat'])->name('khs_riwayat');
+    Route::get('mhs/daftar_nilai', [DaftarNilaiController::class, 'index'])->name('daftar_nilai');
     Route::get('mhs/kuesioner_mhs', [KuesionerMhsController::class, 'index'])->name('index_kuesioner');
     Route::post('mhs/kuesioner_mhs', [KuesionerMhsController::class, 'store'])->name('save_kuesioner');
     Route::get('mhs/cetak_khs', [KhsController::class, 'cetak_khs'])->name('cetak_khs');

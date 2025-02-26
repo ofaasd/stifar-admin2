@@ -46,8 +46,8 @@
                     <li class="submenu-title"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/khs_riwayat')}}" >
                         <span>Riwayat KHS</span></a>
                     </li>
-                    <li class="submenu-title"><a class="sidebar-link sidebar-title" href="#" >
-                        <span> Daftar Nilai</span><label class="badge badge-light-danger">!</label></a>
+                    <li class="submenu-title"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/daftar_nilai')}}" >
+                        <span> Daftar Nilai</span></a>
                     </li>
                 </ul>
             </li>
