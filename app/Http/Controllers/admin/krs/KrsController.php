@@ -126,21 +126,22 @@ class KrsController extends Controller
             return back();
         }else{
             $jumlah_kuota = Krs::where(['id_jadwal' => $id, 'id_tahun' => $data_jadwal['id_tahun']])->count();
-            if($jumlah_kuota >=  $data_jadwal->kuota){
-                $tabel = '
-                    <div class="alert alert-danger dark" role="alert">
-                    <span class="mt-4"><b>maaf kuota matakuliah sudah penuh</b></span>
-                    </div>
-                ';
-                Session::put('krs', $tabel);
-                return back();
-            }else{            Krs::create(['id_jadwal' => $id, 'id_tahun' => $data_jadwal['id_tahun'], 'id_mhs' => $mhs, 'is_publish' => 0]);
+            // if($jumlah_kuota >=  $data_jadwal->kuota){
+            //     $tabel = '
+            //         <div class="alert alert-danger dark" role="alert">
+            //         <span class="mt-4"><b>maaf kuota matakuliah sudah penuh</b></span>
+            //         </div>
+            //     ';
+            //     Session::put('krs', $tabel);
+            //     return back();
+            // }else{
+                Krs::create(['id_jadwal' => $id, 'id_tahun' => $data_jadwal['id_tahun'], 'id_mhs' => $mhs, 'is_publish' => 0]);
                 $kuota = $data_jadwal['kuota'] - 1;
                 Jadwal::where('id', $id)->update(['kuota' => $kuota]);
                 Session::put('krs', '<div class="alert alert-success dark mt-4" role="alert">Jadwal Berhasil di Tambahkan</div>');
 
                 return back();
-            }
+            // }
 
         }
     }
