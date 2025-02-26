@@ -16,7 +16,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="nomor" class="form-label">Nomor</label>
+                                        <label for="nomor" class="form-label">Nomor SK Penelitian (optional)</label>
                                         <input type="text" name="nomor" id="nomor_penelitian" class="form-control" placeholder="cth : 102938">
                                     </div>
                                     <div class="mb-3">
