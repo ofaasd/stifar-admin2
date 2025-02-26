@@ -66,7 +66,7 @@
                                                         <div class="modal-content">
                                                             <form method="POST" action="{{ url('/dosen/simpan_rps') }}" enctype="multipart/form-data">
                                                                 <div class="modal-header">
-                                                                    <h5 class="modal-title" id="exampleModalLabel">Update RPS</h5>
+                                                                    <h5 class="modal-title" id="exampleModalLabel">Update RPS & Kontrak Kuliah</h5>
                                                                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                                                                         <span aria-hidden="true">&times;</span>
                                                                     </button>
@@ -77,11 +77,11 @@
                                                                     @if(empty($jad['rps']))
                                                                         <div class="alert alert-danger">File RPS Tidak Ditemukan</div>
                                                                     @else
-                                                                        <a href="{{url('/assets/file/rps/' . $jad->rps)}}" class="btn btn-primary" target="_blank">Lihat RPS</a> 
+                                                                        <a href="{{url('/assets/file/rps/' . $jad->rps)}}" class="btn btn-primary" target="_blank">Lihat RPS & Kontrak Kuliah</a>
                                                                     @endif
 
                                                                     <a href="{{url('/assets/file/rps/STIFAR - template RPS KPT 2024.docx')}}" class="btn btn-primary" target="_blank">Template RPS</a> <a href="{{url('/assets/file/rps/Kontrak perkuliahan Stifar 2024.docx')}}" class="btn btn-primary" target="_blank">Template Kontrak Perkuliahan</a><br /><br />
-                                                                    <label for="rps">Upload RPS</label>
+                                                                    <label for="rps">Upload RPS & Kontrak Kuliah</label>
                                                                     <input type="file" name="rps" class="form-control">
                                                                 </div>
                                                                 <div class="modal-footer">

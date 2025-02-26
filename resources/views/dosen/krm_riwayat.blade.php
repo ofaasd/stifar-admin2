@@ -63,7 +63,7 @@
                                                     @if(empty($jad['rps']))
                                                         <div class="alert alert-danger">File RPS Tidak Ditemukan</div>
                                                     @else
-                                                        <a href="{{url('/assets/file/rps/' . $jad->rps)}}" class="btn btn-primary" target="_blank">Lihat RPS</a>
+                                                        <a href="{{url('/assets/file/rps/' . $jad->rps)}}" class="btn btn-primary" target="_blank">Lihat RPS & Kontrak Kuliah</a>
                                                     @endif
                                                 </div>
                                             </td>
