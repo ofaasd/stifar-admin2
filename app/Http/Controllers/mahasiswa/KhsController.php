@@ -99,7 +99,7 @@ class KhsController extends Controller
         $krs = $krs_now;
         $no = 1;
         $permission = MasterKeuanganMh::where('id_mahasiswa',$idmhs)->first();
-        return view('mahasiswa.khs', compact('mhs','title', 'permission','mk', 'krs', 'no', 'ta', 'idmhs','nilai','jumlah_matkul','jumlah_valid'));
+        return view('mahasiswa.khs', compact('mhs','title', 'permission','mk', 'krs', 'no', 'ta', 'idmhs','nilai','jumlah_matkul','jumlah_valid','tahun_ajaran'));
     }
     public function riwayat(int $idmhs = 0){
         if($idmhs == 0){

@@ -30,7 +30,7 @@
                     <div class="card-header bg-primary">
                         <div class="row">
                             <div class="col-md-6">
-                                <h5><b>2024 - 2025 Ganjil (Aktif)</b></h5>
+                                <h5><b>{{$tahun_ajaran->keterangan}}</b></h5>
                             </div>
                             <div class="col-md-6">
                                 <a href="{{ url('mhs/cetak_khs/')}}/{{$mhs->nim ?? ''}}" class="btn btn-info btn-sm" style="float: right;"><i class="fa fa-download"></i> Download KHS</a>
