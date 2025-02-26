@@ -71,7 +71,7 @@ class KrmController extends Controller
                         ->leftJoin('mata_kuliahs', 'mata_kuliahs.id', '=', 'jadwals.id_mk')
                         ->leftJoin('pengajars', 'pengajars.id_jadwal', '=', 'jadwals.id')
                         ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
-                        ->where([ 'pengajars.id_dsn' => $id_dsn->id, 'jadwals.status' => 'Aktif'])->get();
+                        ->where([ 'pengajars.id_dsn' => $id_dsn->id, 'jadwals.status' => 'Aktif', 'jadwals.id_tahun' => $id_tahun])->get();
         $no = 1;
         $nilaiPublish = [];
         $nilaiValidasi = [];
