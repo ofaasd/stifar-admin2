@@ -19,6 +19,8 @@ class helpers
             return 'C';
         }elseif($nilai > 50 && $nilai <= 55){
             return 'CD';
+        }elseif($nilai > 41 && $nilai <= 50){
+            return 'D';
         }else{
             return 'E';
         }
