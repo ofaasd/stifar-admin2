@@ -624,6 +624,11 @@ class JadwalController extends Controller
     public function updateJadwal(Request $request){
         $kode_jadwal = $request->kjadwal;
         $id_mk = $request->id_mk;
+        if(empty($kode_jadwal)){
+            $matakuliah = MataKuliah::find($id_mk);
+            $kode_jadwal = $matakuliah->kode_matkul . $request->kel;
+        }
+
         $hari = $request->hari;
         $ruang = $request->ruang;
         $sesi = $request->sesi;

@@ -106,7 +106,7 @@
                         @foreach($krs as $row_krs)
                             <tr>
                                 <td>{{ $no++ }}</td>
-                                <td>{{ $row_krs['kode_matkul'] }}</td>
+                                <td>{{ $row_krs['kode_jadwal'] }}</td>
                                 <td>{{ $row_krs['nama_matkul'] }}</td>
                                 <td>{{ $row_krs['kel'] }}</td>
                                 <!-- <td>{{ $row_krs['sks_teori'] }}T/ {{ $row_krs['sks_praktek'] }}P</td> -->
