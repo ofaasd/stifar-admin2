@@ -42,7 +42,7 @@
                                 <td>Hari, Waktu</td>
                                 <td>Ruang</td>
                                 <td>SKS</td>
-                                <td>RPS</td>
+                                <td>RPS & Kontrak Kuliah</td>
                                 {{-- <td>Validasi</td> --}}
                             </thead>
                             <tbody>

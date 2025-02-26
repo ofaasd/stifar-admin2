@@ -59,7 +59,7 @@
                                             <td>
                                                 <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                                                     <a href="{{ url('/dosen/absensi/'.$jad['id'].'/input') }}" class="btn btn-info btn-xs"><i class="fa fa-list"></i>Absensi</a>
-                                                    <a href="javascript:void(0)" class="btn btn-success btn-xs" data-bs-toggle="modal" data-bs-target="#exampleModal{{$jad['id']}}"><i class="fa fa-inbox"></i>RPS</a>
+                                                    <a href="javascript:void(0)" class="btn btn-success btn-xs" data-bs-toggle="modal" data-bs-target="#exampleModal{{$jad['id']}}"><i class="fa fa-inbox"></i>RPS & Kontrak Kuliah</a>
                                                     <!-- Modal -->
                                                     <div class="modal fade" id="exampleModal{{$jad['id']}}" tabindex="-1" aria-labelledby="exampleModalLabel{{$jad['id']}}" aria-hidden="true">
                                                         <div class="modal-dialog modal-lg">
