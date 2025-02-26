@@ -81,13 +81,14 @@ class DashboardController extends Controller
         $user_id = Auth::user()->id;
         $pegawai = PegawaiBiodatum::where('user_id',$user_id)->first();
         $perwalian = Mahasiswa::where('id_dsn_wali',$pegawai->id)->count();
+        $tahun_ajaran = TahunAjaran::where('status','Aktif')->first();
         $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
                         ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
                         ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
                         ->leftJoin('mata_kuliahs', 'mata_kuliahs.id', '=', 'jadwals.id_mk')
                         ->leftJoin('pengajars', 'pengajars.id_jadwal', '=', 'jadwals.id')
                         ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
-                        ->where([ 'pengajars.id_dsn' => $pegawai->id, 'jadwals.status' => 'Aktif']);
+                        ->where([ 'pengajars.id_dsn' => $pegawai->id, 'jadwals.status' => 'Aktif', 'jadwals.id_tahun'=>$tahun_ajaran->id]);
         $total_jadwal = $jadwal->count();
         $jadwal = $jadwal->get();
         $no = 1;
