@@ -116,7 +116,7 @@ class DashboardController extends Controller
             foreach($angkatan as $value){
                 $total = Mahasiswa::where('angkatan',$value->angkatan)->where('status',1)->where('id_program_studi',$row->id)->count();
                 $total_input = Krs::join('mahasiswa','mahasiswa.id','=','krs.id_mhs')->where('mahasiswa.angkatan',$value->angkatan)->where('id_program_studi', $row->id)->where('id_tahun',$ta)->distinct()->count('id_mhs');
-                $total_input_valid = Krs::join('mahasiswa','mahasiswa.id','=','krs.id_mhs')->where('mahasiswa.angkatan',$value->angkatan)->where('id_program_studi', $row->id)->where('is_publish',1)>where('id_tahun',$ta)->distinct()->count('id_mhs');
+                $total_input_valid = Krs::join('mahasiswa','mahasiswa.id','=','krs.id_mhs')->where('mahasiswa.angkatan',$value->angkatan)->where('id_program_studi', $row->id)->where('is_publish',1)->where('id_tahun',$ta)->distinct()->count('id_mhs');
                 $list_jumlah_krs[$value->angkatan] .=  $total_input . ',';
                 $list_total_mahasiswa[$value->angkatan] .= ($total - $total_input) . ',';
                 $list_jumlah_krs_valid[$value->angkatan] .= $total_input_valid . ',';
