@@ -22,15 +22,16 @@
                                 <label for="lembaga" class="form-label">Lembaga</label>
                                 <input type="text" name="lembaga" id="lembaga_kompetensi" class="form-control" placeholder="Lembaga Pemberi Komptensi">
                             </div>
-                            
+
                             <div class="mb-3">
                                 <label for="tanggal" class="form-label">Tanggal</label>
                                 <input type="date" name="tanggal" id="tanggal_kompetensi" class="form-control" placeholder="">
                             </div>
-                            
+
                             <div class="mb-3">
                                 <label for="bukti" class="form-label">Bukti Pendukung</label>
                                 <input type="file" name="bukti" id="bukti_kompetensi" class="form-control" placeholder="">
+                                <div class="alert alert-warning">Max File upload 10 MB</div>
                                 <div id="dokumen_exist_kompetensi">
 
                                 </div>

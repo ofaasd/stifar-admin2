@@ -38,7 +38,7 @@
                             <a class="nav-link" id="v-pills-mengajar-tab" data-bs-toggle="pill" href="#v-pills-mengajar" role="tab" aria-controls="v-pills-mengajar" aria-selected="false">Mengajar</a>
                             <a class="nav-link" id="v-pills-penelitian-tab" data-bs-toggle="pill" href="#v-pills-penelitian" role="tab" aria-controls="v-pills-penelitian" aria-selected="false">Penelitian</a>
                             <a class="nav-link" id="v-pills-pengabdian-tab" data-bs-toggle="pill" href="#v-pills-pengabdian" role="tab" aria-controls="v-pills-pengabdian" aria-selected="false">Pengabdian</a>
-                            <a class="nav-link" id="v-pills-karya-tab" data-bs-toggle="pill" href="#v-pills-karya" role="tab" aria-controls="v-pills-karya" aria-selected="false">karya Ilmiah</a>
+                            <a class="nav-link" id="v-pills-karya-tab" data-bs-toggle="pill" href="#v-pills-karya" role="tab" aria-controls="v-pills-karya" aria-selected="false">Publikasi </a>
                             <a class="nav-link" id="v-pills-organisasi-tab" data-bs-toggle="pill" href="#v-pills-organisasi" role="tab" aria-controls="v-pills-organisasi" aria-selected="false">Organisasi</a>
                             <a class="nav-link" id="v-pills-repository-tab" data-bs-toggle="pill" href="#v-pills-repository" role="tab" aria-controls="v-pills-repository" aria-selected="false">Repository</a>
                             <a class="nav-link" id="v-pills-pekerjaan-tab" data-bs-toggle="pill" href="#v-pills-pekerjaan" role="tab" aria-controls="v-pills-pekerjaan" aria-selected="false">Pekerjaan</a>

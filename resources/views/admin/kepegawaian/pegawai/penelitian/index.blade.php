@@ -16,7 +16,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="nomor" class="form-label">Nomor</label>
+                                        <label for="nomor" class="form-label">Nomor SK Penelitian (optional)</label>
                                         <input type="text" name="nomor" id="nomor_penelitian" class="form-control" placeholder="cth : 102938">
                                     </div>
                                     <div class="mb-3">
@@ -43,6 +43,7 @@
                                     <div class="mb-3">
                                         <label for="dokumen_penelitian" class="form-label">Dokumen Publikasi</label>
                                         <input type="file" name="dokumen" id="dokumen_penelitian_penelitian" class="form-control">
+                                        <div class="alert alert-warning">Max File upload 10 MB</div>
                                         <div id="dokumen_exist_penelitian">
 
                                         </div>
@@ -50,6 +51,7 @@
                                     <div class="mb-3">
                                         <label for="proposal_penelitian" class="form-label">Proposal</label>
                                         <input type="file" name="proposal" id="proposal_penelitian_penelitian" class="form-control">
+                                        <div class="alert alert-warning">Max File upload 10 MB</div>
                                         <div id="proposal_exist_penelitian">
 
                                         </div>
@@ -57,6 +59,7 @@
                                     <div class="mb-3">
                                         <label for="lap_kemajuan_penelitian" class="form-label">Laporan Kemajuan</label>
                                         <input type="file" name="lap_kemajuan" id="lap_kemajuan_penelitian_penelitian" class="form-control">
+                                        <div class="alert alert-warning">Max File upload 10 MB</div>
                                         <div id="lap_kemajuan_exist_penelitian">
 
                                         </div>
@@ -64,6 +67,7 @@
                                     <div class="mb-3">
                                         <label for="lap_keuangan_penelitian" class="form-label">Laporan keuangan</label>
                                         <input type="file" name="lap_keuangan" id="lap_keuangan_penelitian_penelitian" class="form-control">
+                                        <div class="alert alert-warning">Max File upload 10 MB</div>
                                         <div id="lap_keuangan_exist_penelitian">
 
                                         </div>
@@ -71,6 +75,7 @@
                                     <div class="mb-3">
                                         <label for="lap_akhir_penelitian" class="form-label">Laporan Akhir</label>
                                         <input type="file" name="lap_akhir" id="lap_akhir_penelitian_penelitian" class="form-control">
+                                        <div class="alert alert-warning">Max File upload 10 MB</div>
                                         <div id="lap_akhir_exist_penelitian">
 
                                         </div>

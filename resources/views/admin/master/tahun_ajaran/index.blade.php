@@ -251,9 +251,8 @@
                                 $("#btn_save").val('Simpan');
                             },
                             error: function error(err) {
-                                offCanvasForm.offcanvas('hide');
                                 swal({
-                                title: 'Duplicate Entry!',
+                                title: 'Error!',
                                 text: title + ' Not Saved !',
                                 icon: 'error',
                                 customClass: {

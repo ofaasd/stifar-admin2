@@ -60,6 +60,7 @@ use App\Http\Controllers\admin\kepegawaian\PegawaiBerkasController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiMengajarController;
 use App\Http\Controllers\mahasiswa\KrsController as mhsKrsController;
 use App\Http\Controllers\mahasiswa\KhsController;
+use App\Http\Controllers\mahasiswa\DaftarNilaiController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiPekerjaanController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiOrganisasiController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiPendidikanController;
@@ -81,6 +82,7 @@ use App\Http\Controllers\admin\akademik\NilaiKuesionerController;
 use App\Http\Controllers\admin\akademik\NilaiController as nilaiakademik;
 use App\Http\Controllers\admin\akademik\KhsController as adminKhs;
 use App\Http\Controllers\admin\akademik\PengaturanUjianController;
+use App\Http\Controllers\admin\akademik\NilaiSusulanController;
 use App\Http\Controllers\admin\keuangan\VaController;
 use App\Http\Controllers\mahasiswa\UjianController;
 use App\Http\Controllers\mahasiswa\KuesionerMhsController;
@@ -283,6 +285,7 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     Route::post('/admin/akademik/list_jawaban/{id}', [NilaiKuesionerController::class, 'index']);
     Route::post('/admin/akademik/list-soal/simpan_status', [SoalKuesionerController::class, 'simpan_status']);
 
+    Route::get('/admin/akademik/nilai_susulan', [NilaiSusulanController::class, 'index']);
     // route KRS
     Route::get('/admin/masterdata/krs', [KrsController::class, 'index']);
     Route::post('/admin/masterdata/krs/list-mhs', [KrsController::class, 'listMhs']);
@@ -356,6 +359,7 @@ Route::group(['middleware' => ['auth','role:mhs|super-admin']], function(){
     Route::get('mhs/heregistrasi', [ProfileController::class, 'heregistrasi'])->name('index_heregistrasi');
 
     Route::get('mhs/input_krs', [mhsKrsController::class, 'input'])->name('input');
+    Route::get('mhs/riwayat_krs', [mhsKrsController::class, 'riwayat'])->name('riwayat_krs');
     Route::get('/admin/masterdata/krs/admin/hapus/{id}', [KrsController::class, 'hapusadminKRS']);
     Route::post('/admin/masterdata/krs/list-jadwal', [KrsController::class, 'showJadwal']);
     Route::get('/admin/masterdata/krs/admin/download/{id}', [KrsController::class, 'downloadkrs']);
@@ -367,9 +371,12 @@ Route::group(['middleware' => ['auth','role:mhs|super-admin']], function(){
 
     Route::get('mhs/khs/{id}', [KhsController::class, 'index'])->name('index_khs');
     Route::get('mhs/khs', [KhsController::class, 'index'])->name('index_khs');
+    Route::get('mhs/khs_riwayat', [KhsController::class, 'riwayat'])->name('khs_riwayat');
+    Route::get('mhs/daftar_nilai', [DaftarNilaiController::class, 'index'])->name('daftar_nilai');
     Route::get('mhs/kuesioner_mhs', [KuesionerMhsController::class, 'index'])->name('index_kuesioner');
     Route::post('mhs/kuesioner_mhs', [KuesionerMhsController::class, 'store'])->name('save_kuesioner');
     Route::get('mhs/cetak_khs', [KhsController::class, 'cetak_khs'])->name('cetak_khs');
+    Route::get('mhs/cetak_khs/{nim}', [KhsController::class, 'cetak_khs'])->name('cetak_khs');
 
 
     //Route::post('admin/admisi/peserta/daftar_kota',[PmbPesertaController::class, 'daftar_kota'] )->name('daftar_kota');
@@ -394,6 +401,7 @@ Route::group(['middleware' => ['auth','role:pegawai|super-admin']], function(){
     Route::post('dosen/validasi-krs-satuan', [DosenController::class, 'valiKrsSatuan'] );
     Route::post('dosen/validasi-krs', [DosenController::class, 'valiKrs'] );
     Route::get('dosen/krm', [KrmController::class, 'index'] );
+    Route::get('dosen/krm_riwayat', [KrmController::class, 'krm_riwayat'] );
     Route::post('dosen/simpan_rps', [KrmController::class, 'simpanRps'] );
     Route::get('dosen/input_nilai', [KrmController::class, 'input_nilai'] );
     Route::get('dosen/absensi/{id}/input', [KrmController::class, 'daftarMhs'] );

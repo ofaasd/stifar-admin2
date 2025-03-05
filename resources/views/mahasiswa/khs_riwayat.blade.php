@@ -17,34 +17,32 @@
 
 @section('breadcrumb-items')
     <li class="breadcrumb-item">Akademik</li>
-    <li class="breadcrumb-item active">KHS</li>
+    <li class="breadcrumb-item active">Riwayat KHS</li>
 @endsection
 
 @section('content')
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <div class="container-fluid">
-        <div class="row">
+        <div class="row g-3">
             <!-- Zero Configuration  Starts-->
+            @foreach($tahun_ajaran as $row_ta)
+            @php $ta = $row_ta->id @endphp
             <div class="col-sm-12">
                 <div class="card mb-4">
                     <div class="card-header bg-primary">
                         <div class="row">
                             <div class="col-md-6">
-                                <h5><b>{{$tahun_ajaran->keterangan}}</b></h5>
+                                <h5><b>{{$row_ta->keterangan}}</b></h5>
                             </div>
                             <div class="col-md-6">
-                                <a href="{{ url('mhs/cetak_khs/')}}/{{$mhs->nim ?? ''}}" class="btn btn-info btn-sm" style="float: right;"><i class="fa fa-download"></i> Download KHS</a>
+                                {{-- <a href="{{ url('mhs/cetak_khs/')}}/{{$mhs->nim ?? ''}}" class="btn btn-info btn-sm" style="float: right;"><i class="fa fa-download"></i> Download KHS</a> --}}
                             </div>
                         </div>
                     </div>
                     <div class="card-body" style="padding:0">
                         <div class="mt-4">
                             <div class="mt-4">
-                                @if($jumlah_valid < $jumlah_matkul)
-                                    <div class="alert alert-warning">Nilai Masih Belum Valid dan dapat Berubah Sewaktu-waktu</div>
-                                @else
-                                    <div class="alert alert-success">Nilai sudah di validasi oleh dosen pengampu</div>
-                                @endif
+
                                 <div class="mt-2"></div>
                                 <table class="table table-hover table-border-horizontal mb-3" id="tablekrs">
                                     <thead>
@@ -74,53 +72,8 @@
                         </div>
                     </div>
                 </div>
-                {{-- <div class="card mb-4">
-                    <div class="card-header bg-dark">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h5><b>2024 - 2025 Genap</b></h5>
-                            </div>
-                            <div class="col-md-6">
-                                <a href="{{ url('admin/masterdata/krs/admin/download/'.$idmhs) }}" class="btn btn-info btn-sm" style="float: right;"><i class="fa fa-download"></i> Download KHS</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body" style="padding:0">
-                        <div class="mt-4">
-                            <div class="mt-4">
-
-                                <div class="mt-2"></div>
-                                <table class="table table-hover table-border-horizontal mb-3" id="tablekrs">
-                                    <thead>
-                                        <th>Kode</th>
-                                        <th>Nama Matakuliah</th>
-                                        <th>SKS</th>
-                                        <th>Tugas</th>
-                                        <th>UTS</th>
-                                        <th>UAS</th>
-                                        <th>Nilai Akhir</th>
-                                        <th>Nilai Huruf</th>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($krs as $row_krs)
-                                            <tr>
-                                                <td>{{ $row_krs['kode_matkul'] }}</td>
-                                                <td>{{ $row_krs['nama_matkul'] }}</td>
-                                                <td>{{ ($row_krs->sks_teori+$row_krs->sks_praktek) }}</td>
-                                                <td>0</td>
-                                                <td>0</td>
-                                                <td>0</td>
-                                                <td>0</td>
-                                                <td>E</td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div> --}}
             </div>
+            @endforeach
             <!-- Zero Configuration  Ends-->
         </div>
     </div>

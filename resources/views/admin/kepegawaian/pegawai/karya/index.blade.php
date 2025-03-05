@@ -9,14 +9,14 @@
                         <input type="hidden" name="id" id="id_karya">
                         <input type="hidden" name="id_pegawai" value="{{$id_pegawai}}">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="ModalLabelkarya">Tambah Riwayat Karya Ilmiah</h5>
+                            <h5 class="modal-title" id="ModalLabelkarya">Tambah Riwayat Publikasi</h5>
                             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
 
                             <div class="mb-3">
                                 <label for="judul" class="form-label">Judul</label>
-                                <input type="text" name="judul" id="judul_karya" class="form-control" placeholder="Judul Karya Ilmiah">
+                                <input type="text" name="judul" id="judul_karya" class="form-control" placeholder="Judul Publikasi">
                             </div>
                             <div class="mb-3">
                                 <label for="nama_majalah" class="form-label">Nama Jurnal</label>
@@ -49,6 +49,7 @@
                             <div class="mb-3">
                                 <label for="dokumen" class="form-label">Dokumen</label>
                                 <input type="file" name="dokumen" id="dokumen_karya_karya" class="form-control">
+                                <div class="alert alert-warning">Max File upload 10 MB</div>
                                 <div id="dokumen_exist_karya">
 
                                 </div>
@@ -110,7 +111,7 @@
                 const id = $(this).data('id');
 
                 // changing the title of offcanvas
-                $('#ModalLabelkarya').html('Edit karya Ilmiah');
+                $('#ModalLabelkarya').html('Edit Publikasi');
 
                 // get data
                 $.get(''.concat(baseUrl).concat('/admin/kepegawaian/karya/').concat(id, '/edit'), function (data) {

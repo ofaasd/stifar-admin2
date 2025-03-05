@@ -28,6 +28,7 @@ class JadwalController extends Controller
     public function index(Request $request)
     {
         $title = "Jadwal";
+        $ta = TahunAjaran::where('status','Aktif');
         $mk[] = MataKuliah::where('status', 'Aktif')->get();
         $no = 1;
         $prodi = Prodi::all();
@@ -122,13 +123,14 @@ class JadwalController extends Controller
         $days = hari::get();
         $ruang = MasterRuang::get();
         $sesi = Sesi::orderBy('nama_sesi','asc')->get();
+        $curr_ta = TahunAjaran::where('status','Aktif')->first();
         $ta = TahunAjaran::get();
         $id = 1;
         $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang')
                   ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
                   ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
                   ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
-                  ->where(['jadwals.id_mk' => $mk['id'], 'jadwals.status' => 'Aktif'])->get();
+                  ->where(['jadwals.id_mk' => $mk['id'], 'jadwals.status' => 'Aktif', 'jadwals.id_tahun' => $curr_ta->id])->get();
         $anggota = anggota_mk::select('anggota_mks.*', 'pegawai_biodata.id as id_dsn', 'pegawai_biodata.npp', 'pegawai_biodata.nama_lengkap', 'pegawai_biodata.gelar_belakang')
                         ->leftJoin('pegawai_biodata', 'anggota_mks.id_pegawai_bio', '=', 'pegawai_biodata.id')
                         ->where(['anggota_mks.idmk' => $mk['id']])->get();
@@ -168,6 +170,7 @@ class JadwalController extends Controller
                     ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
                     ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
                     ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
+                    ->where('jadwals.id_tahun',$id_tahun)
                     ->get();
         $no = 1;
         $id_prodi = 0;
@@ -304,6 +307,7 @@ class JadwalController extends Controller
                     ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
                     ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
                     ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
+                    ->where('jadwals.id_tahun',$id_tahun)
                     ->whereIn('id_mk', $list_mk)
                     ->get();
         $mk = MataKuliah::where('status', 'Aktif')->whereIn('id',$list_mk)->get();
@@ -358,6 +362,7 @@ class JadwalController extends Controller
                         ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
                         ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
                         ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
+                        ->where('jadwals.id_tahun',$id_tahun)
                         ->get();
             if (($hari != 0) && ($matakuliah == 0)) {
                 $q = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul', 'pegawai_biodata.nama_lengkap as nama_dosen')
@@ -368,6 +373,7 @@ class JadwalController extends Controller
                 ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
                 ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
                 ->where(['jadwals.hari' => $hari])
+                ->where('jadwals.id_tahun',$id_tahun)
                 ->get();
             }
             if (($hari == 0) && ($matakuliah != 0)) {
@@ -379,6 +385,7 @@ class JadwalController extends Controller
                 ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
                 ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
                 ->where(['jadwals.id_mk' => $matakuliah])
+                ->where('jadwals.id_tahun',$id_tahun)
                 ->get();
             }
             if (($hari != 0) && ($matakuliah != 0)) {
@@ -390,6 +397,7 @@ class JadwalController extends Controller
                 ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
                 ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
                 ->where(['jadwals.hari' => $hari, 'jadwals.id_mk' => $matakuliah])
+                ->where('jadwals.id_tahun',$id_tahun)
                 ->get();
             }
         }else{
@@ -414,6 +422,7 @@ class JadwalController extends Controller
                         ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
                         ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
                         ->whereIn('id_mk',$list_mk)
+                        ->where('jadwals.id_tahun',$id_tahun)
                         ->get();
             if (($hari != 0) && ($matakuliah == 0)) {
                 $q = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul', 'pegawai_biodata.nama_lengkap as nama_dosen')
@@ -425,6 +434,7 @@ class JadwalController extends Controller
                 ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
                 ->where(['jadwals.hari' => $hari])
                 ->whereIn('id_mk',$list_mk)
+                ->where('jadwals.id_tahun',$id_tahun)
                 ->get();
             }
             if (($hari == 0) && ($matakuliah != 0)) {
@@ -437,6 +447,7 @@ class JadwalController extends Controller
                 ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
                 ->where(['jadwals.id_mk' => $matakuliah])
                 ->whereIn('id_mk',$list_mk)
+                ->where('jadwals.id_tahun',$id_tahun)
                 ->get();
             }
             if (($hari != 0) && ($matakuliah != 0)) {
@@ -449,6 +460,7 @@ class JadwalController extends Controller
                 ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
                 ->where(['jadwals.hari' => $hari, 'jadwals.id_mk' => $matakuliah])
                 ->whereIn('id_mk',$list_mk)
+                ->where('jadwals.id_tahun',$id_tahun)
                 ->get();
             }
         }
@@ -612,6 +624,11 @@ class JadwalController extends Controller
     public function updateJadwal(Request $request){
         $kode_jadwal = $request->kjadwal;
         $id_mk = $request->id_mk;
+        if(empty($kode_jadwal)){
+            $matakuliah = MataKuliah::find($id_mk);
+            $kode_jadwal = $matakuliah->kode_matkul . $request->kel;
+        }
+
         $hari = $request->hari;
         $ruang = $request->ruang;
         $sesi = $request->sesi;
@@ -623,7 +640,7 @@ class JadwalController extends Controller
         $taAktif = $request->tahun_ajaran;
         $waktu = Sesi::where('id',$sesi)->first();
 
-        $cekJadwal = Jadwal::join('waktus','waktus.id','=','jadwals.id_sesi')->where(['hari' => $hari, 'id_tahun' => $taAktif, 'id_ruang' => $ruang])->where('waktu_mulai','>=',$waktu->waktu_mulai)->where('waktu_mulai','<=',$waktu->waktu_selesai)->first();
+        $cekJadwal = Jadwal::join('waktus','waktus.id','=','jadwals.id_sesi')->where(['hari' => $hari, 'id_tahun' => $taAktif, 'id_ruang' => $ruang])->where('waktu_mulai','>=',$waktu->waktu_mulai)->where('waktu_mulai','<=',$waktu->waktu_selesai)->where('jadwals.id', '<>', $id)->first();
         // var_dump($taAktif);
         if($cekJadwal){
             return json_encode(['status' => 'bentrok', 'kode' => 203, 'kode_jadwal' => $cekJadwal['kode_jadwal']]);
@@ -751,6 +768,7 @@ class JadwalController extends Controller
                     ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
                     ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
                     ->whereIn('id_mk', $list_mk)
+                    ->where('jadwals.id_tahun',$id_tahun)
                     ->get();
             $list_pertemuan = [];
             $jumlah_pertemuan = [];
@@ -773,6 +791,7 @@ class JadwalController extends Controller
                     ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
                     ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
                     ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
+                    ->where('jadwals.id_tahun',$id_tahun)
                     ->get();
             foreach($jadwal as $row){
                 $cek_pertemuan = Pertemuan::where('id_jadwal',$row->id)->whereNotNull('tgl_pertemuan')->count();

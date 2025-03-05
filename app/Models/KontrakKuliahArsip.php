@@ -9,4 +9,10 @@ class KontrakKuliahArsip extends Model
 {
     use HasFactory;
     protected $table = 'kontrak_kuliah_models_arsip';
+    protected $fillable = [
+        'id_jadwal',
+        'tugas',
+        'uts',
+        'uas',
+    ];
 }

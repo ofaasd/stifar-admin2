@@ -29,7 +29,7 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-sm-6">
-                                <h5>[{{ $jadwal['kode_matkul'] }}] - {{ $jadwal['nama_matkul'] }}</h5>
+                                <h5>[{{ $jadwal['kode_jadwal'] }}] - {{ $jadwal['nama_matkul'] }}</h5>
                                 <h6>{{ $jadwal['hari'] }}, {{ $jadwal['nama_sesi'] }}</h6>
                                 <b>Kontrak Kuliah</b>
                                 <table>
