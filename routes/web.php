@@ -72,7 +72,6 @@ use App\Http\Controllers\admin\kepegawaian\PegawaiJabatanStrukturalController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiPenghargaanController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiKompetensiController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiKegiatanLuarController;
-use App\Http\Controllers\admin\kepegawaian\PegawaiKompetensiController;
 use App\Http\Controllers\admin\master\JenisRuangController;
 use App\Http\Controllers\admin\akademik\PerwalianController;
 use App\Http\Controllers\admin\akademik\AbsensiController;
@@ -243,8 +242,8 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     Route::post('/jadwal/tambah-pegampu', [JadwalController::class, 'tambahPengampu']);
     Route::post('/jadwal/daftar-jadwal-harian', [JadwalController::class, 'reqJadwalHarian']);
     Route::post('/jadwal/tambah-pertemuan', [JadwalController::class, 'tambahPertemuan']);
-    Route::post('/jadwal/tambah-pertemuan2', [JadwalController::class, 'tambahPertemuan2']);
-    Route::post('/jadwal/get-pertemuan', [JadwalController::class, 'getPertemuan']);
+    
+    
     Route::get('/jadwal/hapus-pertemuan/{id}', [JadwalController::class, 'hapusPertemuan']);
     Route::post('/jadwal/daftar-pertemuan', [JadwalController::class, 'daftarPertemuan']);
     Route::post('/admin/masterdata/jadwal/update', [JadwalController::class, 'updateJadwal']);
@@ -435,6 +434,10 @@ Route::group(['middleware' => ['auth','role:pegawai|super-admin']], function(){
     Route::resource('admin/kepegawaian/kegiatan_luar', PegawaiKegiatanLuarController::class)->name('index','kegiatan_luar');
 
     Route::get('/mahasiswa/detail/{nim}', [MahasiswaController::class, 'detail']);
+
+    Route::get('dosen/setting-pertemuan', [KrmController::class, 'settingPertemuan']);
+    Route::post('/jadwal/get-pertemuan', [JadwalController::class, 'getPertemuan']);
+    Route::post('/jadwal/tambah-pertemuan2', [JadwalController::class, 'tambahPertemuan2']);
 
     Route::post('admin/kepegawaian/pegawai/get_status', [PegawaiController::class, 'get_status'])->name('get_status');
     Route::post('admin/kepegawaian/pegawai/user_update', [PegawaiController::class, 'user_update'])->name('user_update');

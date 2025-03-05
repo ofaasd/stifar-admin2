@@ -41,6 +41,11 @@
                         </a>
                     </li>
                     <li>
+                        <a class="submenu-title" href="{{URL::to('dosen/setting-pertemuan')}}" >
+                            Setting Pertemuan
+                        </a>
+                    </li>
+                    <li>
                         <a class="submenu-title" href="{{URL::to('dosen/input_nilai')}}" >
                              Input Nilai
                         </a>
