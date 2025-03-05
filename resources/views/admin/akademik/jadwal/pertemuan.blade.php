@@ -129,7 +129,7 @@
             $("#myTable1").DataTable({
                 responsive: true
             })
-            $(".edit-pertemuan").click(function(){
+            $("body").on("click",".edit-pertemuan",function(){
                 const id_jadwal = $(this).data('id');
                 $(".pertemuan-location").html(`<div class="loader-box">
                             <div class="loader-2"></div>

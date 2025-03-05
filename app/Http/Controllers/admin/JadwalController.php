@@ -761,12 +761,12 @@ class JadwalController extends Controller
 
 
             $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul', 'pegawai_biodata.nama_lengkap as nama_dosen')
-                    ->leftJoin('pengajars', 'pengajars.id_jadwal', '=', 'jadwals.id')
-                    ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'pengajars.id_dsn')
-                    ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
-                    ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
-                    ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
-                    ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
+                    ->Join('pengajars', 'pengajars.id_jadwal', '=', 'jadwals.id')
+                    ->Join('pegawai_biodata', 'pegawai_biodata.id', '=', 'pengajars.id_dsn')
+                    ->Join('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
+                    ->Join('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
+                    ->Join('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
+                    ->Join('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
                     ->whereIn('id_mk', $list_mk)
                     ->where('jadwals.id_tahun',$id_tahun)
                     ->get();
@@ -785,12 +785,12 @@ class JadwalController extends Controller
             }
         }else{
             $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul', 'pegawai_biodata.nama_lengkap as nama_dosen')
-                    ->leftJoin('pengajars', 'pengajars.id_jadwal', '=', 'jadwals.id')
-                    ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'pengajars.id_dsn')
-                    ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
-                    ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
-                    ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
-                    ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
+                    ->Join('pengajars', 'pengajars.id_jadwal', '=', 'jadwals.id')
+                    ->Join('pegawai_biodata', 'pegawai_biodata.id', '=', 'pengajars.id_dsn')
+                    ->Join('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
+                    ->Join('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
+                    ->Join('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
+                    ->Join('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
                     ->where('jadwals.id_tahun',$id_tahun)
                     ->get();
             foreach($jadwal as $row){
