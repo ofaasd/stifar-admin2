@@ -23,7 +23,7 @@
         <td>{{ $nama[$row_mhs['id_program_studi']] }}</td>
         <td>{{ $row_mhs['status'] == 1? 'Aktif':'Tidak Aktif' }}</td>
         <td>
-            <a href="{{ URL::to('/mhs/khs/' . $row_mhs['nim']) }}" class="btn btn-warning btn-xs" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Lihat KHS Mahasiswa">
+            <a href="{{ URL::to('/admin/akademik/khs/' . $row_mhs['nim']) }}" class="btn btn-warning btn-xs" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Lihat KHS Mahasiswa">
               <i class="fa fa-eye"></i>
             </a>
       </tr>
@@ -34,4 +34,3 @@
             responsive: true
         })
     </script>
-    

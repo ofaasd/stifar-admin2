@@ -15,6 +15,7 @@ use App\Models\MasterRuang;
 use App\Models\Sesi;
 use App\Models\Krs;
 use App\Models\Mahasiswa;
+use App\Models\master_nilai as MasterNilai;
 use Illuminate\Support\Facades\DB;
 
 class NilaiController extends Controller
@@ -61,6 +62,12 @@ class NilaiController extends Controller
                     ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
                     ->get();
         }
+        $nilaiPublish = [];
+        $nilaiValidasi = [];
+        foreach($jadwal as $row){
+            $nilaiValidasi[$row->id] = MasterNilai::where('id_jadwal',$row->id)->where(['validasi_tugas'=>1,'validasi_uts'=>1,'validasi_uas'=>1])->count();
+            $nilaiPublish[$row->id] = MasterNilai::where('id_jadwal',$row->id)->where(['publish_tugas'=>1,'publish_uts'=>1,'publish_uas'=>1])->count();
+        }
         $no = 1;
 
         $prodi = Prodi::all();
@@ -95,6 +102,6 @@ class NilaiController extends Controller
         $totalMahasiswa = $angkatan->sum();
         // var_dump($list_pertemuan);
 
-        return view('admin.akademik.nilai.index', compact('title','no', 'jadwal','id_prodi','prodi','nama','jumlah_input_krs', 'angkatan', 'totalMahasiswa'));
+        return view('admin.akademik.nilai.index', compact('nilaiPublish','nilaiValidasi','title','no', 'jadwal','id_prodi','prodi','nama','jumlah_input_krs', 'angkatan', 'totalMahasiswa'));
     }
 }

@@ -27,11 +27,22 @@
     </div> --}}
     <div class="nav-right col-xxl-7 col-xl-6 col-md-7 col-8 pull-right right-header p-0 ms-auto">
       <ul class="nav-menus">
+        @php
+            $ta = \App\Models\TahunAjaran::where('status',1)->first();
+            $ta_awal = (int)substr($ta->kode_ta,0,4);
+            $ta_akhir = $ta_awal+1;
 
-        <li>                         <span class="header-search">
-            <svg>
-              <use href="{{ asset('assets/svg/icon-sprite.svg#search') }}"></use>
-            </svg></span></li>
+            $ganjil = substr($ta->kode_ta,-1,1);
+            $status_ganjil = ($ganjil % 2 == 0)?"Genap":"Ganjil";
+        @endphp
+        <li>TA {{$ta_awal}} - {{$ta_akhir}} {{$status_ganjil}}</li>
+        <li>
+            <span class="header-search">
+                <svg>
+                <use href="{{ asset('assets/svg/icon-sprite.svg#search') }}"></use>
+                </svg>
+            </span>
+        </li>
         <li>
           <div class="mode">
             <svg>
@@ -51,7 +62,7 @@
               $pegawai = \App\Models\PegawaiBiodatum::where('user_id',$id)->first();
             @endphp
             <div class="media-body"><span>{{$pegawai->nama_lengkap ?? Auth::user()->name}}</span>
-              
+
               <p class="mb-0 font-roboto">{{Auth::user()->roles->pluck('name')[0]}} <i class="middle fa fa-angle-down"></i></p>
             </div>
           </div>

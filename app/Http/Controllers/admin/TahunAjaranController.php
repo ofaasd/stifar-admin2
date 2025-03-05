@@ -5,6 +5,15 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\TahunAjaran;
+use App\Models\Jadwal;
+use App\Models\Krs;
+use App\Models\JadwalsArsip;
+use App\Models\KrsArsip;
+use App\Models\PertemuanArsip;
+use App\Models\MasterNilaiArsip;
+use App\Models\AbsensiModelArsip;
+use App\Models\KontrakKuliahArsip;
+use Illuminate\Support\Facades\DB;
 
 class TahunAjaranController extends Controller
 {
@@ -106,7 +115,7 @@ class TahunAjaranController extends Controller
     {
         //
         $id = $request->id;
-
+        DB::beginTransaction();
         if ($id) {
             $ta = TahunAjaran::updateOrCreate(
                 ['id' => $id],
@@ -115,11 +124,11 @@ class TahunAjaranController extends Controller
                     'tgl_awal' => $request->tgl_awal,
                     'tgl_awal_kuliah' => $request->tgl_awal_kuliah,
                     'tgl_akhir' => $request->tgl_akhir,
-                    'status' => $request->status,
+                    //'status' => $request->status,
                     'keterangan' => $request->keterangan
                 ]
             );
-
+            DB::commit();
             return response()->json('Updated');
         } else {
             $ta = TahunAjaran::updateOrCreate(
@@ -129,13 +138,56 @@ class TahunAjaranController extends Controller
                     'tgl_awal' => $request->tgl_awal,
                     'tgl_awal_kuliah' => $request->tgl_awal_kuliah,
                     'tgl_akhir' => $request->tgl_akhir,
-                    'status' => $request->status,
+                    //'status' => $request->status,
+                    'status' => 'Aktif',
                     'keterangan' => $request->keterangan
                 ]
             );
+            $id_new_ta = $ta->id;
             if ($ta) {
+                $aktif = TahunAjaran::where('status','Aktif')->first();
+
+                $jadwal = Jadwal::all();
+                foreach($jadwal as $row){
+                    $krs = Krs::where('id_jadwal',$row->id)->where('id_tahun',$aktif->id)->get();
+                    $insert = JadwalsArsip::create(
+                        [
+                            'kode_jadwal' => $row->kode_jadwal,
+                            'id_tahun' => $row->id_tahun,
+                            'id_mk' => $row->id_mk,
+                            'hari' => $row->hari,
+                            'id_sesi' => $row->id_sesi,
+                            'id_ruang' => $row->id_ruang,
+                            'kel' => $row->kel,
+                            'kuota' => $row->kuota,
+                            'status' => $row->status,
+                            'tp' => $row->tp
+                        ]
+                    );
+                    $new_jadwal_id = $insert->id;
+                    foreach($krs as $rows){
+                        $insert2 = KrsArsip::create(
+                            [
+                                'id_jadwal' => $new_jadwal_id,
+                                'id_tahun' => $rows->id_tahun,
+                                'id_mhs' => $rows->id_mhs,
+                                'is_publish' => $rows->is_publish,
+                                'is_uts' => $rows->is_uts,
+                                'is_uas' => $rows->is_uas
+                            ]
+                        );
+                    }
+                    //pointing id_jadwal di master_nilai dari id_jadwal_lama ke id_jadwal-arsip
+                }
+
+                $nonaktif = TahunAjaran::query()->update(['status'=>'Tidak Aktif']);
+                $new_ta = TahunAjaran::find($id_new_ta);
+                $new_ta->status = 'Aktif';
+                $new_ta->save();
+                DB::commit();
                 return response()->json('Created');
             } else {
+                DB::rollBack();
                 return response()->json('Failed Create Academic');
             }
         }

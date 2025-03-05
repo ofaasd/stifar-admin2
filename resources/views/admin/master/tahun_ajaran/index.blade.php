@@ -213,40 +213,57 @@
             //save record
             $('#formAdd').on('submit',function(e){
                 e.preventDefault();
-                $("#btn_save").prop('disabled',true);
-                $("#btn_save").val('Tunggu Sebentar');
-                $.ajax({
-                    data: $('#formAdd').serialize(),
-                    url: ''.concat(baseUrl).concat(page),
-                    type: 'POST',
-                    success: function success(status) {
-                        dt.draw();
-                        $("#tambahModal").modal('hide');
+                swal({
+                title: 'Apakah anda yakin ?',
+                text: "Membuat TA baru akan otomatis aktif dan data TA sebelumnya akan diarsipkan",
+                icon: 'warning',
+                buttons: true,
+                dangerMode: true,
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                customClass: {
+                    confirmButton: 'btn btn-primary me-3',
+                    cancelButton: 'btn btn-label-secondary'
+                },
+                buttonsStyling: false
+                }).then(function (result) {
+                    if (result) {
+                        $("#btn_save").prop('disabled',true);
+                        $("#btn_save").val('Tunggu Sebentar');
+                        $.ajax({
+                            data: $('#formAdd').serialize(),
+                            url: ''.concat(baseUrl).concat(page),
+                            type: 'POST',
+                            success: function success(status) {
+                                dt.draw();
+                                $("#tambahModal").modal('hide');
 
-                        // sweetalert
-                        swal({
-                        icon: 'success',
-                        title: 'Successfully '.concat(status, '!'),
-                        text: ''.concat(title, ' ').concat(status, ' Successfully.'),
-                        customClass: {
-                            confirmButton: 'btn btn-success'
-                        }
+                                // sweetalert
+                                swal({
+                                icon: 'success',
+                                title: 'Successfully '.concat(status, '!'),
+                                text: ''.concat(title, ' ').concat(status, ' Successfully.'),
+                                customClass: {
+                                    confirmButton: 'btn btn-success'
+                                }
+                                });
+                                $("#btn_save").prop('disabled',false);
+                                $("#btn_save").val('Simpan');
+                            },
+                            error: function error(err) {
+                                offCanvasForm.offcanvas('hide');
+                                swal({
+                                title: 'Duplicate Entry!',
+                                text: title + ' Not Saved !',
+                                icon: 'error',
+                                customClass: {
+                                    confirmButton: 'btn btn-success'
+                                }
+                                });
+                                $("#btn_save").prop('disabled',false);
+                                $("#btn_save").val('Simpan');
+                            }
                         });
-                        $("#btn_save").prop('disabled',false);
-                        $("#btn_save").val('Simpan');
-                    },
-                    error: function error(err) {
-                        offCanvasForm.offcanvas('hide');
-                        swal({
-                        title: 'Duplicate Entry!',
-                        text: title + ' Not Saved !',
-                        icon: 'error',
-                        customClass: {
-                            confirmButton: 'btn btn-success'
-                        }
-                        });
-                        $("#btn_save").prop('disabled',false);
-                        $("#btn_save").val('Simpan');
                     }
                 });
             });

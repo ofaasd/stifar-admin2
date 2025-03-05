@@ -16,6 +16,7 @@ use App\Models\KontrakKuliahModel;
 use App\Models\master_nilai;
 use App\Models\TahunAjaran;
 use App\Models\MataKuliah;
+use App\Models\master_nilai as MasterNilai;
 use Illuminate\Support\Facades\DB;
 
 class KrmController extends Controller
@@ -50,11 +51,17 @@ class KrmController extends Controller
                         ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
                         ->where([ 'pengajars.id_dsn' => $id_dsn->id, 'jadwals.status' => 'Aktif'])->get();
         $no = 1;
+        $nilaiPublish = [];
+        $nilaiValidasi = [];
+        foreach($jadwal as $row){
+            $nilaiValidasi[$row->id] = MasterNilai::where('id_jadwal',$row->id)->where(['validasi_tugas'=>1,'validasi_uts'=>1,'validasi_uas'=>1])->count();
+            $nilaiPublish[$row->id] = MasterNilai::where('id_jadwal',$row->id)->where(['publish_tugas'=>1,'publish_uts'=>1,'publish_uas'=>1])->count();
+        }
         $jumlah_input_krs = [];
         foreach($jadwal as $row){
             $jumlah_input_krs[$row->id] = Krs::where('id_jadwal',$row->id)->where('id_tahun',$id_tahun)->count();
         }
-        return view('dosen.input_nilai', compact('title', 'jadwal', 'no', 'jumlah_input_krs'));
+        return view('dosen.input_nilai', compact('title','nilaiPublish','nilaiValidasi', 'jadwal', 'no', 'jumlah_input_krs'));
     }
     public function daftarMhs($id){
         $title = "Daftar Mahasiswa";

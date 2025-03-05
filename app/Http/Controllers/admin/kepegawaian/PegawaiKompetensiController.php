@@ -4,7 +4,7 @@ namespace App\Http\Controllers\admin\kepegawaian;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\PegawaiKompentensi;
+use App\Models\PegawaiKompetensi;
 
 class PegawaiKompetensiController extends Controller
 {
@@ -13,7 +13,7 @@ class PegawaiKompetensiController extends Controller
     {
         //
         $id_pegawai = $request->id;
-        $pegawai_kompetensi = PegawaiKompentensi::where('id_pegawai',$id_pegawai)->get();
+        $pegawai_kompetensi = PegawaiKompetensi::where('id_pegawai',$id_pegawai)->get();
 
 
         foreach($pegawai_kompetensi as $row){
@@ -21,7 +21,7 @@ class PegawaiKompetensiController extends Controller
             $data['fake_id'] = ++$i;
         }
         $fake_id = 0;
-        return view('admin/kepegawaian/pegawai/penghargaan/index', compact('id_pegawai','pegawai_kompetensi','fake_id'));
+        return view('admin/kepegawaian/pegawai/kompetensi/index', compact('id_pegawai','pegawai_kompetensi','fake_id'));
     }
 
     /**
@@ -45,19 +45,19 @@ class PegawaiKompetensiController extends Controller
                 'id_pegawai' => $request->id_pegawai,
                 'bidang' => $request->bidang,
                 'lembaga' => $request->lembaga,
-                'tanggal' => $request->tanggal,
                 'link' => $request->link,
+                'tanggal' => $request->tanggal,
             ];
 
             $filename = '';
             if ($request->file('bukti') != null) {
-                $bukti = $request->file('bukti');
+                $dokumen = $request->file('bukti');
                 $filename = date('YmdHi') . $dokumen->getClientOriginalName();
                 $tujuan_upload = 'assets/file/kompetensi';
-                $bukti->move($tujuan_upload,$filename);
+                $dokumen->move($tujuan_upload,$filename);
                 $data['bukti'] = $filename;
             }
-            $pegawai = PegawaiKompentensi::updateOrCreate(
+            $pegawai = PegawaiKompetensi::updateOrCreate(
                 ['id' => $id],
                 $data,
             );
@@ -72,16 +72,16 @@ class PegawaiKompetensiController extends Controller
                 $tujuan_upload = 'assets/file/kompetensi';
                 $dokumen->move($tujuan_upload,$filename);
                 //$data['file'] = $filename;
-            }   
+            }
 
-            $pegawai = PegawaiKompentensi::updateOrCreate(
+            $pegawai = PegawaiKompetensi::updateOrCreate(
                 ['id' => $id],
                 [
                     'id_pegawai' => $request->id_pegawai,
                     'bidang' => $request->bidang,
                     'lembaga' => $request->lembaga,
-                    'tanggal' => $request->tanggal,
                     'link' => $request->link,
+                    'tanggal' => $request->tanggal,
                     'bukti' => $filename
                 ]
             );
@@ -110,7 +110,7 @@ class PegawaiKompetensiController extends Controller
         //
         $where = ['id' => $id];
 
-        $pegawai[0] = PegawaiKompentensi::where($where)->first();
+        $pegawai[0] = PegawaiKompetensi::where($where)->first();
         return response()->json($pegawai);
     }
 
@@ -128,6 +128,6 @@ class PegawaiKompetensiController extends Controller
     public function destroy(string $id)
     {
         //
-        $pegawai = PegawaiKompentensi::where('id', $id)->delete();
+        $pegawai = PegawaiKompetensi::where('id', $id)->delete();
     }
 }
