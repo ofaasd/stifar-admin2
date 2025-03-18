@@ -43,6 +43,7 @@ use App\Http\Controllers\admin\admisi\PengumumanController;
 use App\Http\Controllers\admin\admisi\PmbPesertaController;
 use App\Http\Controllers\admin\admisi\VerifikasiController;
 use App\Http\Controllers\admin\keuangan\KeuanganController;
+use App\Http\Controllers\admin\keuangan\BukaTutupController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiController;
 use App\Http\Controllers\admin\master\AsetKategoriController;
 use App\Http\Controllers\admin\master\AtributProdiController;
@@ -296,6 +297,7 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
 
     Route::get('/admin/keuangan/generate_mhs', [KeuanganController::class, 'generate_mhs']);
     Route::get('/admin/keuangan/generate_user_mhs', [KeuanganController::class, 'generate_user_mhs']);
+    Route::get('/admin/keuangan/buka_tutup_prodi', [BukaTutupController::class, 'index']);
 
 
     // route mkKurikulum
