@@ -43,6 +43,7 @@ use App\Http\Controllers\admin\admisi\PengumumanController;
 use App\Http\Controllers\admin\admisi\PmbPesertaController;
 use App\Http\Controllers\admin\admisi\VerifikasiController;
 use App\Http\Controllers\admin\keuangan\KeuanganController;
+use App\Http\Controllers\admin\keuangan\BukaTutupController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiController;
 use App\Http\Controllers\admin\master\AsetKategoriController;
 use App\Http\Controllers\admin\master\AtributProdiController;
@@ -242,8 +243,8 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     Route::post('/jadwal/tambah-pegampu', [JadwalController::class, 'tambahPengampu']);
     Route::post('/jadwal/daftar-jadwal-harian', [JadwalController::class, 'reqJadwalHarian']);
     Route::post('/jadwal/tambah-pertemuan', [JadwalController::class, 'tambahPertemuan']);
-    Route::post('/jadwal/tambah-pertemuan2', [JadwalController::class, 'tambahPertemuan2']);
-    Route::post('/jadwal/get-pertemuan', [JadwalController::class, 'getPertemuan']);
+    
+    
     Route::get('/jadwal/hapus-pertemuan/{id}', [JadwalController::class, 'hapusPertemuan']);
     Route::post('/jadwal/daftar-pertemuan', [JadwalController::class, 'daftarPertemuan']);
     Route::post('/admin/masterdata/jadwal/update', [JadwalController::class, 'updateJadwal']);
@@ -296,6 +297,7 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
 
     Route::get('/admin/keuangan/generate_mhs', [KeuanganController::class, 'generate_mhs']);
     Route::get('/admin/keuangan/generate_user_mhs', [KeuanganController::class, 'generate_user_mhs']);
+    Route::get('/admin/keuangan/buka_tutup_prodi', [BukaTutupController::class, 'index']);
 
 
     // route mkKurikulum
@@ -331,7 +333,7 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     Route::resource('admin/kepegawaian/berkas', PegawaiBerkasController::class)->name('index','berkas');
     Route::resource('admin/kepegawaian/jamkerja', JamkerjaController::class)->name('index','jamkerja');
     Route::resource('admin/kepegawaian/surat_izin', SuratIzinController::class)->name('index','surat_izin');
-
+    Route::resource('admin/kepegawaian/penghargaan', PegawaiPenghargaanController::class)->name('index','penghargaan');
 
     Route::resource('admin/akademik/perwalian', PerwalianController::class)->name('index','perwalian_admin');
     Route::resource('admin/akademik/list-soal', SoalKuesionerController::class)->name('index','list-soal');
@@ -435,11 +437,13 @@ Route::group(['middleware' => ['auth','role:pegawai|super-admin']], function(){
 
     Route::get('/mahasiswa/detail/{nim}', [MahasiswaController::class, 'detail']);
 
+    Route::get('dosen/setting-pertemuan', [KrmController::class, 'settingPertemuan']);
+    Route::post('/jadwal/get-pertemuan', [JadwalController::class, 'getPertemuan']);
+    Route::post('/jadwal/tambah-pertemuan2', [JadwalController::class, 'tambahPertemuan2']);
+
     Route::post('admin/kepegawaian/pegawai/get_status', [PegawaiController::class, 'get_status'])->name('get_status');
     Route::post('admin/kepegawaian/pegawai/user_update', [PegawaiController::class, 'user_update'])->name('user_update');
     Route::post('admin/kepegawaian/pegawai/foto_update', [PegawaiController::class, 'foto_update'])->name('foto_update');
-
-
 });
 Route::group(['middleware' => ['auth','role:mhs|pegawai|super-admin']], function(){
     Route::post('admin/admisi/peserta/daftar_kota',[PmbPesertaController::class, 'daftar_kota'] )->name('daftar_kota_pegawai');
