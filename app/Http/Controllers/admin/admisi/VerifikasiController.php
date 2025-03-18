@@ -159,7 +159,7 @@ class VerifikasiController extends Controller
     public function edit_verifikasi($id){
         $where = ['id' => $id];
         $hasil = [];
-        
+
         $hasil[0] = PmbPesertaOnline::where($where)->first();
         if(!empty($hasil[0]->nopen)){
             $cek_va = BankDataVa::where('no_va','like','%'. $hasil[0]->nopen . '%')->where('status',0)->count();
@@ -169,7 +169,7 @@ class VerifikasiController extends Controller
                 $hasil[1] = 0; //tidak tersedia
             }
         }
-        
+
 
         return response()->json($hasil);
 
@@ -189,8 +189,9 @@ class VerifikasiController extends Controller
     }
     public function update_verifikasi(Request $request){
         $id = $request->id;
-        $bank = BankDataVa::where('no_va','like','%' . $request->nopen . '%')->where('status',0)->count();
-        if($bank > 0 && $request->is_verifikasi == 1){
+        //$bank = BankDataVa::where('no_va','like','%' . $request->nopen . '%')->where('status',0)->count();
+        $peserta = PmbPesertaOnline::where('nopen',$request->nopen)->count();
+        if($peserta == 1 && $request->is_verifikasi == 1){
             $peserta = PmbPesertaOnline::find($id);
             $peserta->nopen = $request->nopen;
             $peserta->is_verifikasi = $request->is_verifikasi;
@@ -198,7 +199,7 @@ class VerifikasiController extends Controller
                 'status' => 1,
                 'nopen' => $request->nopen,
             ];
-           
+
             if($peserta->save()){
                 $bank = BankDataVa::where('no_va','like','%' . $request->nopen . '%')->where('status',0)->update($array);
                 return response()->json('Updated');
@@ -217,9 +218,9 @@ class VerifikasiController extends Controller
         }else{
             return response()->json('Error | va sudah digunakan atau tidak terdaftar');
         }
-        
-        
-        
+
+
+
 
     }
     public function pembayaran(Request $request,int $id_gelombang=0){
