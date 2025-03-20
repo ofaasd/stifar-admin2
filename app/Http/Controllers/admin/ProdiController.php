@@ -137,7 +137,7 @@ class ProdiController extends Controller
                     'nama_prodi' => $request->nama_prodi,
                     'tgl_pendirian' => $request->tgl_pendirian,
                     'no_sk_pendirian' => $request->no_sk_pendirian,
-                    'is_krs' => $krs[0],
+                    'is_krs' => ($krs == "on") ? 1 : 0,
                 ]
             );
 
@@ -157,7 +157,7 @@ class ProdiController extends Controller
                     'nama_prodi' => $request->nama_prodi,
                     'tgl_pendirian' => $request->tgl_pendirian,
                     'no_sk_pendirian' => $request->no_sk_pendirian,
-                    'is_krs' => $krs[0],
+                    'is_krs' => ($krs == "on") ? 1 : 0,
                 ]
             );
             if ($prodi) {

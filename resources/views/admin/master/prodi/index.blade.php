@@ -233,9 +233,17 @@
                 $.get(''.concat(baseUrl).concat(page, '/').concat(id, '/edit'), function (data) {
                 Object.keys(data).forEach(key => {
                     //console.log(key);
-                    $('#' + key)
-                        .val(data[key])
-                        .trigger('change');
+                    if(key == 'is_krs'){
+                        if(data[key] == 1){
+                            $("#is_krs").prop("checked",true)
+                        }else{
+                            $("#is_krs").prop("checked",false)
+                        }
+                    }else{
+                        $('#' + key)
+                            .val(data[key])
+                            .trigger('change');
+                    }
                 });
                 });
             });
@@ -247,7 +255,7 @@
                 values = values.concat(
                 jQuery('#formAdd input[type=checkbox]:not(:checked)').map(
                     function() {
-                        return {"name": this.name, "value": this.value}
+                        return {"name": this.name, "value": "off"}
                     }).get()
                 );
                 $.ajax({
