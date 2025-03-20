@@ -25,6 +25,7 @@ class KrsController extends Controller
         $idmhs = $mhs->id;
         $tahun_ajaran = TahunAjaran::where('status','Aktif')->first();
         $ta = $tahun_ajaran->id;
+        $prodi = Prodi::find($mhs->id_program_studi);
 
         $title = 'Input KRS';
         $kd_prodi_mhs = Prodi::where('id',$mhs->id_program_studi)->first()->kode_prodi;
@@ -45,8 +46,9 @@ class KrsController extends Controller
                     ->where('id_mhs',$idmhs)
                     ->get();
         $no = 1;
+
         $permission = MasterKeuanganMh::where('id_mahasiswa',$idmhs)->first();
-        return view('mahasiswa.input_krs', compact('mhs','title', 'permission','mk', 'krs', 'no', 'ta', 'idmhs'));
+        return view('mahasiswa.input_krs', compact('prodi','mhs','title', 'permission','mk', 'krs', 'no', 'ta', 'idmhs'));
     }
     public function riwayat($id=0){
         $title = "Riwayat KRS Mahasiswa";
