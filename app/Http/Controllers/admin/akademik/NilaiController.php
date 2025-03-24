@@ -50,6 +50,7 @@ class NilaiController extends Controller
                     ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
                     ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
                     ->whereIn('id_mk', $list_mk)
+                    ->where('jadwals.id_tahun',$id_tahun)
                     ->get();
 
         }else{
@@ -60,6 +61,7 @@ class NilaiController extends Controller
                     ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
                     ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
                     ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
+                    ->where('jadwals.id_tahun',$id_tahun)
                     ->get();
         }
         $nilaiPublish = [];

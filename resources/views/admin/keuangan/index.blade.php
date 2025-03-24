@@ -32,10 +32,12 @@
                         <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
                         @if($jumlah_keuangan < $jumlah_mhs)
                         <div class="alert alert-warning">Data Keuangan Mahasiswa TA {{$ta->kode_ta}} Belum tersedia / Terdapat tambahan mahasiswa baru. klik tombol di bawah untuk generate keuangan mahasiswa</div>
-                        <a href="{{URL::to('admin/keuangan/generate_mhs')}}" class="btn btn-primary">
+                        <div class="row">
+                          <a href="{{URL::to('admin/keuangan/generate_mhs')}}" class="btn btn-primary">
                             <i class="fa fa-plus"></i>
                             Generate keuangan Mahasiswa
                           </a>
+                        </row>
                         @endif
                         <div class="table-responsive">
                             <table class="display" id="basic-1">

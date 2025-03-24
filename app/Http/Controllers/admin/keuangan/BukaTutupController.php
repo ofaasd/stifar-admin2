@@ -80,6 +80,7 @@ class BukaTutupController extends Controller
                     $nestedData['fake_id'] = ++$ids;
                     $nestedData['kode_prodi'] = $row->kode_prodi;
                     $nestedData['nama_prodi'] = $row->nama_prodi;
+                    //status krs kesini
                     $data[] = $nestedData;
                 }
             }
