@@ -56,6 +56,7 @@ class PengaturanUjianController extends Controller
                     ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
                     ->leftJoin('tbl_jadwal_ujian', 'tbl_jadwal_ujian.id_jadwal', '=', 'jadwals.id')
                     ->whereIn('id_mk', $list_mk)
+                    ->where('jadwals.id_tahun',$id_tahun)
                     ->get();
             $list_pengajar = [];
             foreach($jadwal as $jad){
@@ -75,6 +76,7 @@ class PengaturanUjianController extends Controller
                     ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
                     ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
                     ->leftJoin('tbl_jadwal_ujian', 'tbl_jadwal_ujian.id_jadwal', '=', 'jadwals.id')
+                    ->where('jadwals.id_tahun',$id_tahun)
                     ->get();
             $list_pengajar = [];
             foreach($jadwal as $jad){
