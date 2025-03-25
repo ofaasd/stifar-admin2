@@ -38,7 +38,7 @@
                         <ul class="nav-sub-childmenu submenu-content">
                             <li><a href="{{URL::to('admin/masterdata/program-studi')}}">Daftar Prodi</a></li>
                             <li><a href="{{URL::to('admin/masterdata/prodi/atribut/1')}}">Atribut Prodi</a></li>
-                            <li><a href="#">Akreditasi</a></li>
+                            <li><a href="{{URL::to('admin/masterdata/prodi/akreditasi')}}">Akreditasi</a></li>
                             <li><a href="{{URL::to('admin/masterdata/prodi/renstra/1')}}">Renstra</a></li>
                         </ul>
                     </li>
@@ -48,7 +48,7 @@
                     <li><a href="{{URL::to('admin/masterdata/user')}}">User Manajemen</a></li>
                     {{-- <li><a href="{{ route('ruang/')}}">Ruang</a></li> --}}
                     {{-- <li><a href="{{URL::to('admin/masterdata/sesi')}}">Sesi</a></li> --}}
-                    <li><a href="{{URL::to('admin/masterdata/asal-sekolah')}}">Sekolah</a></li>
+                    <li><a href="{{URL::to('admin/masterdata/sekolah')}}">Sekolah</a></li>
                     <li><a href="{{URL::to('admin/masterdata/waktu')}}">Waktu</a></li>
                     {{-- <li><a href="{{URL::to('admin/masterdata/rumpun')}}">Rumpun</a></li> --}}
                     {{-- <li><a href="{{URL::to('admin/masterdata/fakultas')}}">Fakultas</a></li> --}}

@@ -243,8 +243,8 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     Route::post('/jadwal/tambah-pegampu', [JadwalController::class, 'tambahPengampu']);
     Route::post('/jadwal/daftar-jadwal-harian', [JadwalController::class, 'reqJadwalHarian']);
     Route::post('/jadwal/tambah-pertemuan', [JadwalController::class, 'tambahPertemuan']);
-    
-    
+
+
     Route::get('/jadwal/hapus-pertemuan/{id}', [JadwalController::class, 'hapusPertemuan']);
     Route::post('/jadwal/daftar-pertemuan', [JadwalController::class, 'daftarPertemuan']);
     Route::post('/admin/masterdata/jadwal/update', [JadwalController::class, 'updateJadwal']);
