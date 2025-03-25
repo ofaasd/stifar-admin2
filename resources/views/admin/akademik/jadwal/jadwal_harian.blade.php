@@ -263,7 +263,8 @@
                 dataType: 'json',
                 success: function(res){
                     var data = res.data
-                    var jumlah_input = res.jumlah_input;
+                    var jumlah_input = res.jumlah_input
+                    var list_pengajar = res.list_pengajar
                     var html = `
                         <table class="table" id="myTable1">
                             <thead>
@@ -290,7 +291,7 @@
                                     <td>${ no }</td>
                                     <td>${ data[i].kode_jadwal }</td>
                                     <td>${ data[i].hari }, ${ data[i].nama_sesi }</td>
-                                    <td>${ data[i].nama_dosen }</td>
+                                    <td>${ list_pengajar[data[i].id] }</td>
                                     <td>[${ data[i].kode_matkul }] ${ data[i].nama_matkul }</td>
                                     <td>${ data[i].nama_ruang }</td>
 
