@@ -775,6 +775,12 @@ class JadwalController extends Controller
         $title = "Jadwal Harian";
         $mk = MataKuliah::where('status', 'Aktif')->get();
         $id_prodi = 0;
+        $list_pengajar = [];
+        $pegawai = PegawaiBiodatum::all();
+        $list_pegawai = [];
+        foreach($pegawai as $row){
+            $list_pegawai[$row->id] = $row->nama_lengkap;
+        }
         if($id != 0){
             $id_prodi = $id;
             $prodi = Prodi::find($id);
@@ -791,9 +797,7 @@ class JadwalController extends Controller
             }
 
 
-            $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul', 'pegawai_biodata.nama_lengkap as nama_dosen')
-                    ->Join('pengajars', 'pengajars.id_jadwal', '=', 'jadwals.id')
-                    ->Join('pegawai_biodata', 'pegawai_biodata.id', '=', 'pengajars.id_dsn')
+            $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
                     ->Join('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
                     ->Join('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
                     ->Join('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
@@ -803,6 +807,7 @@ class JadwalController extends Controller
                     ->get();
             $list_pertemuan = [];
             $jumlah_pertemuan = [];
+           
             foreach($jadwal as $row){
                 $cek_pertemuan = Pertemuan::where('id_jadwal',$row->id)->whereNotNull('tgl_pertemuan')->count();
                 if($cek_pertemuan >= 14){
@@ -813,11 +818,17 @@ class JadwalController extends Controller
                     $list_pertemuan[$row->id] = 'btn-danger';
                 }
                 $jumlah_pertemuan[$row->id] = $cek_pertemuan;
+
+                $pengajar = Pengajar::where('id_jadwal',$row->id)->get();
+                $list_pengajar[$row->id] = '';
+                $i = 1;
+                foreach($pengajar as $peng){
+                    $list_pengajar[$jad->id] .= '[' . $i . '] ' . $list_pegawai[$row->id_dsn] . ',<br/>';
+                    $i++;
+                }
             }
         }else{
-            $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul', 'pegawai_biodata.nama_lengkap as nama_dosen')
-                    ->Join('pengajars', 'pengajars.id_jadwal', '=', 'jadwals.id')
-                    ->Join('pegawai_biodata', 'pegawai_biodata.id', '=', 'pengajars.id_dsn')
+            $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
                     ->Join('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
                     ->Join('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
                     ->Join('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
@@ -834,6 +845,14 @@ class JadwalController extends Controller
                     $list_pertemuan[$row->id] = 'btn-danger';
                 }
                 $jumlah_pertemuan[$row->id] = $cek_pertemuan;
+
+                $pengajar = Pengajar::where('id_jadwal',$row->id)->get();
+                $list_pengajar[$row->id] = '';
+                $i = 1;
+                foreach($pengajar as $peng){
+                    $list_pengajar[$row->id] .= '[' . $i . '] ' . $list_pegawai[$peng->id_dsn] . ',<br/>';
+                    $i++;
+                }
             }
         }
         $no = 1;
@@ -876,6 +895,6 @@ class JadwalController extends Controller
         $totalMahasiswa = $angkatan->sum();
         // var_dump($list_pertemuan);
 
-        return view('admin.akademik.jadwal.pertemuan', compact('title', 'jumlah_pertemuan','list_pertemuan','ta','sesi','days','ruang','mk', 'no', 'jadwal','id_prodi','prodi','nama','jumlah_input_krs', 'angkatan', 'totalMahasiswa'));
+        return view('admin.akademik.jadwal.pertemuan', compact('title', 'list_pengajar','jumlah_pertemuan','list_pertemuan','ta','sesi','days','ruang','mk', 'no', 'jadwal','id_prodi','prodi','nama','jumlah_input_krs', 'angkatan', 'totalMahasiswa'));
     }
 }

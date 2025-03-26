@@ -70,7 +70,7 @@
                                                             <td>{{ $no++ }}</td>
                                                             <td>{{ $jad['kode_jadwal'] }}</td>
                                                             <td>{{ $jad['hari'] }}, {{ $jad['nama_sesi'] }}</td>
-                                                            <td>{{ $jad['nama_dosen'] }}</td>
+                                                            <td>{!! $list_pengajar[$jad['id']] !!}</td>
                                                             <td>[{{ $jad['kode_matkul'] }}] {{ $jad['nama_matkul'] }}</td>
                                                             <td>{{ $jad['nama_ruang'] }}</td>
                                                             <td>{{ $jad['tp'] }}</td>
