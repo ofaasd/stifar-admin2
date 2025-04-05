@@ -20,7 +20,7 @@
                     <select name="id_dosen[]" class="form-control">
                         <option value="0">--Pilih Dosen Pengampu</option>
                         @foreach($anggota as $row)
-                            <option value="{{$row->id_pegawai_bio}}" {{($row->id_pegawai_bio == $list_pertemuan[$i]['id_dosen'])?"selected":""}}>{{$row->nama_lengkap}}</option>
+                            <option value="{{$row->id_dsn}}" {{($row->id_dsn == $list_pertemuan[$i]['id_dosen'])?"selected":""}}>{{$list_pegawai[$row->id_dsn]}}</option>
                         @endforeach
                     </select>
                 </td>

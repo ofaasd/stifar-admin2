@@ -750,9 +750,15 @@ class JadwalController extends Controller
     public function getPertemuan(Request $request){
         $id = $request->id;
         $jadwal = Jadwal::where('id',$id)->first();
-        $anggota = anggota_mk::select('anggota_mks.*', 'pegawai_biodata.npp', 'pegawai_biodata.nama_lengkap', 'pegawai_biodata.gelar_belakang')
-                        ->leftJoin('pegawai_biodata', 'anggota_mks.id_pegawai_bio', '=', 'pegawai_biodata.id')
-                        ->where(['anggota_mks.idmk' => $jadwal->id_mk])->get();
+        // $anggota = anggota_mk::select('anggota_mks.*', 'pegawai_biodata.npp', 'pegawai_biodata.nama_lengkap', 'pegawai_biodata.gelar_belakang')
+        //                 ->leftJoin('pegawai_biodata', 'anggota_mks.id_pegawai_bio', '=', 'pegawai_biodata.id')
+        //                 ->where(['anggota_mks.idmk' => $jadwal->id_mk])->get();
+        $anggota = Pengajar::where('id_jadwal',$id)->get();
+        $pegawai = PegawaiBiodatum::all();
+        $list_pegawai = [];
+        foreach($pegawai as $row){
+            $list_pegawai[$row->id] = $row->nama_lengkap;
+        }
 
         $list_pertemuan = [];
         for($i=1; $i<=14; $i++){
@@ -767,7 +773,7 @@ class JadwalController extends Controller
 
         // var_dump($list_pertemuan);
 
-        return view('admin.akademik.jadwal.tablePertemuan',compact('id','jadwal','anggota','pertemuan','list_pertemuan'));
+        return view('admin.akademik.jadwal.tablePertemuan',compact('id','jadwal','list_pegawai','anggota','pertemuan','list_pertemuan'));
     }
 
     public function settingPertemuan(int $id = 0){
@@ -807,7 +813,7 @@ class JadwalController extends Controller
                     ->get();
             $list_pertemuan = [];
             $jumlah_pertemuan = [];
-           
+
             foreach($jadwal as $row){
                 $cek_pertemuan = Pertemuan::where('id_jadwal',$row->id)->whereNotNull('tgl_pertemuan')->count();
                 if($cek_pertemuan >= 14){

@@ -18,6 +18,7 @@ use App\Models\master_nilai;
 use App\Models\TahunAjaran;
 use App\Models\MataKuliah;
 use App\Models\hari;
+use App\Models\Pengajar;
 use App\Models\Waktu as Sesi;
 use App\Models\master_nilai as MasterNilai;
 use Illuminate\Support\Facades\DB;
@@ -398,10 +399,14 @@ class KrmController extends Controller
         $mk = MataKuliah::where('status', 'Aktif')->get();
         $id_prodi = 0;
         $id_dsn = PegawaiBiodatum::where('user_id', Auth::id())->first();
-
-        $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul', 'pegawai_biodata.nama_lengkap as nama_dosen')
+        $list_pengajar = [];
+        $pegawai = PegawaiBiodatum::all();
+        $list_pegawai = [];
+        foreach($pegawai as $row){
+            $list_pegawai[$row->id] = $row->nama_lengkap;
+        }
+        $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
                 ->Join('pengajars', 'pengajars.id_jadwal', '=', 'jadwals.id')
-                ->Join('pegawai_biodata', 'pegawai_biodata.id', '=', 'pengajars.id_dsn')
                 ->Join('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
                 ->Join('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
                 ->Join('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
@@ -418,7 +423,16 @@ class KrmController extends Controller
             }else{
                 $list_pertemuan[$row->id] = 'btn-danger';
             }
+            $pengajar = Pengajar::where('id_jadwal',$row->id)->get();
             $jumlah_pertemuan[$row->id] = $cek_pertemuan;
+            $list_pengajar[$row->id] = '';
+            $i = 1;
+            foreach($pengajar as $peng){
+                //echo $row->id;
+
+                $list_pengajar[$row->id] .= '[' . $i . '] ' . $list_pegawai[$peng->id_dsn] . ',<br/>';
+                $i++;
+            }
         }
         $no = 1;
 
@@ -461,6 +475,6 @@ class KrmController extends Controller
         // var_dump($list_pertemuan);
         $dosen = 1;
 
-        return view('admin.akademik.jadwal.pertemuan', compact('title', 'dosen','jumlah_pertemuan','list_pertemuan','ta','sesi','days','ruang','mk', 'no', 'jadwal','id_prodi','prodi','nama','jumlah_input_krs', 'angkatan', 'totalMahasiswa'));
+        return view('admin.akademik.jadwal.pertemuan', compact('title', 'list_pengajar','dosen','jumlah_pertemuan','list_pertemuan','ta','sesi','days','ruang','mk', 'no', 'jadwal','id_prodi','prodi','nama','jumlah_input_krs', 'angkatan', 'totalMahasiswa'));
     }
 }
