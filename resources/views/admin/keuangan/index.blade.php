@@ -22,6 +22,48 @@
 @section('content')
     <div class="container-fluid">
         <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header bg-primary">
+                        <h6 class="text-white text-bold">Generate Keuangan Mahasiswa</h6>
+                    </div>
+
+                        <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
+                        @if($jumlah_keuangan < $jumlah_mhs)
+                            <div class="card-body">
+                                <small>Data Keuangan Mahasiswa TA {{$ta->kode_ta}} Belum tersedia / Terdapat tambahan mahasiswa baru. klik tombol di bawah untuk generate keuangan mahasiswa</small>
+                            </div>
+                            <div class="card-footer">
+                                <a href="{{URL::to('admin/keuangan/generate_mhs')}}" class="btn btn-warning btn-sm">
+                                    <i class="fa fa-plus"></i>
+                                    Generate keuangan Mahasiswa
+                                </a>
+                            </div>
+                        @else
+                            <div class="card-body ">
+                            <small>Data jumlah Keuangan Mahasiswa sudah sesuai dengan data jumlah mahasiswa</small>
+                            </div>
+                            <div class="card-footer"></div>
+                        @endif
+
+
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header bg-primary">
+                        <h6>Buka Tutup KRS Prodi</h6>
+                    </div>
+                    <div class="card-body">
+                        <small>Klik tombol di bawah ini untuk manage buka tutup KRS pada setiap Program Studi</small>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{{URL::to('admin/keuangan/buka_tutup_prodi')}}" class="btn btn-primary btn-sm">
+                            Buka Tutup KRS (Prodi)
+                        </a>
+                    </div>
+                </div>
+            </div>
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
                 <div class="card">
@@ -29,16 +71,7 @@
                         Keuangan Mahasiswa
                     </div>
                     <div class="card-body">
-                        <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
-                        @if($jumlah_keuangan < $jumlah_mhs)
-                        <div class="alert alert-warning">Data Keuangan Mahasiswa TA {{$ta->kode_ta}} Belum tersedia / Terdapat tambahan mahasiswa baru. klik tombol di bawah untuk generate keuangan mahasiswa</div>
-                        <div class="row">
-                          <a href="{{URL::to('admin/keuangan/generate_mhs')}}" class="btn btn-primary">
-                            <i class="fa fa-plus"></i>
-                            Generate keuangan Mahasiswa
-                          </a>
-                        </row>
-                        @endif
+
                         <div class="table-responsive">
                             <table class="display" id="basic-1">
                                 <thead>

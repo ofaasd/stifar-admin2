@@ -84,6 +84,7 @@ use App\Http\Controllers\admin\akademik\KhsController as adminKhs;
 use App\Http\Controllers\admin\akademik\PengaturanUjianController;
 use App\Http\Controllers\admin\akademik\NilaiSusulanController;
 use App\Http\Controllers\admin\keuangan\VaController;
+use App\Http\Controllers\admin\keuangan\ProdiBukaTutupController;
 use App\Http\Controllers\mahasiswa\UjianController;
 use App\Http\Controllers\mahasiswa\KuesionerMhsController;
 
@@ -208,6 +209,7 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     Route::resource('admin/masterdata/sesi', SesiController::class)->name('index', 'sesi');
     Route::resource('admin/masterdata/kurikulum', KurikulumController::class)->name('index', 'kurikulum');
     Route::resource('admin/masterdata/program-studi', ProdiController::class)->name('index', 'program-studi');
+
     Route::resource('admin/masterdata/kelompok-mk', KelompokMatkulController::class)->name('index', 'kelompok-mk');
     Route::resource('admin/masterdata/matakuliah', MatkulController::class)->name('index', 'matakuliah');
     Route::resource('admin/masterdata/jabatan_struktural', JabatanStrukturalController::class)->name('index', 'jabatan_struktural');
@@ -340,7 +342,9 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
 
 
     Route::resource('admin/keuangan/bank_data_va', VaController::class)->name('index','index_va');
+    Route::resource('admin/keuangan/buka_tutup_prodi', ProdiBukaTutupController::class)->name('index', 'buka_tutup_prodi');
     Route::resource('admin/keuangan', KeuanganController::class)->name('index','keuangan');
+
 
 
     Route::resource('admin/nilai_lama', NilaiLamaController::class)->name('index','nilai_lama');
