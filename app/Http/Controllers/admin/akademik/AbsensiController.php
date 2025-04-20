@@ -12,6 +12,8 @@ use App\Models\MatakuliahKurikulum;
 use App\Models\Jadwal;
 use App\Models\hari;
 use App\Models\MasterRuang;
+use App\Models\PegawaiBiodatum;
+use App\Models\Pengajar;
 use App\Models\Sesi;
 use App\Models\Krs;
 use App\Models\Mahasiswa;
