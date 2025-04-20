@@ -68,7 +68,14 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header pb-0 card-no-border">
-                        Keuangan Mahasiswa
+                        <div class="row">
+                            <div class="col">
+                                Keuangan Mahasiswa
+                            </div>
+                            <div class="col text-end">
+                                <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-original-title="test" data-bs-target="#bulk">Bulk Action</a>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-body">
 
@@ -80,7 +87,9 @@
                                         <th>No.</th>
                                         <th>NIM</th>
                                         <th>Nama Mahasiswa</th>
-                                        <th>Tahun AJaran</th>
+                                        <th>Prodi</th>
+                                        <th>Angkatan</th>
+                                        <th>Status</th>
                                         <th>KRS</th>
                                         <th>UTS</th>
                                         <th>UAS</th>
@@ -147,6 +156,61 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="modal fade" id="bulk" tabindex="-1" role="dialog" aria-labelledby="bulk" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <form action="javascript:void(0)" id="formBulk">
+                                        @csrf
+                                        <input type="hidden" name="id" id="id">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="ModalLabelkarya">Bulk Action</h5>
+                                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+
+                                            <div class="mb-3">
+                                                <label for="judul" class="form-label">Prodi</label>
+                                                <select name="prodi" class="form-control">
+                                                    @foreach($prodi as $row)
+                                                        <option value="{{$row->id}}">{{$row->nama_prodi}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="nama" class="form-label">Tahun Angkatan</label>
+                                                <select name="angkatan" class="form-control">
+                                                @for($i=(date('Y')-1); $i>=(date('Y')-11); $i--)
+                                                    <option value="{{$i}}">{{$i}}</option>
+                                                @endfor
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="nama" class="form-label">Kegiatan</label>
+                                                <select name="kegiatan" class="form-control">
+                                                    <option value="1">KRS</option>
+                                                    <option value="2">UTS</option>
+                                                    <option value="3">UAS</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="nama" class="form-label">Action</label>
+                                                <select name="action" class="form-control">
+                                                    <option value="1">Diijinkan</option>
+                                                    <option value="0">Tidak Diijinkan</option>
+                                                </select>
+                                            </div>
+
+
+
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                                            <button class="btn btn-primary" type="submit" id="btn-save2">Simpan</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -207,7 +271,7 @@
                     },
                     {
                         // Actions
-                        targets: 5,
+                        targets: 7,
                         searchable: false,
                         orderable: false,
                         render: function render(data, type, full, meta) {
@@ -220,7 +284,7 @@
                     },
                     {
                         // Actions
-                        targets: 6,
+                        targets: 8,
                         searchable: false,
                         orderable: false,
                         render: function render(data, type, full, meta) {
@@ -233,7 +297,7 @@
                     },
                     {
                         // Actions
-                        targets: 7,
+                        targets: 9,
                         searchable: false,
                         orderable: false,
                         render: function render(data, type, full, meta) {
@@ -354,6 +418,45 @@
                             confirmButton: 'btn btn-success'
                         }
                         });
+                    }
+                });
+            });
+            $('#formBulk').on('submit',function(e){
+                $("#btn-save2").attr("disabled",true);
+                const myFormData = new FormData(document.getElementById("formBulk"));
+                e.preventDefault();
+                $.ajax({
+                    data: myFormData,
+                    url: ''.concat(baseUrl).concat(page,"/bulk_action"),
+                    type: 'POST',
+                    processData: false,
+                    contentType: false,
+                    success: function success(status) {
+                        dt.draw();
+                        $("#bulk").modal('hide');
+
+                        // sweetalert
+                        swal({
+                        icon: 'success',
+                        title: 'Successfully '.concat(status, '!'),
+                        text: ''.concat(title, ' ').concat(status, ' Successfully.'),
+                        customClass: {
+                            confirmButton: 'btn btn-success'
+                        }
+                        });
+                        $("#btn-save2").attr("disabled",false);
+                    },
+                    error: function error(err) {
+                        offCanvasForm.offcanvas('hide');
+                        swal({
+                        title: 'Duplicate Entry!',
+                        text: title + ' Not Saved !',
+                        icon: 'error',
+                        customClass: {
+                            confirmButton: 'btn btn-success'
+                        }
+                        });
+                        $("#btn-save2").attr("disabled",false);
                     }
                 });
             });

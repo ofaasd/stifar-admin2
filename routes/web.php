@@ -298,8 +298,10 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     Route::post('/admin/masterdata/krs/list-jadwal', [KrsController::class, 'showJadwal']);
 
     Route::get('/admin/keuangan/generate_mhs', [KeuanganController::class, 'generate_mhs']);
+    Route::get('/admin/keuangan/generate_angkatan', [KeuanganController::class, 'generate_angkatan']);
     Route::get('/admin/keuangan/generate_user_mhs', [KeuanganController::class, 'generate_user_mhs']);
-    Route::get('/admin/keuangan/buka_tutup_prodi', [BukaTutupController::class, 'index']);
+    Route::post('/admin/keuangan/bulk_action', [KeuanganController::class, 'bulk_action']);
+    // Route::get('/admin/keuangan/buka_tutup_prodi', [BukaTutupController::class, 'index']);
 
 
     // route mkKurikulum
