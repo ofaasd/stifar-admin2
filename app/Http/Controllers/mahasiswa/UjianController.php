@@ -66,7 +66,7 @@ class UjianController extends Controller
                           ->where('mahasiswa.id', $id)->first();
         $tahun_ajaran = TahunAjaran::where('status','Aktif')->first();
         $ta = $tahun_ajaran->id;
-        $thn_awal = explode('-', $tahun_ajaran->tgl_awal);
+        $thn_awal = substr($tahun_ajaran->kode_ta,0,4);
         $thn_akhir = explode('-', $tahun_ajaran->tgl_akhir);
         $tahun_ajar = $thn_awal[0].'-'.$thn_akhir[0];
         $semester = ['', 'Ganjil', 'Genap', 'Antara'];
