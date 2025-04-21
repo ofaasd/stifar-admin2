@@ -100,7 +100,7 @@
                                                     <option value="1">Verifikasi Diterima</option>
                                                     <option value="2">Verifikasi Ditolak</option>
                                                 </select>
-                                            </div>
+                                            </div>  
                                         </div>
                                         <div class="modal-footer">
                                             <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>

@@ -69,7 +69,7 @@ class UjianController extends Controller
         $thn_awal = explode('-', $tahun_ajaran->tgl_awal);
         $thn_akhir = explode('-', $tahun_ajaran->tgl_akhir);
         $tahun_ajar = $thn_awal[0].'-'.$thn_akhir[0];
-        $semester = ['', 'Ganjil', 'Ganjil', 'Antara'];
+        $semester = ['', 'Ganjil', 'Genap', 'Antara'];
         $smt = substr($tahun_ajaran->kode_ta, 4);
         $krs = Krs::select('krs.*', 'a.hari','a.kode_jadwal', 'a.kel', 'b.nama_matkul', 'b.sks_teori', 'b.sks_praktek', 'c.nama_sesi', 'd.nama_ruang')
                     ->leftJoin('jadwals as a', 'krs.id_jadwal', '=', 'a.id')
