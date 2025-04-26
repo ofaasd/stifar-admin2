@@ -273,12 +273,11 @@
                         // Actions
                         targets: 7,
                         searchable: false,
-                        orderable: false,
                         render: function render(data, type, full, meta) {
                             if(full['krs'] == 1){
-                                return('<i class="fa fa-check"></i>');
+                                return('<i class="fa fa-check text-success"></i>');
                             }else{
-                                return('<i class="fa fa-times"></i>');
+                                return('<i class="fa fa-times text-danger"></i>');
                             }
                         }
                     },
@@ -286,12 +285,11 @@
                         // Actions
                         targets: 8,
                         searchable: false,
-                        orderable: false,
                         render: function render(data, type, full, meta) {
                             if(full['uts'] == 1){
-                                return('<i class="fa fa-check"></i>');
+                                return('<i class="fa fa-check text-success"></i>');
                             }else{
-                                return('<i class="fa fa-times"></i>');
+                                return('<i class="fa fa-times text-danger"></i>');
                             }
                         }
                     },
@@ -299,12 +297,11 @@
                         // Actions
                         targets: 9,
                         searchable: false,
-                        orderable: false,
                         render: function render(data, type, full, meta) {
                             if(full['uas'] == 1){
-                                return('<i class="fa fa-check"></i>');
+                                return('<i class="fa fa-check text-success"></i>');
                             }else{
-                                return('<i class="fa fa-times"></i>');
+                                return('<i class="fa fa-times text-danger"></i>');
                             }
                         }
                     },
