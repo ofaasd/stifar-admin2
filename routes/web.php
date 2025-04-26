@@ -117,7 +117,6 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     Route::post('/dosen/validasi-krs', [DosenController::class, 'valiKrs'] );
     Route::get('/dosen/krm', [KrmController::class, 'index'] );
     Route::get('/dosen/absensi/{id}/input', [KrmController::class, 'daftarMhs'] );
-    Route::get('/dosen/absensi/{id}/{id_pertemuan}/input_new', [KrmController::class, 'daftarMhsNew'] );
     Route::get('/dosen/nilai/{id}/input', [KrmController::class, 'daftarMhsNilai'] );
     Route::get('/dosen/{id}/set-pertemuan', [KrmController::class, 'setPertemuan'] );
     Route::get('/dosen/input/{nim}/absensi/{id_jadwal}', [KrmController::class, 'setAbsensiSatuan'] );
@@ -423,6 +422,8 @@ Route::group(['middleware' => ['auth','role:pegawai|super-admin']], function(){
     Route::post('dosen/simpan-nilai-all', [KrmController::class, 'saveNilaiBatch'] );
     Route::post('dosen/publish-nilai', [KrmController::class, 'publishNilai'] );
     Route::post('dosen/validasi-nilai', [KrmController::class, 'validasiNilai'] );
+    Route::get('/dosen/absensi/{id}/{id_pertemuan}/input_new', [KrmController::class, 'daftarMhsNew'] );
+    Route::get('/dosen/absensi/{id}/{id_pertemuan}/buka_tutup_absen', [KrmController::class, 'bukaTutupAbsen'] );
 
     //Route::resource('admin/kepegawaian/pegawai', PegawaiController::class)->name('index','pegawai');
     Route::post('admin/kepegawaian/pegawai', [PegawaiController::class, 'store'])->name('input_pegawai');

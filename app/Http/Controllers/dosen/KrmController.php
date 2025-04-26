@@ -135,7 +135,7 @@ class KrmController extends Controller
         $pertemuan = Pertemuan::select('pertemuans.*', 'pegawai_biodata.nama_lengkap', 'absensi_models.type')
                               ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'pertemuans.id_dsn')
                               ->leftJoin('absensi_models', 'absensi_models.id_pertemuan', '=', 'pertemuans.id')
-                              ->where('pertemuans.id_jadwal', $id_jadwal)->first();
+                              ->where('pertemuans.id_jadwal', $id_jadwal)->where("pertemuans.id",$pertemuan)->first();
         $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
                         ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
                         ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
@@ -169,9 +169,39 @@ class KrmController extends Controller
                 $absensi[$row->id_mhs] = $row->type;
             }
         }
-
+        $user = Auth::user()->roles->pluck('name');
         $no = 1;
-        return view('dosen.daftar_mhs_new', compact('total_hadir','total_tidak_hadir','total_sakit','total_izin','absensi','title','pertemuan', 'jadwal', 'daftar_mhs', 'no'));
+        if($user == 'admin'){
+            return view('dosen.daftar_mhs_new', compact('total_hadir','total_tidak_hadir','total_sakit','total_izin','absensi','title','pertemuan', 'jadwal', 'daftar_mhs', 'no'));
+        }else{
+            return view('dosen.daftar_mhs_new2', compact('total_hadir','total_tidak_hadir','total_sakit','total_izin','absensi','title','pertemuan', 'jadwal', 'daftar_mhs', 'no'));
+        }
+    }
+    public function bukaTutupAbsen($id, $id_pertemuan){
+        $pertemuan = Pertemuan::where('pertemuans.id_jadwal', $id)->where("pertemuans.id",$id_pertemuan);
+        $kunci = 0;
+        if($pertemuan->first()->kunci_kehadiran == 0){
+            $daftar_mhs = Krs::select('krs.*', 'mhs.nim', 'mhs.nama', 'mhs.foto_mhs')
+                        ->leftJoin('mahasiswa as mhs', 'mhs.id', '=', 'krs.id_mhs')
+                        ->orderBy('nim','asc')
+                        ->where('krs.id_jadwal', $id)->get();
+            foreach($daftar_mhs as $row){
+                $cek = AbsensiModel::where(['id_jadwal' => $id, 'id_pertemuan' => $id_pertemuan, 'id_mhs' => $row->id_mhs]);
+                if($cek->count() == 0){
+                    $new_absensi = new AbsensiModel;
+                    $new_absensi->id_jadwal = $id;
+                    $new_absensi->id_pertemuan = $id_pertemuan;
+                    $new_absensi->id_mhs = $row->id_mhs;
+                    $new_absensi->type = 0;
+                    $new_absensi->save();
+                }
+            }
+            $kunci = 1;
+        }
+
+
+        $pertemuan->update(['kunci_kehadiran'=>$kunci]);
+        return Redirect::back();
     }
     public function saveAbsensiNew(Request $request){
         $id_jadwal = $request->id_jadwal;
@@ -275,6 +305,7 @@ class KrmController extends Controller
         $no = 1;
         return view('dosen.daftar_mhs_nilai', compact('title', 'jadwal', 'daftar_mhs', 'no', 'id', 'kontrak','action','actionvalid'));
     }
+
     public function saveNilai(Request $request){
         $id_jadwal = $request->id_jadwal;
         $id_mhs = $request->id_mhs;
