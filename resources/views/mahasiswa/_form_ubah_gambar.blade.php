@@ -16,6 +16,7 @@
                                 <label class="col-sm-10 col-form-label">Ubah Foto :</label>
                                 <div class="col-sm-12">
                                     <p><input type="file" class="form-control" placeholder="Ubah Gambar" name="foto" required="" ></p>
+                                    <div class="alert alert-warning">Extensi jpg/png/jpeg | Max. file upload 1 MB</div>
                                 </div>
                             </div>
                         </div>
