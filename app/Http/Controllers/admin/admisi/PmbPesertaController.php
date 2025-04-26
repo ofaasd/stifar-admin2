@@ -311,7 +311,6 @@ class PmbPesertaController extends Controller
             $pilihan = PmbGelombang::where('id',$peserta->gelombang)->first()->pilihan;
             $prodi = PmbJalurProdi::select('pmb_jalur_prodi.*','program_studi.nama_prodi')->join('program_studi','program_studi.id','pmb_jalur_prodi.id_program_studi')->where('id_jalur',$peserta->jalur_pendaftaran)->get();
         }
-
         return view('admin.admisi.peserta.edit_gelombang', compact('title','ta','pilihan','prodi','gelombang','jalur','peserta','id','action'));
     }
     public function edit_asal_sekolah(string $id)

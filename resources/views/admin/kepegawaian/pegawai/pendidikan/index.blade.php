@@ -58,6 +58,7 @@
                             <div class="mb-3">
                                 <label for="dokumen" class="form-label">File</label>
                                 <input type="file" name="dokumen" id="dokumen_pendidikan_pendidikan" class="form-control">
+                                <div class="alert alert-warning">Max File upload 10 MB</div>
                                 <div id="dokumen_exist_pendidikan">
 
                                 </div>

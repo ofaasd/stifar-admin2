@@ -22,8 +22,8 @@
                         <a href="{{URL::to('mhs/profile')}}" class="submenu-title">Data diri</a>
                     </li>
                     <li>
-                        <a class="submenu-title" href="#" >
-                             <span>Heregistrasi (Data Pendukung)</span> <label class="badge badge-light-danger">!</label>
+                        <a class="submenu-title" href="{{URL::to('mhs/heregistrasi')}}" >
+                             <span>Heregistrasi (Data Pendukung)</span>
                         </a>
                     </li>
                 </ul>
@@ -34,14 +34,20 @@
                     <li class="submenu-title"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/input_krs')}}" >
                         <span> Input KRS</span></a>
                     </li>
+                    <li class="submenu-title"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/riwayat_krs')}}" >
+                        <span> Riwayat KRS</span></a>
+                    </li>
                     <li class="submenu-title"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/ujian')}}" >
                         <span> Ujian</span></a>
                     </li>
                     <li class="submenu-title"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/khs')}}" >
                         <span> KHS</span></a>
                     </li>
-                    <li class="submenu-title"><a class="sidebar-link sidebar-title" href="#" >
-                        <span> Daftar Nilai</span><label class="badge badge-light-danger">!</label></a>
+                    <li class="submenu-title"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/khs_riwayat')}}" >
+                        <span>Riwayat KHS</span></a>
+                    </li>
+                    <li class="submenu-title"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/daftar_nilai')}}" >
+                        <span> Daftar Nilai</span></a>
                     </li>
                 </ul>
             </li>

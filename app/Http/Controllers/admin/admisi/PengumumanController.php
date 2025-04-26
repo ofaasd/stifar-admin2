@@ -8,6 +8,7 @@ use App\Models\PmbGelombang;
 use App\Models\PmbPesertaOnline;
 use App\Models\PmbJalurProdi;
 use App\Models\Prodi;
+use App\Models\TahunAjaran;
 
 class PengumumanController extends Controller
 {
@@ -16,7 +17,11 @@ class PengumumanController extends Controller
     public function index(Request $request){
         $title = "Surat Pengumuman Peserta";
         $date = date('Y-m-d');
-        $gelombang = PmbGelombang::where('tgl_mulai','<=',$date)->where('tgl_akhir','>=',$date)->get();
+        // $tahun_ajaran = TahunAjaran::where('status','Aktif')->first();
+        // $tahun = (int)substr($tahun_ajaran->kode_ta,0,4);
+        // $tahun_awal = $tahun+1;
+        $tahun_ajaran = PmbGelombang::orderBy('id','desc')->limit(1)->first();
+        $gelombang = PmbGelombang::where('ta_awal',$tahun_ajaran->ta_awal)->get();
         $jumlah_diterima = [];
         $jumlah_pendaftar = [];
         $jumlah_verifikasi = [];

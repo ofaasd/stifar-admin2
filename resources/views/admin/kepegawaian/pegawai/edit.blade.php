@@ -116,6 +116,9 @@
                                 <a class="nav-link" id="v-pills-repository-tab" data-bs-toggle="pill" href="#v-pills-repository" role="tab" aria-controls="v-pills-repository" aria-selected="false">Repository</a>
                                 <a class="nav-link" id="v-pills-pekerjaan-tab" data-bs-toggle="pill" href="#v-pills-pekerjaan" role="tab" aria-controls="v-pills-pekerjaan" aria-selected="false">Pekerjaan</a>
                                 <a class="nav-link" id="v-pills-pendidikan-tab" data-bs-toggle="pill" href="#v-pills-pendidikan" role="tab" aria-controls="v-pills-pendidikan" aria-selected="false">Pendidikan</a>
+                                <a class="nav-link" id="v-pills-penghargaan-tab" data-bs-toggle="pill" href="#v-pills-penghargaan" role="tab" aria-controls="v-pills-penghargaan" aria-selected="false">Penghargaan</a>
+                                <a class="nav-link" id="v-pills-kompetensi-tab" data-bs-toggle="pill" href="#v-pills-kompetensi" role="tab" aria-controls="v-pills-kompetensi" aria-selected="false">Kompetensi</a>
+                                <a class="nav-link" id="v-pills-kegiatan_luar-tab" data-bs-toggle="pill" href="#v-pills-kegiatan_luar" role="tab" aria-controls="v-pills-kegiatan_luar" aria-selected="false">Kegiatan Di Luar</a>
                                 <a class="nav-link" id="v-pills-berkas-tab" data-bs-toggle="pill" href="#v-pills-berkas" role="tab" aria-controls="v-pills-berkas" aria-selected="false">Berkas Pendukung</a>
                             </div>
                           </div>
@@ -171,6 +174,21 @@
                                     <div class="loader-2"></div>
                                 </div>
                               </div>
+                              <div class="tab-pane fade" id="v-pills-penghargaan" role="tabpanel" aria-labelledby="v-pills-penghargaan-tab">
+                                <div class="loader-box">
+                                    <div class="loader-2"></div>
+                                </div>
+                              </div>
+                              <div class="tab-pane fade" id="v-pills-kompetensi" role="tabpanel" aria-labelledby="v-pills-kompetensi-tab">
+                                <div class="loader-box">
+                                    <div class="loader-2"></div>
+                                </div>
+                              </div>
+                              <div class="tab-pane fade" id="v-pills-kegiatan_luar" role="tabpanel" aria-labelledby="v-pills-kegiatan_luar-tab">
+                                <div class="loader-box">
+                                    <div class="loader-2"></div>
+                                </div>
+                              </div>
                               <div class="tab-pane fade" id="v-pills-berkas" role="tabpanel" aria-labelledby="v-pills-berkas-tab">
                                 <div class="loader-box">
                                     <div class="loader-2"></div>
@@ -203,6 +221,9 @@
 @include('admin.kepegawaian.pegawai.repository._script')
 @include('admin.kepegawaian.pegawai.pekerjaan._script')
 @include('admin.kepegawaian.pegawai.pendidikan._script')
+@include('admin.kepegawaian.pegawai.penghargaan._script')
+@include('admin.kepegawaian.pegawai.kompetensi._script')
+@include('admin.kepegawaian.pegawai.kegiatan_luar._script')
 @include('admin.kepegawaian.pegawai.berkas._script')
 
 

@@ -14,6 +14,7 @@ class TahunAjaran extends Model
         'tgl_akhir',
         'status',
         'krs',
-        'keterangan'
+        'keterangan',
+        'kuesioner',
     ];
 }

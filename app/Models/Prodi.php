@@ -15,6 +15,7 @@ class Prodi extends Model
         'jenjang',
         'nama_prodi',
         'tgl_pendirian',
-        'no_sk_pendirian'
+        'no_sk_pendirian',
+        'is_krs',
     ];
 }

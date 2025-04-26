@@ -24,6 +24,7 @@ class master_nilai extends Model
         'publish_uas', 
         'validasi_tugas', 
         'validasi_uts', 
+        'nim',
         'validasi_uas'
     ];
 }

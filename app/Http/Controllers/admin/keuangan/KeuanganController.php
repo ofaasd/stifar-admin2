@@ -10,13 +10,14 @@ use App\Models\MasterKeuanganMh;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\ModelHasRole;
+use App\Models\Prodi;
 
 class KeuanganController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public $indexed = ['', 'id', 'nim', 'nama', 'ta', 'krs','uts','uas'];
+    public $indexed = ['', 'id', 'nim', 'nama', 'prodi','angkatan', 'status', 'krs','uts','uas'];
     public function index(Request $request)
     {
         //
@@ -30,17 +31,20 @@ class KeuanganController extends Controller
             $jumlah_mhs = count($mhs);
             $title =  "keuangan";
             $indexed = $this->indexed;
-            return view('admin.keuangan.index', compact('indexed','title','title2','ta','jumlah_keuangan','jumlah_mhs'));
+            $prodi = Prodi::all();
+            return view('admin.keuangan.index', compact('prodi','indexed','title','title2','ta','jumlah_keuangan','jumlah_mhs'));
 
         }else{
             $columns = [
                 1 => 'id',
                 2 => 'nim',
                 3 => 'nama',
-                4 => 'ta',
-                5 => 'krs',
-                6 => 'uts',
-                7 => 'uas',
+                4 => 'prodi',
+                5 => 'angkatan',
+                6 => 'status',
+                7 => 'krs',
+                8 => 'uts',
+                9 => 'uas',
             ];
 
             $search = [];
@@ -56,9 +60,10 @@ class KeuanganController extends Controller
 
 
             if (empty($request->input('search.value'))) {
-                $keuangan = MasterKeuanganMh::select('master_keuangan_mhs.*','mahasiswa.nim','mahasiswa.nama','tahun_ajarans.kode_ta as ta')
+                $keuangan = MasterKeuanganMh::select('master_keuangan_mhs.*','program_studi.nama_prodi','mahasiswa.nim','mahasiswa.nama','mahasiswa.angkatan','mahasiswa.status','tahun_ajarans.kode_ta as ta')
                     ->join('mahasiswa', 'mahasiswa.id', '=', 'master_keuangan_mhs.id_mahasiswa')
                     ->join('tahun_ajarans', 'tahun_ajarans.id', '=', 'master_keuangan_mhs.id_tahun_ajaran')
+                    ->join('program_studi','program_studi.id','=','mahasiswa.id_program_studi')
                     ->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
@@ -66,23 +71,27 @@ class KeuanganController extends Controller
             } else {
                 $search = $request->input('search.value');
 
-                $keuangan = MasterKeuanganMh::select('master_keuangan_mhs.*','mahasiswa.nim','mahasiswa.nama','tahun_ajarans.kode_ta as ta')
+                $keuangan = MasterKeuanganMh::select('master_keuangan_mhs.*','program_studi.nama_prodi','mahasiswa.nim','mahasiswa.nama','mahasiswa.angkatan','mahasiswa.status','tahun_ajarans.kode_ta as ta')
                     ->join('mahasiswa', 'mahasiswa.id', '=', 'master_keuangan_mhs.id_mahasiswa')
                     ->join('tahun_ajarans', 'tahun_ajarans.id', '=', 'master_keuangan_mhs.id_tahun_ajaran')
+                    ->join('program_studi','program_studi.id','=','mahasiswa.id_program_studi')
                     ->where('mahasiswa.nim', 'LIKE', "%{$search}%")
                     ->orWhere('mahasiswa.nama', 'LIKE', "%{$search}%")
                     ->orWhere('tahun_ajarans.kode_ta', 'LIKE', "%{$search}%")
+                    ->orWhere('program_studi.nama_prodi', 'LIKE', "%{$search}%")
                     ->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
                     ->get();
 
-                $totalFiltered = MasterKeuanganMh::select('master_keuangan_mhs.*','mahasiswa.nim','mahasiswa.nama','tahun_ajarans.kode_ta')
+                $totalFiltered = MasterKeuanganMh::select('master_keuangan_mhs.*','program_studi.nama_prodi','mahasiswa.nim','mahasiswa.nama','mahasiswa.angkatan','mahasiswa.status','tahun_ajarans.kode_ta as ta')
                 ->join('mahasiswa', 'mahasiswa.id', '=', 'master_keuangan_mhs.id_mahasiswa')
                 ->join('tahun_ajarans', 'tahun_ajarans.id', '=', 'master_keuangan_mhs.id_tahun_ajaran')
+                ->join('program_studi','program_studi.id','=','mahasiswa.id_program_studi')
                 ->where('mahasiswa.nim', 'LIKE', "%{$search}%")
                 ->orWhere('mahasiswa.nama', 'LIKE', "%{$search}%")
                 ->orWhere('tahun_ajarans.kode_ta', 'LIKE', "%{$search}%")
+                ->orWhere('program_studi.nama_prodi', 'LIKE', "%{$search}%")
                 ->count();
             }
 
@@ -91,17 +100,26 @@ class KeuanganController extends Controller
             if (!empty($keuangan)) {
             // providing a dummy id instead of database ids
                 $ids = $start;
-
+                $status = [
+                    1 => 'Aktif',
+                    'Cuti',
+                    'Keluar',
+                    'Lulus',
+                    'Meninggal',
+                    'Do'
+                ];
                 foreach ($keuangan as $row) {
                     $nestedData['id'] = $row->id;
                     $nestedData['fake_id'] = ++$ids;
                     $nestedData['nim'] = $row->nim;
                     $nestedData['nama'] = $row->nama;
-                    $nestedData['ta'] = $row->ta;
+                    $nestedData['angkatan'] = $row->angkatan;
+                    $nestedData['status'] = $status[$row->status];
+                    $nestedData['prodi'] = $row->nama_prodi;
                     $nestedData['krs'] = $row->krs;
                     $nestedData['uts'] = $row->uts;
                     $nestedData['uas'] = $row->uas;
-                    $nestedData['status'] = $row->status;
+                    // $nestedData['status'] = $row->status;
                     $data[] = $nestedData;
                 }
             }
@@ -137,6 +155,30 @@ class KeuanganController extends Controller
         }
 
     }
+    public function bulk_action(Request $request){
+        $prodi = $request->prodi;
+        $angkatan = $request->angkatan;
+        $kegiatan = $request->kegiatan;
+        $action = $request->action;
+
+        $mahasiswa = Mahasiswa::where('id_program_studi',$prodi)->where('angkatan',$angkatan)->get();
+        foreach($mahasiswa as $row){
+            if($kegiatan == 1){
+                $u_mahasiswa = MasterKeuanganMh::where('id_mahasiswa',$row->id)->update([
+                    'krs' => $action,
+                ]);
+            }else if($kegiatan == 2){
+                $u_mahasiswa = MasterKeuanganMh::where('id_mahasiswa',$row->id)->update([
+                    'uts' => $action,
+                ]);
+            }else if($kegiatan == 3){
+                $u_mahasiswa = MasterKeuanganMh::where('id_mahasiswa',$row->id)->update([
+                    'uas' => $action,
+                ]);
+            }
+        }
+        return response()->json('Updated');
+    }
     public function generate_mhs(){
         $ta = TahunAjaran::where('status','Aktif')->first();
         //last mhs
@@ -156,6 +198,27 @@ class KeuanganController extends Controller
             ]);
         }
         return back();
+    }
+    public function generate_angkatan(){
+        $mhs = Mahasiswa::whereNull("angkatan")->get();
+        foreach($mhs as $row){
+            echo $row->nim;
+            echo "<br />";
+            echo "Angkatan : " . substr($row->nim,3,2);
+            echo "<br/>";
+            echo "<br/>";
+            $new_mhs = Mahasiswa::find($row->id);
+            $new_mhs->angkatan = "20" . substr($row->nim,3,2);
+            $new_mhs->save();
+            // MasterKeuanganMh::create([
+            //     'id_mahasiswa' => $row->id,
+            //     'id_tahun_ajaran' => $ta->id,
+            //     'krs' => 1,
+            //     'uts' => 1,
+            //     'uas' => 1,
+            // ]);
+        }
+        //return back();
     }
     public function generate_user_mhs(){
 

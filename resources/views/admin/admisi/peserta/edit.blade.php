@@ -66,7 +66,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="mb-2">
-                                            <label for="jk">Jenis Kelamin </label>
+                                            <label for="jk">Jenis Kelamin {{$peserta->jk}}</label>
                                             <select name="jk" class="form-control" required="" id="jk">
                                                 <option selected="" value="{{$peserta->jk}}">@if($peserta->jk == 1) Laki - Laki @else Perempuan @endif</option>
                                                 <option value="1">Laki - Laki</option>

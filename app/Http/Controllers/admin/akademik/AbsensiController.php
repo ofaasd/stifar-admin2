@@ -12,6 +12,8 @@ use App\Models\MatakuliahKurikulum;
 use App\Models\Jadwal;
 use App\Models\hari;
 use App\Models\MasterRuang;
+use App\Models\PegawaiBiodatum;
+use App\Models\Pengajar;
 use App\Models\Sesi;
 use App\Models\Krs;
 use App\Models\Mahasiswa;
@@ -41,28 +43,40 @@ class AbsensiController extends Controller
             }
 
 
-            $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul', 'pegawai_biodata.nama_lengkap as nama_dosen')
-                    ->leftJoin('pengajars', 'pengajars.id_jadwal', '=', 'jadwals.id')
-                    ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'pengajars.id_dsn')
+            $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
                     ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
                     ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
                     ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
                     ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
                     ->whereIn('id_mk', $list_mk)
+                    ->where('jadwals.id_tahun',$id_tahun)
                     ->get();
 
         }else{
-            $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul', 'pegawai_biodata.nama_lengkap as nama_dosen')
-                    ->leftJoin('pengajars', 'pengajars.id_jadwal', '=', 'jadwals.id')
-                    ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'pengajars.id_dsn')
+            $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
                     ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
                     ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
                     ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
                     ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
+                    ->where('jadwals.id_tahun',$id_tahun)
                     ->get();
         }
         $no = 1;
-
+        $pegawai = PegawaiBiodatum::all();
+        $list_pegawai = [];
+        foreach($pegawai as $row){
+            $list_pegawai[$row->id] = $row->nama_lengkap;
+        }
+        $list_pengajar = [];
+        foreach($jadwal as $jad){
+            $pengajar = Pengajar::where('id_jadwal',$jad->id)->get();
+            $list_pengajar[$jad->id] = '';
+            $i = 1;
+            foreach($pengajar as $peng){
+                $list_pengajar[$jad->id] .= '[' . $i . '] ' . $list_pegawai[$peng->id_dsn] . ',<br/>';
+                $i++;
+            }
+        }
         $prodi = Prodi::all();
 
         $jumlah_input_krs = [];
@@ -95,6 +109,6 @@ class AbsensiController extends Controller
         $totalMahasiswa = $angkatan->sum();
         // var_dump($list_pertemuan);
 
-        return view('admin.akademik.absensi.index', compact('title','no', 'jadwal','id_prodi','prodi','nama','jumlah_input_krs', 'angkatan', 'totalMahasiswa'));
+        return view('admin.akademik.absensi.index', compact('title','no','list_pengajar', 'jadwal','id_prodi','prodi','nama','jumlah_input_krs', 'angkatan', 'totalMahasiswa'));
     }
 }

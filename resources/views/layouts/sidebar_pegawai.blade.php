@@ -36,8 +36,18 @@
                         </a>
                     </li>
                     <li>
-                        <a class="submenu-title" href="#" >
-                             Input Nilai <label class="badge badge-light-danger">!</label>
+                        <a class="submenu-title" href="{{URL::to('dosen/krm_riwayat')}}" >
+                            Riwayat KRM
+                        </a>
+                    </li>
+                    <li>
+                        <a class="submenu-title" href="{{URL::to('dosen/setting-pertemuan')}}" >
+                            Setting Pertemuan
+                        </a>
+                    </li>
+                    <li>
+                        <a class="submenu-title" href="{{URL::to('dosen/input_nilai')}}" >
+                             Input Nilai
                         </a>
                     </li>
                     <li>

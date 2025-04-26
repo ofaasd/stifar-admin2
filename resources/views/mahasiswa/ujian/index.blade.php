@@ -41,7 +41,7 @@
                             <div class="mt-4">
                                 <h3>Jadwal Ujian UTS : </h3>
                                 <a href="{{ url('mhs/ujian/cetak_uts') }}" class="btn btn-primary btn-sm m-4" style="float: right;"><i class="fa fa-download"></i> Download Kartu Ujian UTS</a>
-                                
+
                                 <div class="mt-2"></div>
                                 <table class="table" id="tablekrs">
                                     <thead>
@@ -53,7 +53,7 @@
                                         <!-- <td>SKS</td> -->
                                         <td>Hari, Waktu (UTS)</td>
                                         <td>Ruang (UTS)</td>
-                                        
+
                                         <td>Izin Dosen Pengampu</td>
                                     </thead>
                                     <tbody>
@@ -70,11 +70,11 @@
                                                 <!-- <td>{{ $row['sks_teori'] }}T/ {{ $row['sks_praktek'] }}P</td> -->
                                                 <td>{{ (!empty($row['tanggal_uts']))?date('d-m-Y',strtotime($row['tanggal_uts'])) : '' }}, {{ $row['jam_mulai_uts'] ?? '' }} - {{ $row['jam_selesai_uts'] ?? '' }}</td>
                                                 <td>{{ $list_ruang[$row['id_ruang_uts'] ?? 0] }}</td>
-                                                
+
                                                 <td>{!!($row->is_uts == 0)?'<p class="btn btn-secondary btn-sm" style="font-size:8pt;">Tidak Diizinkan</p>':'<p class="btn btn-success btn-sm" style="font-size:8pt;">Sudah Diizinkan</p>'!!}</td>
-                                                
+
                                             </tr>
-                                            
+
                                         @endforeach
                                     </tbody>
                                 </table>
@@ -82,12 +82,12 @@
                             @endif
 
                             @if($permission->uas == 0 )
-                                <div class="alert alert-danger">Anda belum diizinkan untuk melihat dan mencetak kartu ujian UTS harap menghubungi admin sistem / BAAK</div>
+                                <div class="alert alert-danger">Anda belum diizinkan untuk melihat dan mencetak kartu ujian UAS harap menghubungi admin sistem / BAAK</div>
                             @else
                             <div class="mt-4">
                                 <h3>Jadwal Ujian UAS : </h3>
-                                
-                                <a href="#" class="btn btn-info btn-sm m-4" style="float: right;"><i class="fa fa-download"></i> Download Kartu Ujian UAS</a>
+
+                                <a href="{{ url('mhs/ujian/cetak_uas') }}" class="btn btn-info btn-sm m-4" style="float: right;"><i class="fa fa-download"></i> Download Kartu Ujian UAS</a>
                                 <div class="mt-2"></div>
                                 <table class="table" id="tablekrs">
                                     <thead>
@@ -99,7 +99,7 @@
                                         <!-- <td>SKS</td> -->
                                         <td>Hari, Waktu (UAS)</td>
                                         <td>Ruang (UAS)</td>
-                                        
+
                                         <td>Izin Dosen Pengampu</td>
                                     </thead>
                                     <tbody>
@@ -119,7 +119,7 @@
                                                 <td>{{ $list_ruang[$row['id_ruang_uas'] ?? 0] }}</td>
                                                 <td>{!!($row->is_uas == 0)?'<p class="btn btn-secondary btn-sm" style="font-size:8pt;">Tidak Diizinkan</p>':'<p class="btn btn-success btn-sm" style="font-size:8pt;">Sudah Diizinkan</p>'!!}</td>
                                             </tr>
-                                            
+
                                         @endforeach
                                     </tbody>
                                 </table>

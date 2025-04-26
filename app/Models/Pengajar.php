@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Pengajar
- * 
+ *
  * @property int $id
  * @property int $id_jadwal
  * @property int $id_dsn

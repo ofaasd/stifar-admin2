@@ -26,8 +26,77 @@ class MatkulController extends Controller
 
     public function simpanMK(Request $request)
     {
-        $mk = MataKuliah::create(
-            [
+        $filename = '';
+        if ($request->file('rps') != null) {
+            $file = $request->file('rps');
+            $filename = date('YmdHi') . $file->getClientOriginalName();
+            $tujuan_upload = 'assets/file/rps';
+            $file->move($tujuan_upload,$filename);
+        }
+        if(!empty($filename)){
+            $mk = MataKuliah::create(
+                [
+                    'kode_matkul' => $request->kode_matkul,
+                    'nama_matkul' => $request->nama_matkul,
+                    'nama_matkul_eng' => $request->nama_inggris,
+                    'kel_mk' => $request->kelompok,
+                    'semester' => $request->semester,
+                    'sks_teori' => $request->sks_teori,
+                    'sks_praktek' => $request->sks_praktek,
+                    'status_mk' => $request->status_mk,
+                    'rumpun' => $request->rumpun,
+                    'rps' => $filename,
+                    'rps_log' => date('Y-m-d H:i:s'),
+                    'status' => $request->status
+                ]
+            );
+        }else{
+            $mk = MataKuliah::create(
+                [
+                    'kode_matkul' => $request->kode_matkul,
+                    'nama_matkul' => $request->nama_matkul,
+                    'nama_matkul_eng' => $request->nama_inggris,
+                    'kel_mk' => $request->kelompok,
+                    'semester' => $request->semester,
+                    'sks_teori' => $request->sks_teori,
+                    'sks_praktek' => $request->sks_praktek,
+                    'status_mk' => $request->status_mk,
+                    'rumpun' => $request->rumpun,
+                    'status' => $request->status
+                ]
+            );
+        }   
+        if ($mk) {
+            return json_encode(['status' => 'ok', 'kode' => 200]);
+        } else {
+            return json_encode(['status' => 'fail', 'kode' => 201]);
+        }
+    }
+    public function updateMK(Request $request){
+        $filename = '';
+        if ($request->file('rps') != null) {
+            $file = $request->file('rps');
+            $filename = date('YmdHi') . $file->getClientOriginalName();
+            $tujuan_upload = 'assets/file/rps';
+            $file->move($tujuan_upload,$filename);
+        }
+        if(!empty($filename)){
+            $mk = MataKuliah::where('id', $request->id)->update([
+                'kode_matkul' => $request->kode_matkul,
+                'nama_matkul' => $request->nama_matkul,
+                'nama_matkul_eng' => $request->nama_inggris,
+                'kel_mk' => $request->kelompok,
+                'semester' => $request->semester,
+                'sks_teori' => $request->sks_teori,
+                'sks_praktek' => $request->sks_praktek,
+                'status_mk' => $request->status_mk,
+                'rumpun' => $request->rumpun,
+                'rps' => $filename,
+                'rps_log' => date('Y-m-d H:i:s'),
+                'status' => $request->status
+            ]);
+        }else{
+            $mk = MataKuliah::where('id', $request->id)->update([
                 'kode_matkul' => $request->kode_matkul,
                 'nama_matkul' => $request->nama_matkul,
                 'nama_matkul_eng' => $request->nama_inggris,
@@ -38,27 +107,8 @@ class MatkulController extends Controller
                 'status_mk' => $request->status_mk,
                 'rumpun' => $request->rumpun,
                 'status' => $request->status
-            ]
-        );
-        if ($mk) {
-            return json_encode(['status' => 'ok', 'kode' => 200]);
-        } else {
-            return json_encode(['status' => 'fail', 'kode' => 201]);
+            ]);
         }
-    }
-    public function updateMK(Request $request){
-        $mk = MataKuliah::where('id', $request->id)->update([
-            'kode_matkul' => $request->kode_matkul,
-            'nama_matkul' => $request->nama_matkul,
-            'nama_matkul_eng' => $request->nama_inggris,
-            'kel_mk' => $request->kelompok,
-            'semester' => $request->semester,
-            'sks_teori' => $request->sks_teori,
-            'sks_praktek' => $request->sks_praktek,
-            'status_mk' => $request->status_mk,
-            'rumpun' => $request->rumpun,
-            'status' => $request->status
-        ]);
         if ($mk) {
             return json_encode(['status' => 'ok', 'kode' => 200]);
         } else {

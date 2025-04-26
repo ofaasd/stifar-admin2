@@ -18,6 +18,7 @@
                             <div class="mb-3">
                                 <label for="ktp" class="form-label">KTP</label>
                                 <input type="file" name="ktp" id="ktp_berkas" class="form-control">
+                                <div class="alert alert-warning">Max File upload 10 MB</div>
                                 <div id="ktp_exist">
 
                                 </div>
@@ -25,6 +26,7 @@
                             <div class="mb-3">
                                 <label for="kk" class="form-label">KK</label>
                                 <input type="file" name="kk" id="kk_berkas" class="form-control">
+                                <div class="alert alert-warning">Max File upload 10 MB</div>
                                 <div id="kk_exist">
 
                                 </div>

@@ -38,7 +38,7 @@
                         <ul class="nav-sub-childmenu submenu-content">
                             <li><a href="{{URL::to('admin/masterdata/program-studi')}}">Daftar Prodi</a></li>
                             <li><a href="{{URL::to('admin/masterdata/prodi/atribut/1')}}">Atribut Prodi</a></li>
-                            <li><a href="#">Akreditasi</a></li>
+                            <li><a href="{{URL::to('admin/masterdata/prodi/akreditasi')}}">Akreditasi</a></li>
                             <li><a href="{{URL::to('admin/masterdata/prodi/renstra/1')}}">Renstra</a></li>
                         </ul>
                     </li>
@@ -48,7 +48,7 @@
                     <li><a href="{{URL::to('admin/masterdata/user')}}">User Manajemen</a></li>
                     {{-- <li><a href="{{ route('ruang/')}}">Ruang</a></li> --}}
                     {{-- <li><a href="{{URL::to('admin/masterdata/sesi')}}">Sesi</a></li> --}}
-                    <li><a href="{{URL::to('admin/masterdata/asal-sekolah')}}">Sekolah</a></li>
+                    <li><a href="{{URL::to('admin/masterdata/sekolah')}}">Sekolah</a></li>
                     <li><a href="{{URL::to('admin/masterdata/waktu')}}">Waktu</a></li>
                     {{-- <li><a href="{{URL::to('admin/masterdata/rumpun')}}">Rumpun</a></li> --}}
                     {{-- <li><a href="{{URL::to('admin/masterdata/fakultas')}}">Fakultas</a></li> --}}
@@ -97,7 +97,7 @@
                     <li><a href="{{URL::to('admin/admisi/verifikasi/pembayaran')}}">Verifikasi Pembayaran</a></li>
                     <li><a href="{{URL::to('admin/admisi/pengumuman')}}">Pengumuman Peserta</a></li> {{-- Butuh format surat pengumuman resmi dari pihak kampus --}}
                     <li><a href="#">KTM (s) <label class="badge badge-light-danger">!</label></a></li>
-                    <li><a href="#">Statistik <label class="badge badge-light-danger">!</label></a></li>
+                    <li><a href="{{URL::to('admin/admisi/statistik')}}">Statistik</a></li>
                     <li><a href="#">Verifikasi Pembayaran Daftar Ulang <label class="badge badge-light-danger">!</label></a></li>
                     <li><a href="#">History PMB <label class="badge badge-light-danger">!</label></a></li>
                     {{-- <li><a href="#">Berita Pendaftaran</a></li> --}}
@@ -113,7 +113,7 @@
                      <li><a href="{{URL::to('admin/masterdata/jadwal')}}">Jadwal</a></li>
                      {{-- <li><a href="#">Plot Jadwal Ajar</a></li> --}}
                      <li><a href="{{URL::to('admin/masterdata/jadwal-harian')}}">Kontrol Jadwal</a></li>
-                     <li><a href="{{URL::to('admin/akademik/setting-pertemuan')}}">Setting Pertemuan</a></li>
+
                      <li>
                         <a class="submenu-title" href="#">
                             <span>KRS</span>  {{--  Ada menu untuk toggle krs sedang dibuka atau ditutup--}}
@@ -129,7 +129,8 @@
                             <span>Presensi</span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
-                            <li><a href="{{Url::to('admin/akademik/list-absensi')}}">Input Presensi</a></li>
+                            <li><a href="{{URL::to('admin/akademik/setting-pertemuan')}}">Setting Pertemuan & Presensi</a></li>
+                            {{-- <li><a href="{{Url::to('admin/akademik/list-absensi')}}">Input Presensi</a></li> --}}
                             <li><a href="#">Ganti Kuliah - Pengganti <label class="badge badge-light-danger">!</label></a></li>
 
                         </ul>
@@ -148,10 +149,8 @@
                     </li>
                      <li><a href="#">Semester Antara <label class="badge badge-light-danger">!</label></a></li>
                      <li><a href="#">Remidial <label class="badge badge-light-danger">!</label></a></li>
-                     <li><a href="#">KHS <label class="badge badge-light-danger">!</label></a></li>
-
-                     <li><a href="#">Perubahan Status Akademik <label class="badge badge-light-danger">!</label></a></li>
-
+                     <li><a href="{{Url::to('admin/akademik/khs')}}">KHS</a></li>
+                     <li><a href="{{Url::to('admin/akademik/kuesioner')}}">Kuesioner Mahasiswa</a></li>
                      <li><a href="{{Url::to('admin/akademik/perwalian')}}">Perwalian</a></li>
 
 

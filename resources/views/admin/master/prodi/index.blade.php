@@ -70,6 +70,30 @@
                                                 <label for="no_sk_pendirian" class="form-label">No SK Pendirian (SK Akreditasi)</label>
                                                 <input type="text" name="no_sk_pendirian" id="no_sk_pendirian" class="form-control">
                                             </div>
+                                            <div class="media mb-3">
+                                                <label class="col-form-label m-r-10">KRS</label>
+                                                <div class="media-body text-start icon-state">
+                                                    <label class="switch">
+                                                    <input type="checkbox" checked="" name="is_krs" id="is_krs"><span class="switch-state"></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            {{-- <div class="media mb-3">
+                                                <label class="col-form-label m-r-10">UTS</label>
+                                                <div class="media-body text-end icon-state">
+                                                    <label class="switch">
+                                                    <input type="checkbox" checked=""><span class="switch-state"></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="media mb-3">
+                                                <label class="col-form-label m-r-10">UAS</label>
+                                                <div class="media-body text-end icon-state">
+                                                    <label class="switch">
+                                                    <input type="checkbox" checked=""><span class="switch-state"></span>
+                                                    </label>
+                                                </div>
+                                            </div> --}}
                                         </div>
                                         <div class="modal-footer">
                                             <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
@@ -209,17 +233,33 @@
                 $.get(''.concat(baseUrl).concat(page, '/').concat(id, '/edit'), function (data) {
                 Object.keys(data).forEach(key => {
                     //console.log(key);
-                    $('#' + key)
-                        .val(data[key])
-                        .trigger('change');
+                    if(key == 'is_krs'){
+                        if(data[key] == 1){
+                            $("#is_krs").prop("checked",true)
+                        }else{
+                            $("#is_krs").prop("checked",false)
+                        }
+                    }else{
+                        $('#' + key)
+                            .val(data[key])
+                            .trigger('change');
+                    }
                 });
                 });
             });
             //save record
             $('#formAdd').on('submit',function(e){
                 e.preventDefault();
+                values = jQuery("#formAdd").serializeArray();
+
+                values = values.concat(
+                jQuery('#formAdd input[type=checkbox]:not(:checked)').map(
+                    function() {
+                        return {"name": this.name, "value": "off"}
+                    }).get()
+                );
                 $.ajax({
-                    data: $('#formAdd').serialize(),
+                    data: values,
                     url: ''.concat(baseUrl).concat(page),
                     type: 'POST',
                     success: function success(status) {
