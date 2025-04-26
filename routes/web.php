@@ -117,11 +117,13 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     Route::post('/dosen/validasi-krs', [DosenController::class, 'valiKrs'] );
     Route::get('/dosen/krm', [KrmController::class, 'index'] );
     Route::get('/dosen/absensi/{id}/input', [KrmController::class, 'daftarMhs'] );
+    Route::get('/dosen/absensi/{id}/{id_pertemuan}/input_new', [KrmController::class, 'daftarMhsNew'] );
     Route::get('/dosen/nilai/{id}/input', [KrmController::class, 'daftarMhsNilai'] );
     Route::get('/dosen/{id}/set-pertemuan', [KrmController::class, 'setPertemuan'] );
     Route::get('/dosen/input/{nim}/absensi/{id_jadwal}', [KrmController::class, 'setAbsensiSatuan'] );
     Route::post('/dosen/simpan-absensi-satuan', [KrmController::class, 'saveAbsensiSatuan'] );
     Route::post('/dosen/simpan-kontrak', [KrmController::class, 'saveKontrak'] );
+    Route::post('/dosen/absensi/save_absensi_new', [KrmController::class, 'saveAbsensiNew'] );
 
     //Route::middleware('auth')->group(function(){
     Route::get('/dashboard',[DashboardController::class, 'index'] )->name('dashboard');

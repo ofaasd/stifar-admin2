@@ -8,6 +8,7 @@
                 <th>Pertemuan</th>
                 <th>Tanggal Pertemuan</th>
                 <th>Dosen Pengampu</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -23,6 +24,11 @@
                             <option value="{{$row->id_dsn}}" {{($row->id_dsn == $list_pertemuan[$i]['id_dosen'])?"selected":""}}>{{$list_pegawai[$row->id_dsn]}}</option>
                         @endforeach
                     </select>
+                </td>
+                <td>
+                    @if($list_pertemuan[$i]['id_dosen'] != 0)
+                        <a href="{{url('dosen/absensi/' . $jadwal->id .'/'. $list_pertemuan[$i]['id'] .'/input_new')}}" class="btn btn-primary btn-sm">Input Absensi</a>
+                    @endif
                 </td>
             </tr>
             @endfor

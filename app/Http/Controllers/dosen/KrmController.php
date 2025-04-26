@@ -22,6 +22,7 @@ use App\Models\Pengajar;
 use App\Models\Waktu as Sesi;
 use App\Models\master_nilai as MasterNilai;
 use Illuminate\Support\Facades\DB;
+use Redirect;
 
 class KrmController extends Controller
 {
@@ -125,6 +126,73 @@ class KrmController extends Controller
         }
         $no = 1;
         return view('dosen.input_absen_satuan', compact('title', 'pertemuan', 'jadwal', 'mhs', 'no', 'prodi'));
+    }
+    public function daftarMhsNew($id,$id_pertemuan){
+        $id_jadwal = $id;
+        $pertemuan = $id_pertemuan;
+        $title = "Input Absensi";
+        $absensi = [];
+        $pertemuan = Pertemuan::select('pertemuans.*', 'pegawai_biodata.nama_lengkap', 'absensi_models.type')
+                              ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'pertemuans.id_dsn')
+                              ->leftJoin('absensi_models', 'absensi_models.id_pertemuan', '=', 'pertemuans.id')
+                              ->where('pertemuans.id_jadwal', $id_jadwal)->first();
+        $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
+                        ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
+                        ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
+                        ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
+                        ->leftJoin('mata_kuliahs', 'mata_kuliahs.id', '=', 'jadwals.id_mk')
+                        ->where([ 'jadwals.id' => $id, 'jadwals.status' => 'Aktif'])->first();
+
+        $daftar_mhs = Krs::select('krs.*', 'mhs.nim', 'mhs.nama', 'mhs.foto_mhs')
+                        ->leftJoin('mahasiswa as mhs', 'mhs.id', '=', 'krs.id_mhs')
+                        ->orderBy('nim','asc')
+                        ->where('krs.id_jadwal', $id)->get();
+        foreach($daftar_mhs as $daftar){
+            $absensi[$daftar->id_mhs] = 1;
+        }
+        $total_hadir = 0;
+        $total_tidak_hadir = 0;
+        $total_sakit = 0;
+        $total_izin = 0;
+        $absensi_model = AbsensiModel::where(['id_jadwal' => $id_jadwal, 'id_pertemuan' => $id_pertemuan]);
+        if($absensi_model->count() > 0){
+            foreach($absensi_model->get() as $row){
+                if($row->type == 0){
+                    $total_tidak_hadir++;
+                }elseif($row->type == 1){
+                    $total_hadir++;
+                }elseif($row->type == 2){
+                    $total_sakit++;
+                }else{
+                    $total_izin++;
+                }
+                $absensi[$row->id_mhs] = $row->type;
+            }
+        }
+
+        $no = 1;
+        return view('dosen.daftar_mhs_new', compact('total_hadir','total_tidak_hadir','total_sakit','total_izin','absensi','title','pertemuan', 'jadwal', 'daftar_mhs', 'no'));
+    }
+    public function saveAbsensiNew(Request $request){
+        $id_jadwal = $request->id_jadwal;
+        $id_pertemuan = $request->id_pertemuan;
+        $id_mhs = $request->id_mhs;
+        $type = $request->type;
+
+        foreach($id_mhs as $key=>$value){
+            $cek = AbsensiModel::where(['id_jadwal' => $id_jadwal, 'id_pertemuan' => $id_pertemuan, 'id_mhs' => $value]);
+            if($cek->count() > 0){
+                $cek->update(['type'=>$type[$key]]);
+            }else{
+                $new_absensi = new AbsensiModel;
+                $new_absensi->id_jadwal = $id_jadwal;
+                $new_absensi->id_pertemuan = $id_pertemuan;
+                $new_absensi->id_mhs = $value;
+                $new_absensi->type = $type[$key];
+                $new_absensi->save();
+            }
+        }
+        return Redirect::back();
     }
     public function saveAbsensiSatuan(Request $request){
         $id_jadwal = $request->id_jadwal;

@@ -764,11 +764,13 @@ class JadwalController extends Controller
         for($i=1; $i<=14; $i++){
             $list_pertemuan[$i]['id_dosen'] = 0;
             $list_pertemuan[$i]['tanggal_pertemuan'] = '0000-00-00';
+            $list_pertemuan[$i]['id'] = '';
         }
         $pertemuan = Pertemuan::where('id_jadwal',$id)->get();
         foreach($pertemuan as $row){
             $list_pertemuan[$row->no_pertemuan]['id_dosen'] = $row->id_dsn;
             $list_pertemuan[$row->no_pertemuan]['tanggal_pertemuan'] = $row->tgl_pertemuan;
+            $list_pertemuan[$row->no_pertemuan]['id'] = $row->id;
         }
 
         // var_dump($list_pertemuan);
@@ -902,5 +904,8 @@ class JadwalController extends Controller
         // var_dump($list_pertemuan);
 
         return view('admin.akademik.jadwal.pertemuan', compact('title', 'list_pengajar','jumlah_pertemuan','list_pertemuan','ta','sesi','days','ruang','mk', 'no', 'jadwal','id_prodi','prodi','nama','jumlah_input_krs', 'angkatan', 'totalMahasiswa'));
+    }
+    public function input_new($jadwal, $pertemuan){
+
     }
 }
