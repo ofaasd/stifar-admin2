@@ -76,6 +76,7 @@ use App\Http\Controllers\admin\kepegawaian\PegawaiKegiatanLuarController;
 use App\Http\Controllers\admin\master\JenisRuangController;
 use App\Http\Controllers\admin\akademik\PerwalianController;
 use App\Http\Controllers\admin\akademik\AbsensiController;
+use App\Http\Controllers\mahasiswa\AbsensiController as mhsAbsensiController;
 use App\Http\Controllers\admin\akademik\KuesionerController;
 use App\Http\Controllers\admin\akademik\SoalKuesionerController;
 use App\Http\Controllers\admin\akademik\NilaiKuesionerController;
@@ -361,6 +362,7 @@ Route::group(['middleware' => ['auth','role:mhs|super-admin']], function(){
     Route::post('mahasiswa/user_update2', [MahasiswaController::class, 'user_update2'])->name('user_update2');
     Route::post('mahasiswa/foto_update', [MahasiswaController::class, 'foto_update'])->name('foto_update');
     Route::post('mahasiswa/berkas_update', [MahasiswaController::class, 'berkas_update'])->name('berkas_update');
+    Route::get('mhs/absensi', [mhsAbsensiController::class, 'index'])->name('index_absensi');
     Route::post('mahasiswa', [MahasiswaController::class, 'store'])->name('input');
 
     Route::get('mhs/profile', [ProfileController::class, 'index'])->name('index');

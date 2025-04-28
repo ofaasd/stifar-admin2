@@ -41,7 +41,7 @@
                                 </table>
                             </div>
                             <div class="col-sm-6 text-end">
-                                @if($pertemuan->kunci_kehadiran == 0)
+                                @if($pertemuan->buka_kehadiran == 0)
                                     <a href="{{url("dosen/absensi/" . $jadwal->id . "/" . $pertemuan->id ."/buka_tutup_absen")}}" class="btn btn-primary">Buka Absen</a>
                                 @else
                                     <a href="{{url("dosen/absensi/" . $jadwal->id . "/" . $pertemuan->id ."/buka_tutup_absen")}}" class="btn btn-danger">Tutup Absen</a>

@@ -180,7 +180,7 @@ class KrmController extends Controller
     public function bukaTutupAbsen($id, $id_pertemuan){
         $pertemuan = Pertemuan::where('pertemuans.id_jadwal', $id)->where("pertemuans.id",$id_pertemuan);
         $kunci = 0;
-        if($pertemuan->first()->kunci_kehadiran == 0){
+        if($pertemuan->first()->buka_kehadiran == 0){
             $daftar_mhs = Krs::select('krs.*', 'mhs.nim', 'mhs.nama', 'mhs.foto_mhs')
                         ->leftJoin('mahasiswa as mhs', 'mhs.id', '=', 'krs.id_mhs')
                         ->orderBy('nim','asc')
@@ -200,7 +200,7 @@ class KrmController extends Controller
         }
 
 
-        $pertemuan->update(['kunci_kehadiran'=>$kunci]);
+        $pertemuan->update(['buka_kehadiran'=>$kunci]);
         return Redirect::back();
     }
     public function saveAbsensiNew(Request $request){

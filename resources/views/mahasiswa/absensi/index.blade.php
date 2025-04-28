@@ -17,7 +17,7 @@
 
 @section('breadcrumb-items')
     <li class="breadcrumb-item">Akademik</li>
-    <li class="breadcrumb-item active">Input KRS</li>
+    <li class="breadcrumb-item active">Absensi</li>
 @endsection
 
 @section('content')
@@ -29,43 +29,8 @@
                 <div class="card">
                     <div class="card-body" style="overflow-x: scroll">
                         <div class="mt-4">
-                            @if($permission->krs == 0)
-                                <div class="alert alert-danger">Anda belum diizinkan untuk melakukan input krs harap hubungi admin sistem</div>
-                            @elseif($prodi->is_krs == 0)
-                                <div class="alert alert-danger">Input KRS ditutup</div>
-                            @else
-                                @if(empty($mk))
-                                    <div class="alert alert-danger">Belum ada Kurikulum untuk angkatan anda. Harap hubungi admin</div>
-                                @endif
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label for="matakuliah">Pilih Matakuliah</label>
-                                        <input type="number" value="{{ $ta }}" id="ta" hidden="" />
-                                        <input type="number" value="{{ $idmhs }}" id="idmhs" hidden="" />
-                                        <select name="matakuliah" onchange="getmk()" id="matakuliah" class="form-control js-example-basic-single">
-                                            <option value="" selected>Pilih Matakuliah</option>
-                                            @if(!empty($mk))
-                                                @foreach($mk as $value)
-                                                    @foreach($value as $row)
-                                                        <option value="{{ $row['id'] }}">Kode Matakuliah : {{ $row['kode_matkul'] }} | Nama Matakuliah : {{ $row['nama_matkul'] }} | Semester : {{ $row['semester'] ?? '-' }} | Status : {{ $row['status_mk'] ?? '-' }}</option>
-                                                    @endforeach
-                                                @endforeach
-                                            @endif
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="mt-4">
-                                    <div id="showJadwal"></div>
-                                </div>
-                            @endif
-                            <?php
-                                if(!is_null(Session::get('krs'))){
-                                    echo Session::get('krs');
-                                    Session::forget('krs');
-                                }
-                            ?>
                             <div class="mt-4">
-                                <h3>KRS diinputkan : </h3>
+                                <h3>KRS : </h3>
                                 <a href="{{ url('admin/masterdata/krs/admin/download/'.$idmhs) }}" class="btn btn-info btn-sm" style="float: right;"><i class="fa fa-download"></i> Download KRS</a>
                                 <div class="mt-2"></div>
                                 <table class="table" id="tablekrs">
@@ -78,8 +43,7 @@
                                         <td>Hari, Waktu</td>
                                         <td>Ruang</td>
                                         <td>SKS</td>
-                                        <td>Validasi</td>
-                                        <td>Aksi</td>
+                                        <td>Presensi</td>
                                     </thead>
                                     <tbody>
                                         @php
@@ -95,10 +59,11 @@
                                                 <td>{{ $row_krs['hari'] }}, {{ $row_krs['nama_sesi'] }}</td>
                                                 <td>{{ $row_krs['nama_ruang'] }}</td>
                                                 <td>{{ ($row_krs->sks_teori+$row_krs->sks_praktek) }}</td>
-                                                <td>{!!($row_krs->is_publish == 0)?'<p class="btn btn-secondary" style="font-size:8pt;">Menunggu Validasi Dosen Wali</p>':'<p class="btn btn-success" style="font-size:8pt;">Sudah Divalidasi</p>'!!}</td>
                                                 <td>
-                                                    @if($row_krs->is_publish == 0)
-                                                        <a href="{{ url('admin/masterdata/krs/admin/hapus/'.$row_krs['id']) }}" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></a>
+                                                    @if(!empty($pertemuan[$row_krs['id_jadwal']]))
+                                                        @foreach($pertemuan[$row_krs['id_jadwal']] as $key=>$value)
+                                                            <a href="#" class="btn btn-primary">Presensi pertemuan ke {{$value}}</a>
+                                                        @endforeach
                                                     @endif
                                                 </td>
                                             </tr>
