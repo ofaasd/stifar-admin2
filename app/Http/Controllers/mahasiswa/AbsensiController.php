@@ -27,7 +27,7 @@ class AbsensiController extends Controller
         $ta = $tahun_ajaran->id;
         $prodi = Prodi::find($mhs->id_program_studi);
 
-        $title = 'Input KRS';
+        $title = 'Absensi Mahasiswa';
         $kd_prodi_mhs = Prodi::where('id',$mhs->id_program_studi)->first()->kode_prodi;
         $kurikulum = Kurikulum::where('progdi',$kd_prodi_mhs)->where('angkatan','<=',$mhs->angkatan)->where('angkatan_akhir','>=',$mhs->angkatan)->where('thn_ajar',$ta)->get();
         $mk = [];
@@ -49,10 +49,10 @@ class AbsensiController extends Controller
         $pertemuan = [];
         foreach($krs as $row){
             $pertemuan[$row->id_jadwal] = [];
-            $list_pertemuan = Pertemuan::where(['id_jadwal'=>$row->id_jadwal,'tgl_pertemuan'=>date('Y-m-d'),'buka_kehadiran'=>1])->get();
+            $list_pertemuan = Pertemuan::where(['id_jadwal'=>$row->id_jadwal,'buka_kehadiran'=>1])->where('tgl_buka','like','%' . date('Y-m-d') .'%')->get();
             foreach($list_pertemuan as $list){
                 $pertemuan[$row->id_jadwal][$list->id] = $list->no_pertemuan;
-            } 
+            }
         }
         $no = 1;
 

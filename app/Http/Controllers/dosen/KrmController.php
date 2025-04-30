@@ -198,9 +198,7 @@ class KrmController extends Controller
             }
             $kunci = 1;
         }
-
-
-        $pertemuan->update(['buka_kehadiran'=>$kunci]);
+        $pertemuan->update(['buka_kehadiran'=>$kunci,'tgl_buka'=>date('Y-m-d H:i:s')]);
         return Redirect::back();
     }
     public function saveAbsensiNew(Request $request){

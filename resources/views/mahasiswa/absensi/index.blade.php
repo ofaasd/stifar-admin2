@@ -60,11 +60,12 @@
                                                 <td>{{ $row_krs['nama_ruang'] }}</td>
                                                 <td>{{ ($row_krs->sks_teori+$row_krs->sks_praktek) }}</td>
                                                 <td>
-                                                    @if(!empty($pertemuan[$row_krs['id_jadwal']]))
+                                                    {{-- @if(!empty($pertemuan[$row_krs['id_jadwal']]))
                                                         @foreach($pertemuan[$row_krs['id_jadwal']] as $key=>$value)
-                                                            <a href="#" class="btn btn-primary">Presensi pertemuan ke {{$value}}</a>
+
                                                         @endforeach
-                                                    @endif
+                                                    @endif --}}
+                                                    <a href="#" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-original-title="test" data-bs-target="#presensi" data-idmhs="{{$row_krs->id_mhs}}" data-idjadwal="{{$row_krs->id_jadwal}}">Detail Presensi</a>
                                                 </td>
                                             </tr>
                                             @php
@@ -72,15 +73,32 @@
                                             @endphp
                                         @endforeach
                                     </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <th colspan=6 class="text-center">Total SKS</th>
-                                            <th>{{$total_krs}}</th>
-                                            <th></th>
-                                            <th></th>
-                                        </tr>
-                                    </tfoot>
                                 </table>
+                                <div class="modal fade" id="presensi" tabindex="-1" role="dialog" aria-labelledby="presensi" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <form action="javascript:void(0)" id="formAdd">
+                                                @csrf
+                                                <input type="hidden" name="id" id="id">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="ModalLabel">{{$title}}</h5>
+                                                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="row g-3">
+                                                        <div class="col-md-12" id="detail_absensi">
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                                                    <button class="btn btn-primary" type="submit" id="btn_save">Simpan</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                         </div>

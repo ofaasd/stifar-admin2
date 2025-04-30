@@ -13,6 +13,7 @@ class Pertemuan extends Model
         'no_pertemuan',
         'tgl_pertemuan',
         'id_dsn',
-        'buka_kehadiran'
+        'buka_kehadiran',
+        'tgl_buka',
     ];
 }
