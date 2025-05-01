@@ -106,7 +106,7 @@ class KrmController extends Controller
         $no = 1;
         return view('dosen.daftar_mhs', compact('title', 'jadwal', 'daftar_mhs', 'no'));
     }
-    public function setAbsensiSatuan($nim, $id_jadwal){
+    public function setAbsensiSatuan($id_jadwal){
         $title = "Setting Absensi";
         $pertemuan = Pertemuan::select('pertemuans.*', 'pegawai_biodata.nama_lengkap', 'absensi_models.type')
                               ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'pertemuans.id_dsn')
@@ -179,8 +179,11 @@ class KrmController extends Controller
     }
     public function bukaTutupAbsen($id, $id_pertemuan){
         $pertemuan = Pertemuan::where('pertemuans.id_jadwal', $id)->where("pertemuans.id",$id_pertemuan);
+        $jadwal = Jadwal::leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')->where("jadwals.id",$id)->first();
+
         $kunci = 0;
-        if($pertemuan->first()->buka_kehadiran == 0){
+        $q_pertemuan = $pertemuan->first();
+        if($q_pertemuan->buka_kehadiran == 0){
             $daftar_mhs = Krs::select('krs.*', 'mhs.nim', 'mhs.nama', 'mhs.foto_mhs')
                         ->leftJoin('mahasiswa as mhs', 'mhs.id', '=', 'krs.id_mhs')
                         ->orderBy('nim','asc')
@@ -198,7 +201,13 @@ class KrmController extends Controller
             }
             $kunci = 1;
         }
-        $pertemuan->update(['buka_kehadiran'=>$kunci,'tgl_buka'=>date('Y-m-d H:i:s')]);
+        $waktu_selesai = date("H:i:s", strtotime($jadwal->waktu_selesai));
+        $tanggal_expired = $q_pertemuan->tgl_pertemuan . " " . $waktu_selesai;
+        if($kunci == 1){
+            $pertemuan->update(['buka_kehadiran'=>$kunci,'tgl_expired'=>$tanggal_expired]);
+        }else{
+            $pertemuan->update(['buka_kehadiran'=>$kunci]);
+        }
         return Redirect::back();
     }
     public function saveAbsensiNew(Request $request){

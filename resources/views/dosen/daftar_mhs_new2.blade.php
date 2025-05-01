@@ -41,10 +41,14 @@
                                 </table>
                             </div>
                             <div class="col-sm-6 text-end">
-                                @if($pertemuan->buka_kehadiran == 0)
-                                    <a href="{{url("dosen/absensi/" . $jadwal->id . "/" . $pertemuan->id ."/buka_tutup_absen")}}" class="btn btn-primary">Buka Absen</a>
+                                @if($pertemuan->tgl_pertemuan == date('Y-m-d'))
+                                    @if($pertemuan->buka_kehadiran == 0 )
+                                        <a href="{{url("dosen/absensi/" . $jadwal->id . "/" . $pertemuan->id ."/buka_tutup_absen")}}" class="btn btn-primary">Buka Absen</a>
+                                    @else
+                                        <a href="{{url("dosen/absensi/" . $jadwal->id . "/" . $pertemuan->id ."/buka_tutup_absen")}}" class="btn btn-danger">Tutup Absen</a>
+                                    @endif
                                 @else
-                                    <a href="{{url("dosen/absensi/" . $jadwal->id . "/" . $pertemuan->id ."/buka_tutup_absen")}}" class="btn btn-danger">Tutup Absen</a>
+                                    <div class="alert alert-warning text-center">Absensi online mahasiswa hanya dapat dilakukan saat tanggal pertemuan</div>
                                 @endif
                                 <!-- <b>Kontrak Kuliah</b>
                                 <table>

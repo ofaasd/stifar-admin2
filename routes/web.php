@@ -123,7 +123,7 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     Route::get('/dosen/input/{nim}/absensi/{id_jadwal}', [KrmController::class, 'setAbsensiSatuan'] );
     Route::post('/dosen/simpan-absensi-satuan', [KrmController::class, 'saveAbsensiSatuan'] );
     Route::post('/dosen/simpan-kontrak', [KrmController::class, 'saveKontrak'] );
-    Route::post('/dosen/absensi/save_absensi_new', [KrmController::class, 'saveAbsensiNew'] );
+
 
     //Route::middleware('auth')->group(function(){
     Route::get('/dashboard',[DashboardController::class, 'index'] )->name('dashboard');
@@ -388,7 +388,8 @@ Route::group(['middleware' => ['auth','role:mhs|super-admin']], function(){
     Route::get('mhs/cetak_khs', [KhsController::class, 'cetak_khs'])->name('cetak_khs');
     Route::get('mhs/cetak_khs/{nim}', [KhsController::class, 'cetak_khs'])->name('cetak_khs');
 
-
+    Route::get('/mhs/absensi/history/{id_jadwal}', [mhsAbsensiController::class, 'setAbsensiSatuan'] );
+    Route::get('/mhs/absensi/save/{id_jadwal}', [mhsAbsensiController::class, 'saveAbsensi'] );
     //Route::post('admin/admisi/peserta/daftar_kota',[PmbPesertaController::class, 'daftar_kota'] )->name('daftar_kota');
 });
 Route::group(['middleware' => ['auth','role:pegawai|super-admin']], function(){
@@ -455,6 +456,8 @@ Route::group(['middleware' => ['auth','role:pegawai|super-admin']], function(){
     Route::post('admin/kepegawaian/pegawai/get_status', [PegawaiController::class, 'get_status'])->name('get_status');
     Route::post('admin/kepegawaian/pegawai/user_update', [PegawaiController::class, 'user_update'])->name('user_update');
     Route::post('admin/kepegawaian/pegawai/foto_update', [PegawaiController::class, 'foto_update'])->name('foto_update');
+
+    Route::post('/dosen/absensi/save_absensi_new', [KrmController::class, 'saveAbsensiNew'] );
 });
 Route::group(['middleware' => ['auth','role:mhs|pegawai|super-admin']], function(){
     Route::post('admin/admisi/peserta/daftar_kota',[PmbPesertaController::class, 'daftar_kota'] )->name('daftar_kota_pegawai');

@@ -65,12 +65,9 @@
 
                                                         @endforeach
                                                     @endif --}}
-                                                    <a href="#" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-original-title="test" data-bs-target="#presensi" data-idmhs="{{$row_krs->id_mhs}}" data-idjadwal="{{$row_krs->id_jadwal}}">Detail Presensi</a>
+                                                    <a href="{{url("/mhs/absensi/history/" . $row_krs->id_jadwal)}}" class="btn btn-primary btn-sm" >Detail Presensi</a>
                                                 </td>
                                             </tr>
-                                            @php
-                                            $total_krs += ($row_krs->sks_teori+$row_krs->sks_praktek);
-                                            @endphp
                                         @endforeach
                                     </tbody>
                                 </table>

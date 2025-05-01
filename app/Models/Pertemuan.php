@@ -14,6 +14,6 @@ class Pertemuan extends Model
         'tgl_pertemuan',
         'id_dsn',
         'buka_kehadiran',
-        'tgl_buka',
+        'tgl_expired',
     ];
 }
