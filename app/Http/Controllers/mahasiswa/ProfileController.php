@@ -22,7 +22,7 @@ class ProfileController extends Controller
         $mhs = Mahasiswa::where('user_id',Auth::id())->first();
         $nim = $mhs->nim;
         $title = "Mahasiswa";
-        $mahasiswa = Mahasiswa::where('nim', $nim)->first();
+        $mahasiswa = $mhs;
         $program_studi = Prodi::all();
         $prodi = [];
         foreach($program_studi as $row){
@@ -52,7 +52,7 @@ class ProfileController extends Controller
         $dosen = PegawaiBiodatum::where('id_posisi_pegawai',1)->get();
         $dosen_wali = "Tidak ada";
         if(!empty($mahasiswa->id_dsn_wali) && $mahasiswa->id_dsn_wali != 1){
-            $dosen_wali = PegawaiBiodatum::where('id_pegawai',$mahasiswa->id_dsn_wali)->first()->nama_lengkap;
+            $dosen_wali = PegawaiBiodatum::where('id',$mahasiswa->id_dsn_wali)->first()->nama_lengkap;
         }
 
         $user = User::where('id',$mahasiswa->user_id)->first();
