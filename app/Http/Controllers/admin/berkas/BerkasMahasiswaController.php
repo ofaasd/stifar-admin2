@@ -49,12 +49,40 @@ class BerkasMahasiswaController extends Controller
 
         $berkas = BerkasPendukungMahasiswa::firstOrCreate(['nim' => $request->nim]);
 
-        $tujuan_upload = 'assets/images/mahasiswa/berkas';
+        $tujuan_upload = 'assets/file/berkas/mahasiswa';
 
         foreach ($fields as $fileInput => $dbField) {
             if ($request->hasFile($fileInput)) {
                 $file = $request->file($fileInput);
-                $fileName = date('YmdHi') . $file->getClientOriginalName();
+                $fileName = date('YmdHi') . $request->nim . $file->getClientOriginalName();
+                $fileName = str_replace(' ', '-', $fileName);
+
+                switch ($dbField) {
+                    case "foto_ktp":
+                        $tujuan_upload .= "/ktp";
+                        break;
+                    case "foto_kk":
+                        $tujuan_upload .= "/kk";
+                        break;
+                    case "foto_akte":
+                        $tujuan_upload .= "/akte";
+                        break;
+                    case "foto_ijazah_depan":
+                        $tujuan_upload .= "/c";
+                        break;
+                    case "foto_ijazah_belakang":
+                        $tujuan_upload .= "/ijazah_belakang";
+                        break;
+                    case "foto_sistem":
+                        $tujuan_upload .= "/sistem";
+                        break;
+                }
+
+                // Pastikan folder ada
+                if (!file_exists($tujuan_upload)) {
+                    mkdir($tujuan_upload, 0777, true);
+                }
+
                 $file->move($tujuan_upload, $fileName);
 
                 $berkas->update([$dbField => $fileName]);

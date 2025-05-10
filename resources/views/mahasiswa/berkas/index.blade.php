@@ -1,8 +1,12 @@
 @extends('layouts.master')
-@section('title', 'Berkas Mahasiswa')
+@section('title', 'Detail Mahasiswa')
 
 @section('css')
-
+<style>
+  .bg-opacity-5 {
+      background-color: rgba(0, 0, 0, 0.05); /* 5% opacity */
+  }
+</style>
 @endsection
 
 @section('style')
@@ -11,11 +15,11 @@
 @endsection
 
 @section('breadcrumb-title')
-    <h3>{{$title}}</h3>
+    <h3><a href="{{URL::to('mahasiswa')}}"><i class="fa fa-arrow-left"></i></a> {{$title}}</h3>
 @endsection
 
 @section('breadcrumb-items')
-    <li class="breadcrumb-item">Mahasiswa</li>
+    <li class="breadcrumb-item">Berkas</li>
     <li class="breadcrumb-item active">{{$title}}</li>
 @endsection
 
@@ -23,68 +27,153 @@
 <div class="container-fluid">
     <div class="edit-profile">
         <div class="row">
-            <div class="col-md-12">
-                @if($mahasiswa->update_password == 0)
-                <div class="alert alert-danger dark">Segera update password anda demi keamanan akun</div>
-                @endif
-            </div>
-        </div>
-        <div class="row">
-          <div class="col-xl-4">
+          <div class="col-xl-12">
             <div class="card">
-              <div class="card-header">
-                <h4 class="card-title mb-0">My Profile</h4>
-                <div class="card-options"><a class="card-options-collapse" href="#" data-bs-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a><a class="card-options-remove" href="#" data-bs-toggle="card-remove"><i class="fe fe-x"></i></a></div>
-              </div>
               <div class="card-body">
-
                   <div class="row mb-2">
-                    <div class="profile-title">
+                    <div class="profile-title card-header mb-3">
                       <div class="media">
-                          <div class="photo-profile">
-                              <img class="img-70 rounded-circle" alt="" src="{{ (!empty($mahasiswa->foto_mhs))?asset('assets/images/mahasiswa/' . $mahasiswa->foto_mhs):asset('assets/images/user/7.jpg') }}">
-                          </div>
+                        <div class="photo-profile position-relative d-inline-block">
+                            <img class="img-70 rounded-circle" alt="Foto Mahasiswa"
+                            src="{{ (!empty($mahasiswa->foto_sistem)) ? asset('assets/file/berkas/mahasiswa/sistem/' . $mahasiswa->foto_sistem) : asset('assets/images/user/7.jpg') }}">
+                        </div>
                         <div class="media-body">
                           <h5 class="mb-1">{{$mahasiswa->nama}}</h5>
-                          <p>{{$prodi[$mahasiswa->id_program_studi]}}</p>
+                          <h5 class="mb-1">{{$mahasiswa->nimMahasiswa}}</h5>
                         </div>
-                      </div>
-                      <div class="d-flex align-items-center mb-2">
-                        <h6 class="mb-0 me-2">Dosen Wali:</h6>
-                        <p class="mb-0">{{ $mahasiswa->dosenWali }}</p>
                       </div>
                     </div>
                   </div>
-                  <div class="form-footer">
-                      <div class="row">
-                          <div class="col-md-12 mb-4">
-                              <a href="#" class="btn btn-primary btn-block" data-bs-toggle="modal" data-original-title="test" data-bs-target="#ubahPasswordModal"><i class="fa fa-key"></i> Ubah Password</a>
-                              @include('mahasiswa._form_ubah_password_user')
-                          </div>
-                          <div class="col-md-12 mb-4">
-                              <a href="#" class="btn btn-primary btn-block" data-bs-toggle="modal" data-original-title="test" data-bs-target="#ubahFotoModal"><i class="fa fa-image"></i> Ubah Foto</a>
-                              @include('mahasiswa._form_ubah_gambar ')
-                          </div>
-                      </div>
-                  </div>
-              </div>
+                  <form id="form-berkas" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" value="{{$mahasiswa->nimMahasiswa}}" name="nim">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-2">
+                                <div id="view-ktp">
+                                    <label class="col-sm-12 col-form-label">Foto KTP : </label>
+                                    <p class="fs-4" style="display: {{ $mahasiswa->ktp ? 'block' : 'none' }}">
+                                        <i class="fa fa-check-square-o text-success"></i> | 
+                                        <a href="{{ (isset($mahasiswa->ktp)) ? asset('assets/file/berkas/mahasiswa/ktp/' . $mahasiswa->ktp) : '' }}" target="_blank">
+                                            <i class="fa fa-picture-o text-dark"></i>
+                                        </a> | 
+                                        <a href="#" id="edit-ktp"><i class="fa fa-pencil text-dark"></i></a>
+                                    </p>
+                                </div>
+                                <div class="col-sm-12" id="input-ktp" style="display: {{ $mahasiswa->ktp ? 'none' : 'block' }}">
+                                    <div class="input-group">
+                                        <input type="file" name="foto_ktp" class="form-control" aria-describedby="inputGroupPrepend">
+                                    </div>
+                                    <span>*jpg/jpeg | maks 5mb</span>
+                                </div>
+                                <hr>
+                            </div>
+                            
+                            <div class="mb-2">
+                                <div class="view-kk">
+                                    <label class="col-sm-12 col-form-label">Foto KK : </label>
+                                    <p class="fs-4" style="display: {{ $mahasiswa->kk ? 'block' : 'none' }}">
+                                        <i class="fa fa-check-square-o text-success"></i> | 
+                                        <a href="{{ (isset($mahasiswa->kk)) ? asset('assets/file/berkas/mahasiswa/kk/' . $mahasiswa->kk) : '' }}" target="_blank">
+                                            <i class="fa fa-picture-o text-dark"></i>
+                                        </a> | 
+                                        <a href="#" id="edit-kk"><i class="fa fa-pencil text-dark"></i></a>
+                                    </p>
+                                </div>
+                                <div class="col-sm-12" id="input-kk" style="display: {{ $mahasiswa->kk ? 'none' : 'block' }}">
+                                    <div class="input-group">
+                                        <input type="file" name="foto_kk" class="form-control" aria-describedby="inputGroupPrepend">
+                                    </div>
+                                    <span>*jpg/jpeg | maks 5mb</span>
+                                </div>
+                                <hr>
+                            </div>
+                            
+                            <div class="mb-2">
+                                <div class="view-akte">
+                                    <label class="col-sm-12 col-form-label">Foto Akte : </label>
+                                    <p class="fs-4" style="display: {{ $mahasiswa->akte ? 'block' : 'none' }}">
+                                        <i class="fa fa-check-square-o text-success"></i> | 
+                                        <a href="{{ (isset($mahasiswa->akte)) ? asset('assets/file/berkas/mahasiswa/akte/' . $mahasiswa->akte) : '' }}" target="_blank">
+                                            <i class="fa fa-picture-o text-dark"></i>
+                                        </a> | 
+                                        <a href="#" id="edit-akte"><i class="fa fa-pencil text-dark"></i></a>
+                                    </p>
+                                </div>
+                                <div class="col-sm-12" id="input-akte" style="display: {{ $mahasiswa->akte ? 'none' : 'block' }}">
+                                    <div class="input-group">
+                                        <input type="file" name="foto_akte" class="form-control" aria-describedby="inputGroupPrepend">
+                                    </div>
+                                    <span>*jpg/jpeg | maks 5mb</span>
+                                </div>
+                                <hr>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-2">
+                                <div class="view-ijazah">
+                                    <label class="col-sm-12 col-form-label">Foto Ijazah : </label>
+                                    <p class="fs-4" style="display: {{ $mahasiswa->ijazah_depan ? 'block' : 'none' }}">
+                                        <i class="fa fa-check-square-o text-success"></i> | 
+                                        <a href="{{ (isset($mahasiswa->ijazah_depan)) ? asset('assets/file/berkas/mahasiswa/ijazah_depan/' . $mahasiswa->ijazah_depan) : '' }}" target="_blank">
+                                            <i class="fa fa-picture-o text-dark"></i>
+                                        </a> | 
+                                        <a href="#" id="edit-ijazah-depan"><i class="fa fa-pencil text-dark"></i></a>
+                                    </p>
+                                    <div class="col mb-3" id="input-ijazah-depan" style="display: {{ $mahasiswa->ijazah_depan ? 'none' : 'block' }}">
+                                        <label for="ijazah-depan" class="mb-0">Depan</label>
+                                        <div class="input-group" id="ijazah-depan">
+                                            <input type="file" name="foto_ijazah_depan" class="form-control" aria-describedby="inputGroupPrepend">
+                                        </div>
+                                        <span>*jpg/jpeg | maks 5mb</span>
+                                    </div>
+                                <hr>
+                                </div>
+                                <div class="col-sm-12">
+                                    <p class="fs-4" style="display: {{ $mahasiswa->ijazah_belakang ? 'block' : 'none' }}">
+                                        <i class="fa fa-check-square-o text-success"></i> | 
+                                        <a href="{{ (isset($mahasiswa->ijazah_belakang)) ? asset('assets/file/berkas/mahasiswa/ijazah_belakang/' . $mahasiswa->ijazah_belakang) : '' }}" target="_blank">
+                                            <i class="fa fa-picture-o text-dark"></i>
+                                        </a> | 
+                                        <a href="#" id="edit-ijazah-belakang"><i class="fa fa-pencil text-dark"></i></a>
+                                    </p>
+                                    <div class="col" id="input-ijazah-belakang" style="display: {{ $mahasiswa->ijazah_belakang ? 'none' : 'block' }}">
+                                        <label for="ijazah-belakang" class="mb-0">Belakang</label>
+                                        <div class="input-group" id="ijazah-belakang">
+                                            <input type="file" name="foto_ijazah_belakang" class="form-control" aria-describedby="inputGroupPrepend">
+                                        </div>
+                                        <span>*jpg/jpeg | maks 5mb</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-2">
+                                <div class="view-akte">
+                                    <label class="col-sm-12 col-form-label">Foto Profil : </label>
+                                    <p class="fs-4" style="display: {{ $mahasiswa->foto_sistem ? 'block' : 'none' }}">
+                                        <i class="fa fa-check-square-o text-success"></i> | 
+                                        <a href="{{ (isset($mahasiswa->foto_sistem)) ? asset('assets/file/berkas/mahasiswa/sistem/' . $mahasiswa->foto_sistem) : '' }}" target="_blank">
+                                            <i class="fa fa-picture-o text-dark"></i>
+                                        </a> | 
+                                        <a href="#" id="edit-foto-sistem"><i class="fa fa-pencil text-dark"></i></a>
+                                    </p>
+                                </div>
+                                <div class="col-sm-12" id="input-foto-sistem" style="display: {{ $mahasiswa->foto_sistem ? 'none' : 'block' }}">
+                                    <div class="input-group">
+                                        <input type="file" name="foto_sistem" class="form-control" aria-describedby="inputGroupPrepend">
+                                    </div>
+                                    <span>*jpg/jpeg | maks 5mb</span>
+                                </div>
+                                <hr>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer mt-5">
+                        <button class="btn btn-success" id="btn-submit" type="submit">Simpan</button>
+                    </div>
+                  </form>
+                </div>
             </div>
-          </div>
-          <div class="col-xl-8">
-            <form class="card" id="formMahasiswa" action="javascript:void(0)">
-              @csrf
-              <div class="card-header">
-                <h4 class="card-title mb-0">Edit Profile</h4>
-                <div class="card-options"><a class="card-options-collapse" href="#" data-bs-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a><a class="card-options-remove" href="#" data-bs-toggle="card-remove"><i class="fe fe-x"></i></a></div>
-              </div>
-              <div class="card-body">
-                  <input type="hidden" name="id" value="{{$mahasiswa->id}}">
-                  @include('mahasiswa._form_profile_user')
-              </div>
-              <div class="card-footer text-end">
-                <button class="btn btn-primary update-btn" type="submit">Update Profile</button>
-              </div>
-            </form>
           </div>
         </div>
       </div>
@@ -92,16 +181,78 @@
 @endsection
 
 @section('script')
-    <script src="{{ asset('assets/js/datatable/datatables/jquery.dataTables.min.js') }}"></script>
-    <script src="{{asset('assets/js/sweet-alert/sweetalert.min.js')}}"></script>
-    @include('mahasiswa._script_profile')
-    @include('mahasiswa._script_user_update2')
-    @include('mahasiswa._script_foto_update')
-    @if($mahasiswa->update_password == 0)
     <script>
-        $(window).on('load', function() {
-            $('#ubahPasswordModal').modal('show');
+        $(document).ready(function() {
+            $('#edit-ktp').on('click', function(e) {
+                e.preventDefault();
+                $('#input-ktp').toggle();
+            });
+
+            $('#edit-kk').on('click', function(e) {
+                e.preventDefault();
+                $('#input-kk').toggle();
+            });
+
+            $('#edit-akte').on('click', function(e) {
+                e.preventDefault();
+                $('#input-akte').toggle();
+            });
+
+            $('#edit-ijazah-depan').on('click', function(e) {
+                e.preventDefault();
+                $('#input-ijazah-depan').toggle();
+            });
+
+            $('#edit-ijazah-belakang').on('click', function(e) {
+                e.preventDefault();
+                $('#input-ijazah-belakang').toggle();
+            });
+
+            $('#edit-foto-sistem').on('click', function(e) {
+                e.preventDefault();
+                $('#input-foto-sistem').toggle();
+            });
+
+            // Submit form dengan AJAX
+            $('#form-berkas').on('submit', function(e) {
+                e.preventDefault();
+                $('#btn-submit').prop('disabled', true);
+                $('#btn-submit').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Please Wait...');
+
+                var formData = new FormData(this);
+
+                $.ajax({
+                    url: '{{ route('store-mhs-berkas') }}',  // URL ke mana data dikirimkan
+                    type: 'POST',
+                    data: formData,
+                    contentType: false, 
+                    processData: false,
+                    success: function(response) {
+                        $('#btn-submit').prop('disabled', false);
+                        $('#btn-submit').html('Simpan');
+                        Swal.fire({
+                            icbon: 'success',
+                            title: 'Berkas berhasil disimpan',
+                            text: response.message,
+                            timer: 1500
+                        }).then(() => {
+                            location.reload();
+                        });
+                    },
+                    error: function(xhr) {
+                        $('#btn-submit').prop('disabled', false);
+                        $('#btn-submit').html('Simpan');
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'error',
+                            text: xhr.responseJSON.message,
+                        });
+                    }
+                });
+            });
         });
     </script>
-    @endif
+    <script src="{{ asset('assets/js/datatable/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{asset('assets/js/sweet-alert/sweetalert.min.js')}}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endsection

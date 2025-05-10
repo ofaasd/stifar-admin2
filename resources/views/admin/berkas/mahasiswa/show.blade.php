@@ -35,7 +35,7 @@
                       <div class="media">
                         <div class="photo-profile position-relative d-inline-block">
                             <img class="img-70 rounded-circle" alt="Foto Mahasiswa"
-                            src="{{ (!empty($mahasiswa->foto_mhs)) ? asset('assets/images/mahasiswa/' . $mahasiswa->foto_mhs) : asset('assets/images/user/7.jpg') }}">
+                            src="{{ (!empty($mahasiswa->foto_sistem)) ? asset('assets/file/berkas/mahasiswa/sistem/' . $mahasiswa->foto_sistem) : asset('assets/images/user/7.jpg') }}">
                         </div>
                         <div class="media-body">
                           <h5 class="mb-1">{{$mahasiswa->nama}}</h5>
@@ -54,7 +54,7 @@
                                     <label class="col-sm-12 col-form-label">Foto KTP : </label>
                                     <p class="fs-4" style="display: {{ $mahasiswa->ktp ? 'block' : 'none' }}">
                                         <i class="fa fa-check-square-o text-success"></i> | 
-                                        <a href="{{ (isset($mahasiswa->ktp)) ? asset('assets/images/mahasiswa/' . $mahasiswa->ktp) : '' }}" target="_blank">
+                                        <a href="{{ (isset($mahasiswa->ktp)) ? asset('assets/file/berkas/mahasiswa/ktp/' . $mahasiswa->ktp) : '' }}" target="_blank">
                                             <i class="fa fa-picture-o text-dark"></i>
                                         </a> | 
                                         <a href="#" id="edit-ktp"><i class="fa fa-pencil text-dark"></i></a>
@@ -74,7 +74,7 @@
                                     <label class="col-sm-12 col-form-label">Foto KK : </label>
                                     <p class="fs-4" style="display: {{ $mahasiswa->kk ? 'block' : 'none' }}">
                                         <i class="fa fa-check-square-o text-success"></i> | 
-                                        <a href="{{ (isset($mahasiswa->kk)) ? asset('assets/images/mahasiswa/' . $mahasiswa->kk) : '' }}" target="_blank">
+                                        <a href="{{ (isset($mahasiswa->kk)) ? asset('assets/file/berkas/mahasiswa/kk/' . $mahasiswa->kk) : '' }}" target="_blank">
                                             <i class="fa fa-picture-o text-dark"></i>
                                         </a> | 
                                         <a href="#" id="edit-kk"><i class="fa fa-pencil text-dark"></i></a>
@@ -94,7 +94,7 @@
                                     <label class="col-sm-12 col-form-label">Foto Akte : </label>
                                     <p class="fs-4" style="display: {{ $mahasiswa->akte ? 'block' : 'none' }}">
                                         <i class="fa fa-check-square-o text-success"></i> | 
-                                        <a href="{{ (isset($mahasiswa->akte)) ? asset('assets/images/mahasiswa/' . $mahasiswa->akte) : '' }}" target="_blank">
+                                        <a href="{{ (isset($mahasiswa->akte)) ? asset('assets/file/berkas/mahasiswa/akte/' . $mahasiswa->akte) : '' }}" target="_blank">
                                             <i class="fa fa-picture-o text-dark"></i>
                                         </a> | 
                                         <a href="#" id="edit-akte"><i class="fa fa-pencil text-dark"></i></a>
@@ -115,7 +115,7 @@
                                     <label class="col-sm-12 col-form-label">Foto Ijazah : </label>
                                     <p class="fs-4" style="display: {{ $mahasiswa->ijazah_depan ? 'block' : 'none' }}">
                                         <i class="fa fa-check-square-o text-success"></i> | 
-                                        <a href="{{ (isset($mahasiswa->ijazah_depan)) ? asset('assets/images/mahasiswa/' . $mahasiswa->ijazah_depan) : '' }}" target="_blank">
+                                        <a href="{{ (isset($mahasiswa->ijazah_depan)) ? asset('assets/file/berkas/mahasiswa/ijazah_depan/' . $mahasiswa->ijazah_depan) : '' }}" target="_blank">
                                             <i class="fa fa-picture-o text-dark"></i>
                                         </a> | 
                                         <a href="#" id="edit-ijazah-depan"><i class="fa fa-pencil text-dark"></i></a>
@@ -132,7 +132,7 @@
                                 <div class="col-sm-12">
                                     <p class="fs-4" style="display: {{ $mahasiswa->ijazah_belakang ? 'block' : 'none' }}">
                                         <i class="fa fa-check-square-o text-success"></i> | 
-                                        <a href="{{ (isset($mahasiswa->ijazah_belakang)) ? asset('assets/images/mahasiswa/' . $mahasiswa->ijazah_belakang) : '' }}" target="_blank">
+                                        <a href="{{ (isset($mahasiswa->ijazah_belakang)) ? asset('assets/file/berkas/mahasiswa/ijazah_belakang/' . $mahasiswa->ijazah_belakang) : '' }}" target="_blank">
                                             <i class="fa fa-picture-o text-dark"></i>
                                         </a> | 
                                         <a href="#" id="edit-ijazah-belakang"><i class="fa fa-pencil text-dark"></i></a>
@@ -152,7 +152,7 @@
                                     <label class="col-sm-12 col-form-label">Foto Profil : </label>
                                     <p class="fs-4" style="display: {{ $mahasiswa->foto_sistem ? 'block' : 'none' }}">
                                         <i class="fa fa-check-square-o text-success"></i> | 
-                                        <a href="{{ (isset($mahasiswa->foto_sistem)) ? asset('assets/images/mahasiswa/' . $mahasiswa->foto_sistem) : '' }}" target="_blank">
+                                        <a href="{{ (isset($mahasiswa->foto_sistem)) ? asset('assets/file/berkas/mahasiswa/sistem/' . $mahasiswa->foto_sistem) : '' }}" target="_blank">
                                             <i class="fa fa-picture-o text-dark"></i>
                                         </a> | 
                                         <a href="#" id="edit-foto-sistem"><i class="fa fa-pencil text-dark"></i></a>
