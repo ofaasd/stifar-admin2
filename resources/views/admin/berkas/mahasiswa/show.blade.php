@@ -15,7 +15,7 @@
 @endsection
 
 @section('breadcrumb-title')
-    <h3><a href="{{URL::to('mahasiswa')}}"><i class="fa fa-arrow-left"></i></a> {{$title}}</h3>
+    <h3><a href={{ url()->previous() }} class="fa fa-arrow-left"></i></a> {{$title}}</h3>
 @endsection
 
 @section('breadcrumb-items')
@@ -48,6 +48,7 @@
                     @csrf
                     <input type="hidden" value="{{$mahasiswa->nimMahasiswa}}" name="nim">
                     <div class="row">
+                        <p class="fw-bold"><span class="text-danger">*</span>Foto berformat jpg/jpeg dan maksimal berukuran 5mb </p>
                         <div class="col-md-6">
                             <div class="mb-2">
                                 <div id="view-ktp">
@@ -64,7 +65,6 @@
                                     <div class="input-group">
                                         <input type="file" name="foto_ktp" class="form-control" aria-describedby="inputGroupPrepend">
                                     </div>
-                                    <span>*jpg/jpeg | maks 5mb</span>
                                 </div>
                                 <hr>
                             </div>
@@ -84,7 +84,6 @@
                                     <div class="input-group">
                                         <input type="file" name="foto_kk" class="form-control" aria-describedby="inputGroupPrepend">
                                     </div>
-                                    <span>*jpg/jpeg | maks 5mb</span>
                                 </div>
                                 <hr>
                             </div>
@@ -104,7 +103,6 @@
                                     <div class="input-group">
                                         <input type="file" name="foto_akte" class="form-control" aria-describedby="inputGroupPrepend">
                                     </div>
-                                    <span>*jpg/jpeg | maks 5mb</span>
                                 </div>
                                 <hr>
                             </div>
@@ -125,7 +123,6 @@
                                         <div class="input-group" id="ijazah-depan">
                                             <input type="file" name="foto_ijazah_depan" class="form-control" aria-describedby="inputGroupPrepend">
                                         </div>
-                                        <span>*jpg/jpeg | maks 5mb</span>
                                     </div>
                                 <hr>
                                 </div>
@@ -142,7 +139,6 @@
                                         <div class="input-group" id="ijazah-belakang">
                                             <input type="file" name="foto_ijazah_belakang" class="form-control" aria-describedby="inputGroupPrepend">
                                         </div>
-                                        <span>*jpg/jpeg | maks 5mb</span>
                                     </div>
                                 </div>
                             </div>
@@ -162,7 +158,6 @@
                                     <div class="input-group">
                                         <input type="file" name="foto_sistem" class="form-control" aria-describedby="inputGroupPrepend">
                                     </div>
-                                    <span>*jpg/jpeg | maks 5mb</span>
                                 </div>
                                 <hr>
                             </div>

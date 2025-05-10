@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\BerkasPendukungMahasiswa;
 use App\Models\Mahasiswa;
+use Illuminate\Support\Facades\Crypt;
 
 class BerkasMahasiswaController extends Controller
 {
@@ -17,7 +18,11 @@ class BerkasMahasiswaController extends Controller
         $title = "Berkas Mahasiswa";
         $mhs = Mahasiswa::select('mahasiswa.*', 'mahasiswa_berkas_pendukung.*', 'mahasiswa.nim as nimMahasiswa')
         ->leftJoin('mahasiswa_berkas_pendukung', 'mahasiswa_berkas_pendukung.nim', '=', 'mahasiswa.nim')
-        ->get();
+        ->get()
+        ->map(function ($item) {
+            $item->nimEnkripsi = Crypt::encryptString($item->nimMahasiswa . "stifar");
+            return $item;
+        });
 
         $fake_id = 0;
         return view('admin.berkas.mahasiswa.index', compact('title', 'mhs', 'fake_id'));
@@ -96,8 +101,11 @@ class BerkasMahasiswaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $nim)
+    public function show(string $nimEnkrip)
     {
+        $nimDekrip = Crypt::decryptString($nimEnkrip);
+        $nim = str_replace("stifar", "", $nimDekrip);
+
         $mhs = Mahasiswa::select('mahasiswa.*', 'mahasiswa.nim as nimMahasiswa', 'mahasiswa_berkas_pendukung.*')
         ->leftJoin('mahasiswa_berkas_pendukung', 'mahasiswa_berkas_pendukung.nim', '=', 'mahasiswa.nim')
         ->where('mahasiswa.nim', $nim)

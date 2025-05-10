@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\PegawaiBiodatum;
 use App\Http\Controllers\Controller;
 use App\Models\PegawaiBerkasPendukung;
+use Illuminate\Support\Facades\Crypt;
 
 class BerkasDosenController extends Controller
 {
@@ -20,7 +21,12 @@ class BerkasDosenController extends Controller
         $pegawai = PegawaiBiodatum::select('pegawai_biodata.*', 'pegawai_biodata.nidn as nidnDosen', 'pegawai_biodata.id_pegawai AS idPegawai', 'pegawai_berkas_pendukung.*')
         ->leftJoin('pegawai_berkas_pendukung', 'pegawai_berkas_pendukung.id_pegawai', '=', 'pegawai_biodata.id_pegawai')
         ->whereIn('id_posisi_pegawai', [1,2])
-        ->get();
+        ->get()
+        ->map(function ($item) {
+            $item->idEnkripsi = Crypt::encryptString($item->idPegawai . "stifar");
+            return $item;
+        });
+
         $fake_id = 0;
         return view('admin.berkas.dosen.index', compact('title','pegawai','fake_id'));
     }
@@ -111,8 +117,11 @@ class BerkasDosenController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $idPegawai)
+    public function show(string $idEnkripsi)
     {
+        $idDekrip = Crypt::decryptString($idEnkripsi);
+        $idPegawai = str_replace("stifar", "", $idDekrip);
+
         $dsn = PegawaiBiodatum::select('pegawai_biodata.*', 'pegawai_biodata.nidn as nidnDosen', 'pegawai_biodata.id_pegawai AS idPegawai', 'pegawai_berkas_pendukung.*')
         ->leftJoin('pegawai_berkas_pendukung', 'pegawai_berkas_pendukung.id_pegawai', '=', 'pegawai_biodata.id_pegawai')
         ->where('pegawai_biodata.id_pegawai', $idPegawai)

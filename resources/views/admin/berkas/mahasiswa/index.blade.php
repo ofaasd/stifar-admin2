@@ -44,7 +44,7 @@
                                     <tr>
                                         <td>{{++$fake_id}}</td>
                                         <td>{{ $row->nimMahasiswa }}</td>
-                                        <td><a href="{{ URL::to('admin/berkas/mahasiswa/'. $row->nimMahasiswa) }}">{{ $row->nama }}</a></td>
+                                        <td><a href="{{ URL::to('admin/berkas/mahasiswa/'. $row->nimEnkripsi) }}">{{ $row->nama }}</a></td>
                                         <td>{!! $row->kk ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</td>
                                         <td>{!! $row->ktp ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</td>
                                         <td></td>

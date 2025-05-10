@@ -48,6 +48,7 @@
                     @csrf
                     <input type="hidden" value="{{$dosen->idPegawai}}" name="id_pegawai">
                     <div class="row">
+                        <p class="fw-bold"><span class="text-danger">*</span>Foto berformat jpg/jpeg dan maksimal berukuran 5mb </p>
                         <div class="col-md-6">
                             <div class="mb-2">
                                 <div id="view-ktp">
@@ -64,7 +65,6 @@
                                     <div class="input-group">
                                         <input type="file" name="ktp" class="form-control" aria-describedby="inputGroupPrepend">
                                     </div>
-                                    <span>*jpg/jpeg | maks 5mb</span>
                                 </div>
                                 <hr>
                             </div>
@@ -84,7 +84,6 @@
                                     <div class="input-group">
                                         <input type="file" name="kk" class="form-control" aria-describedby="inputGroupPrepend">
                                     </div>
-                                    <span>*jpg/jpeg | maks 5mb</span>
                                 </div>
                                 <hr>
                             </div>
@@ -104,7 +103,6 @@
                                     <div class="input-group">
                                         <input type="file" name="ijazah_s1" class="form-control" aria-describedby="inputGroupPrepend">
                                     </div>
-                                    <span>*jpg/jpeg | maks 5mb</span>
                                 </div>
                                 <hr>
                             </div>
@@ -126,7 +124,6 @@
                                     <div class="input-group">
                                         <input type="file" name="ijazah_s2" class="form-control" aria-describedby="inputGroupPrepend">
                                     </div>
-                                    <span>*jpg/jpeg | maks 5mb</span>
                                 </div>
                                 <hr>
                             </div>
@@ -146,7 +143,6 @@
                                     <div class="input-group">
                                         <input type="file" name="ijazah_s3" class="form-control" aria-describedby="inputGroupPrepend">
                                     </div>
-                                    <span>*jpg/jpeg | maks 5mb</span>
                                 </div>
                                 <hr>
                             </div>
@@ -166,7 +162,6 @@
                                     <div class="input-group">
                                         <input type="file" name="serdik_aa_pekerti" class="form-control" aria-describedby="inputGroupPrepend">
                                     </div>
-                                    <span>*jpg/jpeg | maks 5mb</span>
                                 </div>
                                 <hr>
                             </div>
@@ -186,7 +181,6 @@
                                     <div class="input-group">
                                         <input type="file" name="serdik_aa" class="form-control" aria-describedby="inputGroupPrepend">
                                     </div>
-                                    <span>*jpg/jpeg | maks 5mb</span>
                                 </div>
                                 <hr>
                             
@@ -207,7 +201,6 @@
                                     <div class="input-group">
                                         <input type="file" name="serdik_lektor" class="form-control" aria-describedby="inputGroupPrepend">
                                     </div>
-                                    <span>*jpg/jpeg | maks 5mb</span>
                                 </div>
                                 <hr>
                             </div>
@@ -227,7 +220,6 @@
                                     <div class="input-group">
                                         <input type="file" name="serdik_kepala_guru_besar" class="form-control" aria-describedby="inputGroupPrepend">
                                     </div>
-                                    <span>*jpg/jpeg | maks 5mb</span>
                                 </div>
                                 <hr>
                             </div>
