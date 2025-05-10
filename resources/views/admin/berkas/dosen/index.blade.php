@@ -45,7 +45,7 @@
                                         <td>{{++$fake_id}}</td>
                                         <td>{{$row->npp}} - {{$row->nidnDosen}} - {{$row->nuptk}}</td>
                                         {{-- <td><a href="{{URL::to('admin/berkas/dosen/' . $row->id)}}">{{$row->nama_lengkap}}</a></td> --}}
-                                        <td><a href="{{ URL::to('admin/berkas/dosen/'. $row->nidnDosen) }}">{{$row->nama_lengkap}}</a></td>
+                                        <td><a href="{{ URL::to('admin/berkas/dosen/'. $row->idPegawai) }}">{{$row->nama_lengkap}}</a></td>
                                         <td>{!! $row->kk ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</td>
                                         <td>{!! $row->ktp ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</td>
                                         <td>

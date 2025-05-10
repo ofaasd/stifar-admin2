@@ -1,41 +1,35 @@
 <?php
 
-namespace App\Http\Controllers\admin\berkas;
+namespace App\Http\Controllers\dosen;
 
-use App\Models\Prodi;
-use App\Models\Pegawai;
 use Illuminate\Http\Request;
 use App\Models\PegawaiBiodatum;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Models\PegawaiBerkasPendukung;
 
-class BerkasDosenController extends Controller
+class DosenBerkasController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $title = "Berkas Dosen";
-        $pegawai = PegawaiBiodatum::select('pegawai_biodata.*', 'pegawai_biodata.nidn as nidnDosen', 'pegawai_biodata.id_pegawai AS idPegawai', 'pegawai_berkas_pendukung.*')
+        $dosen = PegawaiBiodatum::where('user_id', Auth::id())->first();
+        
+
+        $dsn = PegawaiBiodatum::select('pegawai_biodata.*', 'pegawai_biodata.nidn as nidnDosen', 'pegawai_biodata.id_pegawai AS idPegawai', 'pegawai_berkas_pendukung.*')
         ->leftJoin('pegawai_berkas_pendukung', 'pegawai_berkas_pendukung.id_pegawai', '=', 'pegawai_biodata.id_pegawai')
-        ->whereIn('id_posisi_pegawai', [1,2])
-        ->get();
-        $fake_id = 0;
-        return view('admin.berkas.dosen.index', compact('title','pegawai','fake_id'));
-    }
+        ->where('pegawai_biodata.id_pegawai', $dosen->id_pegawai)
+        ->first();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+        $title = 'Berkas ' . $dsn->nama_lengkap;
 
-    /**
-     * Store a newly created resource in storage.
-     */
+        $data = [
+            'dosen' => $dsn,
+            'title' => $title,
+        ];
+
+        return view('dosen.berkas.index', $data);
+    }
+    
     public function store(Request $request)
     {
         $fields = [
@@ -64,7 +58,8 @@ class BerkasDosenController extends Controller
                 $file = $request->file($fileInput);
                 $fileName = date('YmdHi'). $request->id_pegawai . $file->getClientOriginalName();
                 $fileName = str_replace(' ', '-', $fileName);
-                 switch ($dbField) {
+                
+                switch ($dbField) {
                     case "ktp":
                         $tujuan_upload .= "/ktp";
                         break;
@@ -106,49 +101,5 @@ class BerkasDosenController extends Controller
         }
 
         return response()->json(['message' => 'Berhasil Menyimpan Berkas']);
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $idPegawai)
-    {
-        $dsn = PegawaiBiodatum::select('pegawai_biodata.*', 'pegawai_biodata.nidn as nidnDosen', 'pegawai_biodata.id_pegawai AS idPegawai', 'pegawai_berkas_pendukung.*')
-        ->leftJoin('pegawai_berkas_pendukung', 'pegawai_berkas_pendukung.id_pegawai', '=', 'pegawai_biodata.id_pegawai')
-        ->where('pegawai_biodata.id_pegawai', $idPegawai)
-        ->first();
-
-        $title = 'Berkas ' . $dsn->nama_lengkap;
-
-        $data = [
-            'dosen' => $dsn,
-            'title' => $title,
-        ];
-
-        return view('admin.berkas.dosen.show', $data);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }
