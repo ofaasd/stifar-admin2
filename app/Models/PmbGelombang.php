@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class PmbGelombang
- * 
+ *
  * @property int $id
  * @property int|null $no_gel
  * @property string|null $nama_gel
@@ -28,7 +28,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool|null $semester
  * @property int $id_jalur
  * @property int $pmb_online
- * 
+ *
  * @property PmbJalur $pmb_jalur
  *
  * @package App\Models
@@ -63,7 +63,8 @@ class PmbGelombang extends Model
 		'pengumuman',
 		'reg_mulai',
 		'reg_akhir',
-		'tahun',
+		'ta_awal',
+		'ta_akhir',
 		'semester',
 		'id_jalur',
 		'pmb_online'

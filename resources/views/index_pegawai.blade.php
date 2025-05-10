@@ -22,7 +22,7 @@
 @section('content')
 <div class="container-fluid">
     <div class="row">
-        <div class="col-xxl-5 col-ed-6 col-xl-8 box-col-7">
+        <div class="col-xxl-8 col-ed-8 col-xl-8 box-col-8">
             <div class="row">
               <div class="col-sm-12">
                 <div class="card o-hidden welcome-card">

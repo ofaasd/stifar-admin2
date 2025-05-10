@@ -74,35 +74,49 @@
                                         <td>No.</td>
                                         <td>Kelas</td>
                                         <td>Nama Matakuliah</td>
-                                        <!-- <td>SKS</td> -->
+                                        <td>SKS</td>
                                         <td>Hari, Waktu</td>
                                         <td>Ruang</td>
                                         <td>Status</td>
                                         <td>Aksi</td>
                                     </thead>
                                     <tbody>
+                                        @php $total_sks = 0; @endphp
                                         @foreach($krs as $row_krs)
+                                            @php
+                                                $total_sks += $row_krs['sks_teori'] + $row_krs['sks_praktek']
+                                            @endphp
                                             <tr>
                                                 <td>{{ $no++ }}</td>
                                                 <td>{{ $row_krs['kel'] }}</td>
                                                 <td>{{ $row_krs['nama_matkul'] }}</td>
-                                                <!-- <td>{{ $row_krs['sks_teori'] }}T/ {{ $row_krs['sks_praktek'] }}P</td> -->
+                                                <td>{{ ($row_krs['sks_teori'] + $row_krs['sks_praktek']) }}</td>
                                                 <td>{{ $row_krs['hari'] }}, {{ $row_krs['nama_sesi'] }}</td>
                                                 <td>{{ $row_krs['nama_ruang'] }}</td>
                                                 <td>
                                                     {{ $row_krs['is_publish'] == 0 ? 'Belum Validasi':'Sudah Validasi' }}
                                                 </td>
                                                 <td>
-                                                    <a href="{{ url('admin/masterdata/krs/admin/hapus/'.$row_krs['id']) }}" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Hapus</a>
-                                                    @if($row_krs['is_publish'] == 0)
-                                                        <a href="#" onclick="validasiSatuan({{ $row_krs['id'] }}, 1)" class="btn btn-success btn-sm"><i class="fa fa-check"></i> Validasi</a>
-                                                    @else
-                                                        <a href="#" onclick="validasiSatuan({{ $row_krs['id'] }}, 0)" class="btn btn-info btn-sm"><i class="fa fa-close"></i>Batal Validasi</a>
-                                                    @endif
+                                                    <div class="btn-group">
+
+                                                        @if($row_krs['is_publish'] == 0)
+                                                            <a href="#" onclick="validasiSatuan({{ $row_krs['id'] }}, 1)" class="btn btn-success btn-sm" title="Validasi"><i class="fa fa-check"></i></a>
+                                                        @else
+                                                            <a href="#" onclick="validasiSatuan({{ $row_krs['id'] }}, 0)" class="btn btn-info btn-sm" title="Batal Validasi"><i class="fa fa-close"></i></a>
+                                                        @endif
+                                                        <a href="{{ url('admin/masterdata/krs/admin/hapus/'.$row_krs['id']) }}" class="btn btn-danger btn-sm" title="Delete"><i class="fa fa-trash"></i></a>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         @endforeach
                                     </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan=3>Total SKS</td>
+                                            <td>{{$total_sks}}</td>
+                                            <td colspan=4></td>
+                                        </tr>
+                                    </tfoot>
                                 </table>
                             </div>
                         </div>

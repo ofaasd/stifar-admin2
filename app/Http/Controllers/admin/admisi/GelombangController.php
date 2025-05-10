@@ -78,7 +78,7 @@ class GelombangController extends Controller
 
                 foreach ($gelombang as $row) {
                     $nestedData['id'] = $row->id;
-                    $nestedData['fake_id'] = ++$ids;
+                    $nestedData['fake_id'] = $row->id;
                     $nestedData['no_gel'] = $row->no_gel;
                     $nestedData['nama_gel'] = $row->nama_gel;
                     $nestedData['nama_gel_long'] = substr($row->nama_gel_long,0,40) . "...";
@@ -120,6 +120,8 @@ class GelombangController extends Controller
                     'nama_gel_long' => $request->nama_gel_long,
                     'tgl_mulai' => $request->tgl_mulai,
                     'tgl_akhir' => $request->tgl_akhir,
+                    'ta_awal' => $request->ta_awal,
+                    'ta_akhir' => $request->ta_akhir,
                     'ujian' => $request->ujian,
                     'id_jalur' => $request->id_jalur
                 ]
@@ -136,6 +138,8 @@ class GelombangController extends Controller
                     'tgl_mulai' => $request->tgl_mulai,
                     'tgl_akhir' => $request->tgl_akhir,
                     'ujian' => $request->ujian,
+                    'ta_awal' => $request->ta_awal,
+                    'ta_akhir' => $request->ta_akhir,
                     'id_jalur' => $request->id_jalur
                 ]
             );

@@ -23,6 +23,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <div class="container-fluid">
         <div class="row">
+            @if(empty($dosen))
             <div class="col-md-12 project-list">
                 <div class="card">
                    <div class="row">
@@ -37,6 +38,7 @@
                    </div>
                 </div>
             </div>
+            @endif
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
                 <div class="card">
@@ -68,7 +70,7 @@
                                                             <td>{{ $no++ }}</td>
                                                             <td>{{ $jad['kode_jadwal'] }}</td>
                                                             <td>{{ $jad['hari'] }}, {{ $jad['nama_sesi'] }}</td>
-                                                            <td>{{ $jad['nama_dosen'] }}</td>
+                                                            <td>{!! $list_pengajar[$jad['id']] !!}</td>
                                                             <td>[{{ $jad['kode_matkul'] }}] {{ $jad['nama_matkul'] }}</td>
                                                             <td>{{ $jad['nama_ruang'] }}</td>
                                                             <td>{{ $jad['tp'] }}</td>
@@ -127,7 +129,7 @@
             $("#myTable1").DataTable({
                 responsive: true
             })
-            $(".edit-pertemuan").click(function(){
+            $("body").on("click",".edit-pertemuan",function(){
                 const id_jadwal = $(this).data('id');
                 $(".pertemuan-location").html(`<div class="loader-box">
                             <div class="loader-2"></div>

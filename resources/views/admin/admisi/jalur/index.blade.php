@@ -158,11 +158,11 @@
                     orderable: false,
                     render: function render(data, type, full, meta) {
                         return (
-                        '<div class="d-inline-block text-nowrap">' +
-                        '<button class="btn btn-sm btn-icon edit-record text-primary" data-id="'
+                        '<div class="btn-group">' +
+                        '<button class="btn btn-sm btn-primary edit-record" data-id="'
                             .concat(full['id'], '" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal"')
                             .concat(title, '"><i class="fa fa-pencil"></i></button>') +
-                        '<button class="btn btn-sm btn-icon delete-record text-primary" data-id="'.concat(
+                        '<button class="btn btn-sm btn-danger delete-record" data-id="'.concat(
                             full['id'],
                             '"><i class="fa fa-trash"></i></button>'
                         )

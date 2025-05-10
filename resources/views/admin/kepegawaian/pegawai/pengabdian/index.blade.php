@@ -25,6 +25,7 @@
                             <div class="mb-3">
                                 <label for="dokumen" class="form-label">Dokumen</label>
                                 <input type="file" name="dokumen" id="dokumen_pengabdian_pengabdian" class="form-control">
+                                <div class="alert alert-warning">Max File upload 10 MB</div>
                                 <div id="dokumen_exist_pengabdian">
 
                                 </div>

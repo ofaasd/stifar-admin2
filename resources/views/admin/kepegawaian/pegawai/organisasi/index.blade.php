@@ -23,13 +23,17 @@
                                 <input type="text" name="jabatan" id="jabatan_organisasi" class="form-control" placeholder="cth : Ketua">
                             </div>
                             <div class="mb-3">
-                                <label for="tahun_organisasi" class="form-label">Tahun</label>
-                                <input type="number" name="tahun" id="tahun_organisasi" class="form-control" placeholder="ex : 2024">
-                            </div>
-                            <div class="mb-3">
-                                <label for="tahun_keluar_organisasi" class="form-label">Tahun Keluar</label>
-                                <input type="number" name="tahun_keluar" id="tahun_keluar_organisasi" class="form-control" placeholder="ex : 2024">
-                                <div class="alert alert-warning"><small>Diisi dengan angka 0 jika masih Aktif</small></div>
+                                <label for="tahun_organisasi" class="form-label">Periode</label>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <input type="number" name="tahun" id="tahun_organisasi" class="form-control" placeholder="ex : 2024">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="number" name="tahun_keluar" id="tahun_keluar_organisasi" class="form-control" placeholder="ex : 2024">
+                                        <div class="alert alert-warning"><small>Diisi dengan angka 0 jika masih Aktif</small></div>
+                                    </div>
+                                </div>
+                               
                             </div>
                         </div>
                         <div class="modal-footer">

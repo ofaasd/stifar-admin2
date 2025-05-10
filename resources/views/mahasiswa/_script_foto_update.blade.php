@@ -31,11 +31,12 @@
                     $(".photo-profile").html(`<img class="img-70 rounded-circle" alt="" src="${url}/${photo}">`);
                 });
             },
-            error: function error(err) {
+            error: function error(xhr, status, error) {
                 $('#ubahFotoModal').modal('toggle');
+                //const err = eval("(" + xhr.responseText + ")");
                 swal({
-                title: 'Duplicate Entry!',
-                text: 'Data Not Saved !',
+                title: 'Error!',
+                text: xhr.responseText,
                 icon: 'error',
                 customClass: {
                     confirmButton: 'btn btn-success'

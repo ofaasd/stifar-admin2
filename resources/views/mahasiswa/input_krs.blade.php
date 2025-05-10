@@ -16,8 +16,8 @@
 @endsection
 
 @section('breadcrumb-items')
-    <li class="breadcrumb-item">Master Data</li>
-    <li class="breadcrumb-item active">Asal Sekolah PMB</li>
+    <li class="breadcrumb-item">Akademik</li>
+    <li class="breadcrumb-item active">Input KRS</li>
 @endsection
 
 @section('content')
@@ -27,34 +27,37 @@
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body" style="overflow-x: scroll">
                         <div class="mt-4">
                             @if($permission->krs == 0)
                                 <div class="alert alert-danger">Anda belum diizinkan untuk melakukan input krs harap hubungi admin sistem</div>
+                            @elseif($prodi->is_krs == 0)
+                                <div class="alert alert-danger">Input KRS ditutup</div>
                             @else
                                 @if(empty($mk))
                                     <div class="alert alert-danger">Belum ada Kurikulum untuk angkatan anda. Harap hubungi admin</div>
                                 @endif
-                            <div class="col-sm-4">
-                                <div class="form-group">
-                                    <label for="matakuliah">Pilih Matakuliah</label>
-                                    <input type="number" value="{{ $ta }}" id="ta" hidden="" />
-                                    <input type="number" value="{{ $idmhs }}" id="idmhs" hidden="" />
-                                    <select name="matakuliah" onchange="getmk()" id="matakuliah" class="form-control js-example-basic-single">
-                                        <option value="" selected>Pilih Matakuliah</option>
-                                        @if(!empty($mk))
-                                            @foreach($mk as $value)
-                                                @foreach($value as $row)
-                                                    <option value="{{ $row['id'] }}">Kode Matakuliah : {{ $row['kode_matkul'] }} | Nama Matakuliah : {{ $row['nama_matkul'] }} | Semester : {{ $row['semester'] ?? '-' }} | Status : {{ $row['status_mk'] ?? '-' }}</option>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="matakuliah">Pilih Matakuliah</label>
+                                        <input type="number" value="{{ $ta }}" id="ta" hidden="" />
+                                        <input type="number" value="{{ $idmhs }}" id="idmhs" hidden="" />
+                                        <select name="matakuliah" onchange="getmk()" id="matakuliah" class="form-control js-example-basic-single">
+                                            <option value="" selected>Pilih Matakuliah</option>
+                                            @if(!empty($mk))
+                                                @foreach($mk as $value)
+                                                    @foreach($value as $row)
+                                                        <option value="{{ $row['id'] }}">Kode Matakuliah : {{ $row['kode_matkul'] }} | Nama Matakuliah : {{ $row['nama_matkul'] }} | Semester : {{ $row['semester'] ?? '-' }} | Status : {{ $row['status_mk'] ?? '-' }}</option>
+                                                    @endforeach
                                                 @endforeach
-                                            @endforeach
-                                        @endif
-                                    </select>
+                                            @endif
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="mt-4">
-                                <div id="showJadwal"></div>
-                            </div>
+                                <div class="mt-4">
+                                    <div id="showJadwal"></div>
+                                </div>
+                            @endif
                             <?php
                                 if(!is_null(Session::get('krs'))){
                                     echo Session::get('krs');
@@ -85,7 +88,7 @@
                                         @foreach($krs as $row_krs)
                                             <tr>
                                                 <td>{{ $no++ }}</td>
-                                                <td>{{ $row_krs['kode_matkul'] }}</td>
+                                                <td>{{ $row_krs['kode_jadwal'] }}</td>
                                                 <td>{{ $row_krs['nama_matkul'] }}</td>
                                                 <td>{{ $row_krs['kel'] }}</td>
                                                 <!-- <td>{{ $row_krs['sks_teori'] }}T/ {{ $row_krs['sks_praktek'] }}P</td> -->
@@ -94,7 +97,9 @@
                                                 <td>{{ ($row_krs->sks_teori+$row_krs->sks_praktek) }}</td>
                                                 <td>{!!($row_krs->is_publish == 0)?'<p class="btn btn-secondary" style="font-size:8pt;">Menunggu Validasi Dosen Wali</p>':'<p class="btn btn-success" style="font-size:8pt;">Sudah Divalidasi</p>'!!}</td>
                                                 <td>
-                                                    <a href="{{ url('admin/masterdata/krs/admin/hapus/'.$row_krs['id']) }}" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></a>
+                                                    @if($row_krs->is_publish == 0)
+                                                        <a href="{{ url('admin/masterdata/krs/admin/hapus/'.$row_krs['id']) }}" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></a>
+                                                    @endif
                                                 </td>
                                             </tr>
                                             @php
@@ -112,7 +117,7 @@
                                     </tfoot>
                                 </table>
                             </div>
-                            @endif
+
                         </div>
                     </div>
                 </div>
@@ -130,9 +135,10 @@
 
     <script>
         $(function() {
-            $("#tablekrs").DataTable({
-                responsive: true
-            })
+            // $("#tablekrs").DataTable({
+            //     responsive: true,
+            //     pageLength: 15,
+            // })
         })
         function getmk(){
             const baseUrl = {!! json_encode(url('/')) !!};

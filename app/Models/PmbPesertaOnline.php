@@ -72,7 +72,7 @@ class PmbPesertaOnline extends Model
 
 	protected $casts = [
 		'user_id' => 'int',
-		'jk' => 'bool',
+		'jk' => 'int',
 		'agama' => 'int',
 		'tinggi_badan' => 'int',
 		'berat_badan' => 'int',

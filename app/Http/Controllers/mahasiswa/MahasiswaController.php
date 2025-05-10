@@ -8,14 +8,13 @@ use App\Models\Prodi;
 use App\Models\Wilayah;
 use App\Models\Mahasiswa;
 use App\Models\ModelHasRole;
-use Illuminate\Http\Request;
-use App\Models\DetailTagihan;
-use App\Models\PegawaiBiodatum;
-use Spatie\Permission\Models\Role;
-use App\Http\Controllers\Controller;
+use App\Models\MahasiswaBerkasPendukung;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Request;
 use Spatie\Permission\Models\Permission;
-
+use Spatie\Permission\Models\Role;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 class MahasiswaController extends Controller
 {
   public function index(Request $request)
@@ -274,6 +273,7 @@ class MahasiswaController extends Controller
                 'email' => $request->email,
                 'hp' => $request->hp,
                 'id_dsn_wali' => $request->id_dsn_wali,
+                'status' => $request->status,
             ]
         );
         return response()->json('updated');
@@ -353,26 +353,155 @@ class MahasiswaController extends Controller
     public function foto_update(Request $request){
         $id = $request->id;
         if ($request->file('foto')) {
-
+            
             $photo = $request->file('foto');
-            $filename = date('YmdHi') . $photo->getClientOriginalName();
-            $tujuan_upload = 'assets/images/mahasiswa';
-            $photo->move($tujuan_upload,$filename);
-            $mahasiswa = Mahasiswa::updateOrCreate(
-                [
-                    'id' => $id
-                ],
-                [
-                    'foto_mhs' => $filename,
-                ]
-            );
-            $data = [
-                'status' => 'updated',
-                'pegawai' => Mahasiswa::find($id),
-            ];
-            return response()->json($data);
+            if(strtolower($photo->extension()) ==  'jpg' || strtolower($photo->extension()) ==  'png' || strtolower($photo->extension()) ==  'gif' || strtolower($photo->extension()) ==  'jpeg'){
+                $filename = date('YmdHi') . $photo->getClientOriginalName();
+                $tujuan_upload = 'assets/images/mahasiswa';
+                // create image manager with desired driver
+                $manager = new ImageManager(new Driver());
+
+                // read image from file system
+                $image = $manager->read($request->file('foto')->getPathName());
+
+                // resize image proportionally to 300px width
+                $image->scale(width: 600);
+
+                // save modified image in new format 
+                $image->save($tujuan_upload . '/' . $filename);
+                //$photo->move($tujuan_upload,$filename);
+                $mahasiswa = Mahasiswa::updateOrCreate(
+                    [
+                        'id' => $id
+                    ],
+                    [
+                        'foto_mhs' => $filename,
+                    ]
+                );
+                $data = [
+                    'status' => 'updated',
+                    'pegawai' => Mahasiswa::find($id),
+                ];
+                return response()->json($data);
+            }else{
+                return response()->json('Wrong extension. Extension must be jpg, jpeg, or png', 500);
+            }
         }else{
             return response()->json('Failed');
         }
+    }
+    public function berkas_update(Request $request){
+        $nim = $request->nim;
+        $id = MahasiswaBerkasPendukung::where("nim",$nim)->first()->id ?? '';
+        $data_upload = [
+            'nim'=>$nim
+        ];
+        $filename = ''; // kk
+        if ($request->file('kk') != null) {
+            $file = $request->file('kk');
+            if(strtolower($file->extension()) ==  'pdf'){
+                if($file->getSize() <= 2048000){
+                    $filename = 'kk' . date('YmdHi') . $file->getClientOriginalName();
+                    $tujuan_upload = 'assets/file/berkas';
+                    $file->move($tujuan_upload,$filename);
+                    $data_upload['kk'] = $filename;
+                }
+            }
+        }
+
+        $filename2 = ''; // ktp
+        if ($request->file('ktp') != null) {
+            $file = $request->file('ktp');
+            if(strtolower($file->extension()) ==  'pdf'){
+                if($file->getSize() <= 2048000){
+                    $filename2 = 'ktp' . date('YmdHi') . $file->getClientOriginalName();
+                    $tujuan_upload = 'assets/file/berkas';
+                    $file->move($tujuan_upload,$filename2);
+                    $data_upload['ktp'] = $filename2;
+                }
+            }
+        }
+
+        $filename3 = ''; // akta
+        if ($request->file('akta') != null) {
+            $file = $request->file('akta');
+            if(strtolower($file->extension()) ==  'pdf'){
+                if($file->getSize() <= 2048000){
+                    $filename3 = 'akta' . date('YmdHi') . $file->getClientOriginalName();
+                    $tujuan_upload = 'assets/file/berkas';
+                    $file->move($tujuan_upload,$filename3);
+                    $data_upload['akta'] = $filename3;
+                }
+            }
+        }
+
+        $filename4 = ''; // ijazah_depan
+        if ($request->file('ijazah_depan') != null) {
+            $file = $request->file('ijazah_depan');
+            if(strtolower($file->extension()) ==  'pdf'){
+                if($file->getSize() <= 2048000){
+                    $filename4 = 'ijazah_depan' . date('YmdHi') . $file->getClientOriginalName();
+                    $tujuan_upload = 'assets/file/berkas';
+                    $file->move($tujuan_upload,$filename4);
+                    $data_upload['ijazah_depan'] = $filename4;
+                }
+            }
+        }
+        $filename5 = ''; // ijazah_belakang
+        if ($request->file('ijazah_belakang') != null) {
+            $file = $request->file('ijazah_belakang');
+            if(strtolower($file->extension()) ==  'pdf'){
+                if($file->getSize() <= 2048000){
+                    $filename5 = 'ijazah_belakang' . date('YmdHi') . $file->getClientOriginalName();
+                    $tujuan_upload = 'assets/file/berkas';
+                    $file->move($tujuan_upload,$filename5);
+                    $data_upload['ijazah_belakang'] = $filename5;
+                }
+            }
+        }
+        if($id){
+            
+            $berkas = MahasiswaBerkasPendukung::updateOrCreate(
+                ['id' => $id],
+                $data_upload
+            );
+            return response()->json('Updated');
+        }else{
+            $berkas = MahasiswaBerkasPendukung::updateOrCreate(
+                ['id' => $id],
+                $data_upload
+            );
+            if ($berkas) {
+                return response()->json('Created');
+            } else {
+                return response()->json('Failed Create Academic');
+            }
+        }
+        // if ($request->file('foto')) {
+            
+        //     $photo = $request->file('foto');
+        //     if(strtolower($photo->extension()) ==  'pdf'){
+        //         $filename = date('YmdHi') . $photo->getClientOriginalName();
+                
+        //         //$photo->move($tujuan_upload,$filename);
+        //         $mahasiswa = Mahasiswa::updateOrCreate(
+        //             [
+        //                 'id' => $id
+        //             ],
+        //             [
+        //                 'foto_mhs' => $filename,
+        //             ]
+        //         );
+        //         $data = [
+        //             'status' => 'updated',
+        //             'pegawai' => Mahasiswa::find($id),
+        //         ];
+        //         return response()->json($data);
+        //     }else{
+        //         return response()->json('Wrong extension. Extension must be jpg, jpeg, or png', 500);
+        //     }
+        // }else{
+        //     return response()->json('Failed');
+        // }
     }
 }

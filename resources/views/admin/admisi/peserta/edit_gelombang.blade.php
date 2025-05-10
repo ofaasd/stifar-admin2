@@ -70,17 +70,17 @@
                                             <label for='prodi'>Program Studi {{$i}}</label>
                                             <select name='prodi[]' class="form-control">
                                                 @foreach($prodi as $row)
-                                                <option value='{{$row->id}}'
+                                                <option value='{{$row->id_program_studi}}'
                                                 @if($i == 1)
-                                                    @if($peserta->pilihan1 == $row->id)
+                                                    @if($peserta->pilihan1 == $row->id_program_studi)
                                                         selected
                                                     @endif
                                                 @else
-                                                    @if($peserta->pilihan2 == $row->id)
+                                                    @if($peserta->pilihan2 == $row->id_program_studi)
                                                     selected
                                                     @endif
                                                 @endif
-                                                >{{$row->nama_jurusan}} {{$row->keterangan}}</option>
+                                                >{{$row->nama_prodi}} {{$row->keterangan ?? ''}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -138,7 +138,7 @@ const get_jurusan = () =>
                 temp += `<div class="mb-2"> <label for='prodi'>Program Studi ${index + 1}</label>
                 <select name='prodi[]' class="form-control">`;
                 item.forEach((item2, index2) => {
-                    temp += `<option value='${item2.id_program_studi}'>${item2.nama_jurusan} ${item2.keterangan}</option>`;
+                    temp += `<option value='${item2.id_program_studi}'>${item2.nama_prodi} ${item2.keterangan ? $item2.keterangan : ""}</option>`;
                 });
                 temp += `</select></div>`;
             });

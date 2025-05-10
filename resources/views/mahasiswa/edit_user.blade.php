@@ -46,6 +46,9 @@
                           </div>
                         <div class="media-body">
                           <h5 class="mb-1">{{$mahasiswa->nama}}</h5>
+                          <p class="mb-1">{{$mahasiswa->nim}}</p>
+                          <p class="mb-1">Dosen Wali : <br />{{$dosen_wali}}</p>
+
                           <p>{{$prodi[$mahasiswa->id_program_studi]}}</p>
                         </div>
                       </div>

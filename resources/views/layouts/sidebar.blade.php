@@ -38,7 +38,7 @@
                         <ul class="nav-sub-childmenu submenu-content">
                             <li><a href="{{URL::to('admin/masterdata/program-studi')}}">Daftar Prodi</a></li>
                             <li><a href="{{URL::to('admin/masterdata/prodi/atribut/1')}}">Atribut Prodi</a></li>
-                            <li><a href="#">Akreditasi</a></li>
+                            <li><a href="{{URL::to('admin/masterdata/prodi/akreditasi')}}">Akreditasi</a></li>
                             <li><a href="{{URL::to('admin/masterdata/prodi/renstra/1')}}">Renstra</a></li>
                         </ul>
                     </li>
@@ -48,7 +48,7 @@
                     <li><a href="{{URL::to('admin/masterdata/user')}}">User Manajemen</a></li>
                     {{-- <li><a href="{{ route('ruang/')}}">Ruang</a></li> --}}
                     {{-- <li><a href="{{URL::to('admin/masterdata/sesi')}}">Sesi</a></li> --}}
-                    <li><a href="{{URL::to('admin/masterdata/asal-sekolah')}}">Sekolah</a></li>
+                    <li><a href="{{URL::to('admin/masterdata/sekolah')}}">Sekolah</a></li>
                     <li><a href="{{URL::to('admin/masterdata/waktu')}}">Waktu</a></li>
                     {{-- <li><a href="{{URL::to('admin/masterdata/rumpun')}}">Rumpun</a></li> --}}
                     {{-- <li><a href="{{URL::to('admin/masterdata/fakultas')}}">Fakultas</a></li> --}}
@@ -90,17 +90,18 @@
                 <ul class="sidebar-submenu">
                     <li><a href="{{URL::to('admin/admisi/jalur_pendaftaran')}}">Jalur Pendaftaran</a></li>
                     <li><a href="{{URL::to('admin/admisi/gelombang')}}">Gelombang</a></li>
-                    <li><a href="{{URL::to('admin/admisi/peserta')}}">Pendaftaran Mahasiswa Baru</a></li>
+                    <li><a href="{{(!empty(session('gelombang')))?URL::to('admin/admisi/peserta/gelombang/' . session('gelombang')):URL::to('admin/admisi/peserta')}}">Pendaftaran Mahasiswa Baru</a></li>
                     <li><a href="{{URL::to('admin/admisi/daftar_soal')}}">Pengaturan Ujian PMB</a></li>
                     <li><a href="{{URL::to('admin/admisi/peringkat')}}">Peringkat PMDP</a></li>  {{--  Ada menu untuk toggle krs sedang dibuka atau ditutup--}}
                     <li><a href="{{URL::to('admin/admisi/verifikasi')}}">Verifikasi Pendaftaran</a></li>
-                    <li><a href="{{URL::to('admin/admisi/verifikasi/pembayaran')}}">Verifikasi Pembayaran Daftar</a></li>
-                    <li><a href="{{URL::to('admin/admisi/pengumuman')}}">Surat Pengumuman</a></li> {{-- Butuh format surat pengumuman resmi dari pihak kampus --}}
+                    <li><a href="{{URL::to('admin/admisi/verifikasi/pembayaran')}}">Verifikasi Pembayaran</a></li>
+                    <li><a href="{{URL::to('admin/admisi/pengumuman')}}">Pengumuman Peserta</a></li> {{-- Butuh format surat pengumuman resmi dari pihak kampus --}}
                     <li><a href="#">KTM (s) <label class="badge badge-light-danger">!</label></a></li>
-                    <li><a href="#">Statistik <label class="badge badge-light-danger">!</label></a></li>
+                    <li><a href="{{URL::to('admin/admisi/statistik')}}">Statistik</a></li>
                     <li><a href="#">Verifikasi Pembayaran Daftar Ulang <label class="badge badge-light-danger">!</label></a></li>
                     <li><a href="#">History PMB <label class="badge badge-light-danger">!</label></a></li>
                     {{-- <li><a href="#">Berita Pendaftaran</a></li> --}}
+                    <li><a href="{{URL::to('admin/admisi/biaya_pendaftaran')}}">Biaya Pendaftaran</a></li>
                     <li><a href="{{URL::to('admin/admisi/slideshow')}}">Berita Gambar/Slideshow</a></li>
                     <li><a href="{{URL::to('admin/admisi/user_pmb')}}">User PMB Online</a></li> {{-- Daftar User pmb online--}}
                 </ul>
@@ -112,7 +113,7 @@
                      <li><a href="{{URL::to('admin/masterdata/jadwal')}}">Jadwal</a></li>
                      {{-- <li><a href="#">Plot Jadwal Ajar</a></li> --}}
                      <li><a href="{{URL::to('admin/masterdata/jadwal-harian')}}">Kontrol Jadwal</a></li>
-                     <li><a href="{{URL::to('admin/akademik/setting-pertemuan')}}">Setting Pertemuan</a></li>
+
                      <li>
                         <a class="submenu-title" href="#">
                             <span>KRS</span>  {{--  Ada menu untuk toggle krs sedang dibuka atau ditutup--}}
@@ -128,7 +129,8 @@
                             <span>Presensi</span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
-                            <li><a href="{{Url::to('admin/akademik/list-absensi')}}">Input Presensi</a></li>
+                            <li><a href="{{URL::to('admin/akademik/setting-pertemuan')}}">Setting Pertemuan & Presensi</a></li>
+                            {{-- <li><a href="{{Url::to('admin/akademik/list-absensi')}}">Input Presensi</a></li> --}}
                             <li><a href="#">Ganti Kuliah - Pengganti <label class="badge badge-light-danger">!</label></a></li>
 
                         </ul>
@@ -138,7 +140,7 @@
                             <span>Ujian <label class="badge badge-light-danger">!</label></span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
-                            <li><a href="#">Pengaturan <label class="badge badge-light-danger">!</label></a></li>{{--  Ada menu untuk toggle ujian sedang dibuka atau ditutup--}}
+                            <li><a href="{{Url::to('admin/akademik/pengaturan-ujian')}}">Pengaturan</a></li>{{--  Ada menu untuk toggle ujian sedang dibuka atau ditutup--}}
                             <li><a href="{{Url::to('admin/akademik/nilai')}}">Input Nilai</a></li>
                             {{-- <li><a href="#">Posting Nilai <label class="badge badge-light-danger">!</label></a></li> --}}
                             {{-- <li><a href="#">Input Nilai Konversi <label class="badge badge-light-danger">!</label></a></li> --}}
@@ -147,10 +149,8 @@
                     </li>
                      <li><a href="#">Semester Antara <label class="badge badge-light-danger">!</label></a></li>
                      <li><a href="#">Remidial <label class="badge badge-light-danger">!</label></a></li>
-                     <li><a href="#">KHS <label class="badge badge-light-danger">!</label></a></li>
-
-                     <li><a href="#">Perubahan Status Akademik <label class="badge badge-light-danger">!</label></a></li>
-
+                     <li><a href="{{Url::to('admin/akademik/khs')}}">KHS</a></li>
+                     <li><a href="{{Url::to('admin/akademik/kuesioner')}}">Kuesioner Mahasiswa</a></li>
                      <li><a href="{{Url::to('admin/akademik/perwalian')}}">Perwalian</a></li>
 
 
@@ -244,6 +244,7 @@
                     <li><a href="#">Cetak <label class="badge badge-light-danger">!</label></a></li>
                     <li><a href="#">Sync <label class="badge badge-light-danger">!</label></a></li>
                     <li><a href="#">Pembayaran Lain-lain <label class="badge badge-light-danger">!</label></a></li>
+                    <li><a href="{{URL::to('admin/keuangan/bank_data_va')}}">Bank Data VA</a></li> {{-- Menu dasar untuk buka tutup krs --}}
                 </ul>
             </li>
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#">

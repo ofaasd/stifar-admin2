@@ -232,7 +232,7 @@
                                                                                 </select>
                                                                             </div>
                                                                             <div class="mt-2"></div>
-                                                                            <button type="button" onclick="simpanPengampu(<?=$row['id']?>)" class="btn btn-primary btn-sm"><i class="fa fa-save"></i> Tambah Pertemuan</button>
+                                                                            <button type="button" onclick="simpanPengampu(<?=$row['id']?>)" class="btn btn-primary btn-sm"><i class="fa fa-save"></i> Tambah Dosen Pengampu</button>
                                                                             <hr>
                                                                             <div id="tablePengampu{{ $row['id'] }}"></div>
                                                                             <button class="btn bg-danger d-flex align-items-center gap-2 text-light ms-auto btn-sm" type="button" data-bs-dismiss="modal">Tutup</button>

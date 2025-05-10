@@ -67,6 +67,7 @@
                                         <th>Pilihan1</th>
                                         <th>Pilihan2</th>
                                         <th>TTL</th>
+                                        <th>Tgl. Registrasi</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -141,10 +142,10 @@
                     orderable: false,
                     render: function render(data, type, full, meta) {
                         return (
-                        '<div class="d-inline-block text-nowrap">' +
-                        '<a href="'+baseUrl+'/admin/admisi/peserta/'+full['id']+'/edit" class="btn btn-sm btn-icon edit-record text-primary"'
+                        '<div class="btn-group">' +
+                        '<a href="'+baseUrl+'/admin/admisi/peserta/'+full['id']+'/edit" class="btn btn-sm btn-primary"'
                             .concat(title, '"><i class="fa fa-pencil"></i></a>') +
-                        '<button class="btn btn-sm btn-icon delete-record text-primary" data-id="'.concat(
+                        '<button class="btn btn-sm delete-record btn-danger" data-id="'.concat(
                             full['id'],
                             '"><i class="fa fa-trash"></i></button>'
                         )
@@ -152,7 +153,7 @@
                     }
                     }
                 ],
-                order: [[2, 'desc']],
+                order: [[8, 'desc']],
                 dom:
                     '<"row mx-2"' +
                     '<"col-md-2"<"me-3"l>>' +
@@ -245,7 +246,7 @@
                     // delete the data
                     $.ajax({
                     type: 'DELETE',
-                    url: ''.concat(baseUrl).concat(page, '/').concat(id),
+                    url: ''.concat(baseUrl).concat('/admin/admisi/peserta/').concat(id),
                     data:{
                         'id': id,
                         '_token': '{{ csrf_token() }}',
@@ -278,6 +279,16 @@
                     });
                 }
                 });
+            });
+            $("#ta_awal").on('change',function(){
+                const id = $(this).val();
+                const url = ''.concat(baseUrl).concat('/admin/admisi/peserta/get_gelombang_ta');
+                $.post(url,{"_token": "{{ csrf_token() }}",id:id}, (data) => {
+                    $("#filter_gelombang").html('<option value="0">Pilih Gelombang</option>');
+                    data.forEach(function(value) {
+                        $("#filter_gelombang").append(`<option value="${value.id}">${value.nama_gel}</option>`);
+                    });
+                }, "json");
             });
             $("#filter_gelombang").on('change',function(){
                 const id = $(this).val();

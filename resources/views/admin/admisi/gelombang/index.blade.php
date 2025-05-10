@@ -56,7 +56,7 @@
                                                                 <input type="number" name="ta_awal" id="ta_awal" class="form-control" value='{{date('Y')}}'>
                                                             </div>
                                                             <div class="col-md-6">
-                                                                <input type="number" name="ta_awal" id="ta_awal" class="form-control" value='{{(date('Y')+1)}}'>
+                                                                <input type="number" name="ta_akhir" id="ta_akhir" class="form-control" value='{{(date('Y')+1)}}'>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -139,7 +139,11 @@
         $(function () {
             id = "editable";
             var simplemde = new SimpleMDE({
-                element: $("textarea#" + id)[0]
+                element: $("textarea#" + id)[0],
+                autosave: {
+                    enabled: true,
+                    uniqueId: "name_gelombang_long_text",
+                }
             });
             toolbarInitialTop = $('.editor-toolbar').offset().top;
             toolbarOuterHeight = $('.editor-toolbar').outerHeight();
@@ -217,11 +221,11 @@
                     orderable: false,
                     render: function render(data, type, full, meta) {
                         return (
-                        '<div class="d-inline-block text-nowrap">' +
-                        '<button class="btn btn-sm btn-icon edit-record text-primary" data-id="'
+                        '<div class="btn-group">' +
+                        '<button class="btn btn-sm btn-primary edit-record" data-id="'
                             .concat(full['id'], '" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal"')
                             .concat(title, '"><i class="fa fa-pencil"></i></button>') +
-                        '<button class="btn btn-sm btn-icon delete-record text-primary" data-id="'.concat(
+                        '<button class="btn btn-sm btn-danger delete-record" data-id="'.concat(
                             full['id'],
                             '"><i class="fa fa-trash"></i></button>'
                         )
@@ -247,6 +251,10 @@
             });
             $('#tambahModal').on('hidden.bs.modal', function () {
                 $('#formAdd').trigger("reset");
+                $("#nama_gel_long").val('').trigger('change');
+                simplemde.value('');
+                $(".CodeMirror-code").html('');
+                $("#id").val('');
             });
 
 

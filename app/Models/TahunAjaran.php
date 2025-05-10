@@ -10,9 +10,11 @@ class TahunAjaran extends Model
     protected $fillable = [
         'kode_ta',
         'tgl_awal',
+        'tgl_awal_kuliah',
         'tgl_akhir',
         'status',
         'krs',
-        'keterangan'
+        'keterangan',
+        'kuesioner',
     ];
 }
