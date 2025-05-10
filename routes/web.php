@@ -89,7 +89,7 @@ use App\Http\Controllers\admin\keuangan\ProdiBukaTutupController;
 use App\Http\Controllers\mahasiswa\UjianController;
 use App\Http\Controllers\mahasiswa\KuesionerMhsController;
 use App\Http\Controllers\mahasiswa\MahasiswaBerkasController;
-
+use App\Http\Controllers\dosen\DosenBerkasController;
 
 /*
 |--------------------------------------------------------------------------
@@ -406,6 +406,9 @@ Route::group(['middleware' => ['auth','role:pegawai|super-admin']], function(){
     Route::get('/admin/input-batch/{id}',[KrmController::class, 'inputAbsenBatch'] )->name('dashboard_pegawai');
     Route::post('/dosen/tampil-pertemuan-absensi',[KrmController::class, 'pertemuanAbsensi'] )->name('dashboard_pegawai');
     Route::post('/dosen/simpan-capaian',[KrmController::class, 'simpanCapaian'] )->name('dashboard_pegawai');
+
+    Route::get('dosen/berkas', [DosenBerkasController::class, 'index'])->name('dosen-berkas');
+    Route::post('dosen/berkas', [DosenBerkasController::class, 'store'])->name('store-dosen-berkas');
 
     Route::get('pegawai',[UserPegawaiController::class, 'index'] );
     Route::resource('pegawai', UserPegawaiController::class)->name('index','pegawai');
