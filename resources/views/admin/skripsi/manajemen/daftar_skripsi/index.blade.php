@@ -68,7 +68,7 @@
                                 </div>
                             </div>
                             <div>
-                                <h4>255 </h4><span class="f-light">Dosen Pembimbing</span>
+                                <h4>{{ $pembimbing }} </h4><span class="f-light">Dosen Pembimbing</span>
                             </div>
                         </div>
                         <div class="font-warning f-w-500"><i class="icon-arrow-down icon-rotate me-1"></i><span>-20%</span>
@@ -91,7 +91,7 @@
                                 </div>
                             </div>
                             <div>
-                                <h4>255 </h4><span class="f-light">Topik Skripsi</span>
+                                <h4>{{ $judulSkripsi }} </h4><span class="f-light">Topik Skripsi</span>
                             </div>
                         </div>
                         <div class="font-warning f-w-500"><i class="icon-arrow-down icon-rotate me-1"></i><span>-20%</span>
@@ -109,6 +109,7 @@
                         <tr>
                             <th>No</th>
                             <th>Nama Prodi</th>
+                            <th>minimal SKS</th>
                             <th>Action</th>
                         </tr>
                       </thead>
@@ -117,6 +118,17 @@
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ e($prod->nama_prodi) }}</td>
+                            <td>{{ e($prod->sks) }} 
+                                <button type="button"
+                                class="btn p-0 border-0 bg-transparent openSKSModal"
+                                data-bs-toggle="modal"
+                                data-bs-target="#formSKS"
+                                data-id="{{ $prod->id }}"
+                                data-sks="{{ $prod->sks }}">
+                                <i class="icon-pencil-alt text-secondary" style="cursor: pointer;"></i>
+                            </button>
+                              
+                            </td>
                             <td>
                                 <ul class="action">
                                     <li class="detail" data-id="{{ $prod->id }}">
@@ -133,56 +145,7 @@
                     </table>
                 </div>
             </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="display table-basic" >
-                      <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Nama Prodi</th>
-                            <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                            <td>No</td>
-                            <td>Nama Prodi</td>
-                                <td>
-                                    <ul class="action">
-                                        <li class="edit"> <a href="#"><i class="icon-eye"></i></a>
-                                        </li>
-                                    </ul>
-                                </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="display table-basic" >
-                      <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Nama Prodi</th>
-                            <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                            <td>No</td>
-                            <td>Nama Prodi</td>
-                                <td>
-                                    <ul class="action">
-                                        <li class="edit"> <a href="#"><i class="icon-eye"></i></a>
-                                        </li>
-                                    </ul>
-                                </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                </div>
-            </div>
+         
         </div>
     </div>
     </div>
@@ -192,25 +155,20 @@
             <div class="modal-content">
                 <div class="modal-body">
                     <form class="row g-3 needs-validation custom-input" id="formDosbim" method="POST"
-                        action="{{ Route('admin.skripsi.manajemen.daftar.sks') }}">
-                        @csrf
-                        <div class="col-md-12 position-relative">
-                            <label class="form-label" for="validationTooltip03">Total SKS</label>
-                            <input class="form-control" name="jml_sks" id="kuotaSKS" type="number" required>
-                        </div>
-                        <div class="col-md-12 position-relative">
-                            <label class="form-label" for="kodeProdi">Program Studi</label>
-                            <select class="form-select" name="kode_prodi" id="kodeProdi" required>
-                                <option value="" disabled selected>Pilih Program Studi</option>
-                                @foreach ($prodi as $kode_prodi)
-                                    <option value="{{ $kode_prodi->id }}">{{ $kode_prodi->nama_prodi }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-12">
-                            <button class="btn btn-primary" type="submit">Submit</button>
-                        </div>
-                    </form>
+                    action="{{ Route('admin.skripsi.manajemen.daftar.sks') }}">
+                    @csrf
+                    <input class="form-control" name="id_prodi" id="id_prodi" type="hidden" required>
+                
+                    <div class="col-md-12 position-relative">
+                        <label class="form-label" for="validationTooltip03">Total SKS</label>
+                        <input class="form-control" name="jml_sks" id="kuotaSKS" type="number" required>
+                    </div>
+                
+                    <div class="col-12">
+                        <button class="btn btn-primary" type="submit">Submit</button>
+                    </div>
+                </form>
+                
                 </div>
             </div>
         </div>
@@ -223,6 +181,13 @@
     <script src="{{ asset('assets/js/sweet-alert/sweetalert.min.js') }}"></script>
     <script>
         $(function() {
+            $('.openSKSModal').on('click', function () {
+            var prodiId = $(this).data('id');
+            var sks = $(this).data('sks');
+
+            $('#id_prodi').val(prodiId);
+            $('#kuotaSKS').val(sks);
+        });
             $('.detail').on('click', function () {
                 // Ambil data-id dari elemen yang diklik
                 var id = $(this).data('id');

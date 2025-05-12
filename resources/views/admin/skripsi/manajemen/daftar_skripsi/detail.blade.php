@@ -24,7 +24,6 @@
 
 @section('content')
 
-
         <div class="row">
             <div class="card">
                 <div class="card-body">

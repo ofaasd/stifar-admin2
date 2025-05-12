@@ -68,10 +68,17 @@ class ManajemenSkripsiController extends Controller
     public function index_daftar(Request $request)
 {
     $title = "Daftar Mahasiswa";
-    $mhs = Mahasiswa::all();
+    $mhs = MasterBimbingan::where('status',1)->count();
+    $pembimbing = RefPembimbing::where('kuota','!=',0)->count();
+    $judulSkripsi = JudulSkripsi::join('master_bimbingan_skripsi AS master','master.nim','judul_skripsi.nim')->where('master.status',1)->count();
     $prodi = Prodi::all();  
-  
-    return view('admin.skripsi.manajemen.daftar_skripsi.index', compact('title', 'prodi', 'mhs'));
+    foreach($prodi as $prod){
+        $prod->sks = RefJumlahSksSkripsi::where('id_progdi', $prod->id)->value('jumlah_sks') ?? 0;
+    }
+    
+    
+    
+    return view('admin.skripsi.manajemen.daftar_skripsi.index', compact('title', 'prodi', 'mhs','pembimbing','judulSkripsi'));
 }
 
 public function detail($id){
@@ -101,7 +108,7 @@ public function tambahKoor(Request $request)
             ['id_progdi' => $request->input('id_progdi')]
         );
 
-        return response()->json(['success' => 'Berhasil Menambahkan Koordinator']);
+        return redirect()->back()->with('success', 'Berhasil Update Koor');
     } catch (\Exception $e) {
         // Log jika terjadi kesalahan
         Log::error('Terjadi kesalahan saat Menambahkan Koordinator.', [
@@ -109,8 +116,7 @@ public function tambahKoor(Request $request)
             'id_progdi' => $request->input('id_progdi'),
             'error' => $e->getMessage()
         ]);
-
-        return response()->json(['message' => 'Terjadi kesalahan, silakan coba lagi.'], 500);
+        return redirect()->back()->with('error', 'Terjadi kesalahan, silakan coba lagi.');
     }
 }
     
@@ -123,16 +129,16 @@ public function tambahKoor(Request $request)
     {
         $request->validate([
             'jml_sks' => 'required|integer|min:0',
-            'id_progdi' => 'required|exists:program_studi,id',
+            'id_prodi' => 'required|exists:program_studi,id',
         ]);
     
         try {
             RefJumlahSksSkripsi::updateOrCreate(
-                ['id_progdi' => $request->input('id_progdi')], 
+                ['id_progdi' => $request->input('id_prodi')], 
                 ['jumlah_sks' => $request->input('jml_sks')]
             );
             // Redirect back with a success message
-        return response()->json(['success' => 'Berhasil Update Jumlah SKS']);
+        return redirect()->back()->with('success', 'Berhasil Update SKS');
         } catch (\Exception $e) {
             Log::error('Kesalahan saat Update data SKS.', [
                 'jumlah_sks' => $request->input('jml_sks'),
@@ -140,7 +146,7 @@ public function tambahKoor(Request $request)
                 'error' => $e->getMessage(),
             ]);
     
-        return response()->json(['message' => 'Terjadi kesalahan, silakan coba lagi.'], 500);
+        return redirect()->back()->with('error', 'Terjadi kesalahan, silakan coba lagi.');
         }
     }
     
