@@ -280,16 +280,6 @@
                 <span><i class="fa fa-folder"></i> KRM</span></a> --}}
             </li>
 
-            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#">
-                <span><i class="fa fa-support"></i> Tugas Akhir</span></a>
-                <ul class="sidebar-submenu">
-                    <li><a href="#">Daftar Skripsi Mahasiswa</a></li>
-                    <li><a href="{{Route('admin.pembimbing.index')}}">Daftar Dosen Pembimbing</a></li>
-                    <li><a href="#">Daftar Mahasiswa Bimbingan</a></li>
-                    <li><a href="#">Manajemen Bimbingan</a></li>
-                    <li><a href="#">Berita Acara</a></li>
-                </ul>
-            </li>
           </ul>
         </div>
         <div class="right-arrow" id="right-arrow"><i data-feather="arrow-right"></i></div>
