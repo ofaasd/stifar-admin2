@@ -24,89 +24,70 @@
 
 @section('content')
 
-        <div class="row">
-            <div class="card">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <div class="search-container">
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalKoor" id="tambahKoor">Tambah Koordinator</button>
-                        </div>
-                        <table class="display table-basic">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Npp</th>
-                                    <th>Nama</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($koordinator as $koor)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ e($koor->npp) }}</td>
-                                        <td>{{ e($koor->nama_lengkap) }}</td>
-                                        <td>
-                                            <ul class="action">
-                                                <li class="edit" data-id="{{ $koor->id }}">
-                                                    <a href="{{ route('admin.skripsi.manajemen.detail', $koor->id) }}">
-                                                        <i class="icon-eye"></i>
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+    <div class="row">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <div class="search-container">
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalKoor"
+                            id="tambahKoor">Tambah Koordinator</button>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="card">
-                <div class="card-body">
-                    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#FormModal" id="tambahDosbim">Tambah Dosen Pembimbing</button>
-                    <div class="table-responsive">
-                        <table class="display" id="pembimbing-table">
-                            <thead>
+                    <table class="display table-basic">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Npp</th>
+                                <th>Nama</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($koordinator as $koor)
                                 <tr>
-                                    <th>#</th>
-                                    <th>Npp</th>
-                                    <th>Nama Dosen</th>
-                                    <th>Kuota</th>
-                                    <th>Action</th>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ e($koor->npp) }}</td>
+                                    <td>{{ e($koor->nama_lengkap) }}</td>
+                                    <td>
+                                        <ul class="action">
+                                            <li class="edit" data-id="{{ $koor->id }}">
+                                                <a href="{{ route('admin.skripsi.manajemen.detail', $koor->id) }}">
+                                                    <i class="icon-eye"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modals -->
-    <div class="modal fade" id="formSKS" tabindex="-1" role="dialog" aria-labelledby="formSKS" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <form class="row g-3 needs-validation custom-input" id="formSK" method="POST" action="{{ Route('admin.skripsi.manajemen.daftar.sks') }}">
-                        @csrf
-                        <div class="col-md-12 position-relative">
-                            <label class="form-label" for="validationTooltip03">Total SKS</label>
-                            <input class="form-control" name="jml_sks" id="kuotaSKS" type="number" required>
-                        </div>
-                        <div class="col-12">
-                            <button class="btn btn-primary" type="submit">Submit</button>
-                        </div>
-                    </form>
+    <div class="row">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="display" id="pembimbing-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Nim</th>
+                                <th>Nama</th>
+                                <th>Judul</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
+    </div>
+
 
     <div class="modal fade" id="modalKoor" tabindex="-1" role="dialog" aria-labelledby="modalKoor" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -127,27 +108,6 @@
         </div>
     </div>
 
-    <div class="modal fade" id="FormModal" tabindex="-1" role="dialog" aria-labelledby="FormModal" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <form class="row g-3 needs-validation custom-input" id="formDosbim">
-                        <div class="col-md-12 position-relative">
-                            <label class="form-label" for="nip">Pilih Dosen</label>
-                            <input class="form-control" name="nip" id="nipDosbim" placeholder="Please select">
-                        </div>
-                        <div class="col-md-12 position-relative">
-                            <label class="form-label" for="validationTooltip03">Kuota</label>
-                            <input class="form-control" name="kuota" id="kuotaDosen" type="number" required>
-                        </div>
-                        <div class="col-12">
-                            <button class="btn btn-primary" type="submit">Submit</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 @endsection
 
 @section('script')
@@ -265,9 +225,12 @@
                 });
             }
 
-            handleFormSubmit('#formDosbim', '{{ route('admin.pembimbing.updateKuota') }}', 'Berhasil Update Kuota Dosen', 'Gagal Update Kuota Dosen');
-            handleFormSubmit('#formKoor', '{{ route('admin.skripsi.manajemen.daftar.koordinator') }}', 'Berhasil Update Koordinator', 'Gagal Update Koordinator');
-            handleFormSubmit('#formSK', '{{ route('admin.skripsi.manajemen.daftar.sks') }}', 'Berhasil Update SKS', 'Gagal Update SKS');
+            handleFormSubmit('#formDosbim', '{{ route('admin.pembimbing.updateKuota') }}',
+                'Berhasil Update Kuota Dosen', 'Gagal Update Kuota Dosen');
+            handleFormSubmit('#formKoor', '{{ route('admin.skripsi.manajemen.daftar.koordinator') }}',
+                'Berhasil Update Koordinator', 'Gagal Update Koordinator');
+            handleFormSubmit('#formSK', '{{ route('admin.skripsi.manajemen.daftar.sks') }}', 'Berhasil Update SKS',
+                'Gagal Update SKS');
 
             @if (session('success'))
                 swal("success", "{{ session('success') }}", "success");
@@ -276,20 +239,41 @@
             @if (session('error'))
                 swal("error", "{{ session('error') }}", "error");
             @endif
-
+            let id_prodi = @json($id);
+            let url = "{{ route('admin.skripsi.manajemen.ListMahasiswaByProd', ['id' => '__ID__']) }}";
+            url = url.replace('__ID__', id_prodi);
             $('#pembimbing-table').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: '{{ route('admin.pembimbing.listDosen') }}',
-                columns: [
-                    { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-                    { data: 'npp', name: 'npp' },
-                    { data: 'nama', name: 'nama' },
-                    { data: 'kuota', name: 'kuota' },
-                    { data: 'button', name: 'button', orderable: false, searchable: false }
+                ajax: url,
+
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex',
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: 'nim',
+                        name: 'nim'
+                    },
+                    {
+                        data: 'nama',
+                        name: 'nama'
+                    },
+                    {
+                        data: 'judul',
+                        name: 'judul'
+                    },
+                    {
+                        data: 'button',
+                        name: 'button',
+                        orderable: false,
+                        searchable: false
+                    }
                 ],
                 language: {
-                    emptyTable: "Tidak ada data dosen pembimbing yang tersedia."
+                    emptyTable: "Tidak ada data Mahasiswa."
                 }
             });
         });

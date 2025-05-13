@@ -83,12 +83,12 @@ class ManajemenSkripsiController extends Controller
 
 public function detail($id){
     $title = "Daftar Mahasiswa";
-    $mhs = Mahasiswa::all();
+   
     $prodi = Prodi::all();
     $sks = RefJumlahSksSkripsi::where('id_progdi',$id)->value('jumlah_sks');
     $nipKoordinator = KoordinatorSkripsi::where('id_progdi', $id)->pluck('nip');
     $koordinator = PegawaiBiodatum::whereIn('npp', $nipKoordinator)->select('id','npp','nama_lengkap')->get();
-    return view('admin.skripsi.manajemen.daftar_skripsi.detail', compact('title', 'prodi', 'mhs','sks','koordinator'));
+    return view('admin.skripsi.manajemen.daftar_skripsi.detail', compact('id','title', 'prodi','sks','koordinator'));
 }
 
 public function tambahKoor(Request $request)
@@ -120,9 +120,33 @@ public function tambahKoor(Request $request)
     }
 }
     
-    public function ListMahasiswaTa()
+    public function ListMahasiswaByProd($id)
     {
+        $data = Mahasiswa::join('master_bimbingan_skripsi as skripsi','skripsi.nim','mahasiswa.nim')
+        ->join('judul_skripsi','judul_skripsi.nim','mahasiswa.nim')
+        ->where('id_program_studi',$id)
+        ->where('skripsi.status',1)
+        ->select('mahasiswa.nama as nama','mahasiswa.nim as nim','judul_skripsi.judul as judul')
+        ->get();
 
+          // Jika data kosong, kirim response dengan pesan khusus
+          if ($data->isEmpty()) {
+            return response()->json([
+                'draw' => request('draw'), // draw dari DataTables request
+                'recordsTotal' => 0,
+                'recordsFiltered' => 0,
+                'data' => []
+            ]);
+        }
+
+        // Mengirim data ke DataTables
+        return \DataTables::of($data)
+            ->addIndexColumn() // Menambahkan kolom DT_RowIndex
+            ->addColumn('button', function ($row) {
+                return '<button class="btn btn-primary btn-sm edit-btn text-light" data-id="' . $row->nim . '" >Show</button>';
+            })
+            ->rawColumns(['button'])
+            ->make(true);
     }
 
     public function modifySKS(Request $request)
