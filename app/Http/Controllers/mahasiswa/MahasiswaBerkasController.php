@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\mahasiswa;
 
 use App\Models\Mahasiswa;
+use App\Models\TahunAjaran;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\BerkasPendukungMahasiswa;
+use App\Models\MahasiswaBerkasPendukung;
 
 class MahasiswaBerkasController extends Controller
 {
@@ -14,44 +16,118 @@ class MahasiswaBerkasController extends Controller
         $mhs = Mahasiswa::where('user_id', Auth::id())->first();
         $nim = $mhs->nim;
         $title = $mhs->nama;
-        $mahasiswa = Mahasiswa::select('mahasiswa.*', 'mahasiswa.nim as nimMahasiswa', 'pegawai_biodata.nama_lengkap as dosenWali', 'mahasiswa_berkas_pendukung.*')
+        $mahasiswa = Mahasiswa::select('mahasiswa.*', 'mahasiswa.nim as nimMahasiswa', 'pegawai_biodata.nama_lengkap as dosenWali')
         ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'mahasiswa.id_dsn_wali')
-        ->leftJoin('mahasiswa_berkas_pendukung', 'mahasiswa_berkas_pendukung.nim', '=', 'mahasiswa.nim')
         ->where('mahasiswa.nim', $nim)
         ->first();
+
+        if(!$mahasiswa){
+            return response()->json(["message"  => "Data tidak ditemukan"]);
+        }
+
+        $berkas = MahasiswaBerkasPendukung::where("nim", $mahasiswa->nim)->latest()->first();
 
         $data = [
             'mahasiswa' => $mahasiswa,
             'title' => $title,
+            'berkas' => $berkas,
         ];
+
+        $ta = TahunAjaran::where("status", "Aktif")->first();
+        if($berkas){
+            if($berkas->id_ta != $ta->id){
+                $data['updateHerregistrasi'] = true;
+            }
+        }
 
         return view('mahasiswa.berkas.index', $data);
     }
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
         $fields = [
-            'foto_ktp' => 'ktp',
-            'foto_kk' => 'kk',
-            'foto_akte' => 'akte',
-            'foto_ijazah_depan' => 'ijazah_depan',
-            'foto_ijazah_belakang' => 'ijazah_belakang',
+            'kk' => 'kk',
+            'ktp' => 'ktp',
+            'akte' => 'akte',
+            'ijazah_depan' => 'ijazah_depan',
+            'ijazah_belakang' => 'ijazah_belakang',
             'foto_sistem' => 'foto_sistem',
         ];
 
         $validatedData = $request->validate(array_fill_keys(array_keys($fields), 'mimes:jpg,jpeg|max:5012'));
 
-        $berkas = BerkasPendukungMahasiswa::firstOrCreate(['nim' => $request->nim]);
+        $ta = TahunAjaran::where("status", "Aktif")->first();
 
-        $tujuan_upload = 'assets/images/mahasiswa/berkas';
+        // Cek apakah request ingin update_herregistrasi
+        if ($request->has('update_herregistrasi') && $request->update_herregistrasi) 
+        {
+            // Ambil TA sebelumnya
+            $taSebelumnya = TahunAjaran::where("created_at", '<', $ta->created_at)
+                ->orderBy('created_at', 'desc')
+                ->first();
 
-        foreach ($fields as $fileInput => $dbField) {
-            if ($request->hasFile($fileInput)) {
-                $file = $request->file($fileInput);
-                $fileName = date('YmdHi') . $file->getClientOriginalName();
-                $fileName = str_replace(' ', '-', $fileName);
-                $file->move($tujuan_upload, $fileName);
+            // Ambil berkas lama
+            $berkasLama = MahasiswaBerkasPendukung::where("nim", $request->nim)
+                ->where("id_ta", $taSebelumnya?->id) // safe navigation in case $taSebelumnya null
+                ->first();
 
-                $berkas->update([$dbField => $fileName]);
+            // Siapkan data baru dengan isian dari request, jika tidak ada ambil dari lama
+            $dataBerkas = ['nim' => $request->nim, 'id_ta' => $ta->id];
+
+            foreach ($fields as $fileInput => $dbField) {
+                if ($request->hasFile($fileInput)) {
+                    $file = $request->file($fileInput);
+                    $fileName = date('YmdHi') . $request->nim . $file->getClientOriginalName();
+                    $fileName = str_replace(' ', '-', $fileName);
+
+                    $tujuan_upload = 'assets/file/berkas/mahasiswa/' . $dbField;
+
+                    if (!file_exists($tujuan_upload)) {
+                        mkdir($tujuan_upload, 0777, true);
+                    }
+
+                    $file->move($tujuan_upload, $fileName);
+
+                    $dataBerkas[$dbField] = $fileName;
+                } else {
+                    // Ambil dari berkas lama jika tidak dikirim
+                    if ($berkasLama) {
+                        $dataBerkas[$dbField] = $berkasLama->$dbField;
+                    }
+                }
+            }
+
+            // Simpan sebagai baris baru
+            MahasiswaBerkasPendukung::create($dataBerkas);
+
+        } else {
+            // Jika tidak herregistrasi → update data jika sudah ada
+            $berkas = MahasiswaBerkasPendukung::firstOrCreate(
+                [
+                    'nim' => $request->nim,
+                    'id_ta' => $ta->id
+                ],
+                [
+                    'nim' => $request->nim
+                ]
+            );
+
+            foreach ($fields as $fileInput => $dbField) {
+                if ($request->hasFile($fileInput)) {
+                    $file = $request->file($fileInput);
+                    $fileName = date('YmdHi') . $request->nim . $file->getClientOriginalName();
+                    $fileName = str_replace(' ', '-', $fileName);
+
+                    $tujuan_upload = 'assets/file/berkas/mahasiswa/' . $dbField;
+
+                    if (!file_exists($tujuan_upload)) {
+                        mkdir($tujuan_upload, 0777, true);
+                    }
+
+                    $file->move($tujuan_upload, $fileName);
+
+                    $berkas->update([$dbField => $fileName]);
+                }
             }
         }
 

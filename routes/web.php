@@ -233,6 +233,7 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
 
     // route Berkas Mahasiswa
     Route::resource('/admin/berkas/mahasiswa', BerkasMahasiswaController::class)->name('index', 'berkas-mahasiswa');
+    // Route::resource('/admin/berkas/mahasiswa', BerkasMahasiswaController::class)->name('index', 'berkas-mahasiswa');
 
     // route Berkas Dosen
     Route::resource('/admin/berkas/dosen', BerkasDosenController::class)->name('index', 'berkas-dosen');
@@ -370,7 +371,10 @@ Route::group(['middleware' => ['auth','role:mhs|super-admin']], function(){
     Route::post('mahasiswa', [MahasiswaController::class, 'store'])->name('input');
 
     Route::get('mhs/profile', [ProfileController::class, 'index'])->name('index');
-    Route::get('mhs/heregistrasi', [ProfileController::class, 'heregistrasi'])->name('index_heregistrasi');
+    // Route::get('mhs/heregistrasi', [ProfileController::class, 'heregistrasi'])->name('index_heregistrasi');
+
+    Route::get('mhs/berkas', [MahasiswaBerkasController::class, 'index'])->name('mhs-berkas');
+    Route::post('mhs/berkas', [MahasiswaBerkasController::class, 'store'])->name('store-mhs-berkas');
 
     Route::get('mhs/input_krs', [mhsKrsController::class, 'input'])->name('input');
     Route::get('mhs/riwayat_krs', [mhsKrsController::class, 'riwayat'])->name('riwayat_krs');

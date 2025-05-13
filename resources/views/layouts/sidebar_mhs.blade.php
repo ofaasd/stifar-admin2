@@ -22,14 +22,11 @@
                         <a href="{{URL::to('mhs/profile')}}" class="submenu-title">Data diri</a>
                     </li>
                     <li>
-                        <a class="submenu-title" href="{{URL::to('mhs/heregistrasi')}}" >
+                        <a class="submenu-title" href="{{URL::to('mhs/berkas')}}" >
                              <span>Heregistrasi (Data Pendukung)</span>
                         </a>
                     </li>
                 </ul>
-            </li>
-             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/berkas')}}" >
-                <span><i class="fa fa-file"></i> Berkas</span></a>
             </li>
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
                 <span><i class="fa fa-bar-chart"></i> Akademik</span></a>

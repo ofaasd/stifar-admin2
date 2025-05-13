@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\PegawaiBiodatum;
 use App\Http\Controllers\Controller;
 use App\Models\PegawaiBerkasPendukung;
+use App\Models\TahunAjaran;
 use Illuminate\Support\Facades\Crypt;
 
 class BerkasDosenController extends Controller
@@ -58,9 +59,15 @@ class BerkasDosenController extends Controller
 
         $validatedData = $request->validate(array_fill_keys(array_keys($fields), 'mimes:jpg,jpeg|max:5012'));
 
+        $ta = TahunAjaran::where("status", "Aktif")->first();
         $berkas = PegawaiBerkasPendukung::firstOrCreate(
-            ['id_pegawai' => $request->id_pegawai],
-            ['id_pegawai' => $request->id_pegawai]
+            [
+                'id_pegawai' => $request->id_pegawai,
+                'id_ta' => $ta->id
+            ],
+            [
+                'id_pegawai' => $request->id_pegawai
+            ]
         );
 
         $tujuan_upload = 'assets/file/berkas/dosen';

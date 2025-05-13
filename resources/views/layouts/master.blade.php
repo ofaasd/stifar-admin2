@@ -37,7 +37,29 @@
 
 
         @include('layouts.header')
-
+        @if (
+            session('herregistrasi') &&
+            Route::currentRouteName() !== 'mhs-berkas' &&
+            Route::currentRouteName() !== 'dosen-berkas'
+        )
+          <div class="modal fade" id="exampleModal" tabindex="-1"
+            aria-labelledby="modal-herregistrasi"
+            aria-hidden="true"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="modal-herregistrasi">Herregistrasi</h1>
+                    <!-- Tidak ada tombol close -->
+                  </div>
+                  <div class="modal-body">
+                    Update data anda <a href="{{ session('role') == "mhs" ? route('mhs-berkas') : route('dosen-berkas') }}">di sini</a>
+                  </div>
+                </div>
+            </div>
+          </div>
+        @endif
 
 
       <!-- Page Header Ends  -->
@@ -96,5 +118,16 @@
             $(".sidebar-submenu" ).css( "display", "block" );
       }
     </script>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        var myModal = new bootstrap.Modal(document.getElementById('exampleModal'), {
+          backdrop: 'static',
+          keyboard: false
+        });
+        myModal.show();
+      });
+    </script>
+
   </body>
 </html>
