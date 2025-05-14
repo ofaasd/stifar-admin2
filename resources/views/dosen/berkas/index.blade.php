@@ -52,6 +52,7 @@
                     @endif
                     <div class="row">
                         <p class="fw-bold"><span class="text-danger">*</span>Foto berformat jpg/jpeg dan maksimal berukuran 5mb </p>
+                        <small class="text-end">Terakhir diupdate <span class="fst-italic">{{ isset($berkas) ? \Carbon\Carbon::parse($berkas->updated_at)->translatedFormat('d F Y H:i:s') : "data tidak ditemukan" }}</span></small>
                         <div class="col-md-6">
                             <div class="mb-2">
                                 <div id="view-ktp">
