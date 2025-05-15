@@ -47,7 +47,7 @@
                                         <td><a href="{{ URL::to('admin/berkas/mahasiswa/'. $row->nimEnkripsi) }}">{{ $row->nama }}</a></td>
                                         <td>{!! $row->kk ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</td>
                                         <td>{!! $row->ktp ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</td>
-                                        <td></td>
+                                        <td>{!! $row->akte ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}</td>
                                         <td>
                                             Depan : {!! $row->ijazah_depan ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!} <br>
                                             Belakang : {!! $row->ijazah_belakang ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>' !!}

@@ -47,8 +47,12 @@
                   <form id="form-berkas" method="POST" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" value="{{$mahasiswa->nimMahasiswa}}" name="nim">
+                    @if (isset($updateHerregistrasi) && $updateHerregistrasi)
+                        <input type="hidden" value="true" name="update_herregistrasi">
+                    @endif
                     <div class="row">
                         <p class="fw-bold"><span class="text-danger">*</span>Foto berformat jpg/jpeg dan maksimal berukuran 5mb </p>
+                        <small class="text-end">Terakhir diupdate <span class="fst-italic">{{ isset($berkas) ? \Carbon\Carbon::parse($berkas->updated_at)->translatedFormat('d F Y H:i:s') : "data tidak ditemukan" }}</span></small>
                         <div class="col-md-6">
                             <div class="mb-2">
                                 <div id="view-ktp">
@@ -226,7 +230,7 @@
                         $('#btn-submit').prop('disabled', false);
                         $('#btn-submit').html('Simpan');
                         Swal.fire({
-                            icbon: 'success',
+                            icon: 'success',
                             title: 'Berkas berhasil disimpan',
                             text: response.message,
                             timer: 1500

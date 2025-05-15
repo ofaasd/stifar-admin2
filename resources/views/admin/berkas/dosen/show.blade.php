@@ -47,17 +47,18 @@
                   <form id="form-berkas" method="POST" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" value="{{$dosen->idPegawai}}" name="id_pegawai">
+                    @if (isset($updateHerregistrasi) && $updateHerregistrasi)
+                        <input type="hidden" value="true" name="update_herregistrasi">
+                    @endif
                     <div class="row">
                         <p class="fw-bold"><span class="text-danger">*</span>Foto berformat jpg/jpeg dan maksimal berukuran 5mb </p>
+                        <small class="text-end">Terakhir diupdate <span class="fst-italic">{{ isset($berkas) ? \Carbon\Carbon::parse($berkas->updated_at)->translatedFormat('d F Y H:i:s') : "data tidak ditemukan" }}</span></small>
                         <div class="col-md-6">
                             <div class="mb-2">
                                 <div id="view-ktp">
                                     <label class="col-sm-12 col-form-label">Foto KTP : </label>
                                     <p class="fs-4" style="display: {{ $dosen->ktp ? 'block' : 'none' }}">
                                         <i class="fa fa-check-square-o text-success"></i> | 
-                                        <a href="{{ (isset($dosen->ktp)) ? asset('assets/file/berkas/dosen/' . $dosen->ktp) : '' }}" target="_blank">
-                                            <i class="fa fa-picture-o text-dark"></i>
-                                        </a> | 
                                         <a href="#" id="edit-ktp"><i class="fa fa-pencil text-dark"></i></a>
                                     </p>
                                 </div>
@@ -74,9 +75,6 @@
                                     <label class="col-sm-12 col-form-label">Foto KK : </label>
                                     <p class="fs-4" style="display: {{ $dosen->kk ? 'block' : 'none' }}">
                                         <i class="fa fa-check-square-o text-success"></i> | 
-                                        <a href="{{ (isset($dosen->kk)) ? asset('assets/file/berkas/dosen/' . $dosen->kk) : '' }}" target="_blank">
-                                            <i class="fa fa-picture-o text-dark"></i>
-                                        </a> | 
                                         <a href="#" id="edit-kk"><i class="fa fa-pencil text-dark"></i></a>
                                     </p>
                                 </div>
@@ -93,9 +91,6 @@
                                     <label class="col-sm-12 col-form-label">Foto ijazah S1 : </label>
                                     <p class="fs-4" style="display: {{ $dosen->ijazah_s1 ? 'block' : 'none' }}">
                                         <i class="fa fa-check-square-o text-success"></i> | 
-                                        <a href="{{ (isset($dosen->ijazah_s1)) ? asset('assets/file/berkas/dosen/' . $dosen->ijazah_s1) : '' }}" target="_blank">
-                                            <i class="fa fa-picture-o text-dark"></i>
-                                        </a> | 
                                         <a href="#" id="edit-ijazah-s1"><i class="fa fa-pencil text-dark"></i></a>
                                     </p>
                                 </div>
@@ -114,9 +109,6 @@
                                     <label class="col-sm-12 col-form-label">Foto ijazah S2 : </label>
                                     <p class="fs-4" style="display: {{ $dosen->ijazah_s2 ? 'block' : 'none' }}">
                                         <i class="fa fa-check-square-o text-success"></i> | 
-                                        <a href="{{ (isset($dosen->ijazah_s2)) ? asset('assets/file/berkas/dosen/' . $dosen->ijazah_s2) : '' }}" target="_blank">
-                                            <i class="fa fa-picture-o text-dark"></i>
-                                        </a> | 
                                         <a href="#" id="edit-ijazah-s2"><i class="fa fa-pencil text-dark"></i></a>
                                     </p>
                                 </div>
@@ -133,9 +125,6 @@
                                     <label class="col-sm-12 col-form-label">Foto ijazah S3 : </label>
                                     <p class="fs-4" style="display: {{ $dosen->ijazah_s3 ? 'block' : 'none' }}">
                                         <i class="fa fa-check-square-o text-success"></i> | 
-                                        <a href="{{ (isset($dosen->ijazah_s3)) ? asset('assets/file/berkas/dosen/' . $dosen->ijazah_s3) : '' }}" target="_blank">
-                                            <i class="fa fa-picture-o text-dark"></i>
-                                        </a> | 
                                         <a href="#" id="edit-ijazah-s3"><i class="fa fa-pencil text-dark"></i></a>
                                     </p>
                                 </div>
@@ -152,9 +141,6 @@
                                     <label class="col-sm-12 col-form-label">Foto Serdik AA Pekerti : </label>
                                     <p class="fs-4" style="display: {{ $dosen->serdik_aa_pekerti ? 'block' : 'none' }}">
                                         <i class="fa fa-check-square-o text-success"></i> | 
-                                        <a href="{{ (isset($dosen->serdik_aa_pekerti)) ? asset('assets/file/berkas/dosen/' . $dosen->serdik_aa_pekerti) : '' }}" target="_blank">
-                                            <i class="fa fa-picture-o text-dark"></i>
-                                        </a> | 
                                         <a href="#" id="edit-serdik-aa-pekerti"><i class="fa fa-pencil text-dark"></i></a>
                                     </p>
                                 </div>
@@ -171,9 +157,6 @@
                                     <label class="col-sm-12 col-form-label">Foto Serdik AA : </label>
                                     <p class="fs-4" style="display: {{ $dosen->serdik_aa ? 'block' : 'none' }}">
                                         <i class="fa fa-check-square-o text-success"></i> | 
-                                        <a href="{{ (isset($dosen->serdik_aa)) ? asset('assets/file/berkas/dosen/' . $dosen->serdik_aa) : '' }}" target="_blank">
-                                            <i class="fa fa-picture-o text-dark"></i>
-                                        </a> | 
                                         <a href="#" id="edit-serdik-aa"><i class="fa fa-pencil text-dark"></i></a>
                                     </p>
                                 </div>
@@ -191,9 +174,6 @@
                                     <label class="col-sm-12 col-form-label">Foto Serdik lektor : </label>
                                     <p class="fs-4" style="display: {{ $dosen->serdik_lektor ? 'block' : 'none' }}">
                                         <i class="fa fa-check-square-o text-success"></i> | 
-                                        <a href="{{ (isset($dosen->serdik_lektor)) ? asset('assets/file/berkas/dosen/' . $dosen->serdik_lektor) : '' }}" target="_blank">
-                                            <i class="fa fa-picture-o text-dark"></i>
-                                        </a> | 
                                         <a href="#" id="edit-serdik-lektor"><i class="fa fa-pencil text-dark"></i></a>
                                     </p>
                                 </div>
@@ -210,9 +190,6 @@
                                     <label class="col-sm-12 col-form-label">Foto Serdik Kepala Guru Besar : </label>
                                     <p class="fs-4" style="display: {{ $dosen->serdik_kepala_guru_besar ? 'block' : 'none' }}">
                                         <i class="fa fa-check-square-o text-success"></i> | 
-                                        <a href="{{ (isset($dosen->serdik_kepala_guru_besar)) ? asset('assets/file/berkas/dosen/' . $dosen->serdik_kepala_guru_besar) : '' }}" target="_blank">
-                                            <i class="fa fa-picture-o text-dark"></i>
-                                        </a> | 
                                         <a href="#" id="edit-serdik-kepala-guru-besar"><i class="fa fa-pencil text-dark"></i></a>
                                     </p>
                                 </div>
@@ -288,7 +265,7 @@
                         $('#btn-submit').prop('disabled', false);
                         $('#btn-submit').html('Simpan');
                         Swal.fire({
-                            icbon: 'success',
+                            icon: 'success',
                             title: 'Berkas berhasil disimpan',
                             text: response.message,
                             timer: 1500

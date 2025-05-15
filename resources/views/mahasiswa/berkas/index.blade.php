@@ -59,9 +59,6 @@
                                     <label class="col-sm-12 col-form-label">Foto KTP : </label>
                                     <p class="fs-4" style="display: {{ isset($berkas) ? ($berkas->ktp ? 'block' : 'none') : 'none'}}">
                                         <i class="fa fa-check-square-o text-success"></i> | 
-                                        <a href="{{ (isset($berkas->ktp)) ? asset('assets/file/berkas/mahasiswa/ktp/' . $berkas->ktp) : '' }}" target="_blank">
-                                            <i class="fa fa-picture-o text-dark"></i>
-                                        </a> | 
                                         <a href="#" id="edit-ktp"><i class="fa fa-pencil text-dark"></i></a>
                                     </p>
                                 </div>
@@ -78,9 +75,6 @@
                                     <label class="col-sm-12 col-form-label">Foto KK : </label>
                                     <p class="fs-4" style="display: {{ isset($berkas) ? ($berkas->kk ? 'block' : 'none') : 'none' }}">
                                         <i class="fa fa-check-square-o text-success"></i> | 
-                                        <a href="{{ (isset($berkas->kk)) ? asset('assets/file/berkas/mahasiswa/kk/' . $berkas->kk) : '' }}" target="_blank">
-                                            <i class="fa fa-picture-o text-dark"></i>
-                                        </a> | 
                                         <a href="#" id="edit-kk"><i class="fa fa-pencil text-dark"></i></a>
                                     </p>
                                 </div>
@@ -97,9 +91,6 @@
                                     <label class="col-sm-12 col-form-label">Foto Akte : </label>
                                     <p class="fs-4" style="display: {{ isset($berkas) ? ($berkas->akte ? 'block' : 'none') : 'none' }}">
                                         <i class="fa fa-check-square-o text-success"></i> | 
-                                        <a href="{{ (isset($berkas->akte)) ? asset('assets/file/berkas/mahasiswa/akte/' . $berkas->akte) : '' }}" target="_blank">
-                                            <i class="fa fa-picture-o text-dark"></i>
-                                        </a> | 
                                         <a href="#" id="edit-akte"><i class="fa fa-pencil text-dark"></i></a>
                                     </p>
                                 </div>
@@ -117,9 +108,6 @@
                                     <label class="col-sm-12 col-form-label">Foto Ijazah : </label>
                                     <p class="fs-4" style="display: {{ isset($berkas) ? ($berkas->ijazah_depan ? 'block' : 'none') : 'none' }}">
                                         <i class="fa fa-check-square-o text-success"></i> | 
-                                        <a href="{{ (isset($berkas->ijazah_depan)) ? asset('assets/file/berkas/mahasiswa/ijazah_depan/' . $berkas->ijazah_depan) : '' }}" target="_blank">
-                                            <i class="fa fa-picture-o text-dark"></i>
-                                        </a> | 
                                         <a href="#" id="edit-ijazah-depan"><i class="fa fa-pencil text-dark"></i></a>
                                     </p>
                                     <div class="col mb-3" id="input-ijazah-depan" style="display: {{ isset($berkas) ? ($berkas->ijazah_depan ? 'none' : 'block') : 'block' }}">
@@ -133,9 +121,6 @@
                                 <div class="col-sm-12">
                                     <p class="fs-4" style="display: {{ isset($berkas) ? ($berkas->ijazah_belakang ? 'block' : 'none') : 'none' }}">
                                         <i class="fa fa-check-square-o text-success"></i> | 
-                                        <a href="{{ (isset($berkas->ijazah_belakang)) ? asset('assets/file/berkas/mahasiswa/ijazah_belakang/' . $berkas->ijazah_belakang) : '' }}" target="_blank">
-                                            <i class="fa fa-picture-o text-dark"></i>
-                                        </a> | 
                                         <a href="#" id="edit-ijazah-belakang"><i class="fa fa-pencil text-dark"></i></a>
                                     </p>
                                     <div class="col" id="input-ijazah-belakang" style="display: {{ isset($berkas) ? ($berkas->ijazah_belakang ? 'none' : 'block') : 'block' }}">
@@ -152,9 +137,6 @@
                                     <label class="col-sm-12 col-form-label">Foto Profil : </label>
                                     <p class="fs-4" style="display: {{ isset($berkas) ? ($berkas->sistem ? 'block' : 'none') : 'none' }}">
                                         <i class="fa fa-check-square-o text-success"></i> | 
-                                        <a href="{{ (isset($berkas->sistem)) ? asset('assets/file/berkas/mahasiswa/sistem/' . $berkas->sistem) : '' }}" target="_blank">
-                                            <i class="fa fa-picture-o text-dark"></i>
-                                        </a> | 
                                         <a href="#" id="edit-foto-sistem"><i class="fa fa-pencil text-dark"></i></a>
                                     </p>
                                 </div>
