@@ -91,6 +91,7 @@ use App\Http\Controllers\admin\akademik\KhsController as adminKhs;
 use App\Http\Controllers\admin\keuangan\VaController;
 use App\Http\Controllers\mahasiswa\UjianController;
 use App\Http\Controllers\mahasiswa\KuesionerMhsController;
+use App\Http\Controllers\dosen\skripsi\SkripsiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -455,7 +456,14 @@ Route::group(['middleware' => ['auth', 'role:mhs|super-admin']], function () {
     //Route::post('admin/admisi/peserta/daftar_kota',[PmbPesertaController::class, 'daftar_kota'] )->name('daftar_kota');
 });
 Route::group(['middleware' => ['auth', 'role:pegawai|super-admin']], function () {
-
+ 
+Route::prefix('skripsi')->as('koor.skripsi.')->controller(SkripsiController::class)->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::post('/update-sks', 'updateSks')->name('update-sks');
+    Route::post('/berkas', 'storeBerkas')->name('berkas.store');
+    Route::put('/berkas/{id}', 'updateBerkas')->name('berkas.update');
+    Route::delete('/berkas/{id}', 'destroyBerkas')->name('berkas.destroy');
+});
 
     Route::get('admin/kepegawaian/struktural/get_jabatan', [PegawaiJabatanStrukturalController::class, 'get_jabatan'])->name('get_jabatan');
     Route::post('admin/kepegawaian/struktural/get_jabatan', [PegawaiJabatanStrukturalController::class, 'get_jabatan'])->name('get_jabatan');
