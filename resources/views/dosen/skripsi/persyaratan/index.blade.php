@@ -76,10 +76,14 @@
                                 <td>{{ $berkas->nama }}</td>
                                 <td>{{ $berkas->deskripsi }}</td>
                                 <td>
-                                    @if ($berkas->wajib)
-                                        <span class="badge bg-success">Ya</span>
+                                    @if ($berkas->kategori == 1)
+                                        <span class="badge bg-primary">Pendaftaran</span>
+                                    @elseif ($berkas->kategori == 2)
+                                        <span class="badge bg-warning text-dark">Sidang</span>
+                                    @elseif ($berkas->kategori == 3)
+                                        <span class="badge bg-success">Yudisium</span>
                                     @else
-                                        <span class="badge bg-secondary">Tidak</span>
+                                        <span class="badge bg-secondary">Tidak Diketahui</span>
                                     @endif
                                 </td>
                                 <td>
@@ -121,10 +125,15 @@
                                                             <label class="form-label">Deskripsi</label>
                                                             <textarea class="form-control" name="deskripsi" rows="3">{{ $berkas->deskripsi }}</textarea>
                                                         </div>
-                                                        <div class="form-check">
-                                                            <input type="checkbox" class="form-check-input" name="wajib"
-                                                                id="editWajib{{ $berkas->id }}" {{ $berkas->wajib ? 'checked' : '' }}>
-                                                            <label class="form-check-label" for="editWajib{{ $berkas->id }}">Berkas Wajib</label>
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Kategori Berkas</label>
+                                                            <select name="kategori" id="kategori" class="form-control">
+                                                                <option value="1" {{ $berkas->kategori == 1 ? 'selected' : '' }}>Pendaftaran</option>
+                                                                <option value="2" {{ $berkas->kategori == 2 ? 'selected' : '' }}>Sidang</option>
+                                                                <option value="3" {{ $berkas->kategori == 3 ? 'selected' : '' }}>Yudisium</option>
+                                                            </select>
+                                                            
+                                                           
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
@@ -168,9 +177,13 @@
                             <label class="form-label">Deskripsi</label>
                             <textarea class="form-control" name="deskripsi" rows="3"></textarea>
                         </div>
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" name="wajib" id="wajibTambah" checked>
-                            <label class="form-check-label" for="wajibTambah">Berkas Wajib</label>
+                        <div class="mb-3">
+                            <label class="form-label">Kategori Berkas</label>
+                            <select name="kategori" id="kategori" class="form-control">
+                                <option value="1">Pendaftaran</option>
+                                <option value="2">Sidang</option>
+                                <option value="3">Yudisium</option>
+                               </select>
                         </div>
                     </div>
                     <div class="modal-footer">

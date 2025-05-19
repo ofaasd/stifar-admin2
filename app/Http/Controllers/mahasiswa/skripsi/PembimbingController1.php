@@ -10,7 +10,7 @@ use App\Models\MasterPembimbing;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
-class PembimbingController extends Controller
+class PembimbingController1 extends Controller
 {
     public function index(){
         $user = Auth::user();

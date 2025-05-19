@@ -57,7 +57,7 @@ use App\Http\Controllers\admin\kepegawaian\SuratIzinController;
 use App\Http\Controllers\mahasiswa\skripsi\BimbinganController;
 use App\Http\Controllers\admin\berkas\BerkasMahasiswaController;
 use App\Http\Controllers\admin\master\ProdiAkreditasiController;
-use App\Http\Controllers\mahasiswa\skripsi\PembimbingController;
+use App\Http\Controllers\mahasiswa\skripsi\PembimbingController1;
 use App\Http\Controllers\admin\admisi\BiayaPendaftaranController;
 use App\Http\Controllers\admin\admisi\PmbNilaiTambahanController;
 use App\Http\Controllers\admin\skripsi\DosenPembimbingController;
@@ -92,6 +92,8 @@ use App\Http\Controllers\admin\keuangan\VaController;
 use App\Http\Controllers\mahasiswa\UjianController;
 use App\Http\Controllers\mahasiswa\KuesionerMhsController;
 use App\Http\Controllers\dosen\skripsi\SkripsiController;
+use App\Http\Controllers\dosen\skripsi\PembimbingController;
+use App\Http\Controllers\dosen\skripsi\SidangController;
 
 /*
 |--------------------------------------------------------------------------
@@ -418,7 +420,7 @@ Route::group(['middleware' => ['auth', 'role:mhs|super-admin']], function () {
     Route::get('mhs/cetak_khs', [KhsController::class, 'cetak_khs'])->name('cetak_khs');
     Route::get('mhs/cetak_khs/{nim}', [KhsController::class, 'cetak_khs'])->name('cetak_khs');
 
-    Route::group(['prefix' => 'mahasiswa/skripsi/pembimbing', 'as' => 'mhs.pembimbing.', 'controller' => PembimbingController::class], function () {
+    Route::group(['prefix' => 'mahasiswa/skripsi/pembimbing', 'as' => 'mhs.pembimbing.', 'controller' => PembimbingController1::class], function () {
         Route::get('/', 'index')->name('index');
         Route::get('/list-dosen', 'getDaftarPembimbing')->name('getDaftarPembimbing');
         // Route::get('/get-data', 'getData')->name('getData');
@@ -463,6 +465,20 @@ Route::prefix('skripsi')->as('koor.skripsi.')->controller(SkripsiController::cla
     Route::post('/berkas', 'storeBerkas')->name('berkas.store');
     Route::put('/berkas/{id}', 'updateBerkas')->name('berkas.update');
     Route::delete('/berkas/{id}', 'destroyBerkas')->name('berkas.destroy');
+});
+Route::prefix('pembimbing')->name('pembimbing.')->group(function () {
+    Route::get('/', [PembimbingController::class, 'index'])->name('index');
+    Route::get('/data', [PembimbingController::class, 'getPembimbingData'])->name('data');
+    Route::post('/store', [PembimbingController::class, 'store'])->name('store');
+    Route::get('/edit/{id}', [PembimbingController::class, 'edit'])->name('edit');
+    Route::post('/update/{id}', [PembimbingController::class, 'update'])->name('update');
+    Route::delete('/destroy/{id}', [PembimbingController::class, 'destroy'])->name('destroy');
+});
+Route::prefix('sidang')->name('sidang.')->group(function () {
+    Route::get('/', [SidangController::class, 'index'])->name('index');
+    Route::post('/store', [SidangController::class, 'store'])->name('store');
+    Route::put('/update/{gelombang}', [SidangController::class, 'update'])->name('update');
+    Route::delete('/delete/{gelombang}', [SidangController::class, 'destroy'])->name('delete');
 });
 
     Route::get('admin/kepegawaian/struktural/get_jabatan', [PegawaiJabatanStrukturalController::class, 'get_jabatan'])->name('get_jabatan');

@@ -11,7 +11,7 @@ class KategoriBerkasSkripsi extends Model
     protected $table = 'kategori_berkas_skripsi';
 
     protected $fillable = [
-        'nama', 'deskripsi',
+        'nama', 'deskripsi','kategori',
         'created_at', 'updated_at'
     ];
 }

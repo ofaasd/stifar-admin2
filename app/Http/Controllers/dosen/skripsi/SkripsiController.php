@@ -40,54 +40,50 @@ class SkripsiController extends Controller
     
 
     public function storeBerkas(Request $request)
-{
-    try {
-        $request->validate([
-            'nama_kategori' => 'required|string|max:100',
-            'deskripsi' => 'nullable|string',
-            'wajib' => 'boolean',
-        ]);
-
-        KategoriBerkasSkripsi::create([
-            'nama' => $request->nama_kategori,
-            'deskripsi' => $request->deskripsi,
-            'wajib' => $request->wajib ? 1 : 0,
-        ]);
-
-        return redirect()->back()->with('success', 'Kategori berkas berhasil ditambahkan.');
-    } catch (\Throwable $e) {
-        Log::error('Gagal menambahkan kategori berkas: ' . $e->getMessage(), [
-            'input' => $request->all(),
-            'trace' => $e->getTraceAsString()
-        ]);
-        return redirect()->back()->with('error', 'Terjadi kesalahan saat menambahkan kategori.');
+    {
+        try {
+            $request->validate([
+                'nama_kategori' => 'required|string|max:100',
+                'deskripsi' => 'nullable|string',
+                'kategori' => 'required|in:1,2,3', // sesuaikan dengan enum kategori
+            ]);
+    
+            KategoriBerkasSkripsi::create([
+                'nama' => $request->nama_kategori,
+                'deskripsi' => $request->deskripsi,
+                'kategori' => $request->kategori,
+            ]);
+    
+            return redirect()->back()->with('success', 'Kategori berkas berhasil ditambahkan.');
+        } catch (\Throwable $e) {
+            Log::error('Gagal menambahkan kategori berkas: ' . $e->getMessage(), [
+                'input' => $request->all(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menambahkan kategori.');
+        }
     }
-}
+    
     
 
     public function updateBerkas(Request $request, $id)
     {
-        $request->merge([
-            'wajib' => $request->has('wajib'),
-        ]);
-
         $request->validate([
             'nama_kategori' => 'required|string|max:100',
             'deskripsi' => 'nullable|string',
-            'wajib' => 'boolean',
+            'kategori' => 'required|in:1,2,3',
         ]);
-
-        dd($request->has('wajib'));
+    
         $kategori = KategoriBerkasSkripsi::findOrFail($id);
         $kategori->update([
             'nama' => $request->nama_kategori,
             'deskripsi' => $request->deskripsi,
-            'wajib' => $request->wajib ? 1 : 0,
+            'kategori' => $request->kategori,
         ]);
-
+    
         return redirect()->back()->with('success', 'Kategori berkas berhasil diperbarui.');
     }
-
+    
     public function destroyBerkas($id)
     {
         $kategori = KategoriBerkasSkripsi::findOrFail($id);
