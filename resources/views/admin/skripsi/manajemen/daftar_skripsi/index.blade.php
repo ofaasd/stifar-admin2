@@ -109,7 +109,6 @@
                         <tr>
                             <th>No</th>
                             <th>Nama Prodi</th>
-                            <th>minimal SKS</th>
                             <th>Action</th>
                         </tr>
                       </thead>
@@ -118,21 +117,11 @@
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ e($prod->nama_prodi) }}</td>
-                            <td>{{ e($prod->sks) }} 
-                                <button type="button"
-                                class="btn p-0 border-0 bg-transparent openSKSModal"
-                                data-bs-toggle="modal"
-                                data-bs-target="#formSKS"
-                                data-id="{{ $prod->id }}"
-                                data-sks="{{ $prod->sks }}">
-                                <i class="icon-pencil-alt text-secondary" style="cursor: pointer;"></i>
-                            </button>
-                              
-                            </td>
                             <td>
                                 <ul class="action">
                                     <li class="detail" data-id="{{ $prod->id }}">
-                                        <a href="{{ route('admin.skripsi.manajemen.detail', $prod->id) }}">
+                                        {{-- <a href="{{ route('admin.skripsi.manajemen.detail', $prod->id) }}"> --}}
+                                        <a href="{{ route('koor.skripsi.index') }}">
                                             <i class="icon-eye"></i>
                                         </a>
                                     </li>

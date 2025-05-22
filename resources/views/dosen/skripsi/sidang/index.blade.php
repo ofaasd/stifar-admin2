@@ -3,8 +3,8 @@
 
 @section('style')
 <link rel="stylesheet" href="{{ asset('assets/css/vendors/sweetalert2.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/icons/bootstrap-icons/bootstrap-icons.css') }}">
-    @endsection
+<link rel="stylesheet" href="{{ asset('assets/icons/bootstrap-icons/bootstrap-icons.css') }}">
+@endsection
 
 @section('breadcrumb-title')
     <h3>Daftar Gelombang Sidang</h3>
