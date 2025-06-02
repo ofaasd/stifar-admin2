@@ -35,7 +35,7 @@
                       <div class="media">
                         <div class="photo-profile position-relative d-inline-block">
                             <img class="img-70 rounded-circle" alt="Foto Mahasiswa"
-                            src="{{ (!empty($berkas->sistem)) ? asset('assets/file/berkas/mahasiswa/sistem/' . $berkas->sistem) : asset('assets/images/user/7.jpg') }}">
+                            src="{{ (!empty($berkas->foto_sistem)) ? asset('assets/file/berkas/mahasiswa/sistem/' . $berkas->foto_sistem) : asset('assets/images/user/7.jpg') }}">
                         </div>
                         <div class="media-body">
                           <h5 class="mb-1">{{$mahasiswa->nama}}</h5>

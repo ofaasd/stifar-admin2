@@ -231,9 +231,8 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     // route MahasiswaModel
     Route::resource('/mahasiswa', MahasiswaController::class)->name('index', 'mahasiswa');
 
-    // route Berkas Mahasiswa
+    // route Berkas Mahasiswa untuk admin
     Route::resource('/admin/berkas/mahasiswa', BerkasMahasiswaController::class)->name('index', 'berkas-mahasiswa');
-    // Route::resource('/admin/berkas/mahasiswa', BerkasMahasiswaController::class)->name('index', 'berkas-mahasiswa');
 
     // route Berkas Dosen
     Route::resource('/admin/berkas/dosen', BerkasDosenController::class)->name('index', 'berkas-dosen');
@@ -363,6 +362,7 @@ Route::group(['middleware' => ['auth','role:mhs|super-admin']], function(){
     Route::get('/mhs/dashboard',[DashboardController::class, 'mhs'] )->name('dashboard_mahasiswa');
 
     Route::get('/mahasiswa/detail/{nim}', [MahasiswaController::class, 'detail']);
+    Route::get('/mahasiswa/ktm/{nim}', [MahasiswaController::class, 'cetakKtm']);
     Route::post('mahasiswa/user_update', [MahasiswaController::class, 'user_update'])->name('user_update');
     Route::post('mahasiswa/user_update2', [MahasiswaController::class, 'user_update2'])->name('user_update2');
     Route::post('mahasiswa/foto_update', [MahasiswaController::class, 'foto_update'])->name('foto_update');
