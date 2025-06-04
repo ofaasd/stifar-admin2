@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\PegawaiBiodatum;
 use App\Models\ModelHasRole;
 use App\Models\Mahasiswa;
+use App\Models\LoginAttempt;
 use Illuminate\Support\Facades\URL;
 
 class LoginController extends Controller
@@ -81,6 +82,11 @@ class LoginController extends Controller
 
         if (Auth::Attempt($credentials)) {
             $role = Auth::User()->roles->pluck('name');
+            LoginAttempt::create([
+                'ip_address' => $request->ip(),
+                'time' => date('Y-m-d H:i:s'),
+                'user_id' => Auth::user()->id
+            ]);
             if($role[0] == "mhs"){
                 $mhs = Mahasiswa::where('user_id',Auth::user()->id)->first();
                 if($mhs->update_password == 0){

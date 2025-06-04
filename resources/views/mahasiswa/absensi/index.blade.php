@@ -30,8 +30,8 @@
                     <div class="card-body" style="overflow-x: scroll">
                         <div class="mt-4">
                             <div class="mt-4">
-                                <h3>KRS : </h3>
-                                <a href="{{ url('admin/masterdata/krs/admin/download/'.$idmhs) }}" class="btn btn-info btn-sm" style="float: right;"><i class="fa fa-download"></i> Download KRS</a>
+                                {{-- <h3>KRS : </h3> --}}
+                                {{-- <a href="{{ url('admin/masterdata/krs/admin/download/'.$idmhs) }}" class="btn btn-info btn-sm" style="float: right;"><i class="fa fa-download"></i> Download KRS</a> --}}
                                 <div class="mt-2"></div>
                                 <table class="table" id="tablekrs">
                                     <thead>

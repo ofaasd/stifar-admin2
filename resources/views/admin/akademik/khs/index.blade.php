@@ -29,6 +29,7 @@
             <!-- Zero Configuration  Starts-->
             <div class="card mb-4">
                 <div class="card-header card-no-border">
+                  <a href="{{url('admin/akademik/khs')}}" class="btn btn-primary mb-3"><i class="fa fa-arrow-left"></i> Kembali</a>
                   <h5>Statistik KHS ({{$mhs->nama}})</h5>
                 </div>
                 <div class="card-body pt-0">
@@ -63,9 +64,6 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <h5><b>{{$tahun_ajaran->keterangan}}</b></h5>
-                            </div>
-                            <div class="col-md-6">
-                                <a href="{{ url('mhs/cetak_khs/')}}/{{$mhs->nim ?? ''}}" class="btn btn-info btn-sm" style="float: right;"><i class="fa fa-download"></i> Download KHS</a>
                             </div>
                         </div>
                     </div>

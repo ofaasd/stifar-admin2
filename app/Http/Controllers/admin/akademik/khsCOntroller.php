@@ -150,7 +150,9 @@ class KhsController extends Controller
             }
 
             $krs[$ta] = $krs_now;
-            $ips[$ta] = round(($total_nilai / $jumlah_sks),2);
+            if(!empty($jumlah_sks) || $jumlah_sks != 0){
+                $ips[$ta] = round(($total_nilai / $jumlah_sks),2);
+            }
         }
             $new_total_nilai = implode(",",$ips);
             $tahun_ajaran_keterangan = implode(",",$tahun_ajaran_keterangan);

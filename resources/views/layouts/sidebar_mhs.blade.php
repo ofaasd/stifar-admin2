@@ -63,7 +63,10 @@
                     </li>
                 </ul>
             </li>
-            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
+             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{ url('mhs/absensi')}}" >
+                <span><i class="fa fa-clock-o"></i>  Presensi</span></a>
+            </li>
+            {{-- <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
                 <span><i class="fa fa-clock-o"></i> Presensi</span><label class="badge badge-light-danger">!</label></a>
                 <ul class="sidebar-submenu">
                     <li class="submenu-title"><a class="sidebar-link sidebar-title" href="#" >
@@ -74,7 +77,7 @@
                         <span> Riwayat Presensi</span><label class="badge badge-light-danger">!</label></a>
                     </li>
                 </ul>
-            </li>
+            </li> --}}
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
                 <span><i class="fa fa-book"></i> Bimbingan</span><label class="badge badge-light-danger">!</label></a>
             </li>
