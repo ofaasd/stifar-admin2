@@ -76,11 +76,17 @@
                         </div>`);
             const url = "{{URL::to('mahasiswa/get_mhs')}}";
             $.ajax({
-                url : url,
-                method : "GET",
-                data : {id : id},
-                success:function(data){
+                url: url,
+                method: "GET",
+                data: { id: id },
+                success: function(data) {
                     $(".tbl-mhs").html(data);
+                },
+                error: function(xhr, status, error) {
+                    // console.log("Terjadi kesalahan:");
+                    // console.log("Status:", status);
+                    // console.log("Error:", error);
+                    // console.log("Response Text:", xhr.responseText);
                 }
             });
         }

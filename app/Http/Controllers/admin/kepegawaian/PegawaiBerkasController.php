@@ -53,7 +53,7 @@ class PegawaiBerkasController extends Controller
             if ($request->file('ktp') != null) {
                 $dokumen = $request->file('ktp');
                 $filename = "ktp" . date('YmdHi') . $dokumen->getClientOriginalName();
-                $tujuan_upload = 'assets/file/berkas';
+                $tujuan_upload = 'assets/file/berkas/ktp';
                 $dokumen->move($tujuan_upload,$filename);
                 $data['ktp'] = $filename;
             }
@@ -61,7 +61,7 @@ class PegawaiBerkasController extends Controller
             if ($request->file('kk') != null) {
                 $dokumen = $request->file('kk');
                 $filename2 = "kk" . date('YmdHi') . $dokumen->getClientOriginalName();
-                $tujuan_upload = 'assets/file/berkas';
+                $tujuan_upload = 'assets/file/berkas/kk';
                 $dokumen->move($tujuan_upload,$filename2);
                 $data['kk'] = $filename2;
             }
@@ -78,7 +78,7 @@ class PegawaiBerkasController extends Controller
             if ($request->file('ktp') != null) {
                 $dokumen = $request->file('ktp');
                 $filename = "ktp" . date('YmdHi') . $dokumen->getClientOriginalName();
-                $tujuan_upload = 'assets/file/berkas';
+                $tujuan_upload = 'assets/file/berkas/ktp';
                 $dokumen->move($tujuan_upload,$filename);
 
             }
@@ -86,7 +86,7 @@ class PegawaiBerkasController extends Controller
             if ($request->file('kk') != null) {
                 $dokumen = $request->file('kk');
                 $filename2 = "kk" . date('YmdHi') . $dokumen->getClientOriginalName();
-                $tujuan_upload = 'assets/file/berkas';
+                $tujuan_upload = 'assets/file/berkas/kk';
                 $dokumen->move($tujuan_upload,$filename2);
             }
             $pegawai = PegawaiBerkasPendukung::updateOrCreate(

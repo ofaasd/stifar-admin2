@@ -1,48 +1,52 @@
 <?php
 
-namespace App\Http\Controllers\admin\berkas;
+namespace App\Http\Controllers\dosen;
 
-use App\Models\Prodi;
-use App\Models\Pegawai;
 use Illuminate\Http\Request;
 use App\Models\PegawaiBiodatum;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Models\PegawaiBerkasPendukung;
 use App\Models\TahunAjaran;
-use Illuminate\Support\Facades\Crypt;
 
-class BerkasDosenController extends Controller
+class DosenBerkasController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $title = "Berkas Dosen";
-        $pegawai = PegawaiBiodatum::select('pegawai_biodata.*', 'pegawai_biodata.nidn as nidnDosen', 'pegawai_biodata.id_pegawai AS idPegawai', 'pegawai_berkas_pendukung.*')
-        ->leftJoin('pegawai_berkas_pendukung', 'pegawai_berkas_pendukung.id_pegawai', '=', 'pegawai_biodata.id_pegawai')
-        ->whereIn('id_posisi_pegawai', [1,2])
-        ->get()
-        ->map(function ($item) {
-            $item->idEnkripsi = Crypt::encryptString($item->idPegawai . "stifar");
-            return $item;
-        });
+        $cekUser = PegawaiBiodatum::where('user_id', Auth::id())->first();
 
-        $fake_id = 0;
-        return view('admin.berkas.dosen.index', compact('title','pegawai','fake_id'));
+        if(!$cekUser){
+            return response()->json(["message"  => "Data tidak ditemukan"]);
+        }
+
+        $dosen = PegawaiBiodatum::select('pegawai_biodata.*', 'pegawai_biodata.nidn as nidnDosen', 'pegawai_biodata.id_pegawai AS idPegawai')
+        ->where('pegawai_biodata.id_pegawai', $cekUser->id_pegawai)
+        ->first();
+
+        if(!$dosen){
+            return response()->json(["message"  => "Data tidak ditemukan"]);
+        }
+
+        $berkas = PegawaiBerkasPendukung::where("id_pegawai", $cekUser->id_pegawai)->latest()->first();
+
+        $title = 'Berkas ' . $dosen->nama_lengkap;
+
+        $data = [
+            'dosen' => $dosen,
+            'title' => $title,
+            'berkas'    => $berkas
+        ];
+
+        $ta = TahunAjaran::where("status", "Aktif")->first();
+        if($berkas){
+            if($berkas->id_ta != $ta->id){
+                $data['updateHerregistrasi'] = true;
+            }
+        }
+
+        return view('dosen.berkas.index', $data);
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
+    
     public function store(Request $request)
     {
         $fields = [
@@ -61,7 +65,7 @@ class BerkasDosenController extends Controller
 
         $ta = TahunAjaran::where("status", "Aktif")->first();
 
-        
+        // Cek apakah request ingin update_herregistrasi
         if ($request->has('update_herregistrasi') && $request->update_herregistrasi) {
 
             // Ambil TA sebelumnya
@@ -137,60 +141,4 @@ class BerkasDosenController extends Controller
         return response()->json(['message' => 'Berhasil Menyimpan Berkas']);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $idEnkripsi)
-    {
-        $idDekrip = Crypt::decryptString($idEnkripsi);
-        $idPegawai = str_replace("stifar", "", $idDekrip);
-
-        $dsn = PegawaiBiodatum::select('pegawai_biodata.*', 'pegawai_biodata.nidn as nidnDosen', 'pegawai_biodata.id_pegawai AS idPegawai', 'pegawai_berkas_pendukung.*', 'pegawai_berkas_pendukung.updated_at AS timeStampBerkas')
-        ->leftJoin('pegawai_berkas_pendukung', 'pegawai_berkas_pendukung.id_pegawai', '=', 'pegawai_biodata.id_pegawai')
-        ->where('pegawai_biodata.id_pegawai', $idPegawai)
-        ->first();
-
-        $berkas = PegawaiBerkasPendukung::where("id_pegawai", $idPegawai)->latest()->first();
-
-        $title = 'Berkas ' . $dsn->nama_lengkap;
-
-        $data = [
-            'dosen' => $dsn,
-            'berkas' => $berkas,
-            'title' => $title,
-        ];
-
-        $ta = TahunAjaran::where("status", "Aktif")->first();
-        if($berkas){
-            if($berkas->id_ta != $ta->id){
-                $data['updateHerregistrasi'] = true;
-            }
-        }
-
-        return view('admin.berkas.dosen.show', $data);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
 }

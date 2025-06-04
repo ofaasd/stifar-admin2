@@ -2,16 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Session;
-use Illuminate\Support\Facades\Hash;
 use App\Models\User;
-use App\Models\PegawaiBiodatum;
-use App\Models\ModelHasRole;
 use App\Models\Mahasiswa;
 use App\Models\LoginAttempt;
+use App\Models\TahunAjaran;
+use App\Models\ModelHasRole;
+use Illuminate\Http\Request;
+use App\Models\PegawaiBiodatum;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use App\Models\BerkasPendukungMahasiswa;
+use App\Models\PegawaiBerkasPendukung;
 
 class LoginController extends Controller
 {
@@ -79,7 +82,6 @@ class LoginController extends Controller
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
-
         if (Auth::Attempt($credentials)) {
             $role = Auth::User()->roles->pluck('name');
             LoginAttempt::create([
@@ -87,15 +89,41 @@ class LoginController extends Controller
                 'time' => date('Y-m-d H:i:s'),
                 'user_id' => Auth::user()->id
             ]);
+            $ta = TahunAjaran::where("status", "Aktif")->first();
+
             if($role[0] == "mhs"){
                 $mhs = Mahasiswa::where('user_id',Auth::user()->id)->first();
+                $berkas = BerkasPendukungMahasiswa::where("nim", $mhs->nim)->latest()->first();
                 if($mhs->update_password == 0){
                     return redirect('mhs/profile');
                 }else{
-                    return redirect('mhs/dashboard');
+                    $redirect = redirect('mhs/dashboard');
+                    if ($ta->id != optional($berkas)->id_ta) {
+                        $redirect->with(
+                            [
+                                'herregistrasi'=> true,
+                                'role'=> $role[0],
+                            ]
+                        );
+                    }
+
+                    return $redirect;
                 }
             }elseif($role[0] == "pegawai"){
-                return redirect('dsn/dashboard');
+                $pegawai = PegawaiBiodatum::where('user_id',Auth::user()->id)->first();
+                $berkas = PegawaiBerkasPendukung::where("id_pegawai", $pegawai->id_pegawai)->latest()->first();
+
+                $redirect = redirect('dsn/dashboard');
+                if ($ta->id != optional($berkas)->id_ta) {
+                    $redirect->with(
+                        [
+                            'herregistrasi'=> true,
+                            'role'=> $role[0],
+                        ]
+                    );
+                }
+
+                return $redirect;
             }else{
                 return redirect('dashboard');
             }

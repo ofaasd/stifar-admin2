@@ -1,54 +1,56 @@
 <?php
 
-namespace App\Http\Controllers\admin\berkas;
+namespace App\Http\Controllers\mahasiswa;
 
 use App\Models\Mahasiswa;
 use App\Models\TahunAjaran;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Auth;
 use App\Models\BerkasPendukungMahasiswa;
 use App\Models\MahasiswaBerkasPendukung;
 
-class BerkasMahasiswaController extends Controller
+class MahasiswaBerkasController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        $title = "Berkas Mahasiswa";
-        $mhs = Mahasiswa::select('mahasiswa.*', 'mahasiswa_berkas_pendukung.*', 'mahasiswa.nim as nimMahasiswa')
-        ->leftJoin('mahasiswa_berkas_pendukung', 'mahasiswa_berkas_pendukung.nim', '=', 'mahasiswa.nim')
-        ->get()
-        ->map(function ($item) {
-            $item->nimEnkripsi = Crypt::encryptString($item->nimMahasiswa . "stifar");
-            return $item;
-        });
+    public function index(){
+        $mhs = Mahasiswa::where('user_id', Auth::id())->first();
+        $nim = $mhs->nim;
+        $title = $mhs->nama;
+        $mahasiswa = Mahasiswa::select('mahasiswa.*', 'mahasiswa.nim as nimMahasiswa', 'pegawai_biodata.nama_lengkap as dosenWali')
+        ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'mahasiswa.id_dsn_wali')
+        ->where('mahasiswa.nim', $nim)
+        ->first();
 
-        $fake_id = 0;
-        return view('admin.berkas.mahasiswa.index', compact('title', 'mhs', 'fake_id'));
+        if(!$mahasiswa){
+            return response()->json(["message"  => "Data tidak ditemukan"]);
+        }
+
+        $berkas = MahasiswaBerkasPendukung::where("nim", $mahasiswa->nim)->latest()->first();
+
+        $data = [
+            'mahasiswa' => $mahasiswa,
+            'title' => $title,
+            'berkas' => $berkas,
+        ];
+
+        $ta = TahunAjaran::where("status", "Aktif")->first();
+        if($berkas){
+            if($berkas->id_ta != $ta->id){
+                $data['updateHerregistrasi'] = true;
+            }
+        }
+
+        return view('mahasiswa.berkas.index', $data);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $fields = [
-            'foto_ktp' => 'ktp',
-            'foto_kk' => 'kk',
-            'foto_akte' => 'akte',
-            'foto_ijazah_depan' => 'ijazah_depan',
-            'foto_ijazah_belakang' => 'ijazah_belakang',
+            'kk' => 'kk',
+            'ktp' => 'ktp',
+            'akte' => 'akte',
+            'ijazah_depan' => 'ijazah_depan',
+            'ijazah_belakang' => 'ijazah_belakang',
             'foto_sistem' => 'foto_sistem',
         ];
 
@@ -130,63 +132,5 @@ class BerkasMahasiswaController extends Controller
         }
 
         return response()->json(['message' => 'Berhasil Menyimpan Berkas']);
-    }
-
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $nimEnkrip)
-    {
-        $nimDekrip = Crypt::decryptString($nimEnkrip);
-        $nim = str_replace("stifar", "", $nimDekrip);
-
-        $mhs = Mahasiswa::select('mahasiswa.*', 'mahasiswa.nim as nimMahasiswa', 'mahasiswa_berkas_pendukung.*', 'mahasiswa_berkas_pendukung.updated_at AS timeStampBerkas')
-        ->leftJoin('mahasiswa_berkas_pendukung', 'mahasiswa_berkas_pendukung.nim', '=', 'mahasiswa.nim')
-        ->where('mahasiswa.nim', $nim)
-        ->first();
-
-        $berkas = BerkasPendukungMahasiswa::where("nim", $nim)->latest()->first();
-
-        $title = 'Berkas ' . $mhs->nama;
-
-        $data = [
-            'mahasiswa' => $mhs,
-            'berkas' => $berkas,
-            'title' => $title,
-        ];
-
-        $ta = TahunAjaran::where("status", "Aktif")->first();
-        if($berkas){
-            if($berkas->id_ta != $ta->id){
-                $data['updateHerregistrasi'] = true;
-            }
-        }
-
-        return view('admin.berkas.mahasiswa.show', $data);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }

@@ -57,6 +57,12 @@
                     </li>
                 </ul>
             </li>
+            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{URL::to('dosen/berkas')}}" >
+                <span><i class="fa fa-file"></i> Berkas</span></a>
+            </li>
+            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{URL::to('riwayat')}}" >
+                <span><i class="fa fa-users"></i> Riwayat Pegawai</span></a>
+            </li>
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" >
                 <span><i class="fa fa-book"></i> Bimbingan</span></a>
                 <ul class="sidebar-submenu">

@@ -22,7 +22,7 @@
                         <a href="{{URL::to('mhs/profile')}}" class="submenu-title">Data diri</a>
                     </li>
                     <li>
-                        <a class="submenu-title" href="{{URL::to('mhs/heregistrasi')}}" >
+                        <a class="submenu-title" href="{{URL::to('mhs/berkas')}}" >
                              <span>Heregistrasi (Data Pendukung)</span>
                         </a>
                     </li>

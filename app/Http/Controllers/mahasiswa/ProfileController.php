@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
+use App\Models\TahunAjaran;
 
 class ProfileController extends Controller
 {
@@ -22,7 +23,26 @@ class ProfileController extends Controller
         $mhs = Mahasiswa::where('user_id',Auth::id())->first();
         $nim = $mhs->nim;
         $title = "Mahasiswa";
-        $mahasiswa = $mhs;
+        $ta = TahunAjaran::where("status", "Aktif")->first();
+
+        $mahasiswa = Mahasiswa::select(
+            'mahasiswa.*', 
+            'pegawai_biodata.nama_lengkap as dosenWali', 
+            'mahasiswa_berkas_pendukung.kk AS foto_kk',
+            'mahasiswa_berkas_pendukung.ktp AS foto_ktp',
+            'mahasiswa_berkas_pendukung.akte AS foto_akte',
+            'mahasiswa_berkas_pendukung.ijazah_depan AS foto_ijazah_depan',
+            'mahasiswa_berkas_pendukung.ijazah_belakang AS foto_ijazah_belakang',
+            'mahasiswa_berkas_pendukung.foto_sistem',
+        )
+        ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'mahasiswa.id_dsn_wali')
+        ->leftJoin('mahasiswa_berkas_pendukung', function($join) use ($ta) {
+                $join->on('mahasiswa_berkas_pendukung.nim', '=', 'mahasiswa.nim')
+                    ->where('mahasiswa_berkas_pendukung.id_ta', '=', $ta->id);
+            })
+        ->where('mahasiswa.nim', $nim)
+        ->first();
+        
         $program_studi = Prodi::all();
         $prodi = [];
         foreach($program_studi as $row){

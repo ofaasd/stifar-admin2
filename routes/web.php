@@ -88,6 +88,8 @@ use App\Http\Controllers\admin\keuangan\VaController;
 use App\Http\Controllers\admin\keuangan\ProdiBukaTutupController;
 use App\Http\Controllers\mahasiswa\UjianController;
 use App\Http\Controllers\mahasiswa\KuesionerMhsController;
+use App\Http\Controllers\mahasiswa\MahasiswaBerkasController;
+use App\Http\Controllers\dosen\DosenBerkasController;
 
 /*
 |--------------------------------------------------------------------------
@@ -198,6 +200,8 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     // Route::post('mahasiswa/foto_update', [MahasiswaController::class, 'foto_update'])->name('foto_update');
     Route::get('mahasiswa/get_mhs', [MahasiswaController::class, 'get_mhs'])->name('get_mhs');
 
+    Route::get('mhs/profile', [ProfileController::class, 'index'])->name('index');
+    Route::get('mhs/berkas', [MahasiswaBerkasController::class, 'index']);
     Route::get('mhs/input_krs', [mhsKrsController::class, 'input'])->name('input');
 
     Route::resource('admin/masterdata/pt', PTController::class)->name('index','pt');
@@ -227,7 +231,7 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     // route MahasiswaModel
     Route::resource('/mahasiswa', MahasiswaController::class)->name('index', 'mahasiswa');
 
-    // route Berkas Mahasiswa
+    // route Berkas Mahasiswa untuk admin
     Route::resource('/admin/berkas/mahasiswa', BerkasMahasiswaController::class)->name('index', 'berkas-mahasiswa');
 
     // route Berkas Dosen
@@ -358,6 +362,7 @@ Route::group(['middleware' => ['auth','role:mhs|super-admin']], function(){
     Route::get('/mhs/dashboard',[DashboardController::class, 'mhs'] )->name('dashboard_mahasiswa');
 
     Route::get('/mahasiswa/detail/{nim}', [MahasiswaController::class, 'detail']);
+    Route::get('/mahasiswa/ktm/{nim}', [MahasiswaController::class, 'cetakKtm']);
     Route::post('mahasiswa/user_update', [MahasiswaController::class, 'user_update'])->name('user_update');
     Route::post('mahasiswa/user_update2', [MahasiswaController::class, 'user_update2'])->name('user_update2');
     Route::post('mahasiswa/foto_update', [MahasiswaController::class, 'foto_update'])->name('foto_update');
@@ -366,7 +371,10 @@ Route::group(['middleware' => ['auth','role:mhs|super-admin']], function(){
     Route::post('mahasiswa', [MahasiswaController::class, 'store'])->name('input');
 
     Route::get('mhs/profile', [ProfileController::class, 'index'])->name('index');
-    Route::get('mhs/heregistrasi', [ProfileController::class, 'heregistrasi'])->name('index_heregistrasi');
+    // Route::get('mhs/heregistrasi', [ProfileController::class, 'heregistrasi'])->name('index_heregistrasi');
+
+    Route::get('mhs/berkas', [MahasiswaBerkasController::class, 'index'])->name('mhs-berkas');
+    Route::post('mhs/berkas', [MahasiswaBerkasController::class, 'store'])->name('store-mhs-berkas');
 
     Route::get('mhs/input_krs', [mhsKrsController::class, 'input'])->name('input');
     Route::get('mhs/riwayat_krs', [mhsKrsController::class, 'riwayat'])->name('riwayat_krs');
@@ -402,6 +410,9 @@ Route::group(['middleware' => ['auth','role:pegawai|super-admin']], function(){
     Route::get('/admin/input-batch/{id}',[KrmController::class, 'inputAbsenBatch'] )->name('dashboard_pegawai');
     Route::post('/dosen/tampil-pertemuan-absensi',[KrmController::class, 'pertemuanAbsensi'] )->name('dashboard_pegawai');
     Route::post('/dosen/simpan-capaian',[KrmController::class, 'simpanCapaian'] )->name('dashboard_pegawai');
+
+    Route::get('dosen/berkas', [DosenBerkasController::class, 'index'])->name('dosen-berkas');
+    Route::post('dosen/berkas', [DosenBerkasController::class, 'store'])->name('store-dosen-berkas');
 
     Route::get('pegawai',[UserPegawaiController::class, 'index'] );
     Route::resource('pegawai', UserPegawaiController::class)->name('index','pegawai');
