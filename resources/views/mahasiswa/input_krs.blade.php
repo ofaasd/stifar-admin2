@@ -33,11 +33,14 @@
                                 <div class="alert alert-danger">Anda belum diizinkan untuk melakukan input krs harap hubungi admin sistem</div>
                             @elseif($prodi->is_krs == 0)
                                 <div class="alert alert-danger">Input KRS ditutup</div>
+                            @elseif(date('Y-m-d') > $tahun_ajaran->krs_end)
+                                <div class="alert alert-warning">Waktu Input KRS sudah selesai</div>
                             @else
                                 @if(empty($mk))
                                     <div class="alert alert-danger">Belum ada Kurikulum untuk angkatan anda. Harap hubungi admin</div>
                                 @endif
                                 <div class="col-sm-4">
+                                    <h2>Input KRS</h2>
                                     <div class="form-group">
                                         <label for="matakuliah">Pilih Matakuliah</label>
                                         <input type="number" value="{{ $ta }}" id="ta" hidden="" />

@@ -13,7 +13,7 @@
                 swal({
                     icon: 'success',
                     title: 'Successfully '.concat(data.status, '!'),
-                    text: ''.concat(data.status, ' Successfully.'),z
+                    text: ''.concat(data.status, ' Successfully.'),
                     customClass: {
                         confirmButton: 'btn btn-success'
                     }

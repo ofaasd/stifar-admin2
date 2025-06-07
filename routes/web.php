@@ -23,6 +23,7 @@ use App\Http\Controllers\admin\AsalSekolahController;
 use App\Http\Controllers\admin\master\UserController;
 use App\Http\Controllers\admin\TahunAjaranController;
 use App\Http\Controllers\mahasiswa\ProfileController;
+use App\Http\Controllers\admin\mahasiswa\PrestasiController;
 use App\Http\Controllers\admin\admisi\SlideController;
 use App\Http\Controllers\admin\admisi\BiayaPendaftaranController;
 use App\Http\Controllers\admin\admisi\StatistikController as AdmisiStatistikController;
@@ -229,6 +230,7 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     Route::resource('admin/masterdata/aset/aset-jenis-ruang', JenisRuangController::class)->name('index', 'aset-jenis-ruang');
 
     // route MahasiswaModel
+    Route::resource('/mahasiswa/prestasi', PrestasiController::class)->name('index', 'mahasiswa');
     Route::resource('/mahasiswa', MahasiswaController::class)->name('index', 'mahasiswa');
 
     // route Berkas Mahasiswa untuk admin

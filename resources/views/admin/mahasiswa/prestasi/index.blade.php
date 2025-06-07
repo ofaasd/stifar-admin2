@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Basic DataTables')
+@section('title', 'Kategori Aset')
 
 @section('css')
 
@@ -11,12 +11,12 @@
 @endsection
 
 @section('breadcrumb-title')
-    <h3>{{$title}}</h3>
+    <h3>{{$title2}}</h3>
 @endsection
 
 @section('breadcrumb-items')
-    <li class="breadcrumb-item">Master Data</li>
-    <li class="breadcrumb-item active">Asal Sekolah PMB</li>
+    <li class="breadcrumb-item">Master</li>
+    <li class="breadcrumb-item active">Kategori Aset</li>
 @endsection
 
 @section('content')
@@ -26,7 +26,9 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header pb-0 card-no-border">
-                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal">+ {{$title}}</button>
+                        @if(empty($link))
+                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal" id="add-record">+ {{$title2}}</button>
+                        @endif
                         <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
@@ -34,49 +36,47 @@
                                         @csrf
                                         <input type="hidden" name="id" id="id">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="ModalLabel">Tambah {{$title}}</h5>
+                                            <h5 class="modal-title" id="ModalLabel">Tambah {{$title2}}</h5>
                                             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <div class="mb-3">
-                                                <label for="kode_ta" class="form-label">Kode Tahun Ajaran</label>
-                                                <input type="text" name="kode_ta" id="kode_ta" class="form-control">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="tgl_awal" class="form-label">Tanggal Awal Tahun Ajaran</label>
-                                                <input type="date" name="tgl_awal" id="tgl_awal" class="form-control">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="tgl_awal_kuliah" class="form-label">Tanggal Awal Kuliah</label>
-                                                <input type="date" name="tgl_awal_kuliah" id="tgl_awal_kuliah" class="form-control">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="tgl_akhir" class="form-label">Tanggal Akhir Tahun Ajaran</label>
-                                                <input type="date" name="tgl_akhir" id="tgl_akhir" class="form-control">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="krs_start" class="form-label">Tangga Awal KRS</label>
-                                                <input type="date" name="krs_start" id="krs_start" class="form-control">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="krs_end" class="form-label">Tanggal Akhir KRS</label>
-                                                <input type="date" name="krs_end" id="krs_end" class="form-control">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="status" class="form-label">Status Tahun Ajaran</label>
-                                                <select name="status" id="status" class="form-control">
-                                                        <option value="Aktif">Aktif</option>
-                                                        <option value="Tidak Aktif">Tidak Aktif</option>
+                                            <div class="mb-3" id="field-nama">
+                                                <label for="nama" class="form-label">Mahasiswa</label>
+                                                <select name="mahasiswa_id" id="mahasiswa_id">
+                                                    <option value=0>--Pilih Mahasiswa--</option>
+                                                    @foreach($mahasiswa as $row)
+                                                        <option value="{{$row->id}}">{{$row->nim}} {{$row->nama}}</option>
+                                                    @endforeach
                                                 </select>
                                             </div>
-                                            <div class="mb-3">
-                                                <label for="keterangan" class="form-label">Keterangan</label>
-                                                <input type="text" name="keterangan" id="keterangan" class="form-control">
+                                            <div class="modal-body">
+                                                <div class="mb-3" id="field-nama">
+                                                    <label for="nama_prestasi" class="form-label">Nama Prestasi</label>
+                                                    <input type="text" class="form-control" name="nama_prestasi" id="nama_prestasi" placeholder="Cth: Lomba Karya Tuls">
+                                                </div>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="mb-3" id="field-nama">
+                                                    <label for="tahun" class="form-label">Tahun</label>
+                                                    <input type="text" class="form-control" name="tahun" id="tahun" placeholder="Cth: 2025">
+                                                </div>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="mb-3" id="field-nama">
+                                                    <label for="tingkat" class="form-label">Tingkat</label>
+                                                    <input type="text" class="form-control" name="tingkat" id="tingkat" placeholder="Cth: Kota">
+                                                </div>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="mb-3" id="field-nama">
+                                                    <label for="deskripsi" class="form-label">Deskripsi</label>
+                                                    <input type="text" class="form-control" name="deskripsi" id="deskripsi" placeholder="">
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="modal-footer">
                                             <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
-                                            <button class="btn btn-primary" type="submit" id="btn_save">Simpan</button>
+                                            <button class="btn btn-primary" id="btn-submit" type="submit">Simpan</button>
                                         </div>
                                     </form>
                                 </div>
@@ -90,14 +90,13 @@
                                 <thead>
                                     <tr>
                                         <th></th>
-                                        <th>ID</th>
-                                        <th>Kode TA</th>
-                                        <th>Tanggal Awal</th>
-                                        <th>Tanggal Awal Kuliah</th>
-                                        <th>Tanggal Akhir</th>
-                                        <th>Status</th>
-                                        <th>Keterangan</th>
-                                        <th>Actions</th>
+                                        <th>No</th>
+                                        <th>Mahasiswa</th>
+                                        <th>NIM</th>
+                                        <th>Prestasi</th>
+                                        <th>Tahun</th>
+                                        <th>Tingkat</th>
+                                        <th>Deskripsi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -119,10 +118,9 @@
 
     <script>
         $(function () {
-
             const baseUrl = {!! json_encode(url('/')) !!};
-            const title = "{{strtolower($url)}}";
-            const page = '/'.concat("admin/masterdata/").concat(title);
+            const title = "{{strtolower($title)}}";
+            const page = '/'.concat("admin/mahasiswa/").concat(title);
             var my_column = $('#my_column').val();
             const pecah = my_column.split('\n');
             let my_data = [];
@@ -132,8 +130,8 @@
                 //alert(data_obj.data);
                 my_data.push(data_obj);
             });
-
-            console.log(my_data);
+            //alert(data_obj);
+            // console.log(my_data);
 
             const dt = $("#basic-1").DataTable({
                 processing: true,
@@ -159,7 +157,7 @@
                     orderable: false,
                     targets: 1,
                     render: function render(data, type, full, meta) {
-                        return '<span>'.concat(full.fake_id, '</span>');
+                        return '<span>'.concat(full['fake_id'], '</span>');
                     }
                     },
                     {
@@ -169,16 +167,16 @@
                     searchable: false,
                     orderable: false,
                     render: function render(data, type, full, meta) {
-                        return (
-                        '<div class="d-inline-block text-nowrap">' +
-                        '<button class="btn btn-sm btn-icon edit-record text-primary" data-id="'
-                            .concat(full['id'], '" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal"')
-                            .concat(title, '"><i class="fa fa-pencil"></i></button>') +
-                        '<button class="btn btn-sm btn-icon delete-record text-primary" data-id="'.concat(
-                            full['id'],
-                            '"><i class="fa fa-trash"></i></button>'
-                        )
-                        );
+                            return (
+                            '<div class="d-inline-block text-nowrap">' +
+                            '<button class="btn btn-sm btn-icon edit-record text-primary" data-id="'
+                                .concat(full['id'], '" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal"')
+                                .concat(title, '"><i class="fa fa-pencil"></i></button>') +
+                            '<button class="btn btn-sm btn-icon delete-record text-primary" data-id="'.concat(
+                                full['id'],
+                                '"><i class="fa fa-trash"></i></button>'
+                            )
+                            );
                     }
                     }
                 ],
@@ -198,10 +196,16 @@
                     searchPlaceholder: 'Search..'
                 },
             });
+
             $('#tambahModal').on('hidden.bs.modal', function () {
                 $('#formAdd').trigger("reset");
             });
             //Edit Record
+            $(document).on('click', '#add-record', function () {
+                $('#ModalLabel').html('Tambah ' + title);
+                $("#id").val('');
+                $('#formAdd').trigger("reset");
+            });
             $(document).on('click', '.edit-record', function () {
                 const id = $(this).data('id');
 
@@ -210,70 +214,56 @@
 
                 // get data
                 $.get(''.concat(baseUrl).concat(page, '/').concat(id, '/edit'), function (data) {
-                Object.keys(data).forEach(key => {
-                    //console.log(key);
-                    $('#' + key)
-                        .val(data[key])
-                        .trigger('change');
+                    Object.keys(data).forEach(key => {
+                        // console.log(data[key]);
+                        $('#' + key)
+                            .val(data[key])
+                            .trigger('change');
+                    });
                 });
-                });
+
             });
             //save record
             $('#formAdd').on('submit',function(e){
                 e.preventDefault();
-                swal({
-                title: 'Apakah anda yakin ?',
-                text: "Membuat TA baru akan otomatis aktif dan data TA sebelumnya akan diarsipkan | JIka Mengubah abaikan pesan ini",
-                icon: 'warning',
-                buttons: true,
-                dangerMode: true,
-                showCancelButton: true,
-                confirmButtonText: 'Yes, delete it!',
-                customClass: {
-                    confirmButton: 'btn btn-primary me-3',
-                    cancelButton: 'btn btn-label-secondary'
-                },
-                buttonsStyling: false
-                }).then(function (result) {
-                    if (result) {
-                        $("#btn_save").prop('disabled',true);
-                        $("#btn_save").val('Tunggu Sebentar');
-                        $.ajax({
-                            data: $('#formAdd').serialize(),
-                            url: ''.concat(baseUrl).concat(page),
-                            type: 'POST',
-                            success: function success(status) {
-                                dt.draw();
-                                $("#tambahModal").modal('hide');
-
-                                // sweetalert
-                                swal({
-                                icon: 'success',
-                                title: 'Successfully '.concat(status, '!'),
-                                text: ''.concat(title, ' ').concat(status, ' Successfully.'),
-                                customClass: {
-                                    confirmButton: 'btn btn-success'
-                                }
-                                });
-                                $("#btn_save").prop('disabled',false);
-                                $("#btn_save").val('Simpan');
-                            },
-                            error: function error(err) {
-                                swal({
-                                title: 'Error!',
-                                text: title + ' Not Saved !',
-                                icon: 'error',
-                                customClass: {
-                                    confirmButton: 'btn btn-success'
-                                }
-                                });
-                                $("#btn_save").prop('disabled',false);
-                                $("#btn_save").val('Simpan');
-                            }
+                var btnSubmit = $('#btn-submit');
+                btnSubmit.prop('disabled', true);
+                const myFormData = new FormData(document.getElementById('formAdd'));
+                const offCanvasForm = $('#formAdd');
+                $.ajax({
+                    data: myFormData,
+                    url: ''.concat(baseUrl).concat(page),
+                    type: 'POST',
+                    processData: false,
+                    contentType: false,
+                    success: function success(status) {
+                        dt.draw();
+                        $("#tambahModal").modal('hide');
+                        // sweetalert
+                        swal({
+                        icon: 'success',
+                        title: 'Successfully '.concat(status, '!'),
+                        text: ''.concat(title, ' ').concat(status, ' Successfully.'),
+                        customClass: {
+                            confirmButton: 'btn btn-success'
+                        }
+                        });
+                        btnSubmit.prop('disabled', false);
+                    },
+                    error: function error(err) {
+                        offCanvasForm.offcanvas('hide');
+                        swal({
+                        title: 'Duplicate Entry!',
+                        text: title + ' Not Saved !',
+                        icon: 'error',
+                        customClass: {
+                            confirmButton: 'btn btn-success'
+                        }
                         });
                     }
                 });
             });
+
             //delete record
             $(document).on('click', '.delete-record', function () {
                 const id = $(this).data('id');

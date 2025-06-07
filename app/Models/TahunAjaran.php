@@ -14,6 +14,8 @@ class TahunAjaran extends Model
         'tgl_akhir',
         'status',
         'krs',
+        'krs_start',
+        'krs_end',
         'keterangan',
         'kuesioner',
     ];
