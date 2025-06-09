@@ -19,6 +19,7 @@ use App\Models\TahunAjaran;
 use App\Models\MataKuliah;
 use App\Models\hari;
 use App\Models\Pengajar;
+use App\Models\LogNilai;
 use App\Models\Waktu as Sesi;
 use App\Models\master_nilai as MasterNilai;
 use Illuminate\Support\Facades\DB;
@@ -106,27 +107,7 @@ class KrmController extends Controller
         $no = 1;
         return view('dosen.daftar_mhs', compact('title', 'jadwal', 'daftar_mhs', 'no'));
     }
-    public function setAbsensiSatuan($id_jadwal){
-        $title = "Setting Absensi";
-        $pertemuan = Pertemuan::select('pertemuans.*', 'pegawai_biodata.nama_lengkap', 'absensi_models.type')
-                              ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'pertemuans.id_dsn')
-                              ->leftJoin('absensi_models', 'absensi_models.id_pertemuan', '=', 'pertemuans.id')
-                              ->where('pertemuans.id_jadwal', $id_jadwal)->get();
-        $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
-                        ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
-                        ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
-                        ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
-                        ->leftJoin('mata_kuliahs', 'mata_kuliahs.id', '=', 'jadwals.id_mk')
-                        ->where([ 'jadwals.id' => $id_jadwal, 'jadwals.status' => 'Aktif'])->first();
-        $mhs = Mahasiswa::where('nim', $nim)->first();
-        $program_studi = Prodi::all();
-        $prodi = [];
-        foreach($program_studi as $row){
-            $prodi[$row->id] = $row->nama_prodi;
-        }
-        $no = 1;
-        return view('dosen.input_absen_satuan', compact('title', 'pertemuan', 'jadwal', 'mhs', 'no', 'prodi'));
-    }
+
     public function daftarMhsNew($id,$id_pertemuan){
         $id_jadwal = $id;
         $pertemuan = $id_pertemuan;
@@ -347,7 +328,7 @@ class KrmController extends Controller
             $nh = \App\helpers::getNilaiHuruf($na);
 
             master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs, 'nim' => $mahasiswa->nim])->update(['nakhir' => $na, 'nhuruf' => $nh]);
-
+            LogNilai::create(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs, 'id_tahun'=>$tahun_ajaran['id'],'status'=>2]);
             return json_encode(['kode' => 200, 'na' => $na, 'nh' => $nh]);
         }else{
             if ($tipe == 1) {
@@ -369,6 +350,7 @@ class KrmController extends Controller
             $nh = 'E';
             $nh = \App\helpers::getNilaiHuruf($na);
             master_nilai::where(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs, 'nim' => $mahasiswa->nim])->update(['nakhir' => $na, 'nhuruf' => $nh]);
+            LogNilai::create(['id_jadwal' => $id_jadwal, 'id_mhs' => $id_mhs, 'id_tahun'=>$tahun_ajaran['id'],'status'=>1]);
             return json_encode(['kode' => 200, 'na' => $na, 'nh' => $nh]);
         }
     }

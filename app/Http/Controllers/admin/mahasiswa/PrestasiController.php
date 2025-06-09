@@ -43,7 +43,7 @@ class PrestasiController extends Controller
 
             if (empty($request->input('search.value'))) {
                 $prestasi = PrestasiMahasiswa::select('prestasi_mahasiswa.*','mahasiswa.nama as nama_mahasiswa','mahasiswa.nim')
-                    ->join('mahasiswa','mahasiswa.id','=','PrestasiMahasiswa.mahasiswa_id')
+                    ->join('mahasiswa','mahasiswa.id','=','prestasi_mahasiswa.mahasiswa_id')
                     ->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
@@ -52,7 +52,7 @@ class PrestasiController extends Controller
                 $search = $request->input('search.value');
 
                 $prestasi = PrestasiMahasiswa::select('prestasi_mahasiswa.*','mahasiswa.nama as nama_mahasiswa','mahasiswa.nim')
-                    ->join('mahasiswa','mahasiswa.id','=','PrestasiMahasiswa.mahasiswa_id')
+                    ->join('mahasiswa','mahasiswa.id','=','prestasi_mahasiswa.mahasiswa_id')
                     ->where('id', 'LIKE', "%{$search}%")
                     ->orWhere('nama', 'LIKE', "%{$search}%")
                     ->offset($start)
@@ -61,7 +61,7 @@ class PrestasiController extends Controller
                     ->get();
 
                 $totalFiltered = PrestasiMahasiswa::select('prestasi_mahasiswa.*','mahasiswa.nama as nama_mahasiswa','mahasiswa.nim')
-                    ->join('mahasiswa','mahasiswa.id','=','PrestasiMahasiswa.mahasiswa_id')
+                    ->join('mahasiswa','mahasiswa.id','=','prestasi_mahasiswa.mahasiswa_id')
                     ->where('id', 'LIKE', "%{$search}%")
                     ->orWhere('nama', 'LIKE', "%{$search}%")
                     ->count();
@@ -106,18 +106,18 @@ class PrestasiController extends Controller
     public function store(Request $request)
     {
         // Validasi data
-        $validatedData = $request->validate([
-            'nama' => 'string|required',
-            'id' => 'nullable',
-        ]);
 
         try {
-            $id = $validatedData['id'];
+            $id = $request->id;
 
             $save = PrestasiMahasiswa::updateOrCreate(
                 ['id' => $id],
                 [
-                    'nama' => $validatedData['nama'],
+                    'mahasiswa_id' => $request->mahasiswa_id,
+                    'nama_prestasi' => $request->nama_prestasi,
+                    'tahun' => $request->tahun,
+                    'tingkat' => $request->tingkat,
+                    'deskripsi' => $request->deskripsi,
                 ]
             );
 
@@ -129,7 +129,7 @@ class PrestasiController extends Controller
 
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Failed to save prestasi Aset',
+                'message' => 'Failed to save Prestasi',
                 'error' => $e->getMessage(),
             ], 500);
         }
