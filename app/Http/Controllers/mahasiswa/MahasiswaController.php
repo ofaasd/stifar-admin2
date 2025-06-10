@@ -9,6 +9,7 @@ use App\Models\Wilayah;
 use App\Models\Mahasiswa;
 use App\Models\TahunAjaran;
 use App\Models\ModelHasRole;
+use App\Models\LogMh as LogMhs;
 use Illuminate\Http\Request;
 // use Illuminate\Support\Facades\Request;
 use App\Models\DetailTagihan;
@@ -48,8 +49,8 @@ class MahasiswaController extends Controller
         if($id == 0){
             $ta = TahunAjaran::where("status", "Aktif")->first();
             $mhs = Mahasiswa::select(
-                'mahasiswa.*', 
-                'pegawai_biodata.nama_lengkap as dosenWali', 
+                'mahasiswa.*',
+                'pegawai_biodata.nama_lengkap as dosenWali',
                 'mahasiswa_berkas_pendukung.foto_sistem'
             )
             ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'mahasiswa.id_dsn_wali')
@@ -94,8 +95,8 @@ class MahasiswaController extends Controller
         $title = "Mahasiswa";
         $ta = TahunAjaran::where("status", "Aktif")->first();
         $mahasiswa = Mahasiswa::select(
-            'mahasiswa.*', 
-            'pegawai_biodata.nama_lengkap as dosenWali', 
+            'mahasiswa.*',
+            'pegawai_biodata.nama_lengkap as dosenWali',
             'mahasiswa_berkas_pendukung.kk AS foto_kk',
             'mahasiswa_berkas_pendukung.ktp AS foto_ktp',
             'mahasiswa_berkas_pendukung.akte AS foto_akte',
@@ -292,6 +293,11 @@ class MahasiswaController extends Controller
             return response()->json($data);
         }else{
         //update user
+            $mahasiswa = Mahasiswa::find($id);
+            //masuk ke log jika ada perubahan status
+            if($mahasiswa->status != $request->status){
+                LogMhs::create(['id_mhs'=>$id,'status'=>$request->status]);
+            }
             $mahasiswa = Mahasiswa::updateOrCreate(
                 ['id' => $id],
                 [
@@ -404,7 +410,7 @@ class MahasiswaController extends Controller
     {
         $id = $request->id;
         if ($request->file('foto')) {
-            
+
             $photo = $request->file('foto');
             if(strtolower($photo->extension()) ==  'jpg' || strtolower($photo->extension()) ==  'png' || strtolower($photo->extension()) ==  'gif' || strtolower($photo->extension()) ==  'jpeg'){
                 $filename = date('YmdHi') . $photo->getClientOriginalName();
@@ -418,7 +424,7 @@ class MahasiswaController extends Controller
                 // resize image proportionally to 300px width
                 $image->scale(width: 600);
 
-                // save modified image in new format 
+                // save modified image in new format
                 $image->save($tujuan_upload . '/' . $filename);
                 //$photo->move($tujuan_upload,$filename);
                 $mahasiswa = Mahasiswa::updateOrCreate(
@@ -513,7 +519,7 @@ class MahasiswaController extends Controller
             }
         }
         if($id){
-            
+
             $berkas = MahasiswaBerkasPendukung::updateOrCreate(
                 ['id' => $id],
                 $data_upload
@@ -531,11 +537,11 @@ class MahasiswaController extends Controller
             }
         }
         // if ($request->file('foto')) {
-            
+
         //     $photo = $request->file('foto');
         //     if(strtolower($photo->extension()) ==  'pdf'){
         //         $filename = date('YmdHi') . $photo->getClientOriginalName();
-                
+
         //         //$photo->move($tujuan_upload,$filename);
         //         $mahasiswa = Mahasiswa::updateOrCreate(
         //             [

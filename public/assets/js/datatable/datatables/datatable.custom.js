@@ -1,5 +1,11 @@
 $(document).ready(function() {
     $('product-list').DataTable();
+    $('.table-basic').DataTable({
+        "paging":false,
+        "ordering":false,
+        "info":false,
+        "searching":false,
+    });
     // Basic table example 
     $('#basic-1').DataTable();
     $('#basic-2').DataTable({

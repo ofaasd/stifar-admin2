@@ -55,6 +55,14 @@
                                                 <input type="date" name="tgl_akhir" id="tgl_akhir" class="form-control">
                                             </div>
                                             <div class="mb-3">
+                                                <label for="krs_start" class="form-label">Tangga Awal KRS</label>
+                                                <input type="date" name="krs_start" id="krs_start" class="form-control">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="krs_end" class="form-label">Tanggal Akhir KRS</label>
+                                                <input type="date" name="krs_end" id="krs_end" class="form-control">
+                                            </div>
+                                            <div class="mb-3">
                                                 <label for="status" class="form-label">Status Tahun Ajaran</label>
                                                 <select name="status" id="status" class="form-control">
                                                         <option value="Aktif">Aktif</option>
@@ -215,7 +223,7 @@
                 e.preventDefault();
                 swal({
                 title: 'Apakah anda yakin ?',
-                text: "Membuat TA baru akan otomatis aktif dan data TA sebelumnya akan diarsipkan",
+                text: "Membuat TA baru akan otomatis aktif dan data TA sebelumnya akan diarsipkan | JIka Mengubah abaikan pesan ini",
                 icon: 'warning',
                 buttons: true,
                 dangerMode: true,

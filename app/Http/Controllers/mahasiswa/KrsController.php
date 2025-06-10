@@ -48,7 +48,7 @@ class KrsController extends Controller
         $no = 1;
 
         $permission = MasterKeuanganMh::where('id_mahasiswa',$idmhs)->first();
-        return view('mahasiswa.input_krs', compact('prodi','mhs','title', 'permission','mk', 'krs', 'no', 'ta', 'idmhs'));
+        return view('mahasiswa.input_krs', compact('prodi','mhs','title', 'permission','mk', 'krs', 'no', 'ta', 'idmhs', 'tahun_ajaran'));
     }
     public function riwayat($id=0){
         $title = "Riwayat KRS Mahasiswa";

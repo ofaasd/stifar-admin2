@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers\admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Mahasiswa;
-use App\Models\PegawaiBiodatum;
-use App\Models\PmbPesertaOnline;
-use App\Models\PmbPesertum;
-use App\Models\TahunAjaran;
-use App\Models\MataKuliah;
-use App\Models\Kurikulum;
-use App\Models\MatakuliahKurikulum;
+use Auth;
+use App\Models\Krs;
 use App\Models\Prodi;
 use App\Models\Jadwal;
-use App\Models\Krs;
-use Auth;
+use App\Models\Kurikulum;
+use App\Models\Mahasiswa;
+use App\Models\MataKuliah;
+use App\Models\PmbPesertum;
+use App\Models\TahunAjaran;
+use Illuminate\Http\Request;
+use App\Models\PegawaiBiodatum;
+use App\Models\PmbPesertaOnline;
+use Illuminate\Support\Facades\DB;
+use App\Models\MatakuliahKurikulum;
+use App\Http\Controllers\Controller;
 
 class DashboardController extends Controller
 {
@@ -34,10 +35,37 @@ class DashboardController extends Controller
         $jumlah_praktek = MataKuliah::whereNotNull('sks_praktek')->count();
         $prodi = Prodi::all();
         $list_prodi = '';
+        $list_rombel = '';
+        $list_valid = '';
+        $list_tidak_valid = '';
         $i = 0;
         $list_teori = '';
         $list_praktek = '';
-        foreach($prodi as $row){
+        $pembayaran = Mahasiswa::select('master_jadwal.rombel',
+        DB::raw('
+            SUM(CASE WHEN pembayaran.krs = 1 AND pembayaran.uts = 1 AND pembayaran.uas = 1 THEN 1 ELSE 0 END) as total_valid,
+            SUM(CASE WHEN pembayaran.krs = 0 OR pembayaran.uts = 0 OR pembayaran.uas = 0 THEN 1 ELSE 0 END) as total_tidak_valid
+        '))
+    ->join('krs', 'krs.id_mhs', '=', 'mahasiswa.id')
+    ->join('master_jadwal', 'master_jadwal.id_jadwal', '=', 'krs.id_jadwal')
+    ->join('master_keuangan_mhs as pembayaran', 'pembayaran.id_mahasiswa', '=', 'mahasiswa.id')
+    ->groupBy('master_jadwal.rombel')
+    ->get();
+
+    foreach ($pembayaran as $index => $validasi) {
+        if ($index == 0) {
+            $list_rombel .= "'" . $validasi->rombel . "'";
+            $list_valid .= "" . $validasi->total_valid . "";
+            $list_tidak_valid .= "" . $validasi->total_tidak_valid . "";
+        } else {
+            $list_rombel .= ",'" . $validasi->rombel . "'";
+            $list_valid .= "," . $validasi->total_valid . "";
+            $list_tidak_valid .= "," . $validasi->total_tidak_valid . "";
+        }
+    }
+    
+    
+            foreach($prodi as $row){
             $kurikulum = Kurikulum::where('progdi',$row->kode_prodi)->get();
             $matakuliah_praktek = 0;
             $matakuliah_teori = 0;
@@ -58,7 +86,7 @@ class DashboardController extends Controller
             }
             $i++;
         }
-        return view('index', compact('list_praktek','list_teori','list_prodi','jumlah_kurikulum','jumlah_teori','jumlah_praktek','jumlah_mhs','jumlah_pegawai','total_pendaftar','jumlah_matkul'));
+        return view('index', compact('list_praktek','list_teori','list_prodi','jumlah_kurikulum','jumlah_teori','jumlah_praktek','jumlah_mhs','jumlah_pegawai','total_pendaftar','jumlah_matkul','list_rombel', 'list_valid', 'list_tidak_valid'));
     }
     public function mhs(){
         $user_id = Auth::user()->id;
@@ -123,6 +151,6 @@ class DashboardController extends Controller
                 $list_jumlah_krs_invalid[$value->angkatan] .= ($total_input - $total_input_valid) . ',';
             }
         }
-        return view('admin.akademik.index_view',compact('prodi','list_jumlah_krs','list_total_mahasiswa','list_jumlah_krs_valid','list_jumlah_krs_invalid','list_prodi','angkatan'));
+        return view('admin.akademik.index_view',compact('prodi','list_jumlah_krs','list_total_mahasiswa','list_jumlah_krs_valid','list_jumlah_krs_invalid','list_prodi','angkatan','pembayaranValidasi'));
     }
 }

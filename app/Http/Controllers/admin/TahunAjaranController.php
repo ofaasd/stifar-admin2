@@ -131,6 +131,8 @@ class TahunAjaranController extends Controller
                     'tgl_awal' => $request->tgl_awal,
                     'tgl_awal_kuliah' => $request->tgl_awal_kuliah,
                     'tgl_akhir' => $request->tgl_akhir,
+                    'krs_start' => $request->krs_start,
+                    'krs_end' => $request->krs_end,
                     'status' => 'Aktif',
                     'keterangan' => $request->keterangan
                 ]

@@ -12,6 +12,7 @@ use App\Models\Prodi;
 use App\Models\Kurikulum;
 use App\Models\Jadwal;
 use App\Models\MatakuliahKurikulum;
+use App\Models\LogKr as LogKrs;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Session;
 
@@ -126,22 +127,23 @@ class KrsController extends Controller
             return back();
         }else{
             $jumlah_kuota = Krs::where(['id_jadwal' => $id, 'id_tahun' => $data_jadwal['id_tahun']])->count();
-            // if($jumlah_kuota >=  $data_jadwal->kuota){
-            //     $tabel = '
-            //         <div class="alert alert-danger dark" role="alert">
-            //         <span class="mt-4"><b>maaf kuota matakuliah sudah penuh</b></span>
-            //         </div>
-            //     ';
-            //     Session::put('krs', $tabel);
-            //     return back();
-            // }else{
+            if($jumlah_kuota >  $data_jadwal->kuota){
+                $tabel = '
+                    <div class="alert alert-danger dark" role="alert">
+                    <span class="mt-4"><b>maaf kuota matakuliah sudah penuh</b></span>
+                    </div>
+                ';
+                Session::put('krs', $tabel);
+                return back();
+            }else{
                 Krs::create(['id_jadwal' => $id, 'id_tahun' => $data_jadwal['id_tahun'], 'id_mhs' => $mhs, 'is_publish' => 0]);
                 $kuota = $data_jadwal['kuota'] - 1;
                 Jadwal::where('id', $id)->update(['kuota' => $kuota]);
                 Session::put('krs', '<div class="alert alert-success dark mt-4" role="alert">Jadwal Berhasil di Tambahkan</div>');
-
+                //adding log to db jika ada error log cek disini
+                LogKrs::create(['id_jadwal' => $id, 'id_mhs'=>$mhs, 'id_ta' => $data_jadwal['id_tahun'], 'action'=>1]);
                 return back();
-            // }
+            }
 
         }
     }
@@ -152,6 +154,8 @@ class KrsController extends Controller
         Jadwal::where('id', $qr['id_jadwal'])->update(['kuota' => $kuota]);
 
         Krs::where('id', $id)->delete();
+        //adding log to db jika ada error log cek disini
+        LogKrs::create(['id_jadwal' => $qr['id_jadwal'], 'id_mhs'=>$qr['id_mhs'], 'id_ta' => $qr['id_tahun'], 'action'=>3]);
 
         return back();
     }

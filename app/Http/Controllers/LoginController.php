@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Session;
 use App\Models\User;
 use App\Models\Mahasiswa;
+use App\Models\LoginAttempt;
 use App\Models\TahunAjaran;
 use App\Models\ModelHasRole;
 use Illuminate\Http\Request;
@@ -83,6 +84,11 @@ class LoginController extends Controller
         ]);
         if (Auth::Attempt($credentials)) {
             $role = Auth::User()->roles->pluck('name');
+            LoginAttempt::create([
+                'ip_address' => $request->ip(),
+                'time' => date('Y-m-d H:i:s'),
+                'user_id' => Auth::user()->id
+            ]);
             $ta = TahunAjaran::where("status", "Aktif")->first();
 
             if($role[0] == "mhs"){
@@ -106,7 +112,7 @@ class LoginController extends Controller
             }elseif($role[0] == "pegawai"){
                 $pegawai = PegawaiBiodatum::where('user_id',Auth::user()->id)->first();
                 $berkas = PegawaiBerkasPendukung::where("id_pegawai", $pegawai->id_pegawai)->latest()->first();
-                
+
                 $redirect = redirect('dsn/dashboard');
                 if ($ta->id != optional($berkas)->id_ta) {
                     $redirect->with(

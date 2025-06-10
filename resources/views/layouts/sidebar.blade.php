@@ -43,7 +43,7 @@
                         </ul>
                     </li>
                     <li><a href="{{URL::to('admin/masterdata/ta')}}">Tahun Ajaran</a></li>
-                    <li><a href="#">Jenjang</a></li>
+                    <!-- <li><a href="#">Jenjang</a></li> -->
                     <li><a href="{{URL::to('admin/masterdata/jabatan_struktural')}}">Jabatan</a></li>
                     <li><a href="{{URL::to('admin/masterdata/user')}}">User Manajemen</a></li>
                     {{-- <li><a href="{{ route('ruang/')}}">Ruang</a></li> --}}
@@ -182,12 +182,12 @@
                     </li>
                     <li>
                         <a class="submenu-title" href="#">
-                            <span>Skripsi <label class="badge badge-light-danger">!</label></span>
+                            <span>Skripsi</span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
-                            <li><a href="#">Manajemen Skripsi <label class="badge badge-light-danger">!</label></a></li>
-                            <li><a href="#">Input Dosbing <label class="badge badge-light-danger">!</label></a></li>
-                            <li><a href="#">Jadwal Sidang <label class="badge badge-light-danger">!</label></a></li>
+                            <li><a href="{{ Route('admin.skripsi.manajemen.daftar.index') }}">Manajemen Skripsi </a></li>
+                            <li><a href="{{Route('pembimbing.index')}}">Input Dosbing </a></li>
+                            <li><a href="{{ Route('sidang.index') }}">Jadwal Sidang </a></li>
                             <li><a href="#">Nilai <label class="badge badge-light-danger">!</label></a></li>
                         </ul>
                     </li>
@@ -283,6 +283,8 @@
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{URL::to('dosen/krm')}}" >
                 <span><i class="fa fa-folder"></i> KRM</span></a> --}}
             </li>
+
+
           </ul>
         </div>
         <div class="right-arrow" id="right-arrow"><i data-feather="arrow-right"></i></div>
