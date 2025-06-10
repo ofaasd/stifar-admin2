@@ -30,6 +30,46 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 @endif
+{{-- <div class="row">
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <div class="search-container">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalKoor"
+                        id="tambahKoor">Tambah Koordinator</button>
+                </div>
+                <table class="display table-basic">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Npp</th>
+                            <th>Nama</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($koordinator as $koor)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ e($koor->npp) }}</td>
+                                <td>{{ e($koor->nama_lengkap) }}</td>
+                                <td>
+                                    <ul class="action">
+                                        <li class="edit" data-id="{{ $koor->id }}">
+                                            <a href="{{ route('admin.skripsi.manajemen.detail', $koor->id) }}">
+                                                <i class="icon-eye"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div> --}}
     {{-- Persyaratan SKS --}}
     <div class="card mb-4">
         <div class="card-header">
@@ -64,8 +104,6 @@
                         <tr>
                             <th>No</th>
                             <th>Nama Berkas</th>
-                            <th>Deskripsi</th>
-                            <th>Wajib</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -74,18 +112,6 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $berkas->nama }}</td>
-                                <td>{{ $berkas->deskripsi }}</td>
-                                <td>
-                                    @if ($berkas->kategori == 1)
-                                        <span class="badge bg-primary">Pendaftaran</span>
-                                    @elseif ($berkas->kategori == 2)
-                                        <span class="badge bg-warning text-dark">Sidang</span>
-                                    @elseif ($berkas->kategori == 3)
-                                        <span class="badge bg-success">Yudisium</span>
-                                    @else
-                                        <span class="badge bg-secondary">Tidak Diketahui</span>
-                                    @endif
-                                </td>
                                 <td>
                                     {{-- Tombol Edit --}}
                                     <button class="btn btn-sm btn-warning" data-bs-toggle="modal"
@@ -120,20 +146,6 @@
                                                             <label class="form-label">Nama Berkas</label>
                                                             <input type="text" class="form-control" name="nama_kategori"
                                                                 value="{{ $berkas->nama }}" required>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label class="form-label">Deskripsi</label>
-                                                            <textarea class="form-control" name="deskripsi" rows="3">{{ $berkas->deskripsi }}</textarea>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label class="form-label">Kategori Berkas</label>
-                                                            <select name="kategori" id="kategori" class="form-control">
-                                                                <option value="1" {{ $berkas->kategori == 1 ? 'selected' : '' }}>Pendaftaran</option>
-                                                                <option value="2" {{ $berkas->kategori == 2 ? 'selected' : '' }}>Sidang</option>
-                                                                <option value="3" {{ $berkas->kategori == 3 ? 'selected' : '' }}>Yudisium</option>
-                                                            </select>
-                                                            
-                                                           
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">

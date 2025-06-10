@@ -4,7 +4,10 @@ namespace App\Http\Controllers\dosen\skripsi;
 
 use App\Http\Controllers\Controller;
 use App\Models\KategoriBerkasSkripsi;
+use App\Models\KoordinatorSkripsi;
+use App\Models\PegawaiBiodatum;
 use App\Models\RefJumlahSksSkripsi;
+use App\Models\RefKategoriBerkasSkripsi;
 use Illuminate\Http\Request;
 use Log;
 
@@ -13,7 +16,10 @@ class SkripsiController extends Controller
     public function index()
     {
         $sks = RefJumlahSksSkripsi::firstOrCreate(['id_progdi' => 1], ['jumlah_sks' => 120]);
-        $kategoriBerkas = KategoriBerkasSkripsi::all();
+        $kategoriBerkas = RefKategoriBerkasSkripsi::all();
+        // $nipKoordinator = KoordinatorSkripsi::where('id_progdi', $id)->pluck('nip');
+        // $koordinator = PegawaiBiodatum::whereIn('npp', $nipKoordinator)->select('id','npp','nama_lengkap')->get();
+    
         return view('dosen.skripsi.persyaratan.index', compact('sks', 'kategoriBerkas'));
     }
     public function updateSks(Request $request)
@@ -43,14 +49,10 @@ class SkripsiController extends Controller
         try {
             $request->validate([
                 'nama_kategori' => 'required|string|max:100',
-                'deskripsi' => 'nullable|string',
-                'kategori' => 'required|in:1,2,3', // sesuaikan dengan enum kategori
             ]);
     
-            KategoriBerkasSkripsi::create([
+            RefKategoriBerkasSkripsi::create([
                 'nama' => $request->nama_kategori,
-                'deskripsi' => $request->deskripsi,
-                'kategori' => $request->kategori,
             ]);
     
             return redirect()->back()->with('success', 'Kategori berkas berhasil ditambahkan.');
@@ -69,15 +71,11 @@ class SkripsiController extends Controller
     {
         $request->validate([
             'nama_kategori' => 'required|string|max:100',
-            'deskripsi' => 'nullable|string',
-            'kategori' => 'required|in:1,2,3',
         ]);
     
-        $kategori = KategoriBerkasSkripsi::findOrFail($id);
+        $kategori = RefKategoriBerkasSkripsi::findOrFail($id);
         $kategori->update([
             'nama' => $request->nama_kategori,
-            'deskripsi' => $request->deskripsi,
-            'kategori' => $request->kategori,
         ]);
     
         return redirect()->back()->with('success', 'Kategori berkas berhasil diperbarui.');
@@ -85,7 +83,7 @@ class SkripsiController extends Controller
     
     public function destroyBerkas($id)
     {
-        $kategori = KategoriBerkasSkripsi::findOrFail($id);
+        $kategori = RefKategoriBerkasSkripsi::findOrFail($id);
         $kategori->delete();
 
         return redirect()->back()->with('success', 'Kategori berkas berhasil dihapus.');

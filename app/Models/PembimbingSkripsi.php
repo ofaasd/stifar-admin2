@@ -12,7 +12,7 @@ class PembimbingSkripsi extends Model
     protected $table = 'pembimbing';
 
     protected $fillable = [
-        'skripsi_id', 'nip', 'tanggal_penetapan',
+        'skripsi_id', 'nip', 'tanggal_penetapan','peran',
         'created_at', 'updated_at'
     ];
 

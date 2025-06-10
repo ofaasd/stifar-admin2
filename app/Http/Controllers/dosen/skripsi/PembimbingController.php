@@ -5,6 +5,7 @@ namespace App\Http\Controllers\dosen\skripsi;
 use App\Http\Controllers\Controller;
 use App\Models\PegawaiBiodatum;
 use App\Models\RefPembimbing;
+use App\Models\Skripsi;
 use Illuminate\Http\Request;
 use Log;
 
@@ -42,7 +43,14 @@ class PembimbingController extends Controller
         ->rawColumns(['button'])
         ->make(true);
         }
-    public function store(Request $request)
+
+        public function detail($nip){
+            
+            $mahasiswaPengajuan = Skripsi::where('status',0)->join('pembimbing', 'pembimbing.skripsi.id','skripsi.id')->join('mahasiswa','mahasiswa.nim','skripsi.nim')->get();
+            $mahasiswaBimbingan = Skripsi::where('status',2)->join('pembimbing', 'pembimbing.skripsi.id','skripsi.id')->join('mahasiswa','mahasiswa.nim','skripsi.nim')->get();
+            return view('dosen.skripsi.pembimbing.detail',compact('mahasiswaPengajuan','mahasiswaBimbingan'));
+        }
+        public function store(Request $request)
     {
         $request->validate([
             'nip' => 'required|string|max:255',

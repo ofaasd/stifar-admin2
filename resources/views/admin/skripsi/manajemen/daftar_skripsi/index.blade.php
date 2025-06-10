@@ -121,8 +121,8 @@
                                 <ul class="action">
                                     <li class="detail" data-id="{{ $prod->id }}">
                                         {{-- <a href="{{ route('admin.skripsi.manajemen.detail', $prod->id) }}"> --}}
-                                        <a href="{{ route('koor.skripsi.index') }}">
-                                            <i class="icon-eye"></i>
+                                            <a href="{{ route('admin.skripsi.manajemen.detail', $prod->id) }}">
+                                                <i class="icon-eye"></i>
                                         </a>
                                     </li>
                                 </ul>

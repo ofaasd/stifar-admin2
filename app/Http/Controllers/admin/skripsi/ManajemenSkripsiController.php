@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\admin\skripsi;
 
 use App\Models\KoordinatorSkripsi;
+use App\Models\PembimbingSkripsi;
 use App\Models\Prodi;
 use App\Models\RefJumlahSksSkripsi;
 use App\Models\Rumpun;
 use App\Models\Mahasiswa;
 use App\Models\MataKuliah;
 use App\Models\JudulSkripsi;
+use App\Models\Skripsi;
 use Illuminate\Http\Request;
 use App\Models\RefPembimbing;
 use App\Models\MasterBimbingan;
@@ -68,7 +70,7 @@ class ManajemenSkripsiController extends Controller
     public function index_daftar(Request $request)
 {
     $title = "Daftar Mahasiswa";
-    $mhs = MasterBimbingan::where('status',1)->count();
+    $mhs = Skripsi::where('status',1)->count();
     $pembimbing = RefPembimbing::where('kuota','!=',0)->count();
     $judulSkripsi = JudulSkripsi::join('master_bimbingan_skripsi AS master','master.nim','judul_skripsi.nim')->where('master.status',1)->count();
     $prodi = Prodi::all();  
@@ -83,12 +85,86 @@ class ManajemenSkripsiController extends Controller
 
 public function detail($id){
     $title = "Daftar Mahasiswa";
-   
+    
     $prodi = Prodi::all();
     $sks = RefJumlahSksSkripsi::where('id_progdi',$id)->value('jumlah_sks');
     $nipKoordinator = KoordinatorSkripsi::where('id_progdi', $id)->pluck('nip');
     $koordinator = PegawaiBiodatum::whereIn('npp', $nipKoordinator)->select('id','npp','nama_lengkap')->get();
     return view('admin.skripsi.manajemen.daftar_skripsi.detail', compact('id','title', 'prodi','sks','koordinator'));
+}
+public function mahasiswa($nim)
+{
+    // Ambil data skripsi berdasarkan NIM
+    $skripsi = \App\Models\Skripsi::where('nim', $nim)->latest()->firstOrFail();
+
+    // Ambil data pembimbing berdasarkan peran (1 = Pembimbing 1, 2 = Pembimbing 2)
+    $nipPembimbing1 = PembimbingSkripsi::where('skripsi_id', $skripsi->id)->where('peran', 1)->first();
+    $nipPembimbing2 = PembimbingSkripsi::where('skripsi_id', $skripsi->id)->where('peran', 2)->first();
+
+    // Ambil data biodata pegawai berdasarkan NPP
+    $pembimbing1 = null;
+    $pembimbing2 = null;
+
+    if ($nipPembimbing1) {
+        $pembimbing1 = PegawaiBiodatum::select('nama_lengkap', 'npp', 'nidn', 'email1', 'nohp', 'homebase')
+            ->where('npp', $nipPembimbing1->nip)
+            ->first();
+    }
+
+    if ($nipPembimbing2) {
+        $pembimbing2 = PegawaiBiodatum::select('nama_lengkap', 'npp', 'nidn', 'email1', 'nohp', 'homebase')
+            ->where('npp', $nipPembimbing2->nip)
+            ->first();
+    }
+
+    if (!$skripsi) {
+        return view('admin.skripsi.manajemen.daftar_skripsi.mahasiswa', [
+            'bimbingan' => collect(),
+            'message' => 'Anda belum terdaftar dalam sistem skripsi.'
+        ]);
+    }
+
+    // Ambil semua data bimbingan mahasiswa dengan relasi
+    $bimbingan = BimbinganSkripsi::with([
+        'berkas',
+        'skripsi:id,nim,judul'
+    ])
+    ->where('skripsi_id', $skripsi->id)
+    ->orderBy('tanggal_waktu', 'desc')
+    ->get();
+
+    // Format data untuk tampilan
+    $bimbingan = $bimbingan->map(function ($item) {
+        // Parse waktu jika tersimpan dalam format tertentu
+        if ($item->tanggal_waktu) {
+            $datetime = \Carbon\Carbon::parse($item->tanggal_waktu);
+            $item->tanggal_formatted = $datetime->format('d F Y');
+            $item->waktu_formatted = $datetime->format('H:i');
+        }
+        
+        // Status label untuk referensi
+        switch ($item->status) {
+            case 0:
+                $item->status_label = 'Menunggu';
+                break;
+            case 1:
+                $item->status_label = 'ACC';
+                break;
+            case 2:
+                $item->status_label = 'Disetujui';
+                break;
+            case 3:
+                $item->status_label = 'Revisi';
+                break;
+            default:
+                $item->status_label = 'Unknown';
+        }
+        
+        return $item;
+    });
+
+    // Kirim ke view atau response
+    return view('admin.skripsi.manajemen.daftar_skripsi.mahasiswa', compact('skripsi', 'pembimbing1', 'pembimbing2','bimbingan'));
 }
 
 public function tambahKoor(Request $request)
@@ -122,12 +198,16 @@ public function tambahKoor(Request $request)
     
     public function ListMahasiswaByProd($id)
     {
-        $data = Mahasiswa::join('master_bimbingan_skripsi as skripsi','skripsi.nim','mahasiswa.nim')
-        ->join('judul_skripsi','judul_skripsi.nim','mahasiswa.nim')
-        ->where('id_program_studi',$id)
-        ->where('skripsi.status',1)
-        ->select('mahasiswa.nama as nama','mahasiswa.nim as nim','judul_skripsi.judul as judul')
-        ->get();
+        $data = Skripsi::join('mahasiswa', 'mahasiswa.nim', '=', 'skripsi.nim')
+    ->where('skripsi.status', 1)
+    // ->where('mahasiswa.id_program_studi', $id)
+    ->where('mahasiswa.id_program_studi', 2)
+    ->select([
+        'mahasiswa.nama as nama',
+        'mahasiswa.nim as nim',
+        'skripsi.judul as judul'
+    ])
+    ->get();
 
           // Jika data kosong, kirim response dengan pesan khusus
           if ($data->isEmpty()) {
@@ -141,12 +221,16 @@ public function tambahKoor(Request $request)
 
         // Mengirim data ke DataTables
         return \DataTables::of($data)
-            ->addIndexColumn() // Menambahkan kolom DT_RowIndex
-            ->addColumn('button', function ($row) {
-                return '<button class="btn btn-primary btn-sm edit-btn text-light" data-id="' . $row->nim . '" >Show</button>';
-            })
-            ->rawColumns(['button'])
-            ->make(true);
+        ->addIndexColumn()
+        ->addColumn('button', function ($row) {
+            $url = route('admin.skripsi.manajemen.mahasiswa', $row->nim); // atau $row->id jika pakai ID
+            return '<a href="' . $url . '" class="btn btn-sm btn-primary">
+                        <i class="icon-eye"></i>
+                    </a>';
+        })
+        ->rawColumns(['button']) 
+        ->make(true);
+    
     }
 
     public function modifySKS(Request $request)
