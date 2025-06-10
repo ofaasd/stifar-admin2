@@ -43,7 +43,7 @@
                         </ul>
                     </li>
                     <li><a href="{{URL::to('admin/masterdata/ta')}}">Tahun Ajaran</a></li>
-                    <li><a href="#">Jenjang</a></li>
+                    <!-- <li><a href="#">Jenjang</a></li> -->
                     <li><a href="{{URL::to('admin/masterdata/jabatan_struktural')}}">Jabatan</a></li>
                     <li><a href="{{URL::to('admin/masterdata/user')}}">User Manajemen</a></li>
                     {{-- <li><a href="{{ route('ruang/')}}">Ruang</a></li> --}}
