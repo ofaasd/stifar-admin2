@@ -16,8 +16,8 @@ class LantaiController extends Controller
     {
         $lantai = Lantai::all();
         if (empty($request->input('length'))) {
-            $title = "aset-lantai";
-            $title2 = "Lantai";
+            $title = "lantai";
+            $title2 = "Master Lantai";
             $indexed = $this->indexed;
             return view('admin.master.lantai.index', compact('title', 'title2', 'lantai', 'indexed'));
         } else {

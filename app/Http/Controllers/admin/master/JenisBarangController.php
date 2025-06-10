@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\admin\master;
 
-use App\Models\MasterGedung;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
-class GedungController extends Controller
+use App\Models\MasterJenisBarang;
+
+use Illuminate\Validation\Rule;
+
+class JenisBarangController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,20 +17,20 @@ class GedungController extends Controller
     public $indexed = ['', 'id', 'kode', 'nama'];
     public function index(Request $request)
     {
-        $masterGedung = MasterGedung::all();
+        $jenisBarang = MasterJenisBarang::all();
         if (empty($request->input('length'))) {
-            $title = "gedung";
-            $title2 = "Master Gedung";
+            $title = "jenis-barang";
+            $title2 = "Master Jenis Barang";
             $indexed = $this->indexed;
-            return view('admin.master.gedung.index', compact('title', 'title2', 'masterGedung', 'indexed'));
+            return view('admin.master.jenis_barang.index', compact('title', 'title2', 'jenisBarang', 'indexed'));
         } else {
             $columns = [
                 1 => 'id',
                 2 => 'kode',
-                2 => 'nama',
+                3 => 'nama',
             ];
 
-            $totalData = MasterGedung::count();
+            $totalData = MasterJenisBarang::count();
             $totalFiltered = $totalData;
 
             $limit = $request->input('length');
@@ -36,14 +39,14 @@ class GedungController extends Controller
             $dir = $request->input('order.0.dir');
 
             if (empty($request->input('search.value'))) {
-                $gedung = MasterGedung::offset($start)
+                $jenisRuang = MasterJenisBarang::offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
                     ->get();
             } else {
                 $search = $request->input('search.value');
 
-                $gedung = MasterGedung::where('id', 'LIKE', "%{$search}%")
+                $jenisRuang = MasterJenisBarang::where('id', 'LIKE', "%{$search}%")
                     ->orWhere('kode', 'LIKE', "%{$search}%")
                     ->orWhere('nama', 'LIKE', "%{$search}%")
                     ->offset($start)
@@ -51,15 +54,15 @@ class GedungController extends Controller
                     ->orderBy($order, $dir)
                     ->get();
 
-                $totalFiltered = MasterGedung::where('id', 'LIKE', "%{$search}%")
+                $totalFiltered = MasterJenisBarang::where('id', 'LIKE', "%{$search}%")
                     ->orWhere('kode', 'LIKE', "%{$search}%")
                     ->orWhere('nama', 'LIKE', "%{$search}%")
                     ->count();
             }
 
             $data = [];
-            if (!empty($gedung)) {
-                foreach ($gedung as $index => $row) {
+            if (!empty($jenisRuang)) {
+                foreach ($jenisRuang as $index => $row) {
                     $nestedData = [];
                     $nestedData['fake_id'] = $start + $index + 1;
                     $nestedData['id'] = $row->id;
@@ -91,17 +94,17 @@ class GedungController extends Controller
      */
     public function store(Request $request)
     {
-        // Validasi data
-        $validatedData = $request->validate([
-            'kode' => 'required',
-            'nama' => 'string|required',
-            'id' => 'nullable',
-        ]);
-
         try {
-            $id = $validatedData['id'];
+            $id = $request->id;
 
-            $save = MasterGedung::updateOrCreate(
+            $validatedData = $request->validate([
+                'nama'  => 'string|required',
+                'kode'      => $id
+                                    ? ['required', 'string', Rule::unique('master_jenis_barang', 'kode')->ignore($id)]
+                                    : 'required|string|unique:master_jenis_barang,kode',
+            ]);
+
+            $save = MasterJenisBarang::updateOrCreate(
                 ['id' => $id],
                 [
                     'kode' => $validatedData['kode'],
@@ -126,7 +129,7 @@ class GedungController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(MasterGedung $masterGedung)
+    public function show(string $id)
     {
         //
     }
@@ -136,14 +139,14 @@ class GedungController extends Controller
      */
     public function edit(string $id)
     {
-        $gedung = MasterGedung::find($id);
+        $data = MasterJenisBarang::find($id);
 
-        if ($gedung) {
-            return response()->json($gedung);
+        if ($data) {
+            return response()->json($data);
         } else {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Aset Gedung not found',
+                'message' => 'Data not found',
             ], 404);
         }
     }
@@ -151,7 +154,7 @@ class GedungController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, MasterGedung $masterGedung)
+    public function update(Request $request, string $id)
     {
         //
     }
@@ -161,6 +164,6 @@ class GedungController extends Controller
      */
     public function destroy(string $id)
     {
-        $gedung = MasterGedung::where('id', $id)->delete();
+        $data = MasterJenisBarang::where('id', $id)->delete();
     }
 }

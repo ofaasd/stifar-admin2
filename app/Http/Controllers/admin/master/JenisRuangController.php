@@ -2,31 +2,35 @@
 
 namespace App\Http\Controllers\admin\master;
 
-use App\Models\JenisRuang;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+
+use App\Models\MasterJenisRuang;
+
+use Illuminate\Validation\Rule;
 
 class JenisRuangController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public $indexed = ['', 'id', 'nama'];
+    public $indexed = ['', 'id', 'kode', 'nama'];
     public function index(Request $request)
     {
-        $jenisRuang = JenisRuang::all();
+        $jenisRuang = MasterJenisRuang::all();
         if (empty($request->input('length'))) {
-            $title = "aset-jenis-ruang";
-            $title2 = "Jenis Ruang";
+            $title = "jenis-ruang";
+            $title2 = "Master Jenis Ruang";
             $indexed = $this->indexed;
             return view('admin.master.jenis_ruang.index', compact('title', 'title2', 'jenisRuang', 'indexed'));
         } else {
             $columns = [
                 1 => 'id',
-                2 => 'nama',
+                2 => 'kode',
+                3 => 'nama',
             ];
 
-            $totalData = JenisRuang::count();
+            $totalData = MasterJenisRuang::count();
             $totalFiltered = $totalData;
 
             $limit = $request->input('length');
@@ -35,21 +39,23 @@ class JenisRuangController extends Controller
             $dir = $request->input('order.0.dir');
 
             if (empty($request->input('search.value'))) {
-                $jenisRuang = JenisRuang::offset($start)
+                $jenisRuang = MasterJenisRuang::offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
                     ->get();
             } else {
                 $search = $request->input('search.value');
 
-                $jenisRuang = JenisRuang::where('id', 'LIKE', "%{$search}%")
+                $jenisRuang = MasterJenisRuang::where('id', 'LIKE', "%{$search}%")
+                    ->orWhere('kode', 'LIKE', "%{$search}%")
                     ->orWhere('nama', 'LIKE', "%{$search}%")
                     ->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
                     ->get();
 
-                $totalFiltered = JenisRuang::where('id', 'LIKE', "%{$search}%")
+                $totalFiltered = MasterJenisRuang::where('id', 'LIKE', "%{$search}%")
+                    ->orWhere('kode', 'LIKE', "%{$search}%")
                     ->orWhere('nama', 'LIKE', "%{$search}%")
                     ->count();
             }
@@ -60,6 +66,7 @@ class JenisRuangController extends Controller
                     $nestedData = [];
                     $nestedData['fake_id'] = $start + $index + 1;
                     $nestedData['id'] = $row->id;
+                    $nestedData['kode'] = $row->kode;
                     $nestedData['nama'] = $row->nama;
                     $data[] = $nestedData;
                 }
@@ -87,18 +94,21 @@ class JenisRuangController extends Controller
      */
     public function store(Request $request)
     {
-        // Validasi data
-        $validatedData = $request->validate([
-            'nama' => 'string|required',
-            'id' => 'nullable',
-        ]);
-
         try {
-            $id = $validatedData['id'];
+            $id = $request->id;
 
-            $save = JenisRuang::updateOrCreate(
+            $validatedData = $request->validate([
+                'nama'  => 'string|required',
+                'kode'      => $id
+                                    ? ['required', 'string', Rule::unique('master_jenis_ruang', 'kode')->ignore($id)]
+                                    : 'required|string|unique:master_jenis_ruang,kode',
+                'id'    => 'nullable',
+            ]);
+
+            $save = MasterJenisRuang::updateOrCreate(
                 ['id' => $id],
                 [
+                    'kode' => $validatedData['kode'],
                     'nama' => $validatedData['nama'],
                 ]
             );
@@ -120,7 +130,7 @@ class JenisRuangController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(JenisRuang $jenisRuang)
+    public function show(MasterJenisRuang $jenisRuang)
     {
         //
     }
@@ -130,14 +140,14 @@ class JenisRuangController extends Controller
      */
     public function edit(string $id)
     {
-        $jenisRuang = JenisRuang::find($id);
+        $data = MasterJenisRuang::find($id);
 
-        if ($jenisRuang) {
-            return response()->json($jenisRuang);
+        if ($data) {
+            return response()->json($data);
         } else {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Aset Jenis Ruang not found',
+                'message' => 'Data not found',
             ], 404);
         }
     }
@@ -145,7 +155,7 @@ class JenisRuangController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, JenisRuang $jenisRuang)
+    public function update(Request $request, MasterJenisRuang $jenisRuang)
     {
         //
     }
@@ -155,6 +165,6 @@ class JenisRuangController extends Controller
      */
     public function destroy(string $id)
     {
-        $jenisRuang = JenisRuang::where('id', $id)->delete();
+        $data = MasterJenisRuang::where('id', $id)->delete();
     }
 }

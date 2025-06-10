@@ -40,6 +40,12 @@
                                             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
+                                            <div id="field-kode">
+                                                <label for="kode" class="form-label">Kode Kategori</label>
+                                                <input type="text" class="form-control" name="kode" id="kode" placeholder="Cth: ELK">
+                                            </div>
+                                        </div>
+                                        <div class="modal-body">
                                             <div class="mb-3" id="field-nama">
                                                 <label for="nama" class="form-label">Nama Kategori</label>
                                                 <input type="text" class="form-control" name="nama" id="nama" placeholder="Cth: Elektronik">
@@ -62,6 +68,7 @@
                                     <tr>
                                         <th></th>
                                         <th>No</th>
+                                        <th>Kode</th>
                                         <th>Nama</th>
                                         <th>Actions</th>
                                     </tr>
@@ -87,6 +94,7 @@
         $(function () {
             const baseUrl = {!! json_encode(url('/')) !!};
             const title = "{{strtolower($title)}}";
+            const title2 = "{{ $title2 }}";
             const page = '/'.concat("admin/masterdata/aset/").concat(title);
             var my_column = $('#my_column').val();
             const pecah = my_column.split('\n');
@@ -94,11 +102,9 @@
             pecah.forEach((item, index) => {
                 let temp = item.replace(/ /g, '');
                 let data_obj = { data: temp };
-                //alert(data_obj.data);
                 my_data.push(data_obj);
             });
             //alert(data_obj);
-            // console.log(my_data);
 
             const dt = $("#basic-1").DataTable({
                 processing: true,
@@ -134,16 +140,15 @@
                     searchable: false,
                     orderable: false,
                     render: function render(data, type, full, meta) {
-                            return (
+                        return (
                             '<div class="d-inline-block text-nowrap">' +
                             '<button class="btn btn-sm btn-icon edit-record text-primary" data-id="'
-                                .concat(full['id'], '" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal"')
-                                .concat(title, '"><i class="fa fa-pencil"></i></button>') +
+                                .concat(full['id'], '" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal"')                                 .concat(title, '"><i class="fa fa-pencil"></i></button>') +
                             '<button class="btn btn-sm btn-icon delete-record text-primary" data-id="'.concat(
                                 full['id'],
                                 '"><i class="fa fa-trash"></i></button>'
                             )
-                            );
+                        );
                     }
                     }
                 ],
@@ -169,20 +174,22 @@
             });
             //Edit Record
             $(document).on('click', '#add-record', function () {
-                $('#ModalLabel').html('Tambah ' + title);
+                $('#ModalLabel').html('Tambah ' + title2);
                 $("#id").val('');
+                $("#kode").val('');
+                $("#nama").val('');
                 $('#formAdd').trigger("reset");
             });
             $(document).on('click', '.edit-record', function () {
                 const id = $(this).data('id');
 
                 // changing the title of offcanvas
-                $('#ModalLabel').html('Edit ' + title);
+                $('#ModalLabel').html('Edit ' + title2);
 
                 // get data
                 $.get(''.concat(baseUrl).concat(page, '/').concat(id, '/edit'), function (data) {
                     Object.keys(data).forEach(key => {
-                        // console.log(data[key]);
+                        console.log(data[key]);
                         $('#' + key)
                             .val(data[key])
                             .trigger('change');
@@ -195,6 +202,8 @@
                 e.preventDefault();
                 var btnSubmit = $('#btn-submit');
                 btnSubmit.prop('disabled', true); 
+                btnSubmit.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Please Wait...');
+
                 const myFormData = new FormData(document.getElementById('formAdd'));
                 const offCanvasForm = $('#formAdd');
                 $.ajax({
@@ -256,14 +265,14 @@
                     type: 'DELETE',
                     url: ''.concat(baseUrl).concat(page, '/').concat(id),
                     data:{
-                        'id': id,
+                        'kode': kode,
                         '_token': '{{ csrf_token() }}',
                     },
                     success: function success() {
                         dt.draw();
                     },
                     error: function error(_error) {
-                        console.log(_error);
+                        // console.log(_error);
                     }
                     });
 

@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Aset Jenis Ruang')
+@section('title', 'Basic DataTables')
 
 @section('css')
 
@@ -11,12 +11,12 @@
 @endsection
 
 @section('breadcrumb-title')
-    <h3>{{$title2}}</h3>
+    <h3>{{$title}}</h3>
 @endsection
 
 @section('breadcrumb-items')
-    <li class="breadcrumb-item">Master</li>
-    <li class="breadcrumb-item active">Jenis Ruang</li>
+    <li class="breadcrumb-item">Ruang</li>
+    <li class="breadcrumb-item active">{{ $namaRuang }}</li>
 @endsection
 
 @section('content')
@@ -26,9 +26,7 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header pb-0 card-no-border">
-                        @if(empty($link))
-                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal" id="add-record">+ {{$title2}}</button>
-                        @endif
+                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal">+ {{$title}}</button>
                         <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
@@ -36,22 +34,50 @@
                                         @csrf
                                         <input type="hidden" name="id" id="id">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="ModalLabel">Tambah {{$title2}}</h5>
+                                            <h5 class="modal-title" id="ModalLabel">Tambah {{$title}}</h5>
                                             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <div class="mb-3" id="field-kode">
-                                                <label for="kode" class="form-label">Kode</label>
-                                                <input type="text" class="form-control" name="kode" id="kode" placeholder="LB">
+                                            <div class="mb-3">
+                                                <label for="kodeGedung " class="form-label">Kode Gedung</label>
+                                                <select class="form-select" aria-label="Default select example" id="kode_gedung" name="kodeGedung">
+                                                    @foreach ($asetGedung as $row)
+                                                    <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
-                                            <div class="mb-3" id="field-nama">
-                                                <label for="nama" class="form-label">Nama</label>
-                                                <input type="text" class="form-control" name="nama" id="nama" placeholder="Laboratorium">
+                                            <div class="mb-3">
+                                                <label for="nama_ruang" class="form-label">Nama</label>
+                                                <input type="text" name="namaRuang" id="nama_ruang" class="form-control">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="lantai" class="form-label">Lantai</label>
+                                                <select class="form-select" aria-label="Default select example" id="lantai_id" name="lantai">
+                                                    @foreach ($asetLantai as $row)
+                                                    <option value="{{ $row->id }}">{{ $row->lantai }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="jenis_ruang " class="form-label">Jenis Ruang</label>
+                                                <select class="form-select" aria-label="Default select example" id="kode_jenis" name="kodeJenis">
+                                                    @foreach ($asetJenisRuang as $row)
+                                                    <option value="{{ $row->kode }}">{{ $row->nama }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="kapasitas" class="form-label">Kapasitas</label>
+                                                <input type="text" name="kapasitas" id="kapasitas" class="form-control">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="luas" class="form-label">Luas</label>
+                                                <input type="text" name="luas" id="luas" class="form-control">
                                             </div>
                                         </div>
                                         <div class="modal-footer">
                                             <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
-                                            <button class="btn btn-primary" id="btn-submit" type="submit">Simpan</button>
+                                            <button class="btn btn-primary" type="submit" id="btn-submit">Simpan</button>
                                         </div>
                                     </form>
                                 </div>
@@ -65,9 +91,13 @@
                                 <thead>
                                     <tr>
                                         <th></th>
-                                        <th>No</th>
-                                        <th>Kode</th>
+                                        <th>ID</th>
+                                        <th>Kode Gedung</th>
+                                        <th>Jenis Ruang</th>
                                         <th>Nama</th>
+                                        <th>Lantai</th>
+                                        <th>Kapasitas</th>
+                                        <th>Luas</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -90,10 +120,10 @@
 
     <script>
         $(function () {
+
             const baseUrl = {!! json_encode(url('/')) !!};
             const title = "{{strtolower($title)}}";
-            const title2 = "{{ $title2 }}";
-            const page = '/'.concat("admin/masterdata/aset/").concat(title);
+            const page = '/'.concat("admin/masterdata/").concat(title);
             var my_column = $('#my_column').val();
             const pecah = my_column.split('\n');
             let my_data = [];
@@ -104,7 +134,7 @@
                 my_data.push(data_obj);
             });
             //alert(data_obj);
-            // console.log(baseUrl.concat(page));
+            // console.log(my_data);
 
             const dt = $("#basic-1").DataTable({
                 processing: true,
@@ -130,8 +160,14 @@
                     orderable: false,
                     targets: 1,
                     render: function render(data, type, full, meta) {
-                        return '<span>'.concat(full['fake_id'], '</span>');
+                        return '<span>'.concat(full.fake_id, '</span>');
                     }
+                    },
+                    {
+                        targets: 4, // indeks kolom ke-4 (Nama), sesuaikan jika posisinya berbeda
+                        render: function (data, type, full, meta) {
+                            return '<a href="' + baseUrl.concat(page) + '/' + full['idEnkripsi'] + '">' + data + '</a>';
+                        }
                     },
                     {
                     // Actions
@@ -150,7 +186,7 @@
                                 '"><i class="fa fa-trash"></i></button>'
                             )
                             );
-                    }
+                        }
                     }
                 ],
                 order: [[2, 'desc']],
@@ -171,51 +207,40 @@
             });
 
             $('#tambahModal').on('hidden.bs.modal', function () {
+                $('#id').val('');
                 $('#formAdd').trigger("reset");
             });
             //Edit Record
-            $(document).on('click', '#add-record', function () {
-                $('#ModalLabel').html('Tambah ' + title2);
-                $("#id").val('');
-                $('#formAdd').trigger("reset");
-            });
             $(document).on('click', '.edit-record', function () {
                 const id = $(this).data('id');
 
                 // changing the title of offcanvas
-                $('#ModalLabel').html('Edit ' + title2);
-                
-                $('#formAdd').trigger("reset");
+                $('#ModalLabel').html('Edit ' + title);
 
                 // get data
                 $.get(''.concat(baseUrl).concat(page, '/').concat(id, '/edit'), function (data) {
-                    Object.keys(data).forEach(key => {
-                        // console.log(data[key]);
-                        $('#' + key)
-                            .val(data[key])
-                            .trigger('change');
-                    });
+                Object.keys(data).forEach(key => {
+                    //console.log(key);
+                    $('#' + key)
+                        .val(data[key])
+                        .trigger('change');
                 });
-
+                });
             });
             //save record
             $('#formAdd').on('submit',function(e){
                 e.preventDefault();
                 var btnSubmit = $('#btn-submit');
-                btnSubmit.prop('disabled', true);
+                btnSubmit.prop('disabled', true); 
                 btnSubmit.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Please Wait...');
-
-                const myFormData = new FormData(document.getElementById('formAdd'));
-                const offCanvasForm = $('#formAdd');
                 $.ajax({
-                    data: myFormData,
+                    data: $('#formAdd').serialize(),
                     url: ''.concat(baseUrl).concat(page),
                     type: 'POST',
-                    processData: false,
-                    contentType: false,
                     success: function success(status) {
                         dt.draw();
                         $("#tambahModal").modal('hide');
+
                         // sweetalert
                         swal({
                         icon: 'success',
@@ -229,21 +254,23 @@
                         btnSubmit.text('Simpan');
                     },
                     error: function error(err) {
-                        offCanvasForm.offcanvas('hide');
+                        // offCanvasForm.offcanvas('hide');
+                        console.log('====================================');
+                        console.log(err);
+                        console.log('====================================');
                         swal({
-                            title: 'Duplicate Entry!',
-                            text: title + ' Not Saved !',
-                            icon: 'error',
-                            customClass: {
-                                confirmButton: 'btn btn-success'
-                            }
+                        title: 'Duplicate Entry!',
+                        text: title + ' Not Saved !',
+                        icon: 'error',
+                        customClass: {
+                            confirmButton: 'btn btn-success'
+                        }
                         });
                         btnSubmit.prop('disabled', false);
                         btnSubmit.text('Simpan');
                     }
                 });
             });
-
             //delete record
             $(document).on('click', '.delete-record', function () {
                 const id = $(this).data('id');
@@ -276,7 +303,7 @@
                         dt.draw();
                     },
                     error: function error(_error) {
-                        // console.log(_error);
+                        console.log(_error);
                     }
                     });
 

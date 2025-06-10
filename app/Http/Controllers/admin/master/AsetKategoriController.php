@@ -5,29 +5,30 @@ use App\Models\Prodi;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\KategoriAset;
+use App\Models\MasterKategoriAset;
 
 class AsetKategoriController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public $indexed = ['', 'id', 'nama'];
+    public $indexed = ['', 'id', 'kode', 'nama'];
     public function index(Request $request)
     {
-        $kategoriAset = KategoriAset::all();
+        $kategoriAset = MasterKategoriAset::all();
         if (empty($request->input('length'))) {
             $title = "kategori-aset";
-            $title2 = "Kategori Aset";
+            $title2 = "Master Kategori Aset";
             $indexed = $this->indexed;
             return view('admin.master.kategori_aset.index', compact('title', 'title2', 'kategoriAset', 'indexed'));
         } else {
             $columns = [
                 1 => 'id',
-                2 => 'nama',
+                2 => 'kode',
+                3 => 'nama',
             ];
 
-            $totalData = KategoriAset::count();
+            $totalData = MasterKategoriAset::count();
             $totalFiltered = $totalData;
 
             $limit = $request->input('length');
@@ -36,21 +37,21 @@ class AsetKategoriController extends Controller
             $dir = $request->input('order.0.dir');
 
             if (empty($request->input('search.value'))) {
-                $kategori = KategoriAset::offset($start)
+                $kategori = MasterKategoriAset::offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
                     ->get();
             } else {
                 $search = $request->input('search.value');
 
-                $kategori = KategoriAset::where('id', 'LIKE', "%{$search}%")
+                $kategori = MasterKategoriAset::where('kode', 'LIKE', "%{$search}%")
                     ->orWhere('nama', 'LIKE', "%{$search}%")
                     ->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
                     ->get();
 
-                $totalFiltered = KategoriAset::where('id', 'LIKE', "%{$search}%")
+                $totalFiltered = MasterKategoriAset::where('kode', 'LIKE', "%{$search}%")
                     ->orWhere('nama', 'LIKE', "%{$search}%")
                     ->count();
             }
@@ -61,6 +62,7 @@ class AsetKategoriController extends Controller
                     $nestedData = [];
                     $nestedData['fake_id'] = $start + $index + 1;
                     $nestedData['id'] = $row->id;
+                    $nestedData['kode'] = $row->kode;
                     $nestedData['nama'] = $row->nama;
                     $data[] = $nestedData;
                 }
@@ -91,15 +93,16 @@ class AsetKategoriController extends Controller
         // Validasi data
         $validatedData = $request->validate([
             'nama' => 'string|required',
-            'id' => 'nullable',
+            'kode' => 'required',
         ]);
 
         try {
-            $id = $validatedData['id'];
+            $id = $request->id;
 
-            $save = KategoriAset::updateOrCreate(
+            $save = MasterKategoriAset::updateOrCreate(
                 ['id' => $id],
                 [
+                    'kode' => $validatedData['kode'],
                     'nama' => $validatedData['nama'],
                 ]
             );
@@ -131,7 +134,7 @@ class AsetKategoriController extends Controller
      */
     public function edit(string $id)
     {
-        $kategori = KategoriAset::find($id);
+        $kategori = MasterKategoriAset::where("id", $id)->first();
 
         if ($kategori) {
             return response()->json($kategori); // Kembalikan objek KategoriAset langsung
@@ -157,6 +160,6 @@ class AsetKategoriController extends Controller
      */
     public function destroy(string $id)
     {
-        $kategori = KategoriAset::where('id', $id)->delete();
+        $kategori = MasterKategoriAset::where('id', $id)->delete();
     }
 }

@@ -26,8 +26,6 @@ use App\Http\Controllers\mahasiswa\ProfileController;
 use App\Http\Controllers\admin\admisi\SlideController;
 use App\Http\Controllers\admin\admisi\BiayaPendaftaranController;
 use App\Http\Controllers\admin\admisi\StatistikController as AdmisiStatistikController;
-use App\Http\Controllers\admin\master\LabelController;
-use App\Http\Controllers\admin\master\GedungController;
 use App\Http\Controllers\admin\master\LantaiController;
 use App\Http\Controllers\mahasiswa\MahasiswaController;
 use App\Http\Controllers\pegawai\UserPegawaiController;
@@ -84,8 +82,16 @@ use App\Http\Controllers\admin\akademik\NilaiController as nilaiakademik;
 use App\Http\Controllers\admin\akademik\KhsController as adminKhs;
 use App\Http\Controllers\admin\akademik\PengaturanUjianController;
 use App\Http\Controllers\admin\akademik\NilaiSusulanController;
+use App\Http\Controllers\admin\aset\AsetBarangController;
+use App\Http\Controllers\admin\aset\AsetGedungBangunanController;
+use App\Http\Controllers\admin\aset\AsetKendaraanController;
 use App\Http\Controllers\admin\keuangan\VaController;
 use App\Http\Controllers\admin\keuangan\ProdiBukaTutupController;
+use App\Http\Controllers\admin\master\JenisKendaaranController;
+use App\Http\Controllers\admin\aset\AsetTanahController;
+use App\Http\Controllers\admin\aset\CetakLabelController;
+use App\Http\Controllers\admin\master\JenisBarangController;
+use App\Http\Controllers\admin\master\MerkKendaraanController;
 use App\Http\Controllers\mahasiswa\UjianController;
 use App\Http\Controllers\mahasiswa\KuesionerMhsController;
 use App\Http\Controllers\mahasiswa\MahasiswaBerkasController;
@@ -205,7 +211,7 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     Route::get('mhs/input_krs', [mhsKrsController::class, 'input'])->name('input');
 
     Route::resource('admin/masterdata/pt', PTController::class)->name('index','pt');
-    Route::resource('admin/masterdata/ruang', RuangController::class)->name('index','ruang');
+    // Route::resource('admin/masterdata/ruang', RuangController::class)->name('index','ruang');
     Route::resource('admin/masterdata/sekolah', AsalSekolahController::class)->name('index','sekolah');
     Route::resource('admin/masterdata/gelombang', GelombangController::class)->name('index','gelombang');
     Route::resource('admin/masterdata/waktu', WaktuController::class)->name('index','waktu');
@@ -221,12 +227,15 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     Route::resource('admin/masterdata/jabatan_struktural', JabatanStrukturalController::class)->name('index', 'jabatan_struktural');
     Route::resource('admin/masterdata/user', UserController::class)->name('index', 'user');
 
-    // Aset
+    // route Master Aset
     Route::resource('admin/masterdata/aset/kategori-aset', AsetKategoriController::class)->name('index', 'kategori-aset');
-    Route::resource('admin/masterdata/aset/aset-gedung', GedungController::class)->name('index', 'aset-gedung');
-    Route::resource('admin/masterdata/aset/aset-label', LabelController::class)->name('index', 'aset-label');
-    Route::resource('admin/masterdata/aset/aset-lantai', LantaiController::class)->name('index', 'aset-lantai');
-    Route::resource('admin/masterdata/aset/aset-jenis-ruang', JenisRuangController::class)->name('index', 'aset-jenis-ruang');
+    // Route::resource('admin/masterdata/aset/label', LabelController::class)->name('index', 'label');
+    Route::resource('admin/masterdata/aset/lantai', LantaiController::class)->name('index', 'lantai');
+    Route::resource('admin/masterdata/aset/jenis-ruang', JenisRuangController::class)->name('index', 'jenis-ruang');
+    Route::resource('admin/masterdata/aset/jenis-barang', JenisBarangController::class)->name('index', 'jenis-barang');
+    // Route::resource('admin/masterdata/aset/gedung', GedungController::class)->name('index', 'gedung');
+    Route::resource('admin/masterdata/aset/jenis-kendaraan', JenisKendaaranController::class)->name('index', 'jenis-kendaraan');
+    Route::resource('admin/masterdata/aset/merk-kendaraan', MerkKendaraanController::class)->name('index', 'merk-kendaraan');
 
     // route MahasiswaModel
     Route::resource('/mahasiswa', MahasiswaController::class)->name('index', 'mahasiswa');
@@ -353,7 +362,15 @@ Route::group(['middleware' => ['auth','role:super-admin']], function(){
     Route::resource('admin/keuangan/buka_tutup_prodi', ProdiBukaTutupController::class)->name('index', 'buka_tutup_prodi');
     Route::resource('admin/keuangan', KeuanganController::class)->name('index','keuangan');
 
+    // Route Aset
+    Route::resource('admin/aset/tanah', AsetTanahController::class)->name('index', 'aset-tanah');
+    Route::resource('admin/aset/gedung-bangunan', AsetGedungBangunanController::class)->name('index', 'aset-gedung-bangunan');
+    Route::resource('admin/aset/barang', AsetBarangController::class)->name('index', 'aset-barang');
+    Route::resource('admin/aset/kendaraan', AsetKendaraanController::class)->name('index', 'aset-barang');
 
+    Route::resource('admin/aset/cetak-label', CetakLabelController::class)->name('index', 'aset-cetak-label');
+    Route::post('/admin/aset/cetak-label/cetak', [CetakLabelController::class, 'generatePdf'])->name('aset-cetak-label-cetak');
+    
 
     Route::resource('admin/nilai_lama', NilaiLamaController::class)->name('index','nilai_lama');
 });

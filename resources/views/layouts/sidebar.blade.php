@@ -58,11 +58,14 @@
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
                             <li><a href="{{URL::to('admin/masterdata/aset/kategori-aset')}}">Kategori</a></li>
-                            <li><a href="#">Unit Kerja <label class="badge badge-light-danger">!</label></a></li>
-                            <li><a href="{{URL::to('admin/masterdata/aset/aset-label')}}">Label</a></li>
-                            <li><a href="{{URL::to('admin/masterdata/aset/aset-jenis-ruang')}}">Jenis Ruang</a></li>
-                            <li><a href="{{URL::to('admin/masterdata/aset/aset-gedung')}}">Gedung</a></li>
-                            <li><a href="{{URL::to('admin/masterdata/aset/aset-lantai')}}">Lantai</a></li>
+                            {{-- <li><a href="#">Unit Kerja <label class="badge badge-light-danger">!</label></a></li> --}}
+                            {{-- <li><a href="{{URL::to('admin/masterdata/aset/aset-label')}}">Label</a></li> --}}
+                            <li><a href="{{URL::to('admin/masterdata/aset/jenis-ruang')}}">Jenis Ruang</a></li>
+                            <li><a href="{{URL::to('admin/masterdata/aset/jenis-barang')}}">Jenis Barang</a></li>
+                            {{-- <li><a href="{{URL::to('admin/masterdata/aset/gedung')}}">Gedung</a></li> --}}
+                            <li><a href="{{URL::to('admin/masterdata/aset/lantai')}}">Lantai</a></li>
+                            {{-- <li><a href="{{URL::to('admin/masterdata/aset/jenis-kendaraan')}}">Jenis Kendaraan</a></li> --}}
+                            {{-- <li><a href="{{URL::to('admin/masterdata/aset/merk-kendaraan')}}">Merk Kendaraan</a></li> --}}
                         </ul>
                     </li>
                 </ul>
@@ -251,11 +254,13 @@
                 <span><i class="fa fa-support"></i> Aset</span></a>
                 <ul class="sidebar-submenu">
                     <li><a href="{{URL::to('admin/masterdata/ruang')}}">Ruang</a></li>
-                    <li><a href="#">Kendaraan <label class="badge badge-light-danger">!</label></a></li>
-                    <li><a href="#">Tanah & Bangunan <label class="badge badge-light-danger">!</label></a></li>
-                    <li><a href="#">Elektronik <label class="badge badge-light-danger">!</label></a></li>
-                    <li><a href="#">Pengajuan <label class="badge badge-light-danger">!</label></a></li>
-                    <li><a href="#">Monev <label class="badge badge-light-danger">!</label></a></li>
+                    <li><a href="{{URL::to('admin/aset/kendaraan')}}">Kendaraan</a></li>
+                    <li><a href="{{URL::to('admin/aset/tanah')}}">Tanah</a></li>
+                    <li><a href="{{URL::to('admin/aset/gedung-bangunan')}}">Gedung & Bangunan</a></li>
+                    <li><a href="{{URL::to('admin/aset/barang')}}">Barang</a></li>
+                    {{-- <li><a href="{{URL::to('admin/aset/pengajuan')}}">Pengajuan <label class="badge badge-light-danger">!</label></a></li> --}}
+                    {{-- <li><a href="#">Monev <label class="badge badge-light-danger">!</label></a></li> --}}
+                    <li><a href="{{URL::to('admin/aset/cetak-label')}}">Cetak Label</a></li>
                 </ul>
             </li>
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#">

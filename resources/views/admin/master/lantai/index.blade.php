@@ -16,7 +16,7 @@
 
 @section('breadcrumb-items')
     <li class="breadcrumb-item">Master</li>
-    <li class="breadcrumb-item active">Lantai</li>
+    <li class="breadcrumb-item active">Master Lantai</li>
 @endsection
 
 @section('content')
@@ -87,6 +87,7 @@
         $(function () {
             const baseUrl = {!! json_encode(url('/')) !!};
             const title = "{{strtolower($title)}}";
+            const title2 = "{{ $title2 }}";
             const page = '/'.concat("admin/masterdata/aset/").concat(title);
             var my_column = $('#my_column').val();
             const pecah = my_column.split('\n');
@@ -98,7 +99,6 @@
                 my_data.push(data_obj);
             });
             //alert(data_obj);
-            // console.log(my_data);
 
             const dt = $("#basic-1").DataTable({
                 processing: true,
@@ -169,7 +169,7 @@
             });
             //Edit Record
             $(document).on('click', '#add-record', function () {
-                $('#ModalLabel').html('Tambah ' + title);
+                $('#ModalLabel').html('Tambah ' + title2);
                 $("#id").val('');
                 $('#formAdd').trigger("reset");
             });
@@ -177,7 +177,7 @@
                 const id = $(this).data('id');
 
                 // changing the title of offcanvas
-                $('#ModalLabel').html('Edit ' + title);
+                $('#ModalLabel').html('Edit ' + title2);
 
                 // get data
                 $.get(''.concat(baseUrl).concat(page, '/').concat(id, '/edit'), function (data) {

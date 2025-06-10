@@ -42,7 +42,7 @@
                                         <div class="modal-body">
                                             <div class="mb-3" id="field-kode">
                                                 <label for="kode" class="form-label">Kode Gedung</label>
-                                                <input type="text" class="form-control" name="kode" id="kode_gedung">
+                                                <input type="text" class="form-control" name="kode" id="kode">
                                             </div>
                                             <div class="mb-3" id="field-nama">
                                                 <label for="nama" class="form-label">Nama Gedung</label>
@@ -92,6 +92,7 @@
         $(function () {
         const baseUrl = {!! json_encode(url('/')) !!};
         const title = "{{strtolower($title)}}";
+        const title2 = "{{ $title2 }}";
         const page = '/'.concat("admin/masterdata/aset/").concat(title);
         var my_column = $('#my_column').val();
         const pecah = my_column.split('\n');
@@ -169,14 +170,14 @@
 
         // Add/Edit Record
         $(document).on('click', '#add-record', function () {
-            $('#ModalLabel').html('Tambah ' + title);
+            $('#ModalLabel').html('Tambah ' + title2);
             $("#id").val('');
             $('#formAdd').trigger("reset");
         });
 
         $(document).on('click', '.edit-record', function () {
             const id = $(this).data('id');
-            $('#ModalLabel').html('Edit ' + title);
+            $('#ModalLabel').html('Edit ' + title2);
 
             $.get(`${baseUrl}${page}/${id}/edit`, function (data) {
                 Object.keys(data).forEach(key => {

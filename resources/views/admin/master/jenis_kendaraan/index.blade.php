@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Aset Jenis Ruang')
+@section('title', 'Aset Jenis Kendaraan')
 
 @section('css')
 
@@ -16,7 +16,7 @@
 
 @section('breadcrumb-items')
     <li class="breadcrumb-item">Master</li>
-    <li class="breadcrumb-item active">Jenis Ruang</li>
+    <li class="breadcrumb-item active">Jenis Kendaraan</li>
 @endsection
 
 @section('content')
@@ -42,11 +42,13 @@
                                         <div class="modal-body">
                                             <div class="mb-3" id="field-kode">
                                                 <label for="kode" class="form-label">Kode</label>
-                                                <input type="text" class="form-control" name="kode" id="kode" placeholder="LB">
+                                                <input type="text" class="form-control" name="kode" id="kode" placeholder="MBL">
                                             </div>
+                                        </div>
+                                        <div class="modal-body">
                                             <div class="mb-3" id="field-nama">
                                                 <label for="nama" class="form-label">Nama</label>
-                                                <input type="text" class="form-control" name="nama" id="nama" placeholder="Laboratorium">
+                                                <input type="text" class="form-control" name="nama" id="nama" placeholder="Mobil">
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -177,6 +179,8 @@
             $(document).on('click', '#add-record', function () {
                 $('#ModalLabel').html('Tambah ' + title2);
                 $("#id").val('');
+                $("#kode").val('');
+                $("#nama").val('');
                 $('#formAdd').trigger("reset");
             });
             $(document).on('click', '.edit-record', function () {
@@ -184,8 +188,6 @@
 
                 // changing the title of offcanvas
                 $('#ModalLabel').html('Edit ' + title2);
-                
-                $('#formAdd').trigger("reset");
 
                 // get data
                 $.get(''.concat(baseUrl).concat(page, '/').concat(id, '/edit'), function (data) {
@@ -202,9 +204,7 @@
             $('#formAdd').on('submit',function(e){
                 e.preventDefault();
                 var btnSubmit = $('#btn-submit');
-                btnSubmit.prop('disabled', true);
-                btnSubmit.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Please Wait...');
-
+                btnSubmit.prop('disabled', true); 
                 const myFormData = new FormData(document.getElementById('formAdd'));
                 const offCanvasForm = $('#formAdd');
                 $.ajax({
@@ -226,7 +226,6 @@
                         }
                         });
                         btnSubmit.prop('disabled', false);
-                        btnSubmit.text('Simpan');
                     },
                     error: function error(err) {
                         offCanvasForm.offcanvas('hide');
@@ -239,7 +238,6 @@
                             }
                         });
                         btnSubmit.prop('disabled', false);
-                        btnSubmit.text('Simpan');
                     }
                 });
             });
@@ -276,7 +274,7 @@
                         dt.draw();
                     },
                     error: function error(_error) {
-                        // console.log(_error);
+                        console.log(_error);
                     }
                     });
 

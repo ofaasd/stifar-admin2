@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Aset Jenis Ruang')
+@section('title', 'Basic DataTables')
 
 @section('css')
 
@@ -15,8 +15,8 @@
 @endsection
 
 @section('breadcrumb-items')
-    <li class="breadcrumb-item">Master</li>
-    <li class="breadcrumb-item active">Jenis Ruang</li>
+    <li class="breadcrumb-item">Aset</li>
+    <li class="breadcrumb-item active">Gedung & Bangunan</li>
 @endsection
 
 @section('content')
@@ -26,9 +26,7 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header pb-0 card-no-border">
-                        @if(empty($link))
-                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal" id="add-record">+ {{$title2}}</button>
-                        @endif
+                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal">+ {{$title2}}</button>
                         <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
@@ -40,13 +38,36 @@
                                             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <div class="mb-3" id="field-kode">
-                                                <label for="kode" class="form-label">Kode</label>
-                                                <input type="text" class="form-control" name="kode" id="kode" placeholder="LB">
+                                             <div class="mb-3">
+                                                <label for="tanah " class="form-label">Tanah</label>
+                                                <select class="form-select" aria-label="Default select example" id="kode_tanah" name="kodeTanah">
+                                                    @foreach ($asetTanah as $row)
+                                                        <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
-                                            <div class="mb-3" id="field-nama">
+                                            <div class="mb-3">
+                                                <label for="lantai" class="form-label">Lantai</label>
+                                                <select class="form-select" aria-label="Default select example" id="id_lantai" name="idLantai">
+                                                    @foreach ($masterLantai as $row)
+                                                        <option value="{{ $row->id }}">{{ $row->lantai }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="kode" class="form-label">Kode</label>
+                                                <input type="text" name="kode" id="kode" class="form-control" placeholder="H">
+                                            </div>
+                                            <div class="mb-3">
                                                 <label for="nama" class="form-label">Nama</label>
-                                                <input type="text" class="form-control" name="nama" id="nama" placeholder="Laboratorium">
+                                                <input type="text" name="nama" id="nama" class="form-control" placeholder="Gedung H">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="luas" class="form-label">Luas</label>
+                                                <div class="input-group">
+                                                        <input type="text" class="form-control" name="luas" id="luas" placeholder="12.4">
+                                                        <span class="input-group-text">m<sup>2</sup></span>
+                                                    </div>
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -66,8 +87,11 @@
                                     <tr>
                                         <th></th>
                                         <th>No</th>
+                                        <th>Tanah</th>
                                         <th>Kode</th>
                                         <th>Nama</th>
+                                        <th>Jumlah Lantai</th>
+                                        <th>Luas</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -92,19 +116,15 @@
         $(function () {
             const baseUrl = {!! json_encode(url('/')) !!};
             const title = "{{strtolower($title)}}";
-            const title2 = "{{ $title2 }}";
-            const page = '/'.concat("admin/masterdata/aset/").concat(title);
+            const page = '/'.concat("admin/aset/").concat(title);
             var my_column = $('#my_column').val();
             const pecah = my_column.split('\n');
             let my_data = [];
             pecah.forEach((item, index) => {
                 let temp = item.replace(/ /g, '');
                 let data_obj = { data: temp };
-                //alert(data_obj.data);
                 my_data.push(data_obj);
             });
-            //alert(data_obj);
-            // console.log(baseUrl.concat(page));
 
             const dt = $("#basic-1").DataTable({
                 processing: true,
@@ -130,7 +150,7 @@
                     orderable: false,
                     targets: 1,
                     render: function render(data, type, full, meta) {
-                        return '<span>'.concat(full['fake_id'], '</span>');
+                        return '<span>'.concat(full.fake_id, '</span>');
                     }
                     },
                     {
@@ -140,16 +160,16 @@
                     searchable: false,
                     orderable: false,
                     render: function render(data, type, full, meta) {
-                            return (
-                            '<div class="d-inline-block text-nowrap">' +
-                            '<button class="btn btn-sm btn-icon edit-record text-primary" data-id="'
-                                .concat(full['id'], '" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal"')
-                                .concat(title, '"><i class="fa fa-pencil"></i></button>') +
-                            '<button class="btn btn-sm btn-icon delete-record text-primary" data-id="'.concat(
-                                full['id'],
-                                '"><i class="fa fa-trash"></i></button>'
-                            )
-                            );
+                        return (
+                        '<div class="d-inline-block text-nowrap">' +
+                        '<button class="btn btn-sm btn-icon edit-record text-primary" data-id="'
+                            .concat(full['id'], '" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal"')
+                            .concat(title, '"><i class="fa fa-pencil"></i></button>') +
+                        '<button class="btn btn-sm btn-icon delete-record text-primary" data-id="'.concat(
+                            full['id'],
+                            '"><i class="fa fa-trash"></i></button>'
+                        )
+                        );
                     }
                     }
                 ],
@@ -169,59 +189,49 @@
                     searchPlaceholder: 'Search..'
                 },
             });
-
             $('#tambahModal').on('hidden.bs.modal', function () {
+                $('#id').val('');
                 $('#formAdd').trigger("reset");
             });
             //Edit Record
-            $(document).on('click', '#add-record', function () {
-                $('#ModalLabel').html('Tambah ' + title2);
-                $("#id").val('');
-                $('#formAdd').trigger("reset");
-            });
             $(document).on('click', '.edit-record', function () {
                 const id = $(this).data('id');
 
                 // changing the title of offcanvas
-                $('#ModalLabel').html('Edit ' + title2);
-                
+                $('#ModalLabel').html('Edit ' + title);
                 $('#formAdd').trigger("reset");
 
                 // get data
                 $.get(''.concat(baseUrl).concat(page, '/').concat(id, '/edit'), function (data) {
-                    Object.keys(data).forEach(key => {
-                        // console.log(data[key]);
-                        $('#' + key)
-                            .val(data[key])
-                            .trigger('change');
-                    });
+                Object.keys(data).forEach(key => {
+                    //console.log(key);
+                    $('#' + key)
+                        .val(data[key])
+                        .trigger('change');
                 });
-
+                });
             });
             //save record
             $('#formAdd').on('submit',function(e){
                 e.preventDefault();
                 var btnSubmit = $('#btn-submit');
-                btnSubmit.prop('disabled', true);
+                btnSubmit.prop('disabled', true); 
                 btnSubmit.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Please Wait...');
 
-                const myFormData = new FormData(document.getElementById('formAdd'));
-                const offCanvasForm = $('#formAdd');
                 $.ajax({
-                    data: myFormData,
+                    data: $('#formAdd').serialize(),
                     url: ''.concat(baseUrl).concat(page),
                     type: 'POST',
-                    processData: false,
-                    contentType: false,
                     success: function success(status) {
                         dt.draw();
                         $("#tambahModal").modal('hide');
+
                         // sweetalert
                         swal({
-                        icon: 'success',
-                        title: 'Successfully '.concat(status, '!'),
-                        text: ''.concat(title, ' ').concat(status, ' Successfully.'),
-                        customClass: {
+                            icon: 'success',
+                            title: 'Successfully '.concat(status, '!'),
+                            text: ''.concat(title, ' ').concat(status, ' Successfully.'),
+                            customClass: {
                             confirmButton: 'btn btn-success'
                         }
                         });
@@ -229,7 +239,10 @@
                         btnSubmit.text('Simpan');
                     },
                     error: function error(err) {
-                        offCanvasForm.offcanvas('hide');
+                        // offCanvasForm.offcanvas('hide');
+                        // console.log('====================================');
+                        // console.log(err);
+                        // console.log('====================================');
                         swal({
                             title: 'Duplicate Entry!',
                             text: title + ' Not Saved !',
@@ -243,7 +256,6 @@
                     }
                 });
             });
-
             //delete record
             $(document).on('click', '.delete-record', function () {
                 const id = $(this).data('id');

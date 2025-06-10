@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Aset Jenis Ruang')
+@section('title', 'Aset Merk Kendaraan')
 
 @section('css')
 
@@ -16,7 +16,7 @@
 
 @section('breadcrumb-items')
     <li class="breadcrumb-item">Master</li>
-    <li class="breadcrumb-item active">Jenis Ruang</li>
+    <li class="breadcrumb-item active">Merk Kendaraan</li>
 @endsection
 
 @section('content')
@@ -42,11 +42,11 @@
                                         <div class="modal-body">
                                             <div class="mb-3" id="field-kode">
                                                 <label for="kode" class="form-label">Kode</label>
-                                                <input type="text" class="form-control" name="kode" id="kode" placeholder="LB">
+                                                <input type="text" class="form-control" name="kode" id="kode" placeholder="HND">
                                             </div>
                                             <div class="mb-3" id="field-nama">
                                                 <label for="nama" class="form-label">Nama</label>
-                                                <input type="text" class="form-control" name="nama" id="nama" placeholder="Laboratorium">
+                                                <input type="text" class="form-control" name="nama" id="nama" placeholder="Honda">
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -104,7 +104,6 @@
                 my_data.push(data_obj);
             });
             //alert(data_obj);
-            // console.log(baseUrl.concat(page));
 
             const dt = $("#basic-1").DataTable({
                 processing: true,
@@ -229,6 +228,9 @@
                         btnSubmit.text('Simpan');
                     },
                     error: function error(err) {
+                        // console.log('====================================');
+                        // console.log(err);
+                        // console.log('====================================');
                         offCanvasForm.offcanvas('hide');
                         swal({
                             title: 'Duplicate Entry!',
