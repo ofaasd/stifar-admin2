@@ -22,4 +22,9 @@ class BerkasSkripsi extends Model
     {
         return $this->belongsTo(Skripsi::class);
     }
+ 
+    public function kategori()
+    {
+        return $this->hasMany(KategoriBerkasSkripsi::class, 'id_bimbingan');
+    }
 }

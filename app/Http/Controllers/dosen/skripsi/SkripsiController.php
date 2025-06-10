@@ -16,7 +16,6 @@ class SkripsiController extends Controller
         $kategoriBerkas = KategoriBerkasSkripsi::all();
         return view('dosen.skripsi.persyaratan.index', compact('sks', 'kategoriBerkas'));
     }
-
     public function updateSks(Request $request)
     {
         try {

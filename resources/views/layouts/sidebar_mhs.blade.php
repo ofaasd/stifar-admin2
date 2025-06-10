@@ -43,6 +43,18 @@
                     <li class="submenu-title"><a class="sidebar-link sidebar-title" href="#" >
                         <span> Daftar Nilai</span><label class="badge badge-light-danger">!</label></a>
                     </li>
+                    <li>
+                        <a class="submenu-title" href="#">
+                            <span>Skripsi <label class="badge badge-light-danger">!</label></span>
+                        </a>
+                        <ul class="nav-sub-childmenu submenu-content">
+                            <li><a href="{{ Route('mhs.skripsi.daftar.index') }}">Pengajuan Skripsi </a></li>
+                            <li><a href="{{Route('mhs.skripsi.bimbingan.index')}}">Bimbingan</a></li>
+                            <li><a href="{{Route('mhs.skripsi.berkas.index')}}">Berkas</a></li>
+                            <li><a href="{{ Route('sidang.index') }}">Daftar Sidang</a></li>
+                            <li><a href="#">Nilai <label class="badge badge-light-danger">!</label></a></li>
+                        </ul>
+                    </li>
                 </ul>
             </li>
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >

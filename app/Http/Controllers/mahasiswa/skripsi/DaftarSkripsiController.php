@@ -2,27 +2,149 @@
 
 namespace App\Http\Controllers\mahasiswa\skripsi;
 
-use App\Models\BerkasDaftarSkripsi;
+use App\Models\PembimbingSkripsi;
+use App\Models\RefPembimbing;
+use App\Models\Skripsi;
 use App\Models\Mahasiswa;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Log;
 
 class DaftarSkripsiController extends Controller
 {
     public function index()
     {
         $user = Auth::user();
-        $mhs = Mahasiswa::where('id', $user->id)->select('nim')->first();
-        $nim = $mhs->nim;
-    
-        $data = BerkasDaftarSkripsi::where('nim', $nim)->get(); // Perbaiki dengan get()
+        $email = $user->email;
 
-        // dd($data);
-        return view('mahasiswa.skripsi.daftar.index', compact('data'));
+        $nim = explode('@', $email)[0];
+        $dosenList = RefPembimbing::get();
+        $data = Skripsi::where('nim', $nim)->with('pembimbing')->get(); // Perbaiki dengan get()
+
+        // dd($nim);
+        return view('mahasiswa.skripsi.daftar.index', compact('data','dosenList'));
+    }
+    public function store(Request $request)
+{
+    try {
+        Log::info('Mulai menyimpan pengajuan skripsi', ['request' => $request->all()]);
+
+        $request->validate([
+            'judul' => 'required|string',
+            'abstrak' => 'required|string',
+            'metodologi' => 'required|string',
+            'proposal' => 'required|file|mimes:pdf|max:2048',
+            'pembimbing_1' => 'required|exists:ref_pembimbing_skripsi,nip',
+            'pembimbing_2' => 'nullable|exists:ref_pembimbing_skripsi,nip|different:pembimbing_1',
+        ]);
+
+        $user = Auth::user();
+        $mhs = Mahasiswa::where('id', $user->id)->first();
+
+        if (!$mhs) {
+            Log::error('Mahasiswa tidak ditemukan', ['user_id' => $user->id]);
+            return redirect()->back()->withErrors(['Mahasiswa tidak ditemukan.']);
+        }
+
+        $nim = $mhs->nim;
+
+        $proposalPath = $request->file('proposal')->store('proposal', 'public');
+
+        $skripsi = Skripsi::create([
+            'nim' => $nim,
+            'judul' => $request->judul,
+            'abstrak' => $request->abstrak,
+            'metodologi' => $request->metodologi,
+            'status' => 0,
+            'tanggal_pengajuan' => now(),
+            'proposal' => $proposalPath,
+        ]);
+
+        Log::info('Skripsi berhasil dibuat', ['skripsi_id' => $skripsi->id]);
+
+        PembimbingSkripsi::create([
+            'skripsi_id' => $skripsi->id,
+            'nip' => $request->pembimbing_1,
+            'tanggal_penetapan' => now(),
+        ]);
+
+        if ($request->filled('pembimbing_2')) {
+            PembimbingSkripsi::create([
+                'skripsi_id' => $skripsi->id,
+                'nip' => $request->pembimbing_2,
+                'tanggal_penetapan' => now(),
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Pengajuan skripsi berhasil disimpan.');
+
+    } catch (\Throwable $e) {
+        Log::error('Terjadi kesalahan saat menyimpan pengajuan skripsi', [
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+        ]);
+
+        return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.');
+    }
+}
+
+    
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'judul' => 'required|string',
+            'abstrak' => 'required|string',
+            'metodologi' => 'required|string',
+            'proposal' => 'nullable|file|mimes:pdf|max:2048',
+            'pembimbing_1' => 'required|exists:ref_pembimbing_skripsi,nip',
+            'pembimbing_2' => 'nullable|exists:ref_pembimbing_skripsi,nip|different:pembimbing_1',
+        ]);
+    
+        $skripsi = Skripsi::findOrFail($id);
+    
+        if ($request->hasFile('proposal')) {
+            $proposalPath = $request->file('proposal')->store('proposal', 'public');
+            $skripsi->proposal = $proposalPath;
+        }
+    
+        $skripsi->judul = $request->judul;
+        $skripsi->abstrak = $request->abstrak;
+        $skripsi->metodologi = $request->metodologi;
+    
+        // Reset status jika belum disetujui
+        if ($skripsi->status != 1) {
+            $skripsi->status = 0; // atau 'menunggu'
+        }
+    
+        $skripsi->save();
+    
+        // Perbarui data pembimbing jika belum disetujui
+        if ($skripsi->status != 1) {
+            // Hapus semua pembimbing lama
+            PembimbingSkripsi::where('skripsi_id', $skripsi->id)->delete();
+    
+            // Tambahkan pembimbing baru
+            PembimbingSkripsi::create([
+                'skripsi_id' => $skripsi->id,
+                'nip' => $request->pembimbing_1,
+                'tanggal_penetapan' => now(),
+            ]);
+    
+            if ($request->filled('pembimbing_2')) {
+                PembimbingSkripsi::create([
+                    'skripsi_id' => $skripsi->id,
+                    'nip' => $request->pembimbing_2,
+                    'tanggal_penetapan' => now(),
+                ]);
+            }
+        }
+    
+        return redirect()->back()->with('success', 'Pengajuan skripsi berhasil diperbarui.');
     }
     
+
     public function getData(){
         $user = Auth::user();
         $mhs = Mahasiswa::where('id',$user->id)->select('nim')->first();

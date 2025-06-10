@@ -14,4 +14,9 @@ class KategoriBerkasSkripsi extends Model
         'nama', 'deskripsi','kategori',
         'created_at', 'updated_at'
     ];
+
+    public function berkas()
+    {
+        return $this->belongsTo(BerkasSkripsi::class);
+    }
 }

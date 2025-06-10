@@ -90,6 +90,9 @@ use App\Http\Controllers\admin\akademik\NilaiKuesionerController;
 use App\Http\Controllers\admin\akademik\KhsController as adminKhs;
 use App\Http\Controllers\admin\keuangan\VaController;
 use App\Http\Controllers\mahasiswa\UjianController;
+use App\Http\Controllers\mahasiswa\skripsi\BimbinganSkripsiController;
+use App\Http\Controllers\mahasiswa\skripsi\BerkasSkripsiController;
+use App\Http\Controllers\mahasiswa\skripsi\SidangController as SidangMahasiswa;
 use App\Http\Controllers\mahasiswa\KuesionerMhsController;
 use App\Http\Controllers\dosen\skripsi\SkripsiController;
 use App\Http\Controllers\dosen\skripsi\PembimbingController;
@@ -441,6 +444,8 @@ Route::group(['middleware' => ['auth', 'role:mhs|super-admin']], function () {
     Route::group(['prefix' => 'mahasiswa/skripsi/daftar', 'as' => 'mhs.skripsi.daftar.', 'controller' => DaftarSkripsiController::class], function () {
         Route::get('/', 'index')->name('index');
         Route::post('/save', 'saveDaftar')->name('saveDaftar');
+        Route::post('/store', 'store')->name('store');
+        Route::put('/{id}', 'update')->name('update');
         // Route::get('/list-dosen', 'getDaftarPembimbing')->name('getDaftarPembimbing');
         Route::get('/get-data', 'getData')->name('getData');
         // Route::post('/pengajuan', 'pengajuan')->name('pengajuan');
@@ -453,6 +458,30 @@ Route::group(['middleware' => ['auth', 'role:mhs|super-admin']], function () {
         Route::get('/LogBook', 'BerkasLogbook')->name('BerkasLogbook');
         Route::get('/BerkasBimbingan', 'BerkasBimbingan')->name('BerkasBimbingan');
         Route::post('/upload', 'UploadBerkas')->name('UploadBerkas');
+    });
+    Route::group(['prefix' => 'skripsi/bimbingan', 'as' => 'mhs.skripsi.bimbingan.', 'controller' => BimbinganSkripsiController::class], function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/store', 'store')->name('store');
+        Route::get('/detail/{id}', 'detail')->name('detail');
+        // Route::get('/LogBook', 'BerkasLogbook')->name('BerkasLogbook');
+        // Route::get('/BerkasBimbingan', 'BerkasBimbingan')->name('BerkasBimbingan');
+        // Route::post('/upload', 'UploadBerkas')->name('UploadBerkas');
+    });
+    Route::group(['prefix' => 'skripsi/berkas', 'as' => 'mhs.skripsi.berkas.', 'controller' => BerkasSkripsiController::class], function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/store', 'store')->name('store');
+        // Route::get('/detail/{id}', 'detail')->name('detail');
+        // Route::get('/LogBook', 'BerkasLogbook')->name('BerkasLogbook');
+        // Route::get('/BerkasBimbingan', 'BerkasBimbingan')->name('BerkasBimbingan');
+        // Route::post('/upload', 'UploadBerkas')->name('UploadBerkas');
+    });
+    Route::group(['prefix' => 'skripsi/sidang', 'as' => 'mhs.skripsi.sidang.', 'controller' => SidangMahasiswa::class], function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/store', 'store')->name('store');
+        // Route::get('/detail/{id}', 'detail')->name('detail');
+        // Route::get('/LogBook', 'BerkasLogbook')->name('BerkasLogbook');
+        // Route::get('/BerkasBimbingan', 'BerkasBimbingan')->name('BerkasBimbingan');
+        // Route::post('/upload', 'UploadBerkas')->name('UploadBerkas');
     });
 
     //Route::post('admin/admisi/peserta/daftar_kota',[PmbPesertaController::class, 'daftar_kota'] )->name('daftar_kota');

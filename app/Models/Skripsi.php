@@ -12,8 +12,8 @@ class Skripsi extends Model
     protected $table = 'skripsi';
 
     protected $fillable = [
-        'nim', 'judul', 'abstrak', 'kata_kunci', 'status',
-        'tanggal_pengajuan', 'tanggal_persetujuan', 'created_at', 'updated_at'
+        'nim', 'judul', 'abstrak', 'metodologi', 'status',
+        'tanggal_pengajuan', 'tanggal_persetujuan','proposal','catatan', 'created_at', 'updated_at'
     ];
 
     public function pembimbing()

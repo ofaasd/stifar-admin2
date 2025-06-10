@@ -5,19 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PengujiSkripsi extends Model
+class BerkasBimbingan extends Model
 {
     use HasFactory;
-
-    protected $table = 'penguji';
+    protected $table = 'berkas_bimbingan';
 
     protected $fillable = [
-        'sidang_id', 'nip', 'peran',
+        'id', 'file', 'id_bimbingan',
         'created_at', 'updated_at'
     ];
 
-    public function sidang()
+    
+    public function bimbingan()
     {
-        return $this->belongsTo(SidangSkripsi::class);
+        return $this->belongsTo(BimbinganSkripsi::class, 'id_bimbingan');
     }
 }

@@ -9,7 +9,7 @@ class PembimbingSkripsi extends Model
 {
     use HasFactory;
 
-    protected $table = 'pembimbing_skripsi';
+    protected $table = 'pembimbing';
 
     protected $fillable = [
         'skripsi_id', 'nip', 'tanggal_penetapan',
