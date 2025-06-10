@@ -179,7 +179,7 @@
                     </li>
                     <li>
                         <a class="submenu-title" href="#">
-                            <span>Skripsi <label class="badge badge-light-danger">!</label></span>
+                            <span>Skripsi</span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
                             <li><a href="{{ Route('admin.skripsi.manajemen.daftar.index') }}">Manajemen Skripsi </a></li>
@@ -279,7 +279,7 @@
                 <span><i class="fa fa-folder"></i> KRM</span></a> --}}
             </li>
 
-          
+
           </ul>
         </div>
         <div class="right-arrow" id="right-arrow"><i data-feather="arrow-right"></i></div>
