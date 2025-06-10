@@ -19,4 +19,12 @@ class TahunAjaran extends Model
         'keterangan',
         'kuesioner',
     ];
+
+    public function getPeriodeFormattedAttribute()
+    {
+        $semester = substr($this->kode_ta, -1) == '1' ? 'Genap' : 'Ganjil';
+        $tahun_awal = date('Y', strtotime($this->tgl_awal_kuliah));
+        $tahun_akhir = date('Y', strtotime($this->tgl_akhir));
+        return "Semester $semester $tahun_awal/$tahun_akhir";
+    }
 }

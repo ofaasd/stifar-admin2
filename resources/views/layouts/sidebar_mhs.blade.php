@@ -49,6 +49,18 @@
                     <li class="submenu-title"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/daftar_nilai')}}" >
                         <span> Daftar Nilai</span></a>
                     </li>
+                    <li>
+                        <a class="submenu-title" href="#">
+                            <span>Skripsi <label class="badge badge-light-danger">!</label></span>
+                        </a>
+                        <ul class="nav-sub-childmenu submenu-content">
+                            <li><a href="{{ Route('mhs.skripsi.daftar.index') }}">Pengajuan Skripsi </a></li>
+                            <li><a href="{{Route('mhs.skripsi.bimbingan.index')}}">Bimbingan</a></li>
+                            <li><a href="{{Route('mhs.skripsi.berkas.index')}}">Berkas</a></li>
+                            <li><a href="{{ Route('sidang.index') }}">Daftar Sidang</a></li>
+                            <li><a href="#">Nilai <label class="badge badge-light-danger">!</label></a></li>
+                        </ul>
+                    </li>
                 </ul>
             </li>
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
@@ -84,6 +96,20 @@
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
                 <span><i class="fa fa-bookmark"></i> Kuesioner Kepuasan Mahasiswa</span><label class="badge badge-light-danger">!</label></a>
             </li>
+           <li class="sidebar-list">
+            <a class="sidebar-link sidebar-title" href="#">
+                <span><i class="fa fa-support"></i> Tugas Akhir</span>
+            </a>
+            <ul class="sidebar-submenu">
+              <li><a  href="{{Route('mhs.pembimbing.index')}}">Daftar Dosen Pembimbing</a></li>
+              <li><a href="{{ Route('mhs.bimbingan.index') }}">Bimbingan Skripsi</a></li>
+              <li><a href="{{ Route('mhs.skripsi.berkas.index') }}">Manajemen Berkas Skripsi</a></li>
+              <li><a href="#">Daftar Mahasiswa Bimbingan</a></li>
+              <li><a href="#">Manajemen Bimbingan</a></li>
+              <li><a href="#">Berita Acara</a></li>
+            </ul>
+        </li>
+          
           </ul>
         </div>
         <div class="right-arrow" id="right-arrow"><i data-feather="arrow-right"></i></div>

@@ -4,7 +4,7 @@
         <th></th>
         <th></th>
         <th>NIM</th>
-        <th>Nama Mahasiswa</th>
+        <th>Nama</th>
         <th>HP</th>
         <th>Email</th>
         <th>Program Studi</th>

@@ -99,7 +99,7 @@
               <div class="card widget-1">
                 <div class="card-body">
                   <div class="widget-content">
-                    <div class="widget-round primary">
+                    <div class="widget-round warning">
                       <div class="bg-round">
                         <svg class="svg-fill">
                           <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-user') }}"> </use>
@@ -189,6 +189,7 @@
                           </div>
                         </div>
                       </div>
+                   
                     </div>
                   </div>
                 </div>
@@ -233,7 +234,39 @@
                   </div>
                 </div>
               </div>
+             
             </div>
+            
+        </div>
+        <div class="card">
+            <div class="card-header card-no-border">
+              <h5>Pembayaran</h5>
+            </div>
+            <div class="card-body pt-0">
+              <div class="row m-0 overall-card">
+                <div class="col-xl-12 col-md-12 col-sm-12 p-0">
+                  <div class="chart-right">
+                    <div class="row">
+                      <div class="col-xl-12">
+                        <div class="card-body p-0">
+                          <ul class="balance-data">
+                            <li><span class="circle bg-secondary"> </span><span class="f-light ms-1">Matakuliah Teori</span></li>
+                            <li><span class="circle bg-primary"> </span><span class="f-light ms-1">Matakuliah Praktek</span></li>
+                          </ul>
+                          <div class="current-sale-container">
+                            <div id="chart-pembayaran"></div>
+                          </div>
+                        </div>
+                      </div>
+                   
+                    </div>
+                  </div>
+                </div>
+             
+              </div>
+             
+            </div>
+            
         </div>
     </div>
   </div>
@@ -258,6 +291,9 @@
 <script src="{{ asset('assets/js/height-equal.js') }}"></script>
 <script src="{{ asset('assets/js/animation/wow/wow.min.js') }}"></script>
 <script>
+  @php
+    $data_validasi = !empty($list_tidak_valid) ? $list_tidak_valid : '0,0,0,0';
+@endphp
     var options = {
      series: [
       {
@@ -409,5 +445,159 @@
 
 var chart = new ApexCharts(document.querySelector("#chart-currently"), options);
 chart.render();
+
+
+var options2 = {
+     series: [
+      {
+        name: 'Sudah Validasi',
+            data: [{!! $list_valid !!}]
+      },
+      {
+        name: 'Belum Validasi',
+        data: [{!! $list_tidak_valid !!}]
+
+      }
+    ],
+    chart:{
+      type:'bar',
+      height:300,
+      stacked:false,
+      toolbar:{
+        show:false,
+      },
+       dropShadow: {
+        enabled: true,
+        top: 8,
+        left: 0,
+        blur: 10,
+        color: '#7064F5',
+        opacity: 0.1
+      }
+    },
+    plotOptions: {
+      bar:{
+        horizontal: false,
+        columnWidth: '25px',
+        borderRadius: 0,
+      },
+    },
+    grid: {
+      show:true,
+      borderColor: 'var(--chart-border)',
+    },
+    dataLabels:{
+      enabled: true,
+    },
+    stroke: {
+      width: 2,
+      dashArray: 0,
+      lineCap: 'butt',
+      colors: "#fff",
+    },
+    fill: {
+      opacity: 1
+    },
+    legend: {
+      show:false
+    },
+    states: {
+      hover: {
+        filter: {
+          type: 'darken',
+          value: 1,
+        }
+      }
+    },
+    colors:[CubaAdminConfig.primary,'#AAAFCB'],
+    yaxis: {
+      tickAmount: 3,
+      labels: {
+        show: true,
+        style: {
+          fontFamily: 'Rubik, sans-serif',
+        },
+      },
+      axisBorder:{
+       show:false,
+     },
+      axisTicks:{
+        show: false,
+      },
+    },
+    xaxis:{
+      categories:[
+        {!!$list_rombel!!}
+      ],
+      labels: {
+        style: {
+          fontFamily: 'Rubik, sans-serif',
+        },
+      },
+      axisBorder:{
+       show:false,
+     },
+    axisTicks:{
+        show: false,
+      },
+    },
+    states: {
+      hover: {
+        filter: {
+          type: 'darken',
+          value: 1,
+        }
+      }
+    },
+    responsive: [
+        {
+          breakpoint: 1661,
+          options:{
+            chart: {
+                height: 290,
+            }
+          }
+        },
+         {
+          breakpoint: 767,
+          options:{
+            plotOptions: {
+              bar:{
+                columnWidth: '35px',
+              },
+            },
+             yaxis: {
+                  labels: {
+                    show: false,
+                  }
+                }
+          }
+        },
+        {
+          breakpoint: 481,
+          options:{
+            chart: {
+                height: 200,
+            }
+          }
+        },
+        {
+          breakpoint: 420,
+          options:{
+            chart: {
+                height: 170,
+            },
+            plotOptions: {
+              bar:{
+                columnWidth: '40px',
+              },
+            },
+          }
+        },
+      ]
+  };
+
+var chart2 = new ApexCharts(document.querySelector("#chart-pembayaran"), options2);
+chart2.render();
 </script>
 @endsection
