@@ -64,8 +64,8 @@
                             <li><a href="{{URL::to('admin/masterdata/aset/jenis-barang')}}">Jenis Barang</a></li>
                             {{-- <li><a href="{{URL::to('admin/masterdata/aset/gedung')}}">Gedung</a></li> --}}
                             <li><a href="{{URL::to('admin/masterdata/aset/lantai')}}">Lantai</a></li>
-                            {{-- <li><a href="{{URL::to('admin/masterdata/aset/jenis-kendaraan')}}">Jenis Kendaraan</a></li> --}}
-                            {{-- <li><a href="{{URL::to('admin/masterdata/aset/merk-kendaraan')}}">Merk Kendaraan</a></li> --}}
+                            <li><a href="{{URL::to('admin/masterdata/aset/jenis-kendaraan')}}">Jenis Kendaraan</a></li>
+                            <li><a href="{{URL::to('admin/masterdata/aset/merk-kendaraan')}}">Merk Kendaraan</a></li>
                         </ul>
                     </li>
                 </ul>
