@@ -201,7 +201,7 @@ public function tambahKoor(Request $request)
         $data = Skripsi::join('mahasiswa', 'mahasiswa.nim', '=', 'skripsi.nim')
     ->where('skripsi.status', 1)
     // ->where('mahasiswa.id_program_studi', $id)
-    ->where('mahasiswa.id_program_studi', 2)
+    ->where('mahasiswa.id_program_studi', $id)
     ->select([
         'mahasiswa.nama as nama',
         'mahasiswa.nim as nim',
