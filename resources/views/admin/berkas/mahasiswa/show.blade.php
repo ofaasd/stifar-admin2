@@ -35,7 +35,7 @@
                       <div class="media">
                         <div class="photo-profile position-relative d-inline-block">
                             <img class="img-70 rounded-circle" alt="Foto Mahasiswa"
-                            src="{{ (!empty($mahasiswa->foto_sistem)) ? asset('assets/file/berkas/mahasiswa/sistem/' . $mahasiswa->foto_sistem) : asset('assets/images/user/7.jpg') }}">
+                            src="{{ (!empty($mahasiswa->foto_mhs)) ? asset('assets/images/mahasiswa/' . $mahasiswa->foto_mhs) : asset('assets/images/user/7.jpg') }}">
                         </div>
                         <div class="media-body">
                           <h5 class="mb-1">{{$mahasiswa->nama}}</h5>
@@ -147,7 +147,7 @@
                                 </div>
                             </div>
 
-                            <div class="mb-2">
+                            {{-- <div class="mb-2">
                                 <div class="view-akte">
                                     <label class="col-sm-12 col-form-label">Foto Profil : </label>
                                     <p class="fs-4" style="display: {{ $mahasiswa->foto_sistem ? 'block' : 'none' }}">
@@ -164,7 +164,7 @@
                                     </div>
                                 </div>
                                 <hr>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                     <div class="card-footer mt-5">
