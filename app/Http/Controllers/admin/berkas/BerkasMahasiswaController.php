@@ -19,17 +19,24 @@ class BerkasMahasiswaController extends Controller
     {
         $title = "Berkas Mahasiswa";
         $ta = TahunAjaran::where("status", "Aktif")->first();
-        $mhs = Mahasiswa::select('mahasiswa.*', 'mahasiswa_berkas_pendukung.*', 'mahasiswa.nim as nimMahasiswa')
-        ->leftJoin('mahasiswa_berkas_pendukung', 'mahasiswa_berkas_pendukung.nim', '=', 'mahasiswa.nim')
-        ->where('mahasiswa_berkas_pendukung.id_ta', $ta->id)
-        ->get()
-        ->map(function ($item) {
-            $item->nimEnkripsi = Crypt::encryptString($item->nimMahasiswa . "stifar");
+
+        $berkas = BerkasPendukungMahasiswa::where('id_ta', $ta->id)->get()->keyBy('nim');
+        $mhs = Mahasiswa::select('mahasiswa.*', 'mahasiswa.nim as nimMahasiswa')->get()->map(function ($item) use ($berkas) {
+            $item->nimMahasiswa = $item->nim;
+            $item->nimEnkripsi = Crypt::encryptString($item->nim . "stifar");
+
+            $berkasItem = $berkas[$item->nim] ?? null;
+            $item->kk = $berkasItem->kk ?? null;
+            $item->ktp = $berkasItem->ktp ?? null;
+            $item->akte = $berkasItem->akte ?? null;
+            $item->ijazah_depan = $berkasItem->ijazah_depan ?? null;
+            $item->ijazah_belakang = $berkasItem->ijazah_belakang ?? null;
+
             return $item;
         });
 
         $fake_id = 0;
-        return view('admin.berkas.mahasiswa.index', compact('title', 'mhs', 'fake_id'));
+        return view('admin.berkas.mahasiswa.index', compact('title', 'mhs', 'fake_id', 'berkas'));
     }
 
     /**
