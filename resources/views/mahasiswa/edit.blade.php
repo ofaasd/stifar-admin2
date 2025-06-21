@@ -40,10 +40,10 @@
                       <div class="media">
                         <div class="photo-profile position-relative d-inline-block">
                             <img class="img-70 rounded-circle" alt="Foto Mahasiswa"
-                                src="{{ (!empty($mahasiswa->foto_sistem)) ? asset('assets/file/berkas/mahasiswa/sistem/' . $mahasiswa->foto_sistem) : asset('assets/images/user/7.jpg') }}">
-                                {{-- <a href="#" class="position-absolute top-50 start-50 translate-middle bg-dark bg-opacity-5 text-white p-2 rounded-circle d-none hover-edit-foto" data-bs-toggle="modal" data-original-title="test" data-bs-target="#ubahFotoModal">
+                                src="{{ (!empty($mahasiswa->fotoMahasiswa)) ? asset('assets/images/mahasiswa/' . $mahasiswa->fotoMahasiswa) : asset('assets/images/user/7.jpg') }}">
+                                <a href="#" class="position-absolute top-50 start-50 translate-middle bg-dark bg-opacity-3 text-white p-2 rounded-circle d-none hover-edit-foto" data-bs-toggle="modal" data-original-title="test" data-bs-target="#ubahFotoModal">
                                   ubah foto
-                              </a> --}}
+                              </a>
                         </div>
                         <div class="media-body">
                           <h5 class="mb-1">{{$mahasiswa->nama}}</h5>
@@ -78,7 +78,7 @@
                               <a href="#" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-original-title="test" data-bs-target="#ubahPasswordModal"><i class="fa fa-key"></i></a>
                             </div>
                             @include('mahasiswa._form_ubah_password')
-                            {{-- @include('mahasiswa._form_ubah_gambar') --}}
+                            @include('mahasiswa._form_ubah_gambar')
                           {{-- <div class="col-md-6 mb-4"> --}}
                               {{-- <a href="#" class="btn btn-primary btn-sm btn-block" data-bs-toggle="modal" data-original-title="test" data-bs-target="#ubahFotoModal"><i class="fa fa-image"></i> Ubah Foto</a> --}}
                           {{-- </div> --}}
