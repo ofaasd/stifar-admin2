@@ -213,7 +213,7 @@
             <img src="assets/images/mahasiswa/template-ktm/depan.jpg" style="width: 8.56cm; height: 5.398cm;" />
             <div class="photo-area">
                 <img id="photo-preview" class="photo-preview"
-                    src="{{ asset('assets/file/berkas/mahasiswa/sistem/' . $data->fotoSistem) }}}}"
+                    src="{{ asset('assets/images/mahasiswa/' . $data->fotoMahasiswa) }}"
                     >
             </div>
             

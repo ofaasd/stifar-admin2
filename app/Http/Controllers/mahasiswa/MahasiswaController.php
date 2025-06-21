@@ -579,8 +579,9 @@ class MahasiswaController extends Controller
                 'mahasiswa.tgl_lahir AS tanggalLahir',
                 'mahasiswa.alamat',
                 'mahasiswa.angkatan',
+                'mahasiswa.foto_mhs AS fotoMahasiswa',
                 'mahasiswa.created_at AS createdAt',
-                'mahasiswa_berkas_pendukung.foto_sistem AS fotoSistem',
+                // 'mahasiswa_berkas_pendukung.foto_sistem AS fotoSistem',
                 'master_program_studi.nama_jurusan AS programStudi'
             )
             ->where('mahasiswa.nim', $nim)
@@ -588,9 +589,9 @@ class MahasiswaController extends Controller
             ->leftJoin('master_program_studi', 'master_program_studi.id', '=', 'mahasiswa.id_program_studi')
             ->first();
 
-        if(!$mahasiswa->fotoSistem)
+        if(!$mahasiswa->fotoMahasiswa)
         {
-            return response()->json(['message' => 'Foto tidak ditemukan, silahkan update herregistrasi terlebih dahulu']);
+            return response()->json(['message' => 'Foto tidak ditemukan, silahkan update foto profil.']);
         }
 
         // Kirim data ke view
