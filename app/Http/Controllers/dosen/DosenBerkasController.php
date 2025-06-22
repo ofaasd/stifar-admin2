@@ -20,14 +20,14 @@ class DosenBerkasController extends Controller
         }
 
         $dosen = PegawaiBiodatum::select('pegawai_biodata.*', 'pegawai_biodata.nidn as nidnDosen', 'pegawai_biodata.id_pegawai AS idPegawai')
-        ->where('pegawai_biodata.id_pegawai', $cekUser->id_pegawai)
+        ->where('pegawai_biodata.id', $cekUser->id)
         ->first();
 
         if(!$dosen){
             return response()->json(["message"  => "Data tidak ditemukan"]);
         }
 
-        $berkas = PegawaiBerkasPendukung::where("id_pegawai", $cekUser->id_pegawai)->latest()->first();
+        $berkas = PegawaiBerkasPendukung::where("id_pegawai", $dosen->id)->latest()->first();
 
         $title = 'Berkas ' . $dosen->nama_lengkap;
 
