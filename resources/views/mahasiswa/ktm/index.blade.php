@@ -212,9 +212,7 @@
         <div class="id-card id-card-front">
             <img src="assets/images/mahasiswa/template-ktm/depan.jpg" style="width: 8.56cm; height: 5.398cm;" />
             <div class="photo-area">
-                <img id="photo-preview" class="photo-preview"
-                    src="assets/images/mahasiswa/{{ $data->fotoMahasiswa }}" 
-                    >
+                <img src="file://{{ public_path('assets/images/mahasiswa/' . $data->fotoMahasiswa) }}">
             </div>
             
             <p class="form-field nama-field">{{ $data->nama }}</p>
