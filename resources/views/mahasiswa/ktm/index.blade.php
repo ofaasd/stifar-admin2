@@ -65,7 +65,7 @@
             top: 1.9cm;
             left: 0.29cm;
             width: 1.80cm;
-            height: 2.29cm;
+            height: 2.2cm;
             background: rgba(255, 255, 255, 0.1);
             border: 2px dashed transparent;
             border-radius: 6px;
