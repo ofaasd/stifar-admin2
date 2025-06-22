@@ -582,11 +582,11 @@ class MahasiswaController extends Controller
                 'mahasiswa.foto_mhs AS fotoMahasiswa',
                 'mahasiswa.created_at AS createdAt',
                 // 'mahasiswa_berkas_pendukung.foto_sistem AS fotoSistem',
-                'master_program_studi.nama_jurusan AS programStudi'
+                'program_studi.nama_prodi AS programStudi'
             )
             ->where('mahasiswa.nim', $nim)
             ->leftJoin('mahasiswa_berkas_pendukung', 'mahasiswa_berkas_pendukung.nim', '=', 'mahasiswa.nim')
-            ->leftJoin('master_program_studi', 'master_program_studi.id', '=', 'mahasiswa.id_program_studi')
+            ->leftJoin('program_studi', 'program_studi.id', '=', 'mahasiswa.id_program_studi')
             ->first();
 
         if(!$mahasiswa->fotoMahasiswa)
