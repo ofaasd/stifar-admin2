@@ -87,7 +87,6 @@
                             }
                             });
 
-                            // Decode base64 PDF dan buka di tab baru
                             const pdfWindow = window.open("", "_blank");
                             pdfWindow.document.write(
                                 "<iframe width='100%' height='100%' src='data:application/pdf;base64," +
