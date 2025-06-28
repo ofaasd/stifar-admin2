@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\AsetBarang;
 use App\Models\MasterJenisBarang;
 use App\Models\MasterRuang;
+use App\Models\MasterVendor;
 use App\Models\PegawaiBiodatum;
 
 use Illuminate\Support\Facades\DB;
@@ -27,8 +28,9 @@ class AsetBarangController extends Controller
             $indexed = $this->indexed;
             $asetRuang = MasterRuang::orderBy('nama_ruang', 'asc')->get();
             $dataPegawai = PegawaiBiodatum::orderBy('nama_lengkap', 'asc')->get();
+            $dataVendor = MasterVendor::orderBy('nama', 'asc')->get();
             $dataJenisBarang = MasterJenisBarang::orderBy('kode', 'asc')->get();
-            return view('admin.aset.barang.index', compact('title', 'title2', 'indexed', 'asetRuang', 'dataJenisBarang', 'dataPegawai'));
+            return view('admin.aset.barang.index', compact('title', 'title2', 'indexed', 'asetRuang', 'dataJenisBarang', 'dataPegawai', 'dataVendor'));
         }else{
             $columns = [
                 1 => 'id',
@@ -160,13 +162,25 @@ class AsetBarangController extends Controller
             $id = $request->id;
             
             $validatedData = $request->validate([
-                'kodeRuang' => 'required',
-                'idPenanggungJawab'  => 'required',
+                'nama'      => 'required|string',
                 'kodeJenisBarang'  => 'required',
+                'spesifikasi'      => 'required',
+                'anggaran'      => 'required',
+                'jumlah'      => 'required',
+                'kodeRuang' => 'required',
+                'estimasiPemakaian'      => 'required',
+                'durasiPemakaian'      => 'required',
+                'tanggalPembelian'      => 'required',
+                'harga'      => 'required',
+                'kodeVendor'      => 'required',
+                'kondisiFisik'      => 'required',
+                'inventarisLama'      => 'required',
+                'inventarisBaru'      => 'nullable',
+                'keterangan'      => 'required',
+                'idPenanggungJawab'  => 'required',
                 'label'      => $id
                                 ? ['nullable', 'string', Rule::unique('aset_barang', 'label')->ignore($id)]
                                 : 'nullable|string|unique:aset_barang,label',
-                'nama'      => 'required|string',
                 'elektronik'      => 'required',
                 'pemeriksaanTerakhir'      => 'required',
             ]);
@@ -184,11 +198,23 @@ class AsetBarangController extends Controller
             $save = AsetBarang::updateOrCreate(
                 ['id' => $id],
                 [
+                    'nama' => $validatedData['nama'],
+                    'kode_jenis_barang' => $kodeJenisBarang,
+                    'spesifikasi' => $validatedData['spesifikasi'],
+                    'anggaran' => $validatedData['anggaran'],
+                    'jumlah' => $validatedData['jumlah'],
                     'kode_ruang' => $kodeRuang,
+                    'estimasi_pemakaian' => $validatedData['estimasiPemakaian'],
+                    'durasi_pemakaian' => $validatedData['durasiPemakaian'],
+                    'tanggal_pembelian' => $validatedData['tanggalPembelian'],
+                    'harga' => $validatedData['harga'],
+                    'kode_vendor' => $validatedData['kodeVendor'],
+                    'kondisi_fisik' => $validatedData['kondisiFisik'],
+                    'inventaris_lama' => $validatedData['inventarisLama'],
+                    'inventaris_baru' => $validatedData['inventarisBaru'],
+                    'keterangan' => $validatedData['keterangan'],
                     'id_penanggung_jawab' => $validatedData['idPenanggungJawab'],
                     'label' => $label,
-                    'kode_jenis_barang' => $kodeJenisBarang,
-                    'nama' => $validatedData['nama'],
                     'elektronik' => $validatedData['elektronik'],
                     'pemeriksaan_terakhir' => $validatedData['pemeriksaanTerakhir']
                 ]
@@ -222,6 +248,10 @@ class AsetBarangController extends Controller
     public function edit(string $id)
     {
         $data = AsetBarang::where("id", $id)->first();
+
+        $data->tanggal_pembelian = \Carbon\Carbon::parse($data->tanggal_pembelian)->format('Y-m-d');
+        $data->pemeriksaan_terakhir = \Carbon\Carbon::parse($data->pemeriksaan_terakhir)->format('Y-m-d');
+
 
         if ($data) {
             return response()->json($data); // Kembalikan objek KategoriAset langsung

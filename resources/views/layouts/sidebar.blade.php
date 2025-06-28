@@ -58,6 +58,7 @@
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
                             <li><a href="{{URL::to('admin/masterdata/aset/kategori-aset')}}">Kategori</a></li>
+                            <li><a href="{{URL::to('admin/masterdata/aset/vendor')}}">Vendor</a></li>
                             {{-- <li><a href="#">Unit Kerja <label class="badge badge-light-danger">!</label></a></li> --}}
                             {{-- <li><a href="{{URL::to('admin/masterdata/aset/aset-label')}}">Label</a></li> --}}
                             <li><a href="{{URL::to('admin/masterdata/aset/jenis-ruang')}}">Jenis Ruang</a></li>
