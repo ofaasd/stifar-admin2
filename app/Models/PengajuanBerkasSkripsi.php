@@ -12,7 +12,7 @@ class PengajuanBerkasSkripsi extends Model
     protected $table = 'berkas_pengajuan_skripsi';
 
     protected $fillable = [
-        'nim' ,'nama_file','kategori','status',
+        'id_master' ,'nama_file','kategori','status',
         'created_at', 'updated_at'
     ];
 }

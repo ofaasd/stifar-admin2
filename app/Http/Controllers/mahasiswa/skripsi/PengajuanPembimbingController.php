@@ -55,13 +55,13 @@ class PengajuanPembimbingController extends Controller
 
 
             // Simpan pembimbing
-            MasterSkripsi::insert(                [
-                    'nim' => $nim,
-                    'pembimbing_1' => $request->pembimbing1,
-                    'pembimbing_2' => $request->pembimbing2,
-                    'status' => 0,
-                    'created_at' => now(),
-                    'updated_at' => now()
+            $master = MasterSkripsi::create([
+                'nim'           => $nim,
+                'pembimbing_1'  => $request->pembimbing1,
+                'pembimbing_2'  => $request->pembimbing2,
+                'status'        => 0,
+                'created_at'    => now(),
+                'updated_at'    => now(),
             ]);
     
             Log::info('Pembimbing skripsi berhasil disimpan', [
@@ -91,10 +91,9 @@ class PengajuanPembimbingController extends Controller
             // Simpan ke tabel pengajuan berkas
             foreach ($filePaths as $kategori => $path) {
                 $insert = PengajuanBerkasSkripsi::create([
-                    'nim' => $nim,
+                    'id_master' => $master->id,
                     'nama_file' => $path,
                     'kategori' => strtoupper($kategori),
-                    'status' => 1,
                     'created_at' => now(),
                     'updated_at' => now()
                 ]);

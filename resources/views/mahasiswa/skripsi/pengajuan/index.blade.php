@@ -11,12 +11,11 @@
 @endsection
 
 @section('breadcrumb-title')
-    <h3>{{ 'Daftar Dosen Pembimbing' }}</h3>
 @endsection
 
 @section('breadcrumb-items')
-    <li class="breadcrumb-item">Master Data</li>
-    <li class="breadcrumb-item active">{{ 'Daftar Dosen Pembimbing' }}</li>
+    <li class="breadcrumb-item">Skripsi</li>
+    <li class="breadcrumb-item active">{{ 'Pengajuan' }}</li>
 @endsection
 
 @section('content')
@@ -55,6 +54,7 @@
                     <h5 class="mb-0">Riwayat Pengajuan Dosen Pembimbing</h5>
                 </div>
                 <div class="card-body">
+                    @if($dataDosbim)
                     <div class="table-responsive">
                         <table class="table table-hover">
                             <thead>
@@ -70,11 +70,28 @@
                                 <tr>
                                     <td>15 Oktober 2023</td>
                                     <td>
-                                        <strong>Pembimbing 1:</strong> Dr. Budi Rahardjo<br>
-                                        <strong>Pembimbing 2:</strong> Dr. Siti Aminah
+                                        <strong>Pembimbing 1:</strong> {{ $dataDosbim->nama_pembimbing1 }}<br>
+                                        <strong>Pembimbing 2:</strong> {{ $dataDosbim->nama_pembimbing2 }}
                                     </td>
-                                    <td><span class="badge bg-success">Disetujui</span></td>
-                                    <td>Pengajuan disetujui koordinator</td>
+                                    <td>
+                                        @if ($dataDosbim->status == 0)
+                                            <span class="badge bg-warning">Menunggu</span>
+                                        @elseif ($dataDosbim->status == 1 || $dataDosbim->status == 2)
+                                            <span class="badge bg-success">Disetujui</span>
+                                        @else
+                                            <span class="badge bg-secondary">Tidak Diketahui</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($dataDosbim->status == 0)
+                                            Menunggu persetujuan koordinator
+                                        @elseif ($dataDosbim->status == 1 || $dataDosbim->status == 2)
+                                            Pengajuan disetujui koordinator
+                                        @else
+                                            Status tidak diketahui
+                                        @endif
+                                    </td>
+                                    
                                     <td>
                                         <button class="btn btn-sm btn-outline-primary" onclick="lihatDetail('dosbim1')">
                                             <i class="bi bi-eye"></i> Detail
@@ -84,6 +101,12 @@
                             </tbody>
                         </table>
                     </div>
+                    @else
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Belum ada pengajuan Pembimbing. Silahkan Ajukan Pembimbing terlebih dahulu.
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -95,6 +118,7 @@
                     <h5 class="mb-0">Riwayat Pengajuan Judul</h5>
                 </div>
                 <div class="card-body">
+                    @if($dataJudul)
                     <div class="table-responsive">
                         <table class="table table-hover">
                             <thead>
@@ -110,8 +134,18 @@
                                 <tr>
                                     <td>22 Oktober 2023</td>
                                     <td>Sistem Manajemen Inventory Berbasis Web dengan Teknologi Machine Learning</td>
-                                    <td><span class="badge bg-success">Disetujui</span></td>
-                                    <td>Judul sudah sesuai dengan bidang keahlian pembimbing</td>
+                                    <td>
+                                        @if ($dataJudul->status == 0)
+                                        <span class="badge bg-primary">Menunggu</span>
+                                    @elseif ($dataJudul->status == 1 )
+                                        <span class="badge bg-success">Disetujui</span>
+                                    @elseif ($dataJudul->status == 2 )
+                                        <span class="badge bg-warning">Revisi</span>
+                                    @else
+                                        <span class="badge bg-secondary">Tidak Diketahui</span>
+                                    @endif
+                                    </td>
+                                    <td>{{ $dataJudul->catatan ?? '-'  }}</td>
                                     <td>
                                         <button class="btn btn-sm btn-outline-primary" onclick="lihatDetail('judul1')">
                                             <i class="bi bi-eye"></i> Detail
@@ -121,6 +155,12 @@
                             </tbody>
                         </table>
                     </div>
+                    @else
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Belum ada pengajuan Judul. Selesaikan Pengajuan Pembimbing terlebih dahulu.
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>
