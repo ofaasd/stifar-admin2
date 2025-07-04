@@ -16,14 +16,11 @@ class BimbinganSkripsiController extends Controller
 {
     public function index()
     {
-            $user = Auth::user();
-            $email = $user->email;
-            $nim = explode('@', $email)[0];
-
+         
             // Ambil data skripsi mahasiswa
-            $skripsi = Skripsi::where('nim', $nim)->first();
+            $idMaster = SkripsiHelper::getIdMasterSkripsi();
             
-            if (!$skripsi) {
+            if (!$idMaster) {
                 return view('mahasiswa.skripsi.bimbingan.main', [
                     'bimbingan' => collect(),
                     'message' => 'Anda belum terdaftar dalam sistem skripsi.'
@@ -31,19 +28,15 @@ class BimbinganSkripsiController extends Controller
             }
 
             // Ambil semua data bimbingan mahasiswa dengan relasi
-            $bimbingan = BimbinganSkripsi::with([
-                'berkas',
-                'skripsi:id,nim,judul'
-            ])
-            ->where('skripsi_id', $skripsi->id)
+            $bimbingan = BimbinganSkripsi::where('id_master', $idMaster)
             ->orderBy('tanggal_waktu', 'desc')
             ->get();
 
             // Format data untuk tampilan
             $bimbingan = $bimbingan->map(function ($item) {
                 // Parse waktu jika tersimpan dalam format tertentu
-                if ($item->tanggal_waktu) {
-                    $datetime = \Carbon\Carbon::parse($item->tanggal_waktu);
+                if ($item->created_at) {
+                    $datetime = \Carbon\Carbon::parse($item->created_at);
                     $item->tanggal_formatted = $datetime->format('d F Y');
                     $item->waktu_formatted = $datetime->format('H:i');
                 }
@@ -68,8 +61,7 @@ class BimbinganSkripsiController extends Controller
                 
                 return $item;
             });
-
-            return view('mahasiswa.skripsi.bimbingan.main', compact('bimbingan', 'skripsi'));
+            return view('mahasiswa.skripsi.bimbingan.main', compact('bimbingan'));
       
     }
 
