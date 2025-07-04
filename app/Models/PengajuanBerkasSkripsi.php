@@ -5,15 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PembimbingSkripsi extends Model
+class PengajuanBerkasSkripsi extends Model
 {
     use HasFactory;
 
-    protected $table = 'pembimbing_skripsi';
+    protected $table = 'berkas_pengajuan_skripsi';
 
     protected $fillable = [
-        'nim', 'nip','peran','status_persetujuan','catatan',
+        'nim' ,'nama_file','kategori','status',
         'created_at', 'updated_at'
     ];
-
 }

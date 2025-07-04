@@ -97,6 +97,9 @@ use App\Http\Controllers\mahasiswa\KuesionerMhsController;
 use App\Http\Controllers\dosen\skripsi\SkripsiController;
 use App\Http\Controllers\dosen\skripsi\PembimbingController;
 use App\Http\Controllers\dosen\skripsi\SidangController;
+use App\Http\Controllers\mahasiswa\skripsi\PengajuanController;
+use App\Http\Controllers\mahasiswa\skripsi\PengajuanPembimbingController;
+use App\Http\Controllers\mahasiswa\skripsi\PengajuanSkripsiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -424,6 +427,17 @@ Route::group(['middleware' => ['auth', 'role:mhs|super-admin']], function () {
     Route::get('mhs/cetak_khs', [KhsController::class, 'cetak_khs'])->name('cetak_khs');
     Route::get('mhs/cetak_khs/{nim}', [KhsController::class, 'cetak_khs'])->name('cetak_khs');
 
+    Route::group(['prefix' => 'mahasiswa/skripsi/pengajuan', 'as' => 'mhs.pengajuan.', 'controller' => PengajuanController::class], function () {
+        Route::get('/', 'index')->name('index');
+    });
+    Route::group(['prefix' => 'mahasiswa/skripsi/pengajuan/pembimbing', 'as' => 'mhs.pengajuan.pembimbing.', 'controller' => PengajuanPembimbingController::class], function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/store', 'store')->name('store');
+    });
+    Route::group(['prefix' => 'mahasiswa/skripsi/pengajuan/judul', 'as' => 'mhs.pengajuan.judul.', 'controller' => PengajuanSkripsiController::class], function () {
+        Route::get('/', 'index')->name('index');
+        // Route::post('/store', 'store')->name('store');
+    });
     Route::group(['prefix' => 'mahasiswa/skripsi/pembimbing', 'as' => 'mhs.pembimbing.', 'controller' => PembimbingController1::class], function () {
         Route::get('/', 'index')->name('index');
         Route::get('/list-dosen', 'getDaftarPembimbing')->name('getDaftarPembimbing');
