@@ -11,7 +11,7 @@ class BimbinganSkripsi extends Model
     protected $table = 'bimbingan_skripsi';
 
     protected $fillable = [
-        'skripsi_id', 'nip', 'tanggal_waktu', 'tempat', 'topik',
+        'id_master', 'tanggal_waktu', 'tempat', 'topik',
         'status', 'catatan_mahasiswa', 'catatan_dosen', 'metode',
         'created_at', 'updated_at'
     ];
