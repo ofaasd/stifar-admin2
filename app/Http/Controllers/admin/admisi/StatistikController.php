@@ -22,11 +22,24 @@ class StatistikController extends Controller
         $nama_gel = [];
         $list_jurusan = [];
         $list_peserta_jurusan = [];
+        $list_agama = [];
         $program_studi = Prodi::all();
+        $agama = [
+            1 => "islam",
+            2 => "kristen", 
+            3 => "katolik", 
+            4 => "hindu", 
+            5 => "budha", 
+            6 => "konghucu", 
+        ];
+        
         foreach($gelombang as $row){
             $laki_laki[$row->id] = PmbPesertaOnline::where('gelombang',$row->id)->where('jk',1)->count();
             $perempuan[$row->id] = PmbPesertaOnline::where('gelombang',$row->id)->where('jk',2)->count();
             $nama_gel[$row->id] = $row->nama_gel;
+            foreach($agama as $key => $value){
+                $list_agama[$key][$row->id] = PmbPesertaOnline::where('agama',$key)->where('gelombang',$row->id)->count();
+            }
             foreach($program_studi as $program){
                 $list_jurusan[$program->id][$row->id] = PmbPesertaOnline::where('gelombang',$row->id)->where('pilihan1',$program->id)->count();
             }
@@ -35,6 +48,10 @@ class StatistikController extends Controller
         foreach($program_studi as $program){
             $list_jurusan[$program->id] = implode("\",\"",$list_jurusan[$program->id]);
             $list_jurusan[$program->id] =  "\"" . $list_jurusan[$program->id] . "\"";
+        }
+        foreach($agama as $key => $value){
+            $list_agama[$key] = implode("\",\"",$list_agama[$key]);
+            $list_agama[$key] =  "\"" . $list_agama[$key] . "\"";
         }
         $title = "Statistik Admisi";
         $laki_laki = implode("\",\"",$laki_laki);
@@ -59,6 +76,6 @@ class StatistikController extends Controller
         $list_tahun = "\"" . $list_tahun . "\"";
         $jumlah_pertahun = "\"" . $jumlah_pertahun . "\"";
 
-        return view('admin.admisi.statistik.index', compact('laki_laki','perempuan','nama_gel','title','curr_gelombang','list_tahun','jumlah_pertahun','list_jurusan','program_studi'));
+        return view('admin.admisi.statistik.index', compact('agama','list_agama','laki_laki','perempuan','nama_gel','title','curr_gelombang','list_tahun','jumlah_pertahun','list_jurusan','program_studi'));
     }
 }

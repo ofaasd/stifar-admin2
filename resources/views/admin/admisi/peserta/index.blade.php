@@ -35,8 +35,9 @@
                                     <div class="row">
                                         <div class="col-4">
                                             <select name="ta_awal" id="ta_awal" class="form-control">
-                                                @for($i=$ta_min;$i<=$ta_max;$i++)
-                                                <option value="{{$i}}" {{($i == $curr_ta)?"selected":""}}>TA {{$i}} - {{($i+1)}}</option>
+                                                @for($i=$ta_max;$i>=$ta_min;$i--)
+                                                {{-- <option value="{{$i}}" {{($i == $curr_ta)?"selected":""}}>TA {{$i}} - {{($i+1)}}</option> --}}
+                                                <option value="{{$i}}">TA {{$i}} - {{($i+1)}}</option>
                                                 @endfor
                                             </select>
                                         </div>
