@@ -57,7 +57,7 @@
                                 </div>
                               </div>
                             </div>
-                          </div>
+                        </div>
                       </div>
                       <div class="col-xxl-12 col-lg-12 box-col-12">
                         <div class="card">
