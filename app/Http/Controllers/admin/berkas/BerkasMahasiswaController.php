@@ -18,16 +18,25 @@ class BerkasMahasiswaController extends Controller
     public function index()
     {
         $title = "Berkas Mahasiswa";
-        $mhs = Mahasiswa::select('mahasiswa.*', 'mahasiswa_berkas_pendukung.*', 'mahasiswa.nim as nimMahasiswa')
-        ->leftJoin('mahasiswa_berkas_pendukung', 'mahasiswa_berkas_pendukung.nim', '=', 'mahasiswa.nim')
-        ->get()
-        ->map(function ($item) {
-            $item->nimEnkripsi = Crypt::encryptString($item->nimMahasiswa . "stifar");
+        $ta = TahunAjaran::where("status", "Aktif")->first();
+
+        $berkas = BerkasPendukungMahasiswa::where('id_ta', $ta->id)->get()->keyBy('nim');
+        $mhs = Mahasiswa::select('mahasiswa.*', 'mahasiswa.nim as nimMahasiswa')->get()->map(function ($item) use ($berkas) {
+            $item->nimMahasiswa = $item->nim;
+            $item->nimEnkripsi = Crypt::encryptString($item->nim . "stifar");
+
+            $berkasItem = $berkas[$item->nim] ?? null;
+            $item->kk = $berkasItem->kk ?? null;
+            $item->ktp = $berkasItem->ktp ?? null;
+            $item->akte = $berkasItem->akte ?? null;
+            $item->ijazah_depan = $berkasItem->ijazah_depan ?? null;
+            $item->ijazah_belakang = $berkasItem->ijazah_belakang ?? null;
+
             return $item;
         });
 
         $fake_id = 0;
-        return view('admin.berkas.mahasiswa.index', compact('title', 'mhs', 'fake_id'));
+        return view('admin.berkas.mahasiswa.index', compact('title', 'mhs', 'fake_id', 'berkas'));
     }
 
     /**
@@ -49,7 +58,6 @@ class BerkasMahasiswaController extends Controller
             'foto_akte' => 'akte',
             'foto_ijazah_depan' => 'ijazah_depan',
             'foto_ijazah_belakang' => 'ijazah_belakang',
-            'foto_sistem' => 'foto_sistem',
         ];
 
         $validatedData = $request->validate(array_fill_keys(array_keys($fields), 'mimes:jpg,jpeg|max:5012'));

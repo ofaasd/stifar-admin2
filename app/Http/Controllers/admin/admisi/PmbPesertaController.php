@@ -26,15 +26,15 @@ class PmbPesertaController extends Controller
     {
         //
 
-        $ta_min = PmbGelombang::selectRaw('min(ta_awal) as ta_min')->limit(1)->first()->ta_min;
+        $ta_min = PmbGelombang::selectRaw('max(ta_awal) as ta_min')->limit(1)->first()->ta_min;
         $curr_ta = $ta_min;
         if($id_gelombang == 0){
-            $curr_gelombang = PmbGelombang::where('ta_awal',$ta_min)->limit(1)->first();
+            $curr_gelombang = PmbGelombang::where('ta_awal',$ta_min)->orderBy('id','desc')->limit(1)->first();
             $id_gelombang = $curr_gelombang->id;
-            $gelombang = PmbGelombang::where('ta_awal',$ta_min)->get();
+            $gelombang = PmbGelombang::where('ta_awal',$ta_min)->orderBy('id','desc')->get();
         }else{
             $curr_ta = PmbGelombang::where('id',$id_gelombang)->first()->ta_awal;
-            $gelombang = PmbGelombang::where('ta_awal',$curr_ta)->get();
+            $gelombang = PmbGelombang::where('ta_awal',$curr_ta)->orderBy('id','desc')->get();
             $request->session()->put('gelombang', $id_gelombang);
         }
 
@@ -291,7 +291,7 @@ class PmbPesertaController extends Controller
         $kecamatan = [];
         if($peserta->kecamatan != 0 && !empty($peserta->kecamatan)){
             $kecamatan = Wilayah::where('id_induk_wilayah', $peserta->kotakab)->get();
-        }
+        }    
         return view('admin.admisi.peserta.edit', compact('title','wilayah','peserta','kota','kecamatan','id','action'));
     }
 

@@ -65,7 +65,7 @@
             top: 1.9cm;
             left: 0.29cm;
             width: 1.80cm;
-            height: 2.29cm;
+            height: 2.2cm;
             background: rgba(255, 255, 255, 0.1);
             border: 2px dashed transparent;
             border-radius: 6px;
@@ -212,9 +212,7 @@
         <div class="id-card id-card-front">
             <img src="assets/images/mahasiswa/template-ktm/depan.jpg" style="width: 8.56cm; height: 5.398cm;" />
             <div class="photo-area">
-                <img id="photo-preview" class="photo-preview"
-                    src="{{ asset('assets/file/berkas/mahasiswa/sistem/' . $data->fotoSistem) }}}}"
-                    >
+                <img src="file://{{ public_path('assets/images/mahasiswa/' . $data->fotoMahasiswa) }}">
             </div>
             
             <p class="form-field nama-field">{{ $data->nama }}</p>

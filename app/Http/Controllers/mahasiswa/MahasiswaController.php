@@ -96,13 +96,13 @@ class MahasiswaController extends Controller
         $ta = TahunAjaran::where("status", "Aktif")->first();
         $mahasiswa = Mahasiswa::select(
             'mahasiswa.*',
+            'mahasiswa.foto_mhs AS fotoMahasiswa',
             'pegawai_biodata.nama_lengkap as dosenWali',
             'mahasiswa_berkas_pendukung.kk AS foto_kk',
             'mahasiswa_berkas_pendukung.ktp AS foto_ktp',
             'mahasiswa_berkas_pendukung.akte AS foto_akte',
             'mahasiswa_berkas_pendukung.ijazah_depan AS foto_ijazah_depan',
             'mahasiswa_berkas_pendukung.ijazah_belakang AS foto_ijazah_belakang',
-            'mahasiswa_berkas_pendukung.foto_sistem',
             )
         ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'mahasiswa.id_dsn_wali')
         ->leftJoin('mahasiswa_berkas_pendukung', function($join) use ($ta) {
@@ -579,18 +579,19 @@ class MahasiswaController extends Controller
                 'mahasiswa.tgl_lahir AS tanggalLahir',
                 'mahasiswa.alamat',
                 'mahasiswa.angkatan',
+                'mahasiswa.foto_mhs AS fotoMahasiswa',
                 'mahasiswa.created_at AS createdAt',
-                'mahasiswa_berkas_pendukung.foto_sistem AS fotoSistem',
-                'master_program_studi.nama_jurusan AS programStudi'
+                // 'mahasiswa_berkas_pendukung.foto_sistem AS fotoSistem',
+                'program_studi.nama_prodi AS programStudi'
             )
             ->where('mahasiswa.nim', $nim)
             ->leftJoin('mahasiswa_berkas_pendukung', 'mahasiswa_berkas_pendukung.nim', '=', 'mahasiswa.nim')
-            ->leftJoin('master_program_studi', 'master_program_studi.id', '=', 'mahasiswa.id_program_studi')
+            ->leftJoin('program_studi', 'program_studi.id', '=', 'mahasiswa.id_program_studi')
             ->first();
 
-        if(!$mahasiswa->fotoSistem)
+        if(!$mahasiswa->fotoMahasiswa)
         {
-            return response()->json(['message' => 'Foto tidak ditemukan, silahkan update herregistrasi terlebih dahulu']);
+            return response()->json(['message' => 'Foto tidak ditemukan, silahkan update foto profil.']);
         }
 
         // Kirim data ke view

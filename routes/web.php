@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\admin\MkKurikulum;
 use App\Http\Controllers\dosen\KrmController;
+use App\Http\Controllers\admin\RoleController;
 use App\Http\Controllers\admin\SesiController;
 use App\Http\Controllers\admin\NilaiController;
 use App\Http\Controllers\admin\ProdiController;
@@ -101,6 +102,7 @@ use App\Http\Controllers\admin\aset\AsetTanahController;
 use App\Http\Controllers\admin\aset\CetakLabelController;
 use App\Http\Controllers\admin\master\JenisBarangController;
 use App\Http\Controllers\admin\master\MerkKendaraanController;
+use App\Http\Controllers\admin\master\VendorController;
 use App\Http\Controllers\mahasiswa\UjianController;
 use App\Http\Controllers\mahasiswa\skripsi\BimbinganSkripsiController;
 use App\Http\Controllers\mahasiswa\skripsi\BerkasSkripsiController;
@@ -132,7 +134,7 @@ Route::get('/register_mahasiswa', [LoginController::class, 'register_mahasiswa']
 Route::post('/actionRegister', [LoginController::class, 'actionRegister'])->name('actionRegister');
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 
-Route::group(['middleware' => ['auth', 'role:super-admin']], function () {
+Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], function () {
     // route dosen
     Route::get('/dosen/perwalian', [DosenController::class, 'index'])->name('Perwalian');
     Route::get('/dosen/{id}/krs', [DosenController::class, 'detailKRS'])->name('detailKRS');
@@ -270,6 +272,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin']], function () {
     // Route::resource('admin/masterdata/aset/gedung', GedungController::class)->name('index', 'gedung');
     Route::resource('admin/masterdata/aset/jenis-kendaraan', JenisKendaaranController::class)->name('index', 'jenis-kendaraan');
     Route::resource('admin/masterdata/aset/merk-kendaraan', MerkKendaraanController::class)->name('index', 'merk-kendaraan');
+    Route::resource('admin/masterdata/aset/vendor', VendorController::class)->name('index', 'vendor');
 
     // route MahasiswaModel
     Route::resource('/mahasiswa/prestasi', PrestasiController::class)->name('index', 'mahasiswa');
@@ -421,6 +424,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin']], function () {
     Route::resource('riwayat', RiwayatPegawaiController::class)->name('index', 'pegawai');
 
     Route::resource('admin/nilai_lama', NilaiLamaController::class)->name('index', 'nilai_lama');
+    Route::resource('admin/role', RoleController::class)->name('index', 'role');
 
 
     Route::group(['prefix' => 'admin/skripsi/pembimbing', 'as' => 'admin.pembimbing.', 'controller' => DosenPembimbingController::class], function () {

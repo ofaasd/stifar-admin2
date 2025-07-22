@@ -42,7 +42,7 @@
                     <div class="profile-title">
                       <div class="media">
                           <div class="photo-profile">
-                              <img class="img-70 rounded-circle" alt="" src="{{ (!empty($mahasiswa->foto_sistem))?asset('assets/file/berkas/mahasiswa/sistem/' . $mahasiswa->foto_sistem):asset('assets/images/user/7.jpg') }}">
+                              <img class="img-70 rounded-circle" alt="" src="{{ (!empty($mahasiswa->foto_mhs))?asset('assets/images/mahasiswa/' . $mahasiswa->foto_mhs):asset('assets/images/user/7.jpg') }}">
                           </div>
                         <div class="media-body">
                           <h5 class="mb-1">{{$mahasiswa->nama}}</h5>
@@ -80,10 +80,10 @@
                               <a href="#" class="btn btn-primary btn-block" data-bs-toggle="modal" data-original-title="test" data-bs-target="#ubahPasswordModal"><i class="fa fa-key"></i> Ubah Password</a>
                               @include('mahasiswa._form_ubah_password_user')
                           </div>
-                          {{-- <div class="col-md-12 mb-4">
+                          <div class="col-md-12 mb-4">
                               <a href="#" class="btn btn-primary btn-block" data-bs-toggle="modal" data-original-title="test" data-bs-target="#ubahFotoModal"><i class="fa fa-image"></i> Ubah Foto</a>
                               @include('mahasiswa._form_ubah_gambar ')
-                          </div> --}}
+                          </div>
                       </div>
                   </div>
               </div>

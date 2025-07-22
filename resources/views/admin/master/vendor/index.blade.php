@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Basic DataTables')
+@section('title', 'Aset Vendor')
 
 @section('css')
 
@@ -11,12 +11,12 @@
 @endsection
 
 @section('breadcrumb-title')
-    <h3>{{$title}}</h3>
+    <h3>{{$title2}}</h3>
 @endsection
 
 @section('breadcrumb-items')
-    <li class="breadcrumb-item">Admisi</li>
-    <li class="breadcrumb-item active">Peserta</li>
+    <li class="breadcrumb-item">Master</li>
+    <li class="breadcrumb-item active">Vendor</li>
 @endsection
 
 @section('content')
@@ -25,34 +25,38 @@
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
                 <div class="card">
-                    <div class="card-header pb-0">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <a href="{{URL::to('admin/admisi/peserta/create')}}" class="btn btn-primary mb-4" >+ {{$title}}</a>
-                            </div>
-                            <div class="col-md-6">
-                                <form action="{{URL::to('admin/admisi/peserta')}}" method="get">
-                                    <div class="row">
-                                        <div class="col-4">
-                                            <select name="ta_awal" id="ta_awal" class="form-control">
-                                                @for($i=$ta_max;$i>=$ta_min;$i--)
-                                                {{-- <option value="{{$i}}" {{($i == $curr_ta)?"selected":""}}>TA {{$i}} - {{($i+1)}}</option> --}}
-                                                <option value="{{$i}}">TA {{$i}} - {{($i+1)}}</option>
-                                                @endfor
-                                            </select>
+                    <div class="card-header pb-0 card-no-border">
+                        @if(empty($link))
+                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal" id="add-record">+ {{$title2}}</button>
+                        @endif
+                        <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <form action="javascript:void(0)" id="formAdd">
+                                        @csrf
+                                        <input type="hidden" name="id" id="id">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="ModalLabel">Tambah {{$title2}}</h5>
+                                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
-                                        <div class="col-8">
-                                            <select name="filter_gelombang" id="filter_gelombang" class="form-control">
-                                                @foreach($gelombang as $row)
-                                                    <option value="{{$row->id}}" {{($row->id == $id_gelombang)?"selected":""}}>{{$row->nama_gel}}</option>
-                                                @endforeach
-                                            </select>
+                                        <div class="modal-body">
+                                            <div class="mb-3" id="field-kode">
+                                                <label for="kode" class="form-label">Kode</label>
+                                                <input type="text" class="form-control" name="kode" id="kode" placeholder="VDR">
+                                            </div>
+                                            <div class="mb-3" id="field-nama">
+                                                <label for="nama" class="form-label">Nama</label>
+                                                <input type="text" class="form-control" name="nama" id="nama" placeholder="Vendor">
+                                            </div>
                                         </div>
-                                    </div>
-                                </form>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                                            <button class="btn btn-primary" id="btn-submit" type="submit">Simpan</button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
-
                     </div>
                     <div class="card-body">
                         <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
@@ -61,14 +65,9 @@
                                 <thead>
                                     <tr>
                                         <th></th>
-                                        <th>ID</th>
-                                        <th>Nama.</th>
-                                        <th>No. Pendaftaran</th>
-                                        <th>Gelombang</th>
-                                        <th>Pilihan1</th>
-                                        <th>Pilihan2</th>
-                                        <th>TTL</th>
-                                        <th>Tgl. Registrasi</th>
+                                        <th>No</th>
+                                        <th>Kode</th>
+                                        <th>Nama</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -91,10 +90,10 @@
 
     <script>
         $(function () {
-            const id_gelombang = {{$id_gelombang}};
             const baseUrl = {!! json_encode(url('/')) !!};
             const title = "{{strtolower($title)}}";
-            const page = '/'.concat("admin/admisi/").concat(title).concat('/gelombang/',id_gelombang);
+            const title2 = "{{ $title2 }}";
+            const page = '/'.concat("admin/masterdata/aset/").concat(title);
             var my_column = $('#my_column').val();
             const pecah = my_column.split('\n');
             let my_data = [];
@@ -104,9 +103,8 @@
                 //alert(data_obj.data);
                 my_data.push(data_obj);
             });
-
             //alert(data_obj);
-            console.log(my_data);
+            // console.log(baseUrl.concat(page));
 
             const dt = $("#basic-1").DataTable({
                 processing: true,
@@ -132,7 +130,7 @@
                     orderable: false,
                     targets: 1,
                     render: function render(data, type, full, meta) {
-                        return '<span>'.concat(full.fake_id, '</span>');
+                        return '<span>'.concat(full['fake_id'], '</span>');
                     }
                     },
                     {
@@ -142,19 +140,20 @@
                     searchable: false,
                     orderable: false,
                     render: function render(data, type, full, meta) {
-                        return (
-                        '<div class="btn-group">' +
-                        '<a href="'+baseUrl+'/admin/admisi/peserta/'+full['id']+'/edit" class="btn btn-sm btn-primary"'
-                            .concat(title, '"><i class="fa fa-pencil"></i></a>') +
-                        '<button class="btn btn-sm delete-record btn-danger" data-id="'.concat(
-                            full['id'],
-                            '"><i class="fa fa-trash"></i></button>'
-                        )
-                        );
+                            return (
+                            '<div class="d-inline-block text-nowrap">' +
+                            '<button class="btn btn-sm btn-icon edit-record text-primary" data-id="'
+                                .concat(full['id'], '" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal"')
+                                .concat(title, '"><i class="fa fa-pencil"></i></button>') +
+                            '<button class="btn btn-sm btn-icon delete-record text-primary" data-id="'.concat(
+                                full['id'],
+                                '"><i class="fa fa-trash"></i></button>'
+                            )
+                            );
                     }
                     }
                 ],
-                order: [[8, 'desc']],
+                order: [[2, 'desc']],
                 dom:
                     '<"row mx-2"' +
                     '<"col-md-2"<"me-3"l>>' +
@@ -170,37 +169,53 @@
                     searchPlaceholder: 'Search..'
                 },
             });
+
             $('#tambahModal').on('hidden.bs.modal', function () {
                 $('#formAdd').trigger("reset");
             });
             //Edit Record
+            $(document).on('click', '#add-record', function () {
+                $('#ModalLabel').html('Tambah ' + title2);
+                $("#id").val('');
+                $('#formAdd').trigger("reset");
+            });
             $(document).on('click', '.edit-record', function () {
                 const id = $(this).data('id');
 
                 // changing the title of offcanvas
-                $('#ModalLabel').html('Edit ' + title);
+                $('#ModalLabel').html('Edit ' + title2);
+                
+                $('#formAdd').trigger("reset");
 
                 // get data
                 $.get(''.concat(baseUrl).concat(page, '/').concat(id, '/edit'), function (data) {
-                Object.keys(data).forEach(key => {
-                    //console.log(key);
-                    $('#' + key)
-                        .val(data[key])
-                        .trigger('change');
+                    Object.keys(data).forEach(key => {
+                        // console.log(data[key]);
+                        $('#' + key)
+                            .val(data[key])
+                            .trigger('change');
+                    });
                 });
-                });
+
             });
             //save record
             $('#formAdd').on('submit',function(e){
                 e.preventDefault();
+                var btnSubmit = $('#btn-submit');
+                btnSubmit.prop('disabled', true);
+                btnSubmit.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Please Wait...');
+
+                const myFormData = new FormData(document.getElementById('formAdd'));
+                const offCanvasForm = $('#formAdd');
                 $.ajax({
-                    data: $('#formAdd').serialize(),
+                    data: myFormData,
                     url: ''.concat(baseUrl).concat(page),
                     type: 'POST',
+                    processData: false,
+                    contentType: false,
                     success: function success(status) {
                         dt.draw();
                         $("#tambahModal").modal('hide');
-
                         // sweetalert
                         swal({
                         icon: 'success',
@@ -210,20 +225,28 @@
                             confirmButton: 'btn btn-success'
                         }
                         });
+                        btnSubmit.prop('disabled', false);
+                        btnSubmit.text('Simpan');
                     },
                     error: function error(err) {
+                        // console.log('====================================');
+                        // console.log(err);
+                        // console.log('====================================');
                         offCanvasForm.offcanvas('hide');
                         swal({
-                        title: 'Duplicate Entry!',
-                        text: title + ' Not Saved !',
-                        icon: 'error',
-                        customClass: {
-                            confirmButton: 'btn btn-success'
-                        }
+                            title: 'Duplicate Entry!',
+                            text: title + ' Not Saved !',
+                            icon: 'error',
+                            customClass: {
+                                confirmButton: 'btn btn-success'
+                            }
                         });
+                        btnSubmit.prop('disabled', false);
+                        btnSubmit.text('Simpan');
                     }
                 });
             });
+
             //delete record
             $(document).on('click', '.delete-record', function () {
                 const id = $(this).data('id');
@@ -247,7 +270,7 @@
                     // delete the data
                     $.ajax({
                     type: 'DELETE',
-                    url: ''.concat(baseUrl).concat('/admin/admisi/peserta/').concat(id),
+                    url: ''.concat(baseUrl).concat(page, '/').concat(id),
                     data:{
                         'id': id,
                         '_token': '{{ csrf_token() }}',
@@ -256,7 +279,7 @@
                         dt.draw();
                     },
                     error: function error(_error) {
-                        console.log(_error);
+                        // console.log(_error);
                     }
                     });
 
@@ -280,20 +303,6 @@
                     });
                 }
                 });
-            });
-            $("#ta_awal").on('change',function(){
-                const id = $(this).val();
-                const url = ''.concat(baseUrl).concat('/admin/admisi/peserta/get_gelombang_ta');
-                $.post(url,{"_token": "{{ csrf_token() }}",id:id}, (data) => {
-                    $("#filter_gelombang").html('<option value="0">Pilih Gelombang</option>');
-                    data.forEach(function(value) {
-                        $("#filter_gelombang").append(`<option value="${value.id}">${value.nama_gel}</option>`);
-                    });
-                }, "json");
-            });
-            $("#filter_gelombang").on('change',function(){
-                const id = $(this).val();
-                window.location.href = "{{URL::to('admin/admisi/peserta/gelombang')}}/"+id;
             });
         });
 

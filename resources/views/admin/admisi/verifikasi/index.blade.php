@@ -2,7 +2,12 @@
 @section('title', 'Basic DataTables')
 
 @section('css')
-
+<style>
+    .dataTables_wrapper tbody td{
+        font-size: 0.85em; /* Adjust this value (e.g., 14px, small, 85%) */
+        padding: 0.3em 0.5em;
+    }
+</style>
 @endsection
 
 @section('style')
@@ -55,8 +60,8 @@
                     </div>
                     <div class="card-body">
                         <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
-                        <div class="table-responsive">
-                            <table class="display" id="basic-1">
+                        <div class="table-responsive ">
+                            <table class="display dataTables_wrapper" id="basic-1">
                                 <thead>
                                     <tr>
                                         <th></th>
@@ -254,7 +259,7 @@
                     render: function render(data, type, full, meta) {
                         return (
                             
-                            '<div class="btn-group"><a class="btn btn-sm  show-record btn-primary" data-id="'
+                            '<div class="btn-group btn-group-sm"><a class="btn btn-sm  show-record btn-primary" data-id="'
                             .concat(full['id'], '" data-bs-toggle="modal" data-original-title="show" data-bs-target="#showModal"')
                             .concat(title, '"><i class="fa fa-eye"></i></a>'+
                             

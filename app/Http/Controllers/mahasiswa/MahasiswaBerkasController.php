@@ -51,7 +51,6 @@ class MahasiswaBerkasController extends Controller
             'akte' => 'akte',
             'ijazah_depan' => 'ijazah_depan',
             'ijazah_belakang' => 'ijazah_belakang',
-            'foto_sistem' => 'foto_sistem',
         ];
 
         $validatedData = $request->validate(array_fill_keys(array_keys($fields), 'mimes:jpg,jpeg|max:5012'));
