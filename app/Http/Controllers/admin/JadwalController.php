@@ -14,6 +14,7 @@ use App\Models\anggota_mk;
 use App\Models\MataKuliah;
 use App\Models\MasterRuang;
 use App\Models\TahunAjaran;
+use App\Models\PegawaiBiodatum as PegawaiBiodata;
 use Illuminate\Http\Request;
 use App\Models\Waktu as Sesi;
 use App\Models\koordinator_mk;
@@ -22,6 +23,7 @@ use Illuminate\Support\Facades\DB;
 
 use App\Models\MatakuliahKurikulum;
 use App\Http\Controllers\Controller;
+use Auth;
 
 class JadwalController extends Controller
 {
@@ -29,7 +31,21 @@ class JadwalController extends Controller
     {
         $title = "Jadwal";
         $ta = TahunAjaran::where('status','Aktif');
-        $mk[] = MataKuliah::where('status', 'Aktif')->get();
+        
+        //cek apakah admin prodi
+        if(Auth::user()->hasRole('admin-prodi')){
+            $pegawai = PegawaiBiodata::where('user_id',Auth::user()->id)->first();
+            $prodi = Prodi::find($pegawai->id_progdi);
+            $kurikulum = Kurikulum::where('progdi',$prodi->kode_prodi)->get();
+            $mk = [];
+            if($kurikulum){
+                foreach($kurikulum as $row){
+                    $mk[] = MatakuliahKurikulum::select('mata_kuliahs.*')->join('mata_kuliahs','mata_kuliahs.id','=','matakuliah_kurikulums.id_mk')->where('mata_kuliahs.status','Aktif')->where('id_kurikulum',$row->id)->get();
+                }
+            }
+        }else{
+            $mk[] = MataKuliah::where('status', 'Aktif')->get();
+        }
         $no = 1;
         $prodi = Prodi::all();
         $nama = [];

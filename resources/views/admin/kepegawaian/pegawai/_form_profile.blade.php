@@ -84,7 +84,7 @@
                 <select name="homebase" class="form-control">
                     <option value="0">Tidak Ada</option>
                     @foreach($progdi as $pro)
-                        <option value="{{$pro->id}}" {{($pegawai->homebase == $pro->id)?"selected":""}}>{{$pro->nama_prodi}}</option>
+                        <option value="{{$pro->id}}" {{($pegawai->id_progdi == $pro->id)?"selected":""}}>{{$pro->nama_prodi}}</option>
                     @endforeach
                 </select>
             </div>

@@ -58,8 +58,11 @@
                                         {{-- <td>{{($row['nakhir']+$row['ntambahan'])}}</td> --}}
                                         <td>
                                             <div class="d-inline-block text-nowrap">
-                                                <a href="{{URL::to('admin/kepegawaian/pegawai/' . $row->id .'/edit')}}" title="edit Pegawai" id="edit_pegawai" class="btn btn-sm btn-icon edit-record text-primary"><i class="fa fa-pencil"></i></a>
-                                                <button class="btn btn-sm btn-icon delete-record text-danger" data-id="{{$row->id}}"><i class="fa fa-trash"></i></button>
+                                                <div class="btn-group">
+                                                    <a href="{{URL::to('admin/kepegawaian/pegawai/' . $row->id .'/edit')}}" title="edit Pegawai" id="edit_pegawai" class="btn btn-sm btn-icon btn-primary"><i class="fa fa-pencil"></i></a>
+                                                    <button class="btn btn-sm btn-icon delete-record btn-danger" data-id="{{$row->id}}"><i class="fa fa-trash"></i></button>
+                                                </div>
+                                                
                                             </div>
                                         </td>
                                     </tr>
