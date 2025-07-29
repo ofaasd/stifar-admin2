@@ -37,6 +37,7 @@
                                         @endforeach
                                     </select>
                                 </div>
+                                @role('super-admin')
                                 <div class="form-group">
                                     <label for="tahun_ajaran">Program Studi</label>
                                     <select name="prodi"  id="prodi" class="form-control">
@@ -45,6 +46,18 @@
                                         @endforeach
                                     </select>
                                 </div>
+                                @endrole
+                                @role('admin-prodi')
+                                <input type="hidden" name="prodi" id="prodi" value="{{ $curr_prodi }}">
+                                 <div class="form-group">
+                                    <label for="tahun_ajaran">Program Studi</label>
+                                    <select name="angkatan"  id="angkatan" class="form-control">
+                                        @foreach($angkatan as $row)
+                                            <option value="{{ $row['angkatan'] }}">{{ $row['angkatan'] }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                @endrole
                                 <div class="form-group">
                                     <label for="tahun_ajaran">Angkatan</label>
                                     <select name="angkatan"  id="angkatan" class="form-control">

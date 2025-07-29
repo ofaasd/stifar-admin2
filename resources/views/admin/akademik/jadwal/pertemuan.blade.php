@@ -24,6 +24,7 @@
     <div class="container-fluid">
         <div class="row">
             @if(empty($dosen))
+            @role("super-admin")
             <div class="col-md-12 project-list">
                 <div class="card">
                    <div class="row">
@@ -38,6 +39,7 @@
                    </div>
                 </div>
             </div>
+            @endrole
             @endif
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">

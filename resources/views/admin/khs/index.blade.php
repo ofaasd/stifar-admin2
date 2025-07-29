@@ -22,6 +22,7 @@
 @section('content')
     <div class="container-fluid">
         <div class="row">
+            @role('super-admin')
             <div class="col-md-12 project-list">
                 <div class="card">
                    <div class="row">
@@ -36,6 +37,7 @@
                    </div>
                 </div>
              </div>
+            @endrole
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
                 <div class="card">
