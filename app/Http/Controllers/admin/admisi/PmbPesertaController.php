@@ -21,7 +21,7 @@ class PmbPesertaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public $indexed = ['', 'id','nama' , 'nopen', 'gelombang', 'pilihan1','pilihan2','ttl','admin_input_date'];
+    public $indexed = ['', 'id','nama' , 'nopen', 'gelombang', 'pilihan1','pilihan2','ttl','admin_input_date','status'];
     public function index(Request $request,$id_gelombang=0)
     {
         //
@@ -67,6 +67,7 @@ class PmbPesertaController extends Controller
                 6 => 'pilihan2',
                 7 => 'ttl',
                 8 => 'admin_input_date',
+                9 => 'status',
             ];
 
             $search = [];
@@ -124,6 +125,8 @@ class PmbPesertaController extends Controller
                     $nestedData['fake_id'] = ++$ids;
                     $nestedData['nama'] = $row->nama;
                     $nestedData['nopen'] = $row->nopen;
+                    $nestedData['is_bayar'] = $row->is_bayar;
+                    $nestedData['is_lolos'] = $row->is_lolos;
                     $nestedData['gelombang'] = $gel[$row->gelombang];
                     $nestedData['pilihan1'] = $prod[$row->pilihan1] ?? '';
                     $nestedData['pilihan2'] = $prod[$row->pilihan2] ?? '';

@@ -19,7 +19,7 @@ use App\Models\BankDataVa;
 class VerifikasiController extends Controller
 {
     //
-    public $indexed = ['', 'id','nama' , 'nopen', 'gelombang', 'pilihan1','pilihan2','ttl','is_verifikasi', 'no_va'];
+    public $indexed = ['', 'id','nama' , 'nopen', 'gelombang', 'pilihan1','pilihan2','ttl','is_verifikasi', 'no_va','status'];
     public $indexed2 = ['', 'id','nama' , 'nopen', 'gelombang', 'pilihan1','pilihan2','ttl','bukti_bayar','is_bayar'];
     public function index(Request $request,$id_gelombang=0)
     {
@@ -70,6 +70,7 @@ class VerifikasiController extends Controller
                 7 => 'is_verifikasi',
                 8 => 'ttl',
                 9=>'no_va',
+                10=>'status'
             ];
 
             $search = [];
@@ -133,6 +134,8 @@ class VerifikasiController extends Controller
                     $nestedData['gelombang'] = $gel[$row->gelombang];
                     $nestedData['list_gelombang'] = $gel;
                     $nestedData['is_verifikasi'] = $row->is_verifikasi ?? '0';
+                    $nestedData['is_bayar'] = $row->is_bayar;
+                    $nestedData['is_lolos'] = $row->is_lolos;
                     $nestedData['pilihan1'] = $prod[$row->pilihan1] ?? '';
                     $nestedData['pilihan2'] = $prod[$row->pilihan2] ?? '';
                     $nestedData['ttl'] = $row->tempat_lahir . ", " . date('d-m-Y', strtotime($row->tanggal_lahir));

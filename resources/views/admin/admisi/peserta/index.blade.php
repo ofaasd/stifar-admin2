@@ -69,6 +69,7 @@
                                         <th>Pilihan2</th>
                                         <th>TTL</th>
                                         <th>Tgl. Registrasi</th>
+                                        <th>Status</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -133,6 +134,16 @@
                     targets: 1,
                     render: function render(data, type, full, meta) {
                         return '<span>'.concat(full.fake_id, '</span>');
+                    }
+                    },
+                    {
+                    searchable: false,
+                    orderable: false,
+                    targets: 9,
+                    render: function render(data, type, full, meta) {
+                        return '<span>'.concat((full.nopen)?"<button class='btn btn-success btn-xs' style='font-size:9pt'>Sudah Validasi</button>":"<button class='btn btn-danger btn-xs' style='font-size:9pt'>Belum Validasi</button>")
+                        .concat((full.is_bayar)?"<button class='btn btn-success btn-xs' style='font-size:9pt; margin:2px 0;'>Sudah Bayar</button>":"<button class='btn btn-danger btn-xs' style='font-size:9pt;  margin:2px 0;' title='Belum bayar registrasi uang masuk'>Belum Bayar</button>")
+                        .concat((full.is_lolos)?"<button class='btn btn-success btn-xs' style='font-size:9pt'>Sudah Lolos</button>":"<button class='btn btn-danger btn-xs' style='font-size:9pt'>Belum Lolos</button>").concat('</span>');
                     }
                     },
                     {

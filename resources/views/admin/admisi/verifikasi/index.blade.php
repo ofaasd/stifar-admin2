@@ -74,6 +74,7 @@
                                         <th>TTL</th>
                                         <th>Verifikasi</th>
                                         <th>No. VA</th>
+                                        <th>Status</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -240,6 +241,15 @@
                             }
                             //return '<span>asdasdasd</span>';
                         }
+                    },
+                    {
+                    searchable: false,
+                    orderable: false,
+                    targets: 10,
+                    render: function render(data, type, full, meta) {
+                        return '<span>'.concat((full.is_bayar)?"<button class='btn btn-success btn-xs' style='font-size:9pt; margin:2px 0;'>Sudah Bayar</button>":"<button class='btn btn-danger btn-xs' style='font-size:9pt;  margin:2px 0;' title='Belum bayar registrasi uang masuk'>Belum Bayar</button>")
+                        .concat((full.is_lolos)?"<button class='btn btn-success btn-xs' style='font-size:9pt'>Sudah Lolos</button>":"<button class='btn btn-danger btn-xs' style='font-size:9pt'>Belum Lolos</button>").concat('</span>');
+                    }
                     },
                     {
                         searchable: false,
