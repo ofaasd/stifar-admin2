@@ -29,6 +29,10 @@
         <div class="row">
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
+                <div class="alert alert-primary inverse alert-dismissible fade show" role="alert"><i class="icon-help-alt"></i>
+                    <p>Menu verifikasi digunakan untuk memverifikasi no pendaftaran mahasiswa baru untuk dapat dikoneksikan dengan data dari bank data VA yang disediakan oleh bagian keuangan</p>
+                    <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close" data-bs-original-title="" title=""></button>
+                </div>
                 <div class="card">
                     <div class="card-header pb-0">
                         <div class="row">
