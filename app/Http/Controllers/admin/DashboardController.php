@@ -151,6 +151,6 @@ class DashboardController extends Controller
                 $list_jumlah_krs_invalid[$value->angkatan] .= ($total_input - $total_input_valid) . ',';
             }
         }
-        return view('admin.akademik.index_view',compact('prodi','list_jumlah_krs','list_total_mahasiswa','list_jumlah_krs_valid','list_jumlah_krs_invalid','list_prodi','angkatan','pembayaranValidasi'));
+        return view('admin.akademik.index_view',compact('prodi','list_jumlah_krs','list_total_mahasiswa','list_jumlah_krs_valid','list_jumlah_krs_invalid','list_prodi','angkatan'));
     }
 }

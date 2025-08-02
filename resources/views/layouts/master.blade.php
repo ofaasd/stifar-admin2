@@ -69,6 +69,10 @@
         @role('super-admin')
             @include('layouts.sidebar')
         @endrole
+        @role('admin-prodi')
+
+            @include('layouts.sidebar_admin_prodi')
+        @endrole
         @role('pegawai')
             @include('layouts.sidebar_pegawai')
         @endrole

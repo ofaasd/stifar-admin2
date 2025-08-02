@@ -8,6 +8,7 @@ use App\Models\MataKuliah;
 use App\Models\KelompokMataKuliah;
 use App\Models\Rumpun;
 use App\Models\Prodi;
+use Auth;
 
 class MatkulController extends Controller
 {

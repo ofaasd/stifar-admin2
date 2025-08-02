@@ -14,6 +14,7 @@ use App\Models\anggota_mk;
 use App\Models\MataKuliah;
 use App\Models\MasterRuang;
 use App\Models\TahunAjaran;
+use App\Models\PegawaiBiodatum as PegawaiBiodata;
 use Illuminate\Http\Request;
 use App\Models\Waktu as Sesi;
 use App\Models\koordinator_mk;
@@ -22,6 +23,7 @@ use Illuminate\Support\Facades\DB;
 
 use App\Models\MatakuliahKurikulum;
 use App\Http\Controllers\Controller;
+use Auth;
 
 class JadwalController extends Controller
 {
@@ -29,7 +31,21 @@ class JadwalController extends Controller
     {
         $title = "Jadwal";
         $ta = TahunAjaran::where('status','Aktif');
-        $mk[] = MataKuliah::where('status', 'Aktif')->get();
+        
+        //cek apakah admin prodi
+        if(Auth::user()->hasRole('admin-prodi')){
+            $pegawai = PegawaiBiodata::where('user_id',Auth::user()->id)->first();
+            $prodi = Prodi::find($pegawai->id_progdi);
+            $kurikulum = Kurikulum::where('progdi',$prodi->kode_prodi)->get();
+            $mk = [];
+            if($kurikulum){
+                foreach($kurikulum as $row){
+                    $mk[] = MatakuliahKurikulum::select('mata_kuliahs.*')->join('mata_kuliahs','mata_kuliahs.id','=','matakuliah_kurikulums.id_mk')->where('mata_kuliahs.status','Aktif')->where('id_kurikulum',$row->id)->get();
+                }
+            }
+        }else{
+            $mk[] = MataKuliah::where('status', 'Aktif')->get();
+        }
         $no = 1;
         $prodi = Prodi::all();
         $nama = [];
@@ -162,21 +178,49 @@ class JadwalController extends Controller
     public function daftarJadwalHarian(Request $request){
         $id_tahun = TahunAjaran::where('status','Aktif')->first()->id;
         $title = "Jadwal Harian";
-        $mk = MataKuliah::select("mata_kuliahs.*")
-                        ->join('matakuliah_kurikulums','matakuliah_kurikulums.id_mk','=','mata_kuliahs.id')
-                        ->join('kurikulums','kurikulums.id','=','matakuliah_kurikulums.id_kurikulum')
-                        ->where('mata_kuliahs.status', 'Aktif')
-                        ->where('kurikulums.thn_ajar',$id_tahun)
-                        ->get();
 
+        if(Auth::user()->hasRole('admin-prodi')){
+            $pegawai = PegawaiBiodata::where('user_id',Auth::user()->id)->first();
+            $prodi = Prodi::find($pegawai->id_progdi);
 
-        $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
+            $kurikulum = Kurikulum::where('progdi',$prodi->kode_prodi)->get();
+            $list_mk = [];
+            if($kurikulum){
+                foreach($kurikulum as $row){
+                    $mk_kurikulum = MatakuliahKurikulum::select('mata_kuliahs.*')->join('mata_kuliahs','mata_kuliahs.id','=','matakuliah_kurikulums.id_mk')->where('mata_kuliahs.status','Aktif')->where('id_kurikulum',$row->id)->get();
+                    foreach($mk_kurikulum as $mkkurikulum){
+                        $list_mk[] = $mkkurikulum->id;
+                    }
+                }
+            }
+            $mk = MataKuliah::where('status', 'Aktif')->whereIn('id',$list_mk)->get();
+
+            $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
+            ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
+            ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
+            ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
+            ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
+            ->where('jadwals.id_tahun',$id_tahun)
+            ->whereIn('id_mk', $list_mk)
+            ->get();
+        }else{
+
+            $mk = MataKuliah::select("mata_kuliahs.*")
+                            ->join('matakuliah_kurikulums','matakuliah_kurikulums.id_mk','=','mata_kuliahs.id')
+                            ->join('kurikulums','kurikulums.id','=','matakuliah_kurikulums.id_kurikulum')
+                            ->where('mata_kuliahs.status', 'Aktif')
+                            ->where('kurikulums.thn_ajar',$id_tahun)
+                            ->get();
+            $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
                     ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
                     ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
                     ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
                     ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
                     ->where('jadwals.id_tahun',$id_tahun)
                     ->get();
+        }
+
+        
         $pegawai = PegawaiBiodatum::all();
         $list_pegawai = [];
         foreach($pegawai as $row){
@@ -780,7 +824,7 @@ class JadwalController extends Controller
 
     public function settingPertemuan(int $id = 0){
         $id_tahun = TahunAjaran::where('status','Aktif')->first()->id;
-        $title = "Jadwal Harian";
+        $title = "Setting Pertemuan";
         $mk = MataKuliah::where('status', 'Aktif')->get();
         $id_prodi = 0;
         $list_pengajar = [];
@@ -831,35 +875,83 @@ class JadwalController extends Controller
                 $list_pengajar[$row->id] = '';
                 $i = 1;
                 foreach($pengajar as $peng){
-                    $list_pengajar[$jad->id] .= '[' . $i . '] ' . $list_pegawai[$row->id_dsn] . ',<br/>';
+                    $list_pengajar[$row->id] .= '[' . $i . '] ' . $list_pegawai[$peng->id_dsn] . ',<br/>';
                     $i++;
                 }
             }
         }else{
-            $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
-                    ->Join('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
-                    ->Join('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
-                    ->Join('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
-                    ->Join('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
-                    ->where('jadwals.id_tahun',$id_tahun)
-                    ->get();
-            foreach($jadwal as $row){
-                $cek_pertemuan = Pertemuan::where('id_jadwal',$row->id)->whereNotNull('tgl_pertemuan')->count();
-                if($cek_pertemuan >= 14){
-                    $list_pertemuan[$row->id] = 'btn-success';
-                }elseif($cek_pertemuan < 14 && $cek_pertemuan > 0){
-                    $list_pertemuan[$row->id] = 'btn-warning';
-                }else{
-                    $list_pertemuan[$row->id] = 'btn-danger';
+            if(Auth::user()->hasRole('admin-prodi')){
+                $pegawai = PegawaiBiodata::where('user_id',Auth::user()->id)->first();
+                $prodi = Prodi::find($pegawai->id_progdi);
+                $kurikulum = Kurikulum::where('progdi',$prodi->kode_prodi)->get();
+                $list_mk = [];
+                if($kurikulum){
+                foreach($kurikulum as $row){
+                        $mk_kurikulum = MatakuliahKurikulum::select('mata_kuliahs.*')->join('mata_kuliahs','mata_kuliahs.id','=','matakuliah_kurikulums.id_mk')->where('mata_kuliahs.status','Aktif')->where('id_kurikulum',$row->id)->get();
+                        foreach($mk_kurikulum as $mkkurikulum){
+                            $list_mk[] = $mkkurikulum->id;
+                        }
+                    }
                 }
-                $jumlah_pertemuan[$row->id] = $cek_pertemuan;
 
-                $pengajar = Pengajar::where('id_jadwal',$row->id)->get();
-                $list_pengajar[$row->id] = '';
-                $i = 1;
-                foreach($pengajar as $peng){
-                    $list_pengajar[$row->id] .= '[' . $i . '] ' . $list_pegawai[$peng->id_dsn] . ',<br/>';
-                    $i++;
+
+                $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
+                        ->Join('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
+                        ->Join('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
+                        ->Join('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
+                        ->Join('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
+                        ->whereIn('id_mk', $list_mk)
+                        ->where('jadwals.id_tahun',$id_tahun)
+                        ->get();
+                $list_pertemuan = [];
+                $jumlah_pertemuan = [];
+
+                foreach($jadwal as $row){
+                    $cek_pertemuan = Pertemuan::where('id_jadwal',$row->id)->whereNotNull('tgl_pertemuan')->count();
+                    if($cek_pertemuan >= 14){
+                        $list_pertemuan[$row->id] = 'btn-success';
+                    }elseif($cek_pertemuan < 14 && $cek_pertemuan > 0){
+                        $list_pertemuan[$row->id] = 'btn-warning';
+                    }else{
+                        $list_pertemuan[$row->id] = 'btn-danger';
+                    }
+                    $jumlah_pertemuan[$row->id] = $cek_pertemuan;
+
+                    $pengajar = Pengajar::where('id_jadwal',$row->id)->get();
+                    $list_pengajar[$row->id] = '';
+                    $i = 1;
+                    foreach($pengajar as $peng){
+                        $list_pengajar[$row->id] .= '[' . $i . '] ' . $list_pegawai[$peng->id_dsn] . ',<br/>';
+                        $i++;
+                    }
+                }
+                
+            }else{
+                $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
+                        ->Join('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
+                        ->Join('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
+                        ->Join('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
+                        ->Join('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
+                        ->where('jadwals.id_tahun',$id_tahun)
+                        ->get();
+                foreach($jadwal as $row){
+                    $cek_pertemuan = Pertemuan::where('id_jadwal',$row->id)->whereNotNull('tgl_pertemuan')->count();
+                    if($cek_pertemuan >= 14){
+                        $list_pertemuan[$row->id] = 'btn-success';
+                    }elseif($cek_pertemuan < 14 && $cek_pertemuan > 0){
+                        $list_pertemuan[$row->id] = 'btn-warning';
+                    }else{
+                        $list_pertemuan[$row->id] = 'btn-danger';
+                    }
+                    $jumlah_pertemuan[$row->id] = $cek_pertemuan;
+
+                    $pengajar = Pengajar::where('id_jadwal',$row->id)->get();
+                    $list_pengajar[$row->id] = '';
+                    $i = 1;
+                    foreach($pengajar as $peng){
+                        $list_pengajar[$row->id] .= '[' . $i . '] ' . $list_pegawai[$peng->id_dsn] . ',<br/>';
+                        $i++;
+                    }
                 }
             }
         }

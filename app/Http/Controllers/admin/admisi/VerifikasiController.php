@@ -19,7 +19,7 @@ use App\Models\BankDataVa;
 class VerifikasiController extends Controller
 {
     //
-    public $indexed = ['', 'id','nama' , 'nopen', 'gelombang', 'pilihan1','pilihan2','ttl','is_verifikasi', 'no_va'];
+    public $indexed = ['', 'id','nama' , 'nopen', 'gelombang', 'pilihan1','pilihan2','ttl','is_verifikasi', 'no_va','status'];
     public $indexed2 = ['', 'id','nama' , 'nopen', 'gelombang', 'pilihan1','pilihan2','ttl','bukti_bayar','is_bayar'];
     public function index(Request $request,$id_gelombang=0)
     {
@@ -29,12 +29,12 @@ class VerifikasiController extends Controller
         $ta_max = PmbGelombang::selectRaw('max(ta_awal) as ta_max')->limit(1)->first()->ta_max;
         $curr_ta = $ta_max;
         if($id_gelombang == 0){
-            $curr_gelombang = PmbGelombang::where('ta_awal',$curr_ta)->limit(1)->first();
+            $curr_gelombang = PmbGelombang::where('ta_awal',$curr_ta)->orderBy('id','desc')->limit(1)->first();
             $id_gelombang = $curr_gelombang->id;
-            $gelombang = PmbGelombang::where('ta_awal',$curr_ta)->get();
+            $gelombang = PmbGelombang::where('ta_awal',$curr_ta)->orderBy('id','desc')->get();
         }else{
-            $curr_ta = PmbGelombang::where('id',$id_gelombang)->first()->ta_awal;
-            $gelombang = PmbGelombang::where('ta_awal',$curr_ta)->get();
+            $curr_ta = PmbGelombang::where('id',$id_gelombang)->orderBy('id','desc')->first()->ta_awal;
+            $gelombang = PmbGelombang::where('ta_awal',$curr_ta)->orderBy('id','desc')->get();
             $request->session()->put('gelombang', $id_gelombang);
         }
 
@@ -54,7 +54,7 @@ class VerifikasiController extends Controller
             }
 
             $prodi = PmbJalurProdi::select('pmb_jalur_prodi.*','program_studi.nama_prodi')->join('program_studi','program_studi.id','pmb_jalur_prodi.id_program_studi')->get();
-            $prod = [];
+            $prod = []; 
             $all_prodi = Prodi::all();
             foreach($all_prodi as $row){
                 $prod[$row->id] = $row->nama_prodi . " " . $row->keterangan;
@@ -70,6 +70,7 @@ class VerifikasiController extends Controller
                 7 => 'is_verifikasi',
                 8 => 'ttl',
                 9=>'no_va',
+                10=>'status'
             ];
 
             $search = [];
@@ -133,6 +134,8 @@ class VerifikasiController extends Controller
                     $nestedData['gelombang'] = $gel[$row->gelombang];
                     $nestedData['list_gelombang'] = $gel;
                     $nestedData['is_verifikasi'] = $row->is_verifikasi ?? '0';
+                    $nestedData['is_bayar'] = $row->is_bayar;
+                    $nestedData['is_lolos'] = $row->is_lolos;
                     $nestedData['pilihan1'] = $prod[$row->pilihan1] ?? '';
                     $nestedData['pilihan2'] = $prod[$row->pilihan2] ?? '';
                     $nestedData['ttl'] = $row->tempat_lahir . ", " . date('d-m-Y', strtotime($row->tanggal_lahir));

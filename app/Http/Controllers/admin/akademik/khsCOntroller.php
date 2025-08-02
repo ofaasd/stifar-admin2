@@ -17,7 +17,9 @@ use App\Models\Krs;
 use App\Models\Mahasiswa;
 use App\Models\master_nilai;
 use App\Models\MasterKeuanganMh;
+use App\Models\PegawaiBiodatum;
 use Illuminate\Support\Facades\DB;
+use Auth;
 use App\helpers;
 
 class KhsController extends Controller
@@ -41,16 +43,30 @@ class KhsController extends Controller
     public function get_table_khs(Request $request){
       $id = $request->id;
       if($id == 0){
-        $mhs = Mahasiswa::get();
-        $no = 1;
-        $prodi = Prodi::all();
-        $jumlah = [];
-        $nama = [];
-
-        foreach($prodi as $row){
-          $jumlah[$row->id] = Mahasiswa::where('id_program_studi',$row->id)->count();
-          $nama_prodi = explode(' ',$row->nama_prodi);
-          $nama[$row->id] = $nama_prodi[0] . " " . $nama_prodi[1];
+        
+        if(Auth::user()->hasRole('admin-prodi')){
+            $pegawai = PegawaiBiodatum::where('user_id',Auth::user()->id)->first();
+            $mhs = Mahasiswa::where('id_program_studi',$pegawai->id_progdi)->get();
+            $no = 1;
+            $prodi = Prodi::all();
+            $jumlah = [];
+            $nama = [];
+            foreach($prodi as $row){
+            $jumlah[$row->id] = Mahasiswa::where('id_program_studi',$row->id)->count();
+                $nama_prodi = explode(' ',$row->nama_prodi);
+                $nama[$row->id] = $nama_prodi[0] . " " . $nama_prodi[1];
+            }
+        }else{
+            $mhs = Mahasiswa::get();
+            $no = 1;
+            $prodi = Prodi::all();
+            $jumlah = [];
+            $nama = [];
+            foreach($prodi as $row){
+                $jumlah[$row->id] = Mahasiswa::where('id_program_studi',$row->id)->count();
+                $nama_prodi = explode(' ',$row->nama_prodi);
+                $nama[$row->id] = $nama_prodi[0] . " " . $nama_prodi[1];
+            }
         }
         return view('admin.khs.table_khs', compact('mhs', 'no', 'prodi','jumlah','nama'));
       }else{
