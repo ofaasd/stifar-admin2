@@ -169,6 +169,7 @@
 
                         </ul>
                     </li>
+                    <li><a href="{{URL::to('admin/alumni')}}">Alumni</a></li>
                      <li><a href="#">Persuratan <label class="badge badge-light-danger">!</label></a></li>
                      <li>
                         <a class="submenu-title" href="#">
@@ -282,9 +283,8 @@
                 <span><i class="fa fa-users"></i> Perwalian</span></a>
             </li>
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{URL::to('dosen/krm')}}" >
-                <span><i class="fa fa-folder"></i> KRM</span></a> --}}
-            </li>
-
+                <span><i class="fa fa-folder"></i> KRM</span></a> 
+            </li>--}}
 
           </ul>
         </div>
