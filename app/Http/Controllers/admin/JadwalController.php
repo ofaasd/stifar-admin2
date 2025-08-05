@@ -31,7 +31,7 @@ class JadwalController extends Controller
     {
         $title = "Jadwal";
         $ta = TahunAjaran::where('status','Aktif');
-        
+
         //cek apakah admin prodi
         if(Auth::user()->hasRole('admin-prodi')){
             $pegawai = PegawaiBiodata::where('user_id',Auth::user()->id)->first();
@@ -46,6 +46,7 @@ class JadwalController extends Controller
         }else{
             $mk[] = MataKuliah::where('status', 'Aktif')->get();
         }
+        $jumlah_kurikulum = Kurikulum::where('thn_ajar',$ta->first()->id)->count();
         $no = 1;
         $prodi = Prodi::all();
         $nama = [];
@@ -81,7 +82,7 @@ class JadwalController extends Controller
 
         $totalMahasiswa = $angkatan->sum();
 
-        return view('admin.akademik.jadwal.index', compact('title', 'mk', 'no','prodi', 'nama', 'id_prodi' ,'jumlah_anggota', 'angkatan', 'totalMahasiswa'));
+        return view('admin.akademik.jadwal.index', compact('title', 'mk', 'no','prodi', 'nama', 'id_prodi' ,'jumlah_anggota', 'angkatan', 'totalMahasiswa','jumlah_kurikulum'));
     }
     public function jadwal_prodi(String $id){
         $title = "Jadwal";
@@ -220,7 +221,7 @@ class JadwalController extends Controller
                     ->get();
         }
 
-        
+
         $pegawai = PegawaiBiodatum::all();
         $list_pegawai = [];
         foreach($pegawai as $row){
@@ -925,7 +926,7 @@ class JadwalController extends Controller
                         $i++;
                     }
                 }
-                
+
             }else{
                 $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
                         ->Join('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')

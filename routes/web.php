@@ -360,6 +360,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
     // route mkKurikulum
     Route::get('/admin/masterdata/matakuliah-kurikulum', [MkKurikulum::class, 'index']);
     Route::get('/admin/masterdata/matakuliah-kurikulum/get_table', [MkKurikulum::class, 'get_table']);
+    Route::get('/admin/masterdata/matakuliah-kurikulum/copy_mk/{id}', [MkKurikulum::class, 'copy_mk']);
     Route::post('/admin/masterdata/matakuliah-kurikulum/get', [MkKurikulum::class, 'daftarKur']);
     Route::post('/admin/masterdata/matakuliah-kurikulum/save', [MkKurikulum::class, 'simpandaftarKur']);
     Route::post('/admin/masterdata/matakuliah-kurikulum/update', [MkKurikulum::class, 'updateMK']);
@@ -451,7 +452,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
 
     Route::resource('admin/aset/cetak-label', CetakLabelController::class)->name('index', 'aset-cetak-label');
     Route::post('/admin/aset/cetak-label/cetak', [CetakLabelController::class, 'generatePdf'])->name('aset-cetak-label-cetak');
-    
+
 
     Route::resource('admin/nilai_lama', NilaiLamaController::class)->name('index','nilai_lama');
 });

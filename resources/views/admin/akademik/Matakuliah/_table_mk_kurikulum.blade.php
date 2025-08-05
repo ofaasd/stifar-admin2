@@ -14,6 +14,9 @@
         </tr>
     </thead>
     <tbody>
+        @if($list_mk->count() == 0)
+            <a href="{{url('admin/masterdata/matakuliah-kurikulum/copy_mk/' . $id_kur)}}" class="btn btn-success"><i class="fa fa-copy"></i> Copy Matakuliah TA Sebelumnya</a>
+        @endif
         @foreach($list_mk as $mk)
             <tr>
                 <td>{{ $no++ }}</td>
