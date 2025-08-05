@@ -92,6 +92,7 @@ use App\Http\Controllers\admin\akademik\SoalKuesionerController;
 use App\Http\Controllers\admin\akademik\NilaiKuesionerController;
 use App\Http\Controllers\admin\akademik\KhsController as adminKhs;
 use App\Http\Controllers\admin\akademik\NilaiSusulanController;
+use App\Http\Controllers\admin\AlumniController;
 use App\Http\Controllers\admin\aset\AsetBarangController;
 use App\Http\Controllers\admin\aset\AsetGedungBangunanController;
 use App\Http\Controllers\admin\aset\AsetKendaraanController;
@@ -455,6 +456,8 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
 
 
     Route::resource('admin/nilai_lama', NilaiLamaController::class)->name('index','nilai_lama');
+
+    Route::resource('admin/alumni', AlumniController::class)->name('index','alumni');
 });
 
 Route::group(['middleware' => ['auth', 'role:mhs|super-admin']], function () {
