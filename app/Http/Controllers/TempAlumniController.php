@@ -15,7 +15,7 @@ class TempAlumniController extends Controller
      */
     public function index(Request $request)
     {
-        $title = "Daftar Alumni.";
+        $title = "Cetak Ijazah.";
         $mhs = Mahasiswa::get();
         $no = 1;
         $prodi = Prodi::all();

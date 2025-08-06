@@ -169,14 +169,14 @@
 
                         </ul>
                     </li>
-                    <li><a href="{{URL::to('admin/alumni')}}">Alumni</a></li>
+                    {{-- <li><a href="{{URL::to('admin/alumni')}}">Alumni</a></li> --}}
                      <li><a href="#">Persuratan <label class="badge badge-light-danger">!</label></a></li>
                      <li>
                         <a class="submenu-title" href="#">
                             <span>Transkrip / Ijazah <label class="badge badge-light-danger">!</label></span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
-                            <li><a href="#">Print Ijazah <label class="badge badge-light-danger">!</label></a></li>
+                            <li><a href="{{URL::to('admin/alumni')}}">Print Ijazah </a></li>
                             <li><a href="#">Print Transkrip <label class="badge badge-light-danger">!</label></a></li>
                             <li><a href="#">Legalisir <label class="badge badge-light-danger">!</label></a></li>
 
@@ -283,7 +283,7 @@
                 <span><i class="fa fa-users"></i> Perwalian</span></a>
             </li>
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{URL::to('dosen/krm')}}" >
-                <span><i class="fa fa-folder"></i> KRM</span></a> 
+                <span><i class="fa fa-folder"></i> KRM</span></a>
             </li>--}}
 
           </ul>
