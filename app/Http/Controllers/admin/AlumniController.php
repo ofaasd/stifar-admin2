@@ -5,8 +5,11 @@ namespace App\Http\Controllers\admin;
 use Carbon\Carbon;
 use App\Models\Prodi;
 use App\Models\Alumni;
+use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Crypt;
 
 class AlumniController extends Controller
 {
@@ -222,6 +225,68 @@ class AlumniController extends Controller
     public function update(Request $request, string $id)
     {
         //
+    }
+
+    public function cetakIjazah(Request $request)
+    {
+        // Dekripsi NIM
+        $nimDekrip = Crypt::decryptString($request->nimEnkripsi);
+        $nim = str_replace("stifar", "", $nimDekrip);
+
+        // Ambil data mahasiswa
+        $mahasiswa = Mahasiswa::select(
+                'mahasiswa.nama',
+                'mahasiswa.nim',
+                'mahasiswa.no_ktp AS nik',
+                'mahasiswa.agama',
+                'mahasiswa.tempat_lahir AS kotaKelahiran',
+                'mahasiswa.tgl_lahir AS tanggalLahir',
+                'mahasiswa.alamat',
+                'mahasiswa.angkatan',
+                'mahasiswa.foto_mhs AS fotoMahasiswa',
+                'mahasiswa.created_at AS createdAt',
+                'program_studi.nama_prodi AS prodiIndo',
+                'program_studi.nama_prodi_eng AS prodiInggris',
+                'program_studi.nama_ijazah AS namaIjazahIndo',
+                'program_studi.nama_ijazah_eng AS namaIjazahInggris'
+            )
+            ->where('mahasiswa.nim', $nim)
+            ->leftJoin('program_studi', 'program_studi.id', '=', 'mahasiswa.id_program_studi')
+            ->first();
+
+        // Kirim data ke view dan render HTML
+        $html = view('mahasiswa.ijazah.index', [
+            'nomorSeri' => $request->seri_ijazah,
+            'lulusPada' => $request->lulus_pada,
+            'akreditasiBadanPtKes' => $request->akreditasi1,
+            'akreditasiLamPtKes' => $request->akreditasi2,
+            'akreditasiLamPtKesInggris' => $request->akreditasi2Eng,
+            'namaKaprodi' => $request->nama_ketua_prodi,
+            'niyKaprodi' => $request->niy_ketua_prodi,
+            'data' => $mahasiswa,
+        ])->render();
+
+        // Inisialisasi mPDF
+        $mpdf = new \Mpdf\Mpdf([
+            'format' => 'A4-L',
+            'mode' => 'utf-8',
+            'margin_left' => 0,
+            'margin_right' => 0,
+            'margin_top' => 0,
+            'margin_bottom' => 0,
+        ]);
+
+        // Pastikan HTML tidak kosong atau error
+        if (empty(trim($html))) {
+            return response()->json(['message' => 'Template kosong atau error.']);
+        }
+
+        // Tulis HTML ke PDF
+        $mpdf->WriteHTML($html);
+
+        // Output PDF ke browser secara inline
+        return response($mpdf->Output('ijazah-' . $mahasiswa->nim . '.pdf', 'I'))
+            ->header('Content-Type', 'application/pdf');
     }
 
     /**

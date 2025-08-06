@@ -40,9 +40,11 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="col-md-12 mb-4">
-                            <a class="btn btn-primary" href="{{ URL::to('mahasiswa/create')}}">Tambah mahasiswa</a>
-                        </div>
+                        @if (!isset($isAlumni))
+                            <div class="col-md-12 mb-4">
+                                <a class="btn btn-primary" href="{{ URL::to('mahasiswa/create')}}">Tambah mahasiswa</a>
+                            </div>
+                        @endif
 
                         <div class="table-responsive tbl-mhs">
 
@@ -62,12 +64,20 @@
 
     <script>
         $(function() {
-            $(".nav-link").click(function(){
-                const id = $(this).data('id');
-                refresh_mahasiswa(id);
-            });
-
-            refresh_mahasiswa(0);
+            var isAlumni = {{ isset($isAlumni) && $isAlumni ? 'true' : 'false' }};
+            if (isAlumni) {
+                $(".nav-link").click(function(){
+                    const id = $(this).data('id');
+                    refresh_alumni(id);
+                });
+                refresh_alumni(0);
+            }else{
+                $(".nav-link").click(function(){
+                    const id = $(this).data('id');
+                    refresh_mahasiswa(id);
+                });
+                refresh_mahasiswa(0);
+            }
         });
 
         function refresh_mahasiswa(id){
@@ -75,6 +85,27 @@
                             <div class="loader-2"></div>
                         </div>`);
             const url = "{{URL::to('mahasiswa/get_mhs')}}";
+            $.ajax({
+                url: url,
+                method: "GET",
+                data: { id: id },
+                success: function(data) {
+                    $(".tbl-mhs").html(data);
+                },
+                error: function(xhr, status, error) {
+                    // console.log("Terjadi kesalahan:");
+                    // console.log("Status:", status);
+                    // console.log("Error:", error);
+                    // console.log("Response Text:", xhr.responseText);
+                }
+            });
+        }
+
+        function refresh_alumni(id){
+            $(".tbl-mhs").html(`<div class="loader-box">
+                            <div class="loader-2"></div>
+                        </div>`);
+            const url = "{{URL::to('/alumni/get_mhs')}}";
             $.ajax({
                 url: url,
                 method: "GET",
