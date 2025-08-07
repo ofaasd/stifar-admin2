@@ -43,7 +43,7 @@
               <div class="row mb-3">
                 <div class="col">
                   <label for="seri_ijazah{{ $row_mhs['nim'] }}" class="form-label">Nomor Seri Ijazah</label>
-                  <input type="text" class="form-control" id="seri_ijazah{{ $row_mhs['nim'] }}" name="seri_ijazah" required>
+                  <input type="text" class="form-control" id="seri_ijazah{{ $row_mhs['nim'] }}" name="seri_ijazah" value="063032481012025100001" required>
                 </div>
                 <div class="col">
                   <label for="lulus_pada{{ $row_mhs['nim'] }}" class="form-label">Lulus Pada</label>
@@ -52,23 +52,23 @@
               </div>
               <div class="mb-3">
                 <label for="akreditasi1{{ $row_mhs['nim'] }}" class="form-label">Akreditasi BAN-PT</label>
-                <input type="text" class="form-control" id="akreditasi1{{ $row_mhs['nim'] }}" name="akreditasi1" required>
+                <input type="text" class="form-control" id="akreditasi1{{ $row_mhs['nim'] }}" name="akreditasi1" value=" TERAKREDITASI B SK BAN-PT No. 500/SK/BAN-PT/Ak.Ppj/PT/VIII/2022" required>
               </div>
               <div class="mb-3">
                 <label for="akreditasi2{{ $row_mhs['nim'] }}" class="form-label">Akreditasi LAM-PTKes</label>
-                <input type="text" class="form-control" id="akreditasi2{{ $row_mhs['nim'] }}" name="akreditasi2" required>
+                <input type="text" class="form-control" id="akreditasi2{{ $row_mhs['nim'] }}" name="akreditasi2" value=" Terakreditasi Baik Sekali SK LAM-PTKes 0815/LAM-PTKes/Akr/Sar/IX/2022" required>
               </div>
               <div class="mb-3">
                 <label for="akreditasi2Eng{{ $row_mhs['nim'] }}" class="form-label">Akreditasi LAM-PTKes Inggris</label>
-                <input type="text" class="form-control" id="akreditasi2Eng{{ $row_mhs['nim'] }}" name="akreditasi2Eng" required>
+                <input type="text" class="form-control" id="akreditasi2Eng{{ $row_mhs['nim'] }}" name="akreditasi2Eng" value=" accredited with grade 'very good' SK LAM-PTKes 0815/LAM-PTKes/Akr/Sar/IX/2022" required>
               </div>
               <div class="mb-3">
                 <label for="nama_ketua_prodi{{ $row_mhs['nim'] }}" class="form-label">Nama Ketua Program Studi</label>
-                <input type="text" class="form-control" id="nama_ketua_prodi{{ $row_mhs['nim'] }}" name="nama_ketua_prodi" required>
+                <input type="text" class="form-control" id="nama_ketua_prodi{{ $row_mhs['nim'] }}" name="nama_ketua_prodi" value=" Dr. apt. Dwi Hadi Setya Palupi, M.Si." required>
               </div>
               <div class="mb-3">
                 <label for="niy_ketua_prodi{{ $row_mhs['nim'] }}" class="form-label">NIY Ketua Program Studi</label>
-                <input type="text" class="form-control" id="niy_ketua_prodi{{ $row_mhs['nim'] }}" name="niy_ketua_prodi" required>
+                <input type="text" class="form-control" id="niy_ketua_prodi{{ $row_mhs['nim'] }}" name="niy_ketua_prodi" value="YP 040204002" required>
               </div>
             </div>
             <div class="modal-footer">
