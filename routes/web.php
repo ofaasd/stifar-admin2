@@ -89,6 +89,7 @@ use App\Http\Controllers\admin\skripsi\DosenPembimbingController;
 use App\Http\Controllers\mahasiswa\skripsi\PembimbingController1;
 use App\Http\Controllers\admin\akademik\KhsController as adminKhs;
 use App\Http\Controllers\admin\akademik\PengaturanUjianController;
+use App\Http\Controllers\admin\akademik\SettingYudisiumController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiKaryaController;
 use App\Http\Controllers\admin\master\JabatanStrukturalController;
 use App\Http\Controllers\admin\skripsi\ManajemenSkripsiController;
@@ -343,6 +344,9 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
     Route::post('/admin/akademik/list-soal/simpan_status', [SoalKuesionerController::class, 'simpan_status']);
 
     Route::get('/admin/akademik/nilai_susulan', [NilaiSusulanController::class, 'index']);
+
+    Route::resource('/admin/akademik/yudisium/setting', SettingYudisiumController::class)->name('index','setting-yudisium');
+
     // route KRS
     Route::get('/admin/masterdata/krs', [KrsController::class, 'index']);
     Route::post('/admin/masterdata/krs/list-mhs', [KrsController::class, 'listMhs']);
