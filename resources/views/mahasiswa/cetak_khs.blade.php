@@ -145,7 +145,7 @@
         <tr>
             <td><center>Dosen Wali</center></td>
             <td><center></center></td>
-            <td><center>Mahasiswa</center></td>
+            <td><center>Kepala Tata Usaha</center></td>
         </tr>
         <tr>
             <td><center><br><br><br></center></td>
@@ -154,18 +154,8 @@
         </tr>
         <tr>
             <td><center>{{ $mhs->dsn_wali }}</center></td>
-            <td></td>
-            <td><center>{{ $mhs->nama }}</center></td>
-        </tr>
-        <tr>
-            <td><center><br><br><br></center></td>
-            <td><center></center></td>
-            <td><center></center></td>
-        </tr>
-        <tr>
-            <td><center></center></td>
-            <td></td>
-            <td><center></center></td>
+            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td><center>....</center></td>
         </tr>
     </table>
 </body>
