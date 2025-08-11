@@ -20,6 +20,21 @@
 <script src="{{ asset('assets/js/header-slick.js') }}"></script>
 @yield('script')
 
+<script>
+	$(document).on('click', '#btn-submit', function() {
+		var btnSubmit = $(this);
+		var oldBtnHtml = btnSubmit.html();
+		btnSubmit.prop('disabled', true);
+		btnSubmit.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Please Wait...');
+		btnSubmit.closest('form').submit();
+
+		setTimeout(() => {
+			btnSubmit.prop('disabled', false);
+			btnSubmit.html(oldBtnHtml);
+		}, 3000);
+	});
+</script>
+
 @if(Route::current()->getName() != 'popover')
 	<script src="{{asset('assets/js/tooltip-init.js')}}"></script>
 @endif

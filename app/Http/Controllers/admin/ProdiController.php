@@ -137,6 +137,10 @@ class ProdiController extends Controller
                     'nama_prodi' => $request->nama_prodi,
                     'tgl_pendirian' => $request->tgl_pendirian,
                     'no_sk_pendirian' => $request->no_sk_pendirian,
+                    'jml_sks' => $request->jml_sks,
+                    'max_c' => $request->max_c,
+                    'max_d' => $request->max_d,
+                    'max_e' => $request->max_e,
                     'is_krs' => ($krs == "on") ? 1 : 0,
                 ]
             );
@@ -157,6 +161,10 @@ class ProdiController extends Controller
                     'nama_prodi' => $request->nama_prodi,
                     'tgl_pendirian' => $request->tgl_pendirian,
                     'no_sk_pendirian' => $request->no_sk_pendirian,
+                    'jml_sks' => $request->jml_sks,
+                    'max_c' => $request->max_c,
+                    'max_d' => $request->max_d,
+                    'max_e' => $request->max_e,
                     'is_krs' => ($krs == "on") ? 1 : 0,
                 ]
             );

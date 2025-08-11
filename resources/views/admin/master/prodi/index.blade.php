@@ -78,6 +78,18 @@
                                                     </label>
                                                 </div>
                                             </div>
+                                            <div class="mb-3">
+                                                <label for="jml_sks" class="form-label">Syarat Jumlah Lulus SKS</label>
+                                                <input type="number" name="jml_sks" id="jml_sks" class="form-control">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Maksimal jumlah nilai C / D / E</label>
+                                                <div class="input-group">
+                                                    <input type="number" name="max_c" id="max_c" class="form-control" placeholder="Max C">
+                                                    <input type="number" name="max_d" id="max_d" class="form-control" placeholder="Max D">
+                                                    <input type="number" name="max_e" id="max_e" class="form-control" placeholder="Max E">
+                                                </div>
+                                            </div>
                                             {{-- <div class="media mb-3">
                                                 <label class="col-form-label m-r-10">UTS</label>
                                                 <div class="media-body text-end icon-state">
@@ -97,7 +109,7 @@
                                         </div>
                                         <div class="modal-footer">
                                             <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
-                                            <button class="btn btn-primary" type="submit">Simpan</button>
+                                            <button class="btn btn-primary" id="btn-submit" type="submit">Simpan</button>
                                         </div>
                                     </form>
                                 </div>
