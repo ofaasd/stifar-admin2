@@ -7,13 +7,14 @@ use Illuminate\Http\Request;
 use App\Models\JabatanStruktural;
 use App\Models\PegawaiUnitKerja;
 use App\Models\Prodi;
+use App\Models\PegawaiBiodatum;
 
 class JabatanStrukturalController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public $indexed = ['', 'id', 'unit_kerja_id','bagian', 'prodi_id', 'jabatan'];
+    public $indexed = ['', 'id', 'unit_kerja_id','bagian', 'jabatan','pegawai','parent'];
     public function index(Request $request)
     {
         //
@@ -22,15 +23,19 @@ class JabatanStrukturalController extends Controller
         if (empty($request->input('length'))) {
             $title = "jabatan_struktural";
             $title2 = "Jabatan Struktural";
+            $pegawai = PegawaiBiodatum::all();
+            $progdi = Prodi::all();
+            $struktur = JabatanStruktural::select('jabatan_struktural.*','pegawai_biodata.nama_lengkap')->join('pegawai_biodata','pegawai_biodata.id','=','jabatan_struktural.id_pegawai')->get();
             $indexed = $this->indexed;
-            return view('admin.master.jabatan_struktural.index', compact('title','progdi','unit_kerja','indexed','title2'));
+            return view('admin.master.jabatan_struktural.index', compact('title','pegawai','struktur','progdi','unit_kerja','indexed','title2'));
         }else{
             $columns = [
                 1 => 'id',
                 2 => 'unit_kerja_id',
                 3 => 'bagian',
-                4 => 'prodi_id',
-                5 => 'jabatan',
+                4 => 'jabatan',
+                5 => 'pegawai',
+                6 => 'parent',
             ];
 
             $search = [];
@@ -75,18 +80,20 @@ class JabatanStrukturalController extends Controller
                     $unit_kerja_list[$row->id] = $row->unit_kerja;
                 }
                 $unit_kerja_list[0] = "Tidak Ada Unit Kerja";
-                $list_progdi = [];
-                foreach($progdi as $row){
-                    $list_progdi[$row->id] = $row->nama_jurusan;
-                }
-                $list_progdi[0] = "Tidak Ada";
+
                 foreach ($jabatan as $row) {
                     $nestedData['id'] = $row->id;
                     $nestedData['fake_id'] = ++$ids;
                     $nestedData['unit_kerja_id'] =  $unit_kerja_list[$row->unit_kerja_id];
-                    $nestedData['bagian'] = $row->bagian ?? "Kosong";
+                    if($row->unit_kerja_id == 1){
+                        $nestedData['bagian'] = $row->bagian ?? "Kosong";
+                    }else{
+                        $nestedData['bagian'] = Prodi::find($row->prodi_id)->nama_prodi ?? $row->bagian;
+                    }
+
                     $nestedData['jabatan'] = $row->jabatan;
-                    $nestedData['prodi_id'] = $list_progdi[$row->prodi_id];
+                    $nestedData['pegawai'] = PegawaiBiodatum::find($row->id_pegawai)->nama_lengkap ?? '';
+                    $nestedData['parent'] = JabatanStruktural::find($row->parent)->jabatan ?? '';
                     $data[] = $nestedData;
                 }
             }
@@ -140,6 +147,8 @@ class JabatanStrukturalController extends Controller
                     'bagian' => $bagian,
                     'jabatan' => $request->jabatan,
                     'prodi_id' => $prodi,
+                    'id_pegawai' => $request->id_pegawai,
+                    'parent' => $request->parent,
                 ]
             );
             return response()->json('Updated');
@@ -151,6 +160,8 @@ class JabatanStrukturalController extends Controller
                     'bagian' => $request->bagian,
                     'jabatan' => $request->jabatan,
                     'prodi_id' => $request->prodi_id,
+                    'id_pegawai' => $request->id_pegawai,
+                    'parent' => $request->parent,
                 ]
             );
             if ($jabatan) {

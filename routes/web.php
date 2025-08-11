@@ -22,6 +22,7 @@ use App\Http\Controllers\admin\FakultasController;
 use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\admin\KurikulumController;
 use App\Http\Controllers\admin\master\PTController;
+use App\Http\Controllers\admin\master\StrukturPegawaiController;
 use App\Http\Controllers\admin\NilaiLamaController;
 use App\Http\Controllers\mahasiswa\UjianController;
 use App\Http\Controllers\admin\AsalSekolahController;
@@ -228,6 +229,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
     Route::resource('admin/masterdata/prodi/akreditasi', ProdiAkreditasiController::class)->name('index', 'akreditasi_prodi');
     Route::resource('admin/masterdata/ruang', RuangController::class)->name('index', 'ruang');
     Route::resource('admin/masterdata/sekolah', AsalSekolahController::class)->name('index', 'sekolah');
+    Route::resource('admin/masterdata/struktur-pegawai', StrukturPegawaiController::class)->name('index', 'struktur-pegawai');
 
 
 

@@ -8,6 +8,7 @@
 @section('style')
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/vendors/datatables.css') }}">
 <link rel="stylesheet" type="text/css" href="{{asset('assets/css/vendors/sweetalert2.css')}}">
+<link rel="stylesheet" type="text/css" href="{{asset('assets/css/vendors/select2.css')}}">
 @endsection
 
 @section('breadcrumb-title')
@@ -29,7 +30,7 @@
                         @if(empty($link))
                         <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal" id="add-record">+ {{$title2}}</button>
                         @endif
-                        <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
+                        <div class="modal fade" id="tambahModal" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <form action="javascript:void(0)" id="formAdd">
@@ -53,10 +54,28 @@
                                                 <input type="text" class="form-control" name="bagian" id="bagian" placeholder="Cth: Akademik">
                                             </div>
                                             <div class="mb-3" id="field_prodi">
-                                                <label for="prodi" class="form-label">Prodi</label>
+                                                <label for="prodi" class="form-label">Program Studi</label>
                                                 <select name="prodi_id" id="prodi_id" class="form-control">
+                                                    <option value="0">--Tidak Ada--</option>
                                                     @foreach($progdi as $row)
-                                                        <option value='{{$row->id}}'>{{$row->nama_jurusan}}</option>
+                                                        <option value='{{$row->id}}'>{{$row->nama_prodi}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="mb-3" id="field-nama">
+                                                <label for="id_pegawai" class="form-label">Pegawai </label>
+                                                <select class="pegawai" name="id_pegawai" id="id_pegawai">
+                                                    @foreach($pegawai as $row)
+                                                        <option value="{{$row->id}}">{{$row->nama_lengkap}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="mb-3" id="field-nama">
+                                                <label for="parent" class="form-label">Parent </label>
+                                                <select class="form-control" name="parent" id="parent">
+                                                    <option value=0>--Tidak Ada--</option>
+                                                    @foreach($struktur as $row)
+                                                        <option value="{{$row->id}}">{{($row->unit_kerja_id == 1)?"Sekoah Tinggi" : "Program Studi"}} - {{$row->bagian}} - {{$row->jabatan}}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -84,8 +103,10 @@
                                         <th>ID</th>
                                         <th>Unit Kerja</th>
                                         <th>Bagian</th>
-                                        <th>Program Studi</th>
                                         <th>Jabatan</th>
+                                        <th>Pegawai</th>
+                                        <th>Parent</th>
+
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -105,10 +126,18 @@
 @section('script')
     <script src="{{ asset('assets/js/datatable/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{asset('assets/js/sweet-alert/sweetalert.min.js')}}"></script>
+    <script src="{{asset('assets/js/select2/select2.full.min.js')}}"></script>
+    <script src="{{asset('assets/js/select2/select2-custom.js')}}"></script>
 
     <script>
         $(function () {
             $("#field_prodi").hide();
+            $('#id_pegawai').select2({
+                dropdownParent: $('#tambahModal')
+            });
+            $('#parent').select2({
+                dropdownParent: $('#tambahModal')
+            });
             $("#unit_kerja_id").change(function(){
                 if($(this).val() == 1){
                     $("#field_prodi").hide();
