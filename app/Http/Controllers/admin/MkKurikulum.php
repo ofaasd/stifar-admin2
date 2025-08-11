@@ -53,7 +53,7 @@ class MkKurikulum extends Controller
         $ta_number = (int)substr($kode_ta,0,4);
         $ta_before = (string)($ta_number-1) . $kode_periode;
         $latest_ta = TahunAjaran::where('kode_ta',$ta_before)->first();
-        $kurikulum = Kurikulum::where('thn_ajar',$latest_ta->id)->where('progdi',$curr_kurikulum->progdi)->first();
+        $kurikulum = Kurikulum::where('thn_ajar',$latest_ta->id)->where('progdi',$curr_kurikulum->progdi)->where('status','Aktif')->first();
         echo $kurikulum->id;
         echo "<br />";
         $delete_all = MatakuliahKurikulum::where('matakuliah_kurikulums.id_kurikulum', $id)->delete();
