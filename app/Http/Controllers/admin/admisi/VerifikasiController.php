@@ -15,6 +15,7 @@ use App\Models\PmbNilaiRapor;
 use App\Models\Prodi;
 use App\Models\BuktiRegistrasi;
 use App\Models\BankDataVa;
+use helpers;
 
 class VerifikasiController extends Controller
 {
@@ -207,6 +208,14 @@ class VerifikasiController extends Controller
                 ];
 
                 if($peserta->save()){
+                    //disini tambahkan wa ke nomor mahasiswa
+
+                    $data['no_wa'] = $peserta->hp;
+                    $message = "Halo, " . $peserta->nama . ". Verifikasi berhasil, nomor pendaftaran anda adalah : " . $request->nopen . ". Silahkan Login kembali melalui link berikut \n https://pendaftaran.stifar.ac.id/ \n untuk melengkapi berkas registrasi pendaftaran \n\n jika terdapat kendala dapat menghubungi no. 081393111171 \n sebagai media center PMB STIFAR 2025 \n\n Terimakasih, \n Admin PMB STIFAR";
+                    $data['pesan'] = $message;
+
+                    $nohp = $peserta->hp;
+                    $pesan = helpers::send_wa($data);
                     $bank = BankDataVa::where('no_va','like','%' . $request->nopen . '%')->where('status',0)->update($array);
                     return response()->json('Updated');
                 }else{
