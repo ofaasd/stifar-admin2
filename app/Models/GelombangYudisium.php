@@ -11,10 +11,7 @@ class GelombangYudisium extends Model
 
     protected $table = 'gelombang_yudisium';
 
-    protected $fillable = [
-        'periode', 'tanggal', 'tempat', 'tanggal_mulai_daftar',
-        'tanggal_selesai_daftar', 'status', 'created_at', 'updated_at'
-    ];
+    protected $guarded = ['id'];
 
     public function pendaftaran()
     {
