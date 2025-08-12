@@ -90,7 +90,6 @@ use App\Http\Controllers\admin\skripsi\DosenPembimbingController;
 use App\Http\Controllers\mahasiswa\skripsi\PembimbingController1;
 use App\Http\Controllers\admin\akademik\KhsController as adminKhs;
 use App\Http\Controllers\admin\akademik\PengaturanUjianController;
-use App\Http\Controllers\admin\akademik\yudisium\SettingYudisiumController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiKaryaController;
 use App\Http\Controllers\admin\master\JabatanStrukturalController;
 use App\Http\Controllers\admin\skripsi\ManajemenSkripsiController;
@@ -111,8 +110,10 @@ use App\Http\Controllers\admin\kepegawaian\PegawaiPengabdianController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiRepositoryController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiPenghargaanController;
 use App\Http\Controllers\admin\akademik\NilaiController as nilaiakademik;
+use App\Http\Controllers\admin\akademik\yudisium\CetakYudisiumController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiKegiatanLuarController;
 use App\Http\Controllers\admin\akademik\yudisium\ProsesYudisiumController;
+use App\Http\Controllers\admin\akademik\yudisium\SettingYudisiumController;
 use App\Http\Controllers\mahasiswa\AbsensiController as mhsAbsensiController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiJabatanFungsionalController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiJabatanStrukturalController;
@@ -348,8 +349,10 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
 
     Route::get('/admin/akademik/nilai_susulan', [NilaiSusulanController::class, 'index']);
 
+    // Yudisium
     Route::resource('/admin/akademik/yudisium/setting', SettingYudisiumController::class)->name('index','setting-yudisium');
     Route::resource('/admin/akademik/yudisium/proses', ProsesYudisiumController::class)->name('index','proses-yudisium');
+    Route::resource('/admin/akademik/yudisium/cetak', CetakYudisiumController::class)->name('index','cetak-yudisium');
 
     // route KRS
     Route::get('/admin/masterdata/krs', [KrsController::class, 'index']);
