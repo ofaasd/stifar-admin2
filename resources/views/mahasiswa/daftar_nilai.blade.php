@@ -69,7 +69,7 @@
                                         <tr>
                                             <td colspan=2></td>
                                             <th>{{$total_sks}}</th>
-                                            <th>IPK : {{$total_ips / $total_sks}}</th>
+                                            <th>IPK : {{ $total_sks > 0 ? number_format($total_ips / $total_sks, 2) : '0.00' }}</th>
                                         </tr>
                                     </tfoot>
                                 </table>
