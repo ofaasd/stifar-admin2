@@ -68,7 +68,7 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>15 Oktober 2023</td>
+                                    <td>{{ $dataDosbim->created_at->translatedFormat('d F Y') }}</td>
                                     <td>
                                         <strong>Pembimbing 1:</strong> {{ $dataDosbim->nama_pembimbing1 }}<br>
                                         <strong>Pembimbing 2:</strong> {{ $dataDosbim->nama_pembimbing2 }}
@@ -132,8 +132,8 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>22 Oktober 2023</td>
-                                    <td>Sistem Manajemen Inventory Berbasis Web dengan Teknologi Machine Learning</td>
+                                    <td>{{ $dataJudul->created_at->translatedFormat('d F Y') }}</td>
+                                    <td>{{ $dataJudul->judul }}</td>
                                     <td>
                                         @if ($dataJudul->status == 0)
                                         <span class="badge bg-primary">Menunggu</span>

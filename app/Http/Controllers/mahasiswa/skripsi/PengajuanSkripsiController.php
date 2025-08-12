@@ -5,13 +5,15 @@ namespace App\Http\Controllers\mahasiswa\skripsi;
 use App\helpers;
 use App\Helpers\HelperSkripsi\SkripsiHelper;
 use App\Http\Controllers\Controller;
+use App\Models\MasterSkripsi;
 use App\Models\PengajuanJudulSkripsi;
 use Illuminate\Http\Request;
 
 class PengajuanSkripsiController extends Controller
 {
     public function index(){
-        return view('mahasiswa.skripsi.pengajuan.skripsi.index',);
+       return view('mahasiswa.skripsi.pengajuan.skripsi.index',
+    compact('data','judul'));
     }
 
     public function store(Request $request)
