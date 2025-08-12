@@ -22,7 +22,6 @@ use App\Http\Controllers\admin\FakultasController;
 use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\admin\KurikulumController;
 use App\Http\Controllers\admin\master\PTController;
-use App\Http\Controllers\admin\master\StrukturPegawaiController;
 use App\Http\Controllers\admin\NilaiLamaController;
 use App\Http\Controllers\mahasiswa\UjianController;
 use App\Http\Controllers\admin\AsalSekolahController;
@@ -82,6 +81,7 @@ use App\Http\Controllers\mahasiswa\skripsi\BimbinganController;
 use App\Http\Controllers\admin\akademik\SoalKuesionerController;
 use App\Http\Controllers\admin\berkas\BerkasMahasiswaController;
 use App\Http\Controllers\admin\master\ProdiAkreditasiController;
+use App\Http\Controllers\admin\master\StrukturPegawaiController;
 use App\Http\Controllers\admin\admisi\BiayaPendaftaranController;
 use App\Http\Controllers\admin\admisi\PmbNilaiTambahanController;
 use App\Http\Controllers\admin\akademik\NilaiKuesionerController;
@@ -111,7 +111,10 @@ use App\Http\Controllers\admin\kepegawaian\PegawaiPengabdianController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiRepositoryController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiPenghargaanController;
 use App\Http\Controllers\admin\akademik\NilaiController as nilaiakademik;
+use App\Http\Controllers\admin\akademik\yudisium\CetakYudisiumController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiKegiatanLuarController;
+use App\Http\Controllers\admin\akademik\yudisium\ProsesYudisiumController;
+use App\Http\Controllers\admin\akademik\yudisium\SettingYudisiumController;
 use App\Http\Controllers\mahasiswa\AbsensiController as mhsAbsensiController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiJabatanFungsionalController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiJabatanStrukturalController;
@@ -348,6 +351,12 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
     Route::post('/admin/akademik/list-soal/simpan_status', [SoalKuesionerController::class, 'simpan_status']);
 
     Route::get('/admin/akademik/nilai_susulan', [NilaiSusulanController::class, 'index']);
+
+    // Yudisium
+    Route::resource('/admin/akademik/yudisium/setting', SettingYudisiumController::class)->name('index','setting-yudisium');
+    Route::resource('/admin/akademik/yudisium/proses', ProsesYudisiumController::class)->name('index','proses-yudisium');
+    Route::resource('/admin/akademik/yudisium/cetak', CetakYudisiumController::class)->name('index','cetak-yudisium');
+
     // route KRS
     Route::get('/admin/masterdata/krs', [KrsController::class, 'index']);
     Route::post('/admin/masterdata/krs/list-mhs', [KrsController::class, 'listMhs']);

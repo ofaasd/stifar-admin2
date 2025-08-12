@@ -163,9 +163,9 @@
                             <span>Yuidisium <label class="badge badge-light-danger">!</label></span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
-                            <li><a href="#">Setting <label class="badge badge-light-danger">!</label></a></li>
-                            <li><a href="#">Proses <label class="badge badge-light-danger">!</label></a></li>
-                            <li><a href="#">Cetak <label class="badge badge-light-danger">!</label></a></li>
+                            <li><a href="{{Url::to('admin/akademik/yudisium/setting')}}">Setting</a></li>
+                            <li><a href="{{Url::to('admin/akademik/yudisium/proses')}}">Proses</a></li>
+                            <li><a href="{{Url::to('admin/akademik/yudisium/cetak')}}">Cetak</a></li>
 
                         </ul>
                     </li>

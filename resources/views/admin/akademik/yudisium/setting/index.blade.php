@@ -15,8 +15,9 @@
 @endsection
 
 @section('breadcrumb-items')
-    <li class="breadcrumb-item">Master Data</li>
-    <li class="breadcrumb-item active">{{$title}}</li>
+    <li class="breadcrumb-item">Akademik</li>
+    <li class="breadcrumb-item">Yudisium</li>
+    <li class="breadcrumb-item active">{{ $title2 }}</li>
 @endsection
 
 @section('content')
@@ -28,7 +29,7 @@
                     <div class="card-header pb-0 card-no-border">
                         <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal">+ {{$title}}</button>
                         <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
+                            <div class="modal-dialog modal-lg" role="document">
                                 <div class="modal-content">
                                     <form action="javascript:void(0)" id="formAdd">
                                         @csrf
@@ -37,79 +38,19 @@
                                             <h5 class="modal-title" id="ModalLabel">Tambah {{$title}}</h5>
                                             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
-                                        <div class="modal-body">
-                                            <div class="mb-3">
-                                                <label for="id_fakultas" class="form-label">Fakultas</label>
-                                                <select  name="id_fakultas" id="id_fakultas" class="form-control">
-                                                    @foreach($fakultas as $row)
-                                                        <option value="{{$row->id}}">{{$row->nama_fak}}</option>
-                                                    @endforeach
-                                                </select>
+                                        <div class="modal-body d-flex flex-wrap gap-3">
+                                             <div class="mb-3 flex-fill">
+                                                <label for="nama" class="form-label">Nama</label>
+                                                <input type="text" name="nama" id="nama" class="form-control">
                                             </div>
-                                            <div class="mb-3">
-                                                <label for="kode_prodi" class="form-label">Kode Program Studi</label>
-                                                <input type="text" name="kode_prodi" id="kode_prodi" class="form-control">
+                                            <div class="mb-3 flex-fill">
+                                                <label for="periode" class="form-label">Tahun Yudisium</label>
+                                                <input type="text" name="periode" id="periode" class="form-control" value="{{ date('Y') }}">
                                             </div>
-                                            <div class="mb-3">
-                                                <label for="kode_nim" class="form-label">Kode Nim</label>
-                                                <input type="text" name="kode_nim" id="kode_nim" class="form-control">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="jenjang" class="form-label">Jenjang</label>
-                                                <input type="text" name="jenjang" id="jenjang" class="form-control">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="nama_prodi" class="form-label">Nama Program Studi</label>
-                                                <input type="text" name="nama_prodi" id="nama_prodi" class="form-control">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="tgl_pendirian" class="form-label">Tanggal Pendirian</label>
-                                                <input type="date" name="tgl_pendirian" id="tgl_pendirian" class="form-control">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="no_sk_pendirian" class="form-label">No SK Pendirian (SK Akreditasi)</label>
-                                                <input type="text" name="no_sk_pendirian" id="no_sk_pendirian" class="form-control">
-                                            </div>
-                                            <div class="media mb-3">
-                                                <label class="col-form-label m-r-10">KRS</label>
-                                                <div class="media-body text-start icon-state">
-                                                    <label class="switch">
-                                                    <input type="checkbox" checked="" name="is_krs" id="is_krs"><span class="switch-state"></span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="jml_sks" class="form-label">Syarat Jumlah Lulus SKS</label>
-                                                <input type="number" name="jml_sks" id="jml_sks" class="form-control">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">Maksimal jumlah nilai C / D / E</label>
-                                                <div class="input-group">
-                                                    <input type="number" name="max_c" id="max_c" class="form-control" placeholder="Max C">
-                                                    <input type="number" name="max_d" id="max_d" class="form-control" placeholder="Max D">
-                                                    <input type="number" name="max_e" id="max_e" class="form-control" placeholder="Max E">
-                                                </div>
-                                            </div>
-                                            {{-- <div class="media mb-3">
-                                                <label class="col-form-label m-r-10">UTS</label>
-                                                <div class="media-body text-end icon-state">
-                                                    <label class="switch">
-                                                    <input type="checkbox" checked=""><span class="switch-state"></span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div class="media mb-3">
-                                                <label class="col-form-label m-r-10">UAS</label>
-                                                <div class="media-body text-end icon-state">
-                                                    <label class="switch">
-                                                    <input type="checkbox" checked=""><span class="switch-state"></span>
-                                                    </label>
-                                                </div>
-                                            </div> --}}
                                         </div>
                                         <div class="modal-footer">
                                             <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
-                                            <button class="btn btn-primary" id="btn-submit" type="submit">Simpan</button>
+                                            <button class="btn btn-primary" type="submit" id="btn-submit">Simpan</button>
                                         </div>
                                     </form>
                                 </div>
@@ -124,12 +65,8 @@
                                     <tr>
                                         <th></th>
                                         <th>ID</th>
-                                        <th>Kode Prodi</th>
-                                        <th>Kode NIM</th>
-                                        <th>Kode Jenjang</th>
-                                        <th>Nama Program Studi</th>
-                                        <th>Tgl Pendirian</th>
-                                        <th>No SK</th>
+                                        <th>Nama</th>
+                                        <th>Periode</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -152,21 +89,17 @@
 
     <script>
         $(function () {
-
             const baseUrl = {!! json_encode(url('/')) !!};
-            const title = "{{strtolower($url)}}";
-            const page = '/'.concat("admin/masterdata/").concat(title);
+            const title = "{{strtolower($title2)}}";
+            const page = '/'.concat("admin/akademik/yudisium/").concat(title);
             var my_column = $('#my_column').val();
             const pecah = my_column.split('\n');
             let my_data = [];
             pecah.forEach((item, index) => {
                 let temp = item.replace(/ /g, '');
                 let data_obj = { data: temp };
-                //alert(data_obj.data);
                 my_data.push(data_obj);
             });
-            //alert(data_obj);
-            console.log(my_data);
 
             const dt = $("#basic-1").DataTable({
                 processing: true,
@@ -232,7 +165,9 @@
                 },
             });
             $('#tambahModal').on('hidden.bs.modal', function () {
+                $('#formAdd').find('input, textarea, select').val('');
                 $('#formAdd').trigger("reset");
+                $('#id').val('');
             });
             //Edit Record
             $(document).on('click', '.edit-record', function () {
@@ -243,64 +178,57 @@
 
                 // get data
                 $.get(''.concat(baseUrl).concat(page, '/').concat(id, '/edit'), function (data) {
-                Object.keys(data).forEach(key => {
-                    //console.log(key);
-                    if(key == 'is_krs'){
-                        if(data[key] == 1){
-                            $("#is_krs").prop("checked",true)
-                        }else{
-                            $("#is_krs").prop("checked",false)
-                        }
-                    }else{
+                    Object.keys(data).forEach(key => {
                         $('#' + key)
-                            .val(data[key])
-                            .trigger('change');
-                    }
-                });
+                        .val(data[key])
+                        .trigger('change');
+                    });
                 });
             });
             //save record
-            $('#formAdd').on('submit',function(e){
+            $('#formAdd').on('submit', function(e) {
                 e.preventDefault();
-                values = jQuery("#formAdd").serializeArray();
+                var btnSubmit = $('#btn-submit');
+                var oldBtnHtml = btnSubmit.html();
+                btnSubmit.prop('disabled', true);
+                btnSubmit.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Please Wait...');
 
-                values = values.concat(
-                jQuery('#formAdd input[type=checkbox]:not(:checked)').map(
-                    function() {
-                        return {"name": this.name, "value": "off"}
-                    }).get()
-                );
                 $.ajax({
-                    data: values,
+                    data: $('#formAdd').serialize(),
                     url: ''.concat(baseUrl).concat(page),
                     type: 'POST',
-                    success: function success(status) {
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') || '{{ csrf_token() }}'
+                    },
+                    success: function success(message) {
                         dt.draw();
                         $("#tambahModal").modal('hide');
-
-                        // sweetalert
                         swal({
-                        icon: 'success',
-                        title: 'Successfully '.concat(status, '!'),
-                        text: ''.concat(title, ' ').concat(status, ' Successfully.'),
-                        customClass: {
-                            confirmButton: 'btn btn-success'
-                        }
+                            icon: 'success',
+                            title: 'Successfully '.concat(message, '!'),
+                            text: ''.concat(title, ' ').concat(message, ' Successfully.'),
+                            customClass: {
+                                confirmButton: 'btn btn-success'
+                            }
                         });
+                        btnSubmit.prop('disabled', false);
+                        btnSubmit.html(oldBtnHtml);
                     },
                     error: function error(err) {
-                        offCanvasForm.offcanvas('hide');
                         swal({
-                        title: 'Duplicate Entry!',
-                        text: title + ' Not Saved !',
-                        icon: 'error',
-                        customClass: {
-                            confirmButton: 'btn btn-success'
-                        }
+                            title: err.responseText || 'Duplicate Entry.',
+                            text: title + ' Not Saved !',
+                            icon: 'error',
+                            customClass: {
+                                confirmButton: 'btn btn-success'
+                            }
                         });
+                        btnSubmit.prop('disabled', false);
+                        btnSubmit.html(oldBtnHtml);
                     }
                 });
             });
+
             //delete record
             $(document).on('click', '.delete-record', function () {
                 const id = $(this).data('id');
@@ -333,7 +261,7 @@
                         dt.draw();
                     },
                     error: function error(_error) {
-                        console.log(_error);
+                        // console.log(_error);
                     }
                     });
 

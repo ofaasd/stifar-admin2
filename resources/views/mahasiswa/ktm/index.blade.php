@@ -62,15 +62,22 @@
 
         .photo-area {
             position: absolute;
-            top: 1.9cm;
+            top: 1.92cm;
             left: 0.29cm;
-            width: 1.80cm;
-            height: 2.2cm;
+            width: 1.82cm;
+            height: 2.22cm;
             background: rgba(255, 255, 255, 0.1);
             border: 2px dashed transparent;
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.3s ease;
+        }
+
+        .photo-area img {
+            border-radius: 6px;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         
         .photo-preview {
