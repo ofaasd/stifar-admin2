@@ -38,9 +38,8 @@ class ProsesYudisiumController extends Controller
                 ->join('krs_arsip', 'mahasiswa.id', '=', 'krs_arsip.id_mhs')
                 ->leftJoin('jadwals', 'krs.id_jadwal', '=', 'jadwals.id')
                 ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
-                // ->where('mata_kuliahs.nama_matkul', 'like', '%skripsi%')
-                ->where('mata_kuliahs.nama_matkul', 'like', '%etika%')
-                ->select([
+                ->where('mata_kuliahs.nama_matkul', 'like', '%skripsi%')
+                ->select([  
                     'mahasiswa.id',
                     'mahasiswa.nama',
                     'mahasiswa.nim',

@@ -258,9 +258,6 @@
                 // get data
                 $.get(''.concat(baseUrl).concat(page, '/').concat(id, '/edit'), function (data) {
                     Object.keys(data).forEach(key => {
-                        console.log('====================================');
-                        console.log(key);
-                        console.log('====================================');
                         $('#' + key)
                         .val(data[key])
                         .trigger('change');
