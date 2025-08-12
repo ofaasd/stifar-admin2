@@ -39,17 +39,13 @@
                                             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body d-flex flex-wrap gap-3">
+                                             <div class="mb-3 flex-fill">
+                                                <label for="nama" class="form-label">Nama</label>
+                                                <input type="text" name="nama" id="nama" class="form-control">
+                                            </div>
                                             <div class="mb-3 flex-fill">
                                                 <label for="periode" class="form-label">Tahun Yudisium</label>
                                                 <input type="text" name="periode" id="periode" class="form-control" value="{{ date('Y') }}">
-                                            </div>
-                                            <div class="mb-3 flex-fill">
-                                                <label for="tanggal_mulai_daftar" class="form-label">Tanggal Mulai Daftar</label>
-                                                <input type="date" name="tanggal_mulai_daftar" id="tanggal_mulai_daftar" class="form-control">
-                                            </div>
-                                            <div class="mb-3 flex-fill">
-                                                <label for="tanggal_selesai_daftar" class="form-label">Tanggal Selesai Daftar</label>
-                                                <input type="date" name="tanggal_selesai_daftar" id="tanggal_selesai_daftar" class="form-control">
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -69,9 +65,8 @@
                                     <tr>
                                         <th></th>
                                         <th>ID</th>
+                                        <th>Nama</th>
                                         <th>Periode</th>
-                                        <th>Tanggal Mulai</th>
-                                        <th>Tanggal Selesai</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -184,30 +179,9 @@
                 // get data
                 $.get(''.concat(baseUrl).concat(page, '/').concat(id, '/edit'), function (data) {
                     Object.keys(data).forEach(key => {
-
-                        if (key == 'tanggal_mulai_daftar') {
-                            let date = new Date(data[key]);
-                            let yyyy = date.getFullYear();
-                            let mm = String(date.getMonth() + 1).padStart(2, '0');
-                            let dd = String(date.getDate()).padStart(2, '0');
-                            let formattedDate = `${yyyy}-${mm}-${dd}`;
-                            $('#' + key)
-                                .val(formattedDate)
-                                .trigger('change');
-                        }else if (key == 'tanggal_selesai_daftar') {
-                            let date = new Date(data[key]);
-                            let yyyy = date.getFullYear();
-                            let mm = String(date.getMonth() + 1).padStart(2, '0');
-                            let dd = String(date.getDate()).padStart(2, '0');
-                            let formattedDate = `${yyyy}-${mm}-${dd}`;
-                            $('#' + key)
-                                .val(formattedDate)
-                                .trigger('change');
-                        }else{
-                            $('#' + key)
-                            .val(data[key])
-                            .trigger('change');
-                        }
+                        $('#' + key)
+                        .val(data[key])
+                        .trigger('change');
                     });
                 });
             });

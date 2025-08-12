@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\admin\akademik;
+namespace App\Http\Controllers\admin\akademik\yudisium;
 
 use App\Http\Controllers\Controller;
 use App\Models\GelombangYudisium;
@@ -13,7 +13,7 @@ class SettingYudisiumController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public $indexed = ['', 'id', 'periode', 'tanggal_mulai_daftar', 'tanggal_selesai_daftar'];
+    public $indexed = ['', 'id', 'nama', 'periode'];
     public function index(Request $request)
     {
         if (empty($request->input('length'))) {
@@ -26,9 +26,8 @@ class SettingYudisiumController extends Controller
         }else{
             $columns = [
                 1 => 'id',
-                2 => 'periode',
-                3 => 'tanggal_mulai_daftar',
-                4 => 'tanggal_selesai_daftar',
+                2 => 'nama',
+                3 => 'periode',
             ];
 
             $search = [];
@@ -52,14 +51,14 @@ class SettingYudisiumController extends Controller
                 $search = $request->input('search.value');
 
                 $gelombang = GelombangYudisium::where('periode', 'LIKE', "%{$search}%")
-                    ->orWhere('tanggal_mulai_daftar', 'LIKE', "%{$search}%")
+                    ->orWhere('nama', 'LIKE', "%{$search}%")
                     ->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
                     ->get();
 
                 $totalFiltered = GelombangYudisium::where('periode', 'LIKE', "%{$search}%")
-                    ->orWhere('tanggal_mulai_daftar', 'LIKE', "%{$search}%")
+                    ->orWhere('nama', 'LIKE', "%{$search}%")
                     ->count();
             }
 
@@ -73,8 +72,7 @@ class SettingYudisiumController extends Controller
                     $nestedData['id'] = $row->id;
                     $nestedData['fake_id'] = ++$ids;
                     $nestedData['periode'] = $row->periode;
-                    $nestedData['tanggal_mulai_daftar'] = Carbon::parse($row->tanggal_mulai_daftar)->translatedFormat('d F Y');
-                    $nestedData['tanggal_selesai_daftar'] = Carbon::parse($row->tanggal_selesai_daftar)->translatedFormat('d F Y');
+                    $nestedData['nama'] = $row->nama;
                     $data[] = $nestedData;
                 }
             }
@@ -113,21 +111,19 @@ class SettingYudisiumController extends Controller
 
         try {
             $request->validate([
+                'nama' => 'required',
                 'periode' => 'required',
-                'tanggal_mulai_daftar' => 'required',
-                'tanggal_selesai_daftar' => 'required',
             ]);
 
-            // Ambil hanya tahun dari input 'periode'
-            $periode = date('Y', strtotime($request->periode));
+            // Ambil hanya tahun dari input 'periode' (langsung dari input HTML, tanpa strtotime)
+            $periode = substr($request->periode, 0, 4);
 
             if ($id) {
                 $save = GelombangYudisium::updateOrCreate(
                     ['id' => $id],
                     [
+                        'nama' => $request->nama,
                         'periode' => $periode,
-                        'tanggal_mulai_daftar' => $request->tanggal_mulai_daftar,
-                        'tanggal_selesai_daftar' => $request->tanggal_selesai_daftar,
                     ]
                 );
 
@@ -137,9 +133,8 @@ class SettingYudisiumController extends Controller
                 $save = GelombangYudisium::updateOrCreate(
                     ['id' => $id],
                     [
+                        'nama' => $request->nama,
                         'periode' => $periode,
-                        'tanggal_mulai_daftar' => $request->tanggal_mulai_daftar,
-                        'tanggal_selesai_daftar' => $request->tanggal_selesai_daftar,
                     ]
                 );
 
