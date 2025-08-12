@@ -14,6 +14,8 @@
 <link rel="stylesheet" type="text/css" href="{{asset('assets/css/vendors/scrollbar.css')}}">
 <!-- Bootstrap css-->
 <link rel="stylesheet" type="text/css" href="{{asset('assets/css/vendors/bootstrap.css')}}">
+<link rel="stylesheet" type="text/css" href="{{asset('assets/icons/bootstrap-icons/bootstrap-icons.css')}}">
+<link rel="stylesheet" type="text/css" href="{{asset('assets/icons/bootstrap-icons/bootstrap-icons-min.css')}}">
 <!-- App css-->
 <link rel="stylesheet" type="text/css" href="{{asset('assets/css/style.css')}}">
 <link id="color" rel="stylesheet" href="{{asset('assets/css/color-1.css')}}" media="screen">

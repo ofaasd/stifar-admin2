@@ -18,10 +18,8 @@ class BimbinganController extends Controller
     public function index() {
         $user = Auth::user();
     
-        // Mengambil NIM mahasiswa terkait
         $nim = Mahasiswa::where('id', $user->id)->value('nim');
     
-        // Jika NIM tidak ditemukan, kembalikan view dengan data null
         if (!$nim) {
             return $this->renderView();
         }

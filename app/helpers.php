@@ -2,6 +2,9 @@
 
 namespace App;
 
+use App\Models\MasterSkripsi;
+use Auth;
+
 class helpers
 {
     public static function getNilaiHuruf(int $nilai)
@@ -44,5 +47,13 @@ class helpers
         }else{
             return 0;
         }
+    }
+
+    public function getIdMasterSkripsi(){
+        $user  = Auth::user();
+        $email = $user->email;
+        $nim   = explode('@', $email)[0];
+        $master = MasterSkripsi::where('nim', $nim)->first();
+        return $master ? $master->id : null;
     }
 }

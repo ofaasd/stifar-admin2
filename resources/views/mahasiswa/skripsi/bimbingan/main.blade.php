@@ -46,26 +46,17 @@
                                     <tr>
                                         <th>No</th>
                                         <th>Tanggal</th>
-                                        <th>Waktu</th>
-                                        <th>Tempat</th>
                                         <th>Topik</th>
                                         <th>Status</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse($bimbingan as $index => $item)
-                                        <tr>
+                                    @forelse($bimbingan->where('status', 0) as $index => $item)
+                                    <tr>
                                             <td>{{ $index + 1 }}</td>
                                             <td>{{ \Carbon\Carbon::parse($item->tanggal_waktu)->format('d F Y') }}</td>
-                                            <td>
-                                                @if ($item->waktu_mulai && $item->waktu_selesai)
-                                                    {{ $item->waktu_mulai }} - {{ $item->waktu_selesai }}
-                                                @else
-                                                    -
-                                                @endif
-                                            </td>
-                                            <td>{{ $item->tempat ?? '-' }}</td>
+                                      
                                             <td>{{ $item->topik }}</td>
                                             <td>
                                                 @switch($item->status)

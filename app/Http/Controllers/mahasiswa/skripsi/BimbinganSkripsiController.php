@@ -2,25 +2,25 @@
 
 namespace App\Http\Controllers\mahasiswa\skripsi;
 
+use App\Helpers\HelperSkripsi\SkripsiHelper;
 use App\Http\Controllers\Controller;
 use App\Models\BerkasBimbingan;
 use App\Models\BimbinganSkripsi;
 use App\Models\Skripsi;
 use Auth;
+use DB;
 use Illuminate\Http\Request;
+use Log;
 
 class BimbinganSkripsiController extends Controller
 {
     public function index()
     {
-            $user = Auth::user();
-            $email = $user->email;
-            $nim = explode('@', $email)[0];
-
+         
             // Ambil data skripsi mahasiswa
-            $skripsi = Skripsi::where('nim', $nim)->first();
+            $idMaster = SkripsiHelper::getIdMasterSkripsi();
             
-            if (!$skripsi) {
+            if (!$idMaster) {
                 return view('mahasiswa.skripsi.bimbingan.main', [
                     'bimbingan' => collect(),
                     'message' => 'Anda belum terdaftar dalam sistem skripsi.'
@@ -28,19 +28,15 @@ class BimbinganSkripsiController extends Controller
             }
 
             // Ambil semua data bimbingan mahasiswa dengan relasi
-            $bimbingan = BimbinganSkripsi::with([
-                'berkas',
-                'skripsi:id,nim,judul'
-            ])
-            ->where('skripsi_id', $skripsi->id)
+            $bimbingan = BimbinganSkripsi::where('id_master', $idMaster)
             ->orderBy('tanggal_waktu', 'desc')
             ->get();
 
             // Format data untuk tampilan
             $bimbingan = $bimbingan->map(function ($item) {
                 // Parse waktu jika tersimpan dalam format tertentu
-                if ($item->tanggal_waktu) {
-                    $datetime = \Carbon\Carbon::parse($item->tanggal_waktu);
+                if ($item->created_at) {
+                    $datetime = \Carbon\Carbon::parse($item->created_at);
                     $item->tanggal_formatted = $datetime->format('d F Y');
                     $item->waktu_formatted = $datetime->format('H:i');
                 }
@@ -65,10 +61,10 @@ class BimbinganSkripsiController extends Controller
                 
                 return $item;
             });
-
-            return view('mahasiswa.skripsi.bimbingan.main', compact('bimbingan', 'skripsi'));
+            return view('mahasiswa.skripsi.bimbingan.main', compact('bimbingan'));
       
     }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -79,40 +75,62 @@ class BimbinganSkripsiController extends Controller
             'filePendukung.*' => 'nullable|file|max:2048|mimes:pdf,docx,doc,zip,rar,jpg,png',
         ]);
     
-        $user = Auth::user();
-        $email = $user->email;
-
-        $nim = explode('@', $email)[0];
-        // Pastikan mahasiswa memiliki skripsi
-        $skripsi = \App\Models\Skripsi::where('nim', $nim)->firstOrFail();
+        $idMaster = SkripsiHelper::getIdMasterSkripsi();
     
-        // Simpan data bimbingan
-        $bimbingan = BimbinganSkripsi::create([
-            'skripsi_id' => $skripsi->id,
-            'nip' => $skripsi->pembimbing->first()->nip ?? null, // asumsi pembimbing_1 aktif
-            'tanggal_waktu' => $request->tanggal,
-            'topik' => $request->topik,
-            'metode' => $request->metode,
-            'status' => 0,
-            'catatan_mahasiswa' => $request->catatan,
-            'catatan_dosen' => null,
-            'tempat' => null,
-        ]);
+        try {
+            DB::beginTransaction();
     
-        // Simpan semua file yang diunggah
-        if ($request->hasFile('filePendukung')) {
-            foreach ($request->file('filePendukung') as $file) {
-                $path = $file->store('berkas_bimbingan', 'public');
+            // Simpan data bimbingan
+            $bimbingan = BimbinganSkripsi::create([
+                'id_master' => $idMaster,
+                'tanggal_waktu' => $request->tanggal,
+                'topik' => $request->topik,
+                'metode' => $request->metode,
+                'status' => 0,
+                'catatan_mahasiswa' => $request->catatan,
+                'catatan_dosen' => null,
+                'tempat' => null,
+            ]);
     
-                BerkasBimbingan::create([
-                    'id_bimbingan' => $bimbingan->id,
-                    'file' => $path,
-                ]);
+            Log::info('Bimbingan skripsi dibuat', [
+                'id_bimbingan' => $bimbingan->id,
+                'id_master' => $idMaster,
+                'nim' => Auth::user()->email,
+                'tanggal' => $request->tanggal,
+                'topik' => $request->topik
+            ]);
+    
+            // Simpan file
+            if ($request->hasFile('filePendukung')) {
+                foreach ($request->file('filePendukung') as $file) {
+                    $path = $file->store('berkas_bimbingan', 'public');
+    
+                    BerkasBimbingan::create([
+                        'id_bimbingan' => $bimbingan->id,
+                        'file' => $path,
+                    ]);
+    
+                    Log::info('File bimbingan berhasil diunggah', [
+                        'id_bimbingan' => $bimbingan->id,
+                        'file' => $path,
+                        'size_kb' => round($file->getSize() / 1024, 2)
+                    ]);
+                }
             }
-        }
     
-        return redirect()->back()->with('success', 'Jadwal bimbingan berhasil diajukan.');
+            DB::commit();
+    
+            return redirect()->back()->with('success', 'Jadwal bimbingan berhasil diajukan.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Gagal menyimpan bimbingan skripsi', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return back()->with('error', 'Terjadi kesalahan saat menyimpan data.');
+        }
     }
+    
 
     public function detail($id)
 {

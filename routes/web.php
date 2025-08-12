@@ -120,6 +120,9 @@ use App\Http\Controllers\admin\kepegawaian\PegawaiJabatanFungsionalController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiJabatanStrukturalController;
 use App\Http\Controllers\mahasiswa\skripsi\SidangController as SidangMahasiswa;
 use App\Http\Controllers\admin\admisi\StatistikController as AdmisiStatistikController;
+use App\Http\Controllers\mahasiswa\skripsi\PengajuanController;
+use App\Http\Controllers\mahasiswa\skripsi\PengajuanPembimbingController;
+use App\Http\Controllers\mahasiswa\skripsi\PengajuanSkripsiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -459,7 +462,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
         Route::get('/bimbingan', 'index_bimbingan')->name('bimbingan.index');
         Route::get('/daftar', 'index_daftar')->name('daftar.index');
         Route::get('/daftar/{id}', 'detail')->name('detail');
-        Route::get('skripsi/mahasiswa/{id}', 'mahasiswa')->name('mahasiswa');
+        Route::get('/mahasiswa/{id}', 'mahasiswa')->name('mahasiswa');
         Route::post('/modifysks', 'modifySKS')->name('daftar.sks');
         Route::post('/tambahKoor', 'tambahKoor')->name('daftar.koordinator');
         Route::get('/list-mahasiswa/{id}', 'ListMahasiswaByProd')->name('ListMahasiswaByProd');
@@ -518,6 +521,17 @@ Route::group(['middleware' => ['auth', 'role:mhs|super-admin']], function () {
 
     Route::get('/mhs/absensi/history/{id_jadwal}', [mhsAbsensiController::class, 'setAbsensiSatuan'] );
     Route::get('/mhs/absensi/save/{id_jadwal}', [mhsAbsensiController::class, 'saveAbsensi'] );
+    Route::group(['prefix' => 'mahasiswa/skripsi/pengajuan', 'as' => 'mhs.pengajuan.', 'controller' => PengajuanController::class], function () {
+        Route::get('/', 'index')->name('index');
+    });
+    Route::group(['prefix' => 'mahasiswa/skripsi/pengajuan/pembimbing', 'as' => 'mhs.pengajuan.pembimbing.', 'controller' => PengajuanPembimbingController::class], function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/store', 'store')->name('store');
+    });
+    Route::group(['prefix' => 'mahasiswa/skripsi/pengajuan/judul', 'as' => 'mhs.pengajuan.judul.', 'controller' => PengajuanSkripsiController::class], function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/store', 'store')->name('store');
+    });
     Route::group(['prefix' => 'mahasiswa/skripsi/pembimbing', 'as' => 'mhs.pembimbing.', 'controller' => PembimbingController1::class], function () {
         Route::get('/', 'index')->name('index');
         Route::get('/list-dosen', 'getDaftarPembimbing')->name('getDaftarPembimbing');
