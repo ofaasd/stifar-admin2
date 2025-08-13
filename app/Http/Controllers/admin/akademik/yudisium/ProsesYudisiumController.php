@@ -88,7 +88,6 @@ class ProsesYudisiumController extends Controller
                 3 => 'nilai',
                 4 => 'nilai2',
                 5 => 'gelombang',
-                5 => 'gelombang',
             ];
 
             $search = [];
