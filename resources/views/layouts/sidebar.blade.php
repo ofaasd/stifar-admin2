@@ -173,7 +173,7 @@
                             <span>Wisuda <label class="badge badge-light-danger">!</label></span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
-                            <li><a href="{{Url::to('admin/akademik/wisuda/setting')}}">Setting Wisuda <label class="badge badge-light-danger">!</label></a></li>
+                            <li><a href="{{Url::to('admin/akademik/wisuda/setting')}}">Setting Wisuda</a></li>
                             <li><a href="#">Daftar Wisuda <label class="badge badge-light-danger">!</label></a></li>
                             <li><a href="#">Daftar Wisudawan <label class="badge badge-light-danger">!</label></a></li>
 
