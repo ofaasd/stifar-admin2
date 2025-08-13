@@ -7,8 +7,8 @@ use Auth;
 
 class helpers
 {
-    public $number_key = '3EYdFkP7uhk5RX6D';
-    public $wa_api = 'X2Y7UZOZT0WVQVTG';
+    public static $number_key = '3EYdFkP7uhk5RX6D';
+    public static $wa_api = 'X2Y7UZOZT0WVQVTG';
     public static function getNilaiHuruf(int $nilai)
     {
 
@@ -60,8 +60,8 @@ class helpers
     }
     public static function send_wa($data)
   {
-    $number_key = $this->number_key;
-    $wa_api = $this->wa_api;
+    $number_key = self::$number_key;
+    $wa_api = self::$wa_api;
 
     $curl = curl_init();
 
