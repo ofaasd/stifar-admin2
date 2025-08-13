@@ -102,7 +102,7 @@
                     <li><a href="{{URL::to('admin/admisi/pengumuman')}}">Pengumuman Peserta</a></li> {{-- Butuh format surat pengumuman resmi dari pihak kampus --}}
                     <li><a href="#">KTM (s) <label class="badge badge-light-danger">!</label></a></li>
                     <li><a href="{{URL::to('admin/admisi/statistik')}}">Statistik</a></li>
-                    <li><a href="#">Verifikasi Pembayaran Daftar Ulang <label class="badge badge-light-danger">!</label></a></li>
+                    <li><a href="{{URL::to('admin/admisi/verifikasi_pembayaran')}}">Verifikasi Pembayaran Daftar Ulang </a></li>
                     <li><a href="#">History PMB <label class="badge badge-light-danger">!</label></a></li>
                     {{-- <li><a href="#">Berita Pendaftaran</a></li> --}}
                     <li><a href="{{URL::to('admin/admisi/biaya_pendaftaran')}}">Biaya Pendaftaran</a></li>
@@ -160,7 +160,7 @@
 
                     <li>
                         <a class="submenu-title" href="#">
-                            <span>Yuidisium <label class="badge badge-light-danger">!</label></span>
+                            <span>Yuidisium</span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
                             <li><a href="{{Url::to('admin/akademik/yudisium/setting')}}">Setting</a></li>
@@ -173,7 +173,7 @@
                      <li><a href="#">Persuratan <label class="badge badge-light-danger">!</label></a></li>
                      <li>
                         <a class="submenu-title" href="#">
-                            <span>Transkrip / Ijazah <label class="badge badge-light-danger">!</label></span>
+                            <span>Transkrip / Ijazah</span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
                             <li><a href="{{URL::to('admin/alumni')}}">Print Ijazah </a></li>

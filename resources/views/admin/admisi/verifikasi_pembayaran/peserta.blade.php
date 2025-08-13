@@ -64,6 +64,7 @@
                                             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
+                                            <div id='alert-tambah' class="mb-3"></div>
                                             <div class="mb-3">
                                                 <label for="nama" class="form-label">Nama</label>
                                                 <input type="text" name="nama" id="nama" class="form-control" readonly>
@@ -74,11 +75,12 @@
                                             </div>
                                             <div class="mb-3">
                                                 <label for="pilihan1" class="form-label">Program Studi</label>
-                                                <input type="text" name="pilihan1" id="pilihan1" class="form-control" readonly>
+                                                <input type="hidden" name="pilihan1" id="pilihan1">
+                                                <input type="text" name="nama_prodi" id="nama_prodi" class="form-control" readonly>
                                             </div>
                                             <div class="">
-                                                <label for="pembayaran_registrasi" class="form-label">Pembayaran Registrasi (RP)</label>
-                                                <input type="text" name="pembayaran_registrasi" id="pembayaran_registrasi" class="form-control" readonly>
+                                                <label for="registrasi_awal" class="form-label">Pembayaran Registrasi (RP)</label>
+                                                <input type="number" name="registrasi_awal" id="registrasi_awal" class="form-control">
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -202,12 +204,29 @@
                 $('#ModalLabel').html('Edit ' + title);
 
                 // get data
-                $.get(''.concat(baseUrl).concat('/admin/admisi/pengumuman/').concat(id, '/edit_peserta'), function (data) {
-                Object.keys(data).forEach(key => {
+                $.get(''.concat(baseUrl).concat('/admin/admisi/verifikasi_pembayaran/').concat(id, '/edit'), function (data) {
+                Object.keys(data[0]).forEach(key => {
                     //console.log(key);
-                    $('#' + key)
-                        .val(data[key])
-                        .trigger('change');
+                    if(key == 'registrasi_awal'){
+                        if(data[0][key] == 0){
+                            $("#alert-tambah").html(`<div class="alert alert-danger inverse alert-dismissible fade show" role="alert"><i class="icon-cross-alt"></i>
+                    <p>Pembayaran belum dilakukan. silahkan konfirmasi nominal pembayaran pada kolom regitrasi awal. jika sudah klik simpan.</p>
+                    <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close" data-bs-original-title="" title=""></button>
+                </div>`);
+                            $('#' + key)
+                                .val(data[1]['registrasi'])
+                                .trigger('change');
+                        }else{
+                            $("#alert-tambah").html('');
+                            $('#' + key)
+                                .val(data[0][key])
+                                .trigger('change');
+                        }
+                    }else{
+                        $('#' + key)
+                            .val(data[0][key])
+                            .trigger('change');
+                    }
                 });
                 });
             });
@@ -218,7 +237,7 @@
                 $("#btn_save").val('Tunggu Sebentar');
                 $.ajax({
                     data: $('#formAdd').serialize(),
-                    url: ''.concat(baseUrl).concat('/admin/admisi/pengumuman/').concat(id, '/edit_peserta'),
+                    url: ''.concat(baseUrl).concat('/admin/admisi/verifikasi_pembayaran'),
                     type: 'POST',
                     success: function success(status) {
                         dt.draw();
