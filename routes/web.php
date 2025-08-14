@@ -154,7 +154,6 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
     Route::post('/dosen/validasi-krs', [DosenController::class, 'valiKrs']);
     Route::get('/dosen/krm', [KrmController::class, 'index']);
     Route::get('/dosen/absensi/{id}/input', [KrmController::class, 'daftarMhs']);
-    Route::get('/dosen/nilai/{id}/input', [KrmController::class, 'daftarMhsNilai']);
     Route::get('/dosen/{id}/set-pertemuan', [KrmController::class, 'setPertemuan']);
     Route::get('/dosen/input/{nim}/absensi/{id_jadwal}', [KrmController::class, 'setAbsensiSatuan']);
     Route::post('/dosen/simpan-absensi-satuan', [KrmController::class, 'saveAbsensiSatuan']);
@@ -166,7 +165,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
     Route::post('/dosen/validasi-krs', [DosenController::class, 'valiKrs'] );
     Route::get('/dosen/krm', [KrmController::class, 'index'] );
     Route::get('/dosen/absensi/{id}/input', [KrmController::class, 'daftarMhs'] );
-    Route::get('/dosen/nilai/{id}/input', [KrmController::class, 'daftarMhsNilai'] );
+    // Route::get('dosen/nilai/{id}/input', [KrmController::class, 'daftarMhsNilai'] );
     Route::get('/dosen/{id}/set-pertemuan', [KrmController::class, 'setPertemuan'] );
     Route::get('/dosen/input/{nim}/absensi/{id_jadwal}', [KrmController::class, 'setAbsensiSatuan'] );
     Route::post('/dosen/simpan-absensi-satuan', [KrmController::class, 'saveAbsensiSatuan'] );
@@ -603,27 +602,27 @@ Route::group(['middleware' => ['auth', 'role:mhs|super-admin']], function () {
 });
 Route::group(['middleware' => ['auth', 'role:pegawai|super-admin']], function () {
 
-Route::prefix('skripsi')->as('koor.skripsi.')->controller(SkripsiController::class)->group(function () {
-    Route::get('/', 'index')->name('index');
-    Route::post('/update-sks', 'updateSks')->name('update-sks');
-    Route::post('/berkas', 'storeBerkas')->name('berkas.store');
-    Route::put('/berkas/{id}', 'updateBerkas')->name('berkas.update');
-    Route::delete('/berkas/{id}', 'destroyBerkas')->name('berkas.destroy');
-});
-Route::prefix('pembimbing')->name('pembimbing.')->group(function () {
-    Route::get('/', [PembimbingController::class, 'index'])->name('index');
-    Route::get('/data', [PembimbingController::class, 'getPembimbingData'])->name('data');
-    Route::post('/store', [PembimbingController::class, 'store'])->name('store');
-    Route::get('/edit/{id}', [PembimbingController::class, 'edit'])->name('edit');
-    Route::post('/update/{id}', [PembimbingController::class, 'update'])->name('update');
-    Route::delete('/destroy/{id}', [PembimbingController::class, 'destroy'])->name('destroy');
-});
-Route::prefix('sidang')->name('sidang.')->group(function () {
-    Route::get('/', [SidangController::class, 'index'])->name('index');
-    Route::post('/store', [SidangController::class, 'store'])->name('store');
-    Route::put('/update/{gelombang}', [SidangController::class, 'update'])->name('update');
-    Route::delete('/delete/{gelombang}', [SidangController::class, 'destroy'])->name('delete');
-});
+    Route::prefix('skripsi')->as('koor.skripsi.')->controller(SkripsiController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/update-sks', 'updateSks')->name('update-sks');
+        Route::post('/berkas', 'storeBerkas')->name('berkas.store');
+        Route::put('/berkas/{id}', 'updateBerkas')->name('berkas.update');
+        Route::delete('/berkas/{id}', 'destroyBerkas')->name('berkas.destroy');
+    });
+    Route::prefix('pembimbing')->name('pembimbing.')->group(function () {
+        Route::get('/', [PembimbingController::class, 'index'])->name('index');
+        Route::get('/data', [PembimbingController::class, 'getPembimbingData'])->name('data');
+        Route::post('/store', [PembimbingController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [PembimbingController::class, 'edit'])->name('edit');
+        Route::post('/update/{id}', [PembimbingController::class, 'update'])->name('update');
+        Route::delete('/destroy/{id}', [PembimbingController::class, 'destroy'])->name('destroy');
+    });
+    Route::prefix('sidang')->name('sidang.')->group(function () {
+        Route::get('/', [SidangController::class, 'index'])->name('index');
+        Route::post('/store', [SidangController::class, 'store'])->name('store');
+        Route::put('/update/{gelombang}', [SidangController::class, 'update'])->name('update');
+        Route::delete('/delete/{gelombang}', [SidangController::class, 'destroy'])->name('delete');
+    });
 
     Route::get('admin/kepegawaian/struktural/get_jabatan', [PegawaiJabatanStrukturalController::class, 'get_jabatan'])->name('get_jabatan');
     Route::post('admin/kepegawaian/struktural/get_jabatan', [PegawaiJabatanStrukturalController::class, 'get_jabatan'])->name('get_jabatan');
@@ -648,7 +647,7 @@ Route::prefix('sidang')->name('sidang.')->group(function () {
     Route::post('dosen/validasi-krs', [DosenController::class, 'valiKrs']);
     Route::get('dosen/krm', [KrmController::class, 'index']);
     Route::get('dosen/absensi/{id}/input', [KrmController::class, 'daftarMhs']);
-    Route::get('dosen/nilai/{id}/input', [KrmController::class, 'daftarMhsNilai']);
+    // Route::get('dosen/nilai/{id}/input', [KrmController::class, 'daftarMhsNilai']);
     Route::get('dosen/{id}/set-pertemuan', [KrmController::class, 'setPertemuan']);
     Route::get('dosen/input/{nim}/absensi/{id_jadwal}', [KrmController::class, 'setAbsensiSatuan']);
     Route::post('dosen/simpan-absensi-satuan', [KrmController::class, 'saveAbsensiSatuan']);
@@ -695,7 +694,7 @@ Route::prefix('sidang')->name('sidang.')->group(function () {
     Route::post('dosen/simpan_rps', [KrmController::class, 'simpanRps'] );
     Route::get('dosen/input_nilai', [KrmController::class, 'input_nilai'] );
     Route::get('dosen/absensi/{id}/input', [KrmController::class, 'daftarMhs'] );
-    Route::get('dosen/nilai/{id}/input', [KrmController::class, 'daftarMhsNilai'] );
+    // Route::get('dosen/nilai/{id}/input', [KrmController::class, 'daftarMhsNilai'] );
     Route::get('dosen/{id}/set-pertemuan', [KrmController::class, 'setPertemuan'] );
     Route::get('dosen/input/{nim}/absensi/{id_jadwal}', [KrmController::class, 'setAbsensiSatuan'] );
     Route::post('dosen/simpan-absensi-satuan', [KrmController::class, 'saveAbsensiSatuan'] );
@@ -740,4 +739,7 @@ Route::prefix('sidang')->name('sidang.')->group(function () {
 });
 Route::group(['middleware' => ['auth', 'role:mhs|pegawai|super-admin']], function () {
     Route::post('admin/admisi/peserta/daftar_kota', [PmbPesertaController::class, 'daftar_kota'])->name('daftar_kota_pegawai');
+});
+Route::group(['middleware' => ['auth', 'role:admin-prodi|pegawai|super-admin']], function () {
+    Route::get('dosen/nilai/{id}/input', [KrmController::class, 'daftarMhsNilai']);
 });

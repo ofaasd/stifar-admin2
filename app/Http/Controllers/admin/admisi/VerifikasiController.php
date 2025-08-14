@@ -211,7 +211,7 @@ class VerifikasiController extends Controller
                     //disini tambahkan wa ke nomor mahasiswa
 
                     $data['no_wa'] = $peserta->hp;
-                    $message = "*Pesan ini otomatis dikirim dari sistem* \n\n Halo, " . $peserta->nama . ", \n\n *Verifikasi Berhasil*,\n\nBerikut no pendaftaran kamu : *" . $request->nopen . "*. \nSilahkan Login kembali melalui link berikut \n https://pendaftaran.stifar.ac.id/ \n untuk melengkapi berkas registrasi pendaftaran \n\n jika terdapat kendala dapat menghubungi no. 081393111171 \n sebagai media center PMB STIFAR 2025 \n\n Terimakasih, \n Admin PMB STIFAR";
+                    $message = "*Pesan dari STIFAR ini otomatis dikirim dari sistem* \n\n Halo, " . $peserta->nama . ", \n\n *Verifikasi Berhasil*,\n\nBerikut no pendaftaran kamu : *" . $request->nopen . "*. \nSilahkan Login kembali melalui link berikut \n https://pendaftaran.stifar.ac.id/ \n untuk melengkapi berkas registrasi pendaftaran \n\n jika terdapat kendala dapat menghubungi no. 081393111171 \n sebagai media center PMB STIFAR 2025 \n\n Terimakasih, \n Admin PMB STIFAR";
                     $data['pesan'] = $message;
 
                     $nohp = $peserta->hp;
@@ -384,7 +384,7 @@ class VerifikasiController extends Controller
             if($bukti){
                 if($request->is_bayar == 1){
                     $data['no_wa'] = $peserta->hp;
-                    $message = "*Pesan ini otomatis dikirim dari sistem* \n\n Halo, " . $peserta->nama . ", \n\n *Pembayaran Pendaftaran Terverifikasi*,\n\nSilahkan Login kembali melalui link berikut \n https://pendaftaran.stifar.ac.id/ \n untuk melanjutkan proses pendaftaran \n\n jika terdapat kendala dapat menghubungi no. 081393111171 \n sebagai media center PMB STIFAR 2025 \n\n Terimakasih, \n Admin PMB STIFAR";
+                    $message = "*Pesan dari STIFAR ini otomatis dikirim dari sistem* \n\n Halo, " . $peserta->nama . ", \n\n *Pembayaran Pendaftaran Terverifikasi*,\n\nSilahkan Login kembali melalui link berikut \n https://pendaftaran.stifar.ac.id/ \n untuk melanjutkan proses pendaftaran \n\n jika terdapat kendala dapat menghubungi no. 081393111171 \n sebagai media center PMB STIFAR 2025 \n\n Terimakasih, \n Admin PMB STIFAR";
                     $data['pesan'] = $message;
 
                     $nohp = $peserta->hp;

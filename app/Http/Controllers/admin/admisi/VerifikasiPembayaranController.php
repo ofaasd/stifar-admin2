@@ -147,6 +147,7 @@ class VerifikasiPembayaranController extends Controller
     public function store(Request $request){
         $pmb = PmbPesertaOnline::find($request->id);
         $pmb->registrasi_awal = $request->registrasi_awal;
+        $pmb->registrasi_tanggal = $request->registrasi_tanggal;
         $pmb->save();
         return response()->json('Updated');
     }

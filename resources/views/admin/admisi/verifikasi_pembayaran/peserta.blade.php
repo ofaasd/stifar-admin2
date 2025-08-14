@@ -82,6 +82,10 @@
                                                 <label for="registrasi_awal" class="form-label">Pembayaran Registrasi (RP)</label>
                                                 <input type="number" name="registrasi_awal" id="registrasi_awal" class="form-control">
                                             </div>
+                                            <div class="">
+                                                <label for="registrasi_tanggal" class="form-label">Tanggal Bayar</label>
+                                                <input type="date" name="registrasi_tanggal" id="registrasi_tanggal" class="form-control">
+                                            </div>
                                         </div>
                                         <div class="modal-footer">
                                             <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
@@ -210,7 +214,7 @@
                     if(key == 'registrasi_awal'){
                         if(data[0][key] == 0){
                             $("#alert-tambah").html(`<div class="alert alert-danger inverse alert-dismissible fade show" role="alert"><i class="icon-cross-alt"></i>
-                    <p>Pembayaran belum dilakukan. silahkan konfirmasi nominal pembayaran pada kolom regitrasi awal. jika sudah klik simpan.</p>
+                    <p>Pembayaran belum dilakukan. silahkan konfirmasi nominal pembayaran pada kolom registrasi awal. jika sudah klik simpan.</p>
                     <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close" data-bs-original-title="" title=""></button>
                 </div>`);
                             $('#' + key)
