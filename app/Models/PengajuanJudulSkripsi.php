@@ -19,6 +19,7 @@ class PengajuanJudulSkripsi extends Model
         'rumusan_masalah',
         'tujuan',
         'metodologi',
+        'catatan',
         'jenis_penelitian',
         'status',
     ];

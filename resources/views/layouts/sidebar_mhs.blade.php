@@ -61,6 +61,11 @@
                             <li><a href="#">Nilai <label class="badge badge-light-danger">!</label></a></li>
                         </ul>
                     </li>
+                    @if(session()->has('isYudisium') && session()->get('isYudisium') == 1)
+                        <li class="submenu-title"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/akademik/daftar-wisuda')}}" >
+                            <span> Daftar Wisuda</span></a>
+                        </li>
+                    @endif
                 </ul>
             </li>
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >

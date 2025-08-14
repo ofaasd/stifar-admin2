@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use Session;
 use App\Models\User;
 use App\Models\Mahasiswa;
-use App\Models\LoginAttempt;
 use App\Models\TahunAjaran;
+use App\Models\LoginAttempt;
 use App\Models\ModelHasRole;
 use Illuminate\Http\Request;
 use App\Models\PegawaiBiodatum;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Models\BerkasPendukungMahasiswa;
 use App\Models\PegawaiBerkasPendukung;
+use Illuminate\Support\Facades\Session;
+use App\Models\BerkasPendukungMahasiswa;
 
 class LoginController extends Controller
 {
@@ -93,10 +93,14 @@ class LoginController extends Controller
 
             if($role[0] == "mhs"){
                 $mhs = Mahasiswa::where('user_id',Auth::user()->id)->first();
+                $session = [
+                    'isYudisium' => $mhs->is_yudisium,
+                ];
                 $berkas = BerkasPendukungMahasiswa::where("nim", $mhs->nim)->latest()->first();
                 if($mhs->update_password == 0){
                     return redirect('mhs/profile');
                 }else{
+                    Session::put($session);
                     $redirect = redirect('mhs/dashboard');
                     if ($ta->id != optional($berkas)->id_ta) {
                         $redirect->with(

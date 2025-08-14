@@ -170,13 +170,12 @@
 
                     <li>
                         <a class="submenu-title" href="#">
-                            <span>Wisuda <label class="badge badge-light-danger">!</label></span>
+                            <span>Wisuda</span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
                             <li><a href="{{Url::to('admin/akademik/wisuda/setting')}}">Setting Wisuda</a></li>
-                            <li><a href="#">Daftar Wisuda <label class="badge badge-light-danger">!</label></a></li>
-                            <li><a href="#">Daftar Wisudawan <label class="badge badge-light-danger">!</label></a></li>
-
+                            <li><a href="{{Url::to('admin/akademik/wisuda/daftar-wisudawan')}}">Daftar Wisudawan</a></li>
+                            <li><a href="{{Url::to('admin/akademik/wisuda/cetak')}}">Cetak Wisudawan</a></li>
                         </ul>
                     </li>
                     {{-- <li><a href="{{URL::to('admin/alumni')}}">Alumni</a></li> --}}
