@@ -9,6 +9,7 @@ use App\Models\PmbPesertaOnline;
 use App\Models\PmbJalurProdi;
 use App\Models\Prodi;
 use App\Models\TahunAjaran;
+use App\Models\BiayaPendaftaran;
 
 class VerifikasiPembayaranController extends Controller
 {
@@ -137,5 +138,16 @@ class VerifikasiPembayaranController extends Controller
                 ]);
               }
         }
+    }
+    public function edit(String $id){
+        $peserta[0] = PmbPesertaOnline::select('pmb_peserta_online.*','program_studi.nama_prodi')->join('program_studi','program_studi.id','=','pmb_peserta_online.pilihan1')->where('pmb_peserta_online.id',$id)->first();
+        $peserta[1] = BiayaPendaftaran::where('id_prodi',$peserta[0]->pilihan1)->where('tahun_ajaran',date('Y'))->whereNotNull('registrasi')->orderBy('id','desc')->first();
+        return response()->json($peserta);
+    }
+    public function store(Request $request){
+        $pmb = PmbPesertaOnline::find($request->id);
+        $pmb->registrasi_awal = $request->registrasi_awal;
+        $pmb->save();
+        return response()->json('Updated');
     }
 }

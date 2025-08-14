@@ -15,7 +15,7 @@ use App\Models\PmbNilaiRapor;
 use App\Models\Prodi;
 use App\Models\BuktiRegistrasi;
 use App\Models\BankDataVa;
-use helpers;
+use App\helpers;
 
 class VerifikasiController extends Controller
 {
@@ -55,7 +55,7 @@ class VerifikasiController extends Controller
             }
 
             $prodi = PmbJalurProdi::select('pmb_jalur_prodi.*','program_studi.nama_prodi')->join('program_studi','program_studi.id','pmb_jalur_prodi.id_program_studi')->get();
-            $prod = []; 
+            $prod = [];
             $all_prodi = Prodi::all();
             foreach($all_prodi as $row){
                 $prod[$row->id] = $row->nama_prodi . " " . $row->keterangan;
@@ -211,7 +211,7 @@ class VerifikasiController extends Controller
                     //disini tambahkan wa ke nomor mahasiswa
 
                     $data['no_wa'] = $peserta->hp;
-                    $message = "Halo, " . $peserta->nama . ". Verifikasi berhasil, nomor pendaftaran anda adalah : " . $request->nopen . ". Silahkan Login kembali melalui link berikut \n https://pendaftaran.stifar.ac.id/ \n untuk melengkapi berkas registrasi pendaftaran \n\n jika terdapat kendala dapat menghubungi no. 081393111171 \n sebagai media center PMB STIFAR 2025 \n\n Terimakasih, \n Admin PMB STIFAR";
+                    $message = "*Pesan ini otomatis dikirim dari sistem* \n\n Halo, " . $peserta->nama . ", \n\n *Verifikasi Berhasil*,\n\nBerikut no pendaftaran kamu : *" . $request->nopen . "*. \nSilahkan Login kembali melalui link berikut \n https://pendaftaran.stifar.ac.id/ \n untuk melengkapi berkas registrasi pendaftaran \n\n jika terdapat kendala dapat menghubungi no. 081393111171 \n sebagai media center PMB STIFAR 2025 \n\n Terimakasih, \n Admin PMB STIFAR";
                     $data['pesan'] = $message;
 
                     $nohp = $peserta->hp;
@@ -382,6 +382,14 @@ class VerifikasiController extends Controller
         if($peserta->save()){
             $bukti = BuktiRegistrasi::where('nopen',$peserta->nopen)->first();
             if($bukti){
+                if($request->is_bayar == 1){
+                    $data['no_wa'] = $peserta->hp;
+                    $message = "*Pesan ini otomatis dikirim dari sistem* \n\n Halo, " . $peserta->nama . ", \n\n *Pembayaran Pendaftaran Terverifikasi*,\n\nSilahkan Login kembali melalui link berikut \n https://pendaftaran.stifar.ac.id/ \n untuk melanjutkan proses pendaftaran \n\n jika terdapat kendala dapat menghubungi no. 081393111171 \n sebagai media center PMB STIFAR 2025 \n\n Terimakasih, \n Admin PMB STIFAR";
+                    $data['pesan'] = $message;
+
+                    $nohp = $peserta->hp;
+                    $pesan = helpers::send_wa($data);
+                }
                 $update = BuktiRegistrasi::find($bukti->id);
                 $update->no_refrensi = $request->no_refrensi;
                 $update->verifikasi = $request->is_bayar;
