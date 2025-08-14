@@ -89,6 +89,8 @@ class JadwalController extends Controller
         $id_prodi = $id;
         $prodi = Prodi::find($id);
         $kurikulum = Kurikulum::where('progdi',$prodi->kode_prodi)->get();
+        $ta = TahunAjaran::where('status','Aktif');
+        $jumlah_kurikulum = Kurikulum::where('progdi',$prodi->kode_prodi)->where('thn_ajar',$ta->first()->id)->count();
         $mk = [];
         if($kurikulum){
             foreach($kurikulum as $row){
@@ -130,7 +132,7 @@ class JadwalController extends Controller
 
         $totalMahasiswa = $angkatan->sum();
 
-        return view('admin.akademik.jadwal.index', compact('title', 'mk', 'no','prodi', 'nama', 'id_prodi' ,'jumlah_anggota', 'angkatan', 'totalMahasiswa'));
+        return view('admin.akademik.jadwal.index', compact('title', 'mk', 'no','prodi', 'nama', 'id_prodi' ,'jumlah_anggota', 'angkatan', 'totalMahasiswa','jumlah_kurikulum'));
     }
     public function daftarJadwal($id){
         $title = 'Buat Jadwal';
