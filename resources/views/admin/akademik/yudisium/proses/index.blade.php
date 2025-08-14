@@ -140,7 +140,7 @@
                         {{-- Modal ijazah --}}
                         <div class="modal fade" id="cetakIjazahModal" tabindex="-1" aria-labelledby="cetak-ijazah" aria-hidden="true">
                             <div class="modal-dialog modal-lg">
-                                <form method="POST" action="{{ url('/admin/alumni/cetak-ijazah') }}" target="_blank">
+                                <form method="POST" id="formCetakIjazah" action="{{ url('/admin/alumni/cetak-ijazah') }}" target="_blank">
                                     @csrf
                                     <input type="hidden" name="nimEnkripsi" id="nim-cetak">
                                     <div class="modal-content">
@@ -181,8 +181,8 @@
                                     </div>
                                     </div>
                                     <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
-                                    <button type="submit" class="btn btn-success btn-sm">Cetak</button>
+                                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+                                        <button type="submit" class="btn btn-primary btn-sm" id="btn-cetak">Cetak</button>
                                     </div>
                                     </div>
                                 </form>
@@ -371,6 +371,40 @@
                         });
                         btnSubmit.prop('disabled', false);
                         btnSubmit.html(oldBtnHtml);
+                    }
+                });
+            });
+
+            $('#formCetakIjazah').on('submit', function(e) {
+                e.preventDefault();
+                swal({
+                    title: 'Konfirmasi Cetak Ijazah',
+                    text: 'Hati-hati dalam mencetak, karena hitungan duplikat terus bertambah setiap kali mencetak. Lanjutkan mencetak?',
+                    icon: 'warning',
+                    buttons: {
+                        cancel: {
+                            text: 'Batal',
+                            value: null,
+                            visible: true,
+                            className: 'btn btn-label-secondary',
+                            closeModal: true,
+                        },
+                        confirm: {
+                            text: 'Lanjutkan Cetak',
+                            value: true,
+                            visible: true,
+                            className: 'btn btn-primary me-3',
+                            closeModal: true
+                        }
+                    },
+                    dangerMode: true,
+                    customClass: {
+                        confirmButton: 'btn btn-primary me-3',
+                        cancelButton: 'btn btn-label-secondary'
+                    }
+                }).then(function(result) {
+                    if (result) {
+                        $('#formCetakIjazah')[0].submit();
                     }
                 });
             });
