@@ -641,7 +641,7 @@ Route::group(['middleware' => ['auth', 'role:pegawai|super-admin']], function ()
     Route::post('dosen/validasi-krs', [DosenController::class, 'valiKrs']);
     Route::get('dosen/krm', [KrmController::class, 'index']);
     Route::get('dosen/absensi/{id}/input', [KrmController::class, 'daftarMhs']);
-    Route::get('dosen/nilai/{id}/input', [KrmController::class, 'daftarMhsNilai']);
+    // Route::get('dosen/nilai/{id}/input', [KrmController::class, 'daftarMhsNilai']);
     Route::get('dosen/{id}/set-pertemuan', [KrmController::class, 'setPertemuan']);
     Route::get('dosen/input/{nim}/absensi/{id_jadwal}', [KrmController::class, 'setAbsensiSatuan']);
     Route::post('dosen/simpan-absensi-satuan', [KrmController::class, 'saveAbsensiSatuan']);
