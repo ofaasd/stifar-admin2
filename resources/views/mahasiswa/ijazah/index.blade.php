@@ -25,6 +25,18 @@
             padding: 22px;
             position: relative;
         }
+
+        .mark-duplikat {
+            position: absolute;
+            right: 18px;
+            bottom: 12px;
+            font-size: 6px;
+            color: #888;
+            opacity: 0.25;
+            pointer-events: none;
+            white-space: nowrap;
+            z-index: 1000;
+        }
         
         .header {
             text-align: right;
@@ -248,6 +260,11 @@
                 </td>
             </tr>
         </table>
+        @if (isset($duplikatKe) && $duplikatKe)
+            <div class="mark-duplikat">
+                Duplikat {{ $duplikatKe }}
+            </div>
+        @endif
     </div>
 </body>
 </html>

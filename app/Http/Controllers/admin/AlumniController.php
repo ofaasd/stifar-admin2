@@ -9,6 +9,7 @@ use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Controllers\Controller;
+use App\Models\TbFlagging;
 use Illuminate\Support\Facades\Crypt;
 
 class AlumniController extends Controller
@@ -254,6 +255,20 @@ class AlumniController extends Controller
             ->leftJoin('program_studi', 'program_studi.id', '=', 'mahasiswa.id_program_studi')
             ->first();
 
+        $cekDuplikate = TbFlagging::where('nim', $nim)->where('jenis', 1)->first();
+        if (!$cekDuplikate) {
+            TbFlagging::create([
+            'nim' => $nim,
+            'jenis' => 1,
+            'count' => 0,
+            ]);
+            $duplikatKe = 0;
+        } else {
+            $cekDuplikate->count = $cekDuplikate->count + 1;
+            $cekDuplikate->save();
+            $duplikatKe = $cekDuplikate->count;
+        }
+
         // Kirim data ke view dan render HTML
         $html = view('mahasiswa.ijazah.index', [
             'nomorSeri' => $request->seri_ijazah,
@@ -263,6 +278,7 @@ class AlumniController extends Controller
             'akreditasiLamPtKesInggris' => $request->akreditasi2Eng,
             'namaKaprodi' => $request->nama_ketua_prodi,
             'niyKaprodi' => $request->niy_ketua_prodi,
+            'duplikatKe' => $duplikatKe,
             'data' => $mahasiswa,
         ])->render();
 
