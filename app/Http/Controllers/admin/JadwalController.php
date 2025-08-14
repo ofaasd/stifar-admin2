@@ -88,7 +88,7 @@ class JadwalController extends Controller
         $title = "Jadwal";
         $id_prodi = $id;
         $prodi = Prodi::find($id);
-        $kurikulum = Kurikulum::where('progdi',$prodi->kode_prodi)->get();
+        $kurikulum = Kurikulum::where('progdi',$prodi->kode_prodi)->where('thn_ajar',$ta->first()->id)->get();
         $ta = TahunAjaran::where('status','Aktif');
         $jumlah_kurikulum = Kurikulum::where('progdi',$prodi->kode_prodi)->where('thn_ajar',$ta->first()->id)->count();
         $mk = [];
