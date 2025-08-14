@@ -151,13 +151,15 @@ class CetakYudisiumController extends Controller
 
         $data = TbYudisium::where('id_gelombang_yudisium', $id)
         ->leftJoin('mahasiswa', 'tb_yudisium.nim', '=', 'mahasiswa.nim')
-        ->leftJoin('skripsi', 'mahasiswa.nim', '=', 'skripsi.nim')
-        ->leftJoin('sidang', 'skripsi.id', '=', 'sidang.skripsi_id')
+        ->leftJoin('master_skripsi', 'mahasiswa.nim', '=', 'master_skripsi.nim')
+        ->leftJoin('sidang', 'master_skripsi.id', '=', 'sidang.skripsi_id')
+        ->leftJoin('pengajuan_judul_skripsi', 'master_skripsi.id', '=', 'pengajuan_judul_skripsi.id_master')
+        ->where('pengajuan_judul_skripsi.status', 1)
         ->select([
             'mahasiswa.nama',
             'mahasiswa.nim',
             'mahasiswa.foto_mhs',
-            'skripsi.judul',
+            'pengajuan_judul_skripsi.judul',
             'sidang.tanggal AS tanggalSidang'
             ])
         ->get();
