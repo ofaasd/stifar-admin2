@@ -39,14 +39,25 @@
                                             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <div class="row">
-                                                <div class="mb-3 col">
+                                            <div class="row mb-3">
+                                                <div class="col">
                                                     <label for="periode" class="form-label">Periode</label>
                                                     <input type="number" class="form-control" id="periode" name="periode" required placeholder="Masukkan periode">
                                                 </div>
-                                                <div class="mb-3 col">
+                                                <div class="col">
                                                     <label for="nama" class="form-label">Nama</label>
                                                     <input type="text" class="form-control" id="nama" name="nama" required placeholder="Masukkan nama">
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="mb-3 col">
+                                                    <label for="tempat" class="form-label">Tempat</label>
+                                                    <input type="text" class="form-control" id="tempat" name="tempat" required placeholder="Masukkan tempat">
+                                                </div>
+                                                <div class="mb-3 col">
+                                                    <label for="waktu_pelaksanaan" class="form-label">Waktu Pelaksanaan</label>
+                                                    <input type="datetime-local" class="form-control" id="waktu_pelaksanaan" name="waktu_pelaksanaan" required placeholder="Waktu pelaksanaan">
                                                 </div>
                                             </div>
 
@@ -80,6 +91,8 @@
                                         <th>ID</th>
                                         <th>Periode</th>
                                         <th>Nama</th>
+                                        <th>Tempat</th>
+                                        <th>Waktu Pelaksanaan</th>
                                         <th>Tanggal Pendaftaran</th>
                                         <th>Actions</th>
                                     </tr>

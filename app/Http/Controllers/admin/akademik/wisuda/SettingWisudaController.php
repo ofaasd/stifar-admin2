@@ -11,7 +11,7 @@ class SettingWisudaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public $indexed = ['', 'id', 'periode', 'nama', 'tanggal_pendaftaran'];
+    public $indexed = ['', 'id', 'periode', 'nama', 'tempat', 'waktu_pelaksanaan', 'tanggal_pendaftaran'];
     public function index(Request $request)
     {
         if (empty($request->input('length'))) {
@@ -25,7 +25,9 @@ class SettingWisudaController extends Controller
                 1 => 'id',
                 2 => 'periode',
                 3 => 'nama',
-                4 => 'tanggal_pendaftaran'
+                4 => 'tempat',
+                5 => 'waktu_pelaksanaan',
+                6 => 'tanggal_pendaftaran'
             ];
 
             $search = [];
@@ -50,6 +52,7 @@ class SettingWisudaController extends Controller
 
                 $gelombang = TbGelombangWisuda::where('nama', 'LIKE', "%{$search}%")
                     ->orWhere('periode', 'LIKE', "%{$search}%")
+                    ->orWhere('tempat', 'LIKE', "%{$search}%")
                     ->orWhere('mulai_pendaftaran', 'LIKE', "%{$search}%")
                     ->orWhere('selesai_pendaftaran', 'LIKE', "%{$search}%")
                     ->offset($start)
@@ -59,6 +62,7 @@ class SettingWisudaController extends Controller
 
                 $totalFiltered = TbGelombangWisuda::where('nama', 'LIKE', "%{$search}%")
                     ->orWhere('periode', 'LIKE', "%{$search}%")
+                    ->orWhere('tempat', 'LIKE', "%{$search}%")
                     ->orWhere('mulai_pendaftaran', 'LIKE', "%{$search}%")
                     ->orWhere('selesai_pendaftaran', 'LIKE', "%{$search}%")
                     ->count();
@@ -75,6 +79,8 @@ class SettingWisudaController extends Controller
                     $nestedData['fake_id'] = ++$ids;
                     $nestedData['periode'] = $row->periode;
                     $nestedData['nama'] = $row->nama;
+                    $nestedData['tempat'] = $row->tempat;
+                    $nestedData['waktu_pelaksanaan'] = \Carbon\Carbon::parse($row->waktu_pelaksanaan)->translatedFormat('d F Y H:i');
                     $nestedData['tanggal_pendaftaran'] = \Carbon\Carbon::parse($row->mulai_pendaftaran)->translatedFormat('d F Y') . ' - ' . \Carbon\Carbon::parse($row->selesai_pendaftaran)->translatedFormat('d F Y');
                     $data[] = $nestedData;
                 }
@@ -116,6 +122,8 @@ class SettingWisudaController extends Controller
             $request->validate([
                 'nama' => 'required',
                 'periode' => 'required',
+                'tempat' => 'required',
+                'waktu_pelaksanaan' => 'required',
                 'mulai_pendaftaran' => 'required|date',
                 'selesai_pendaftaran' => 'required|date|after_or_equal:mulai_pendaftaran',
             ]);
@@ -127,6 +135,8 @@ class SettingWisudaController extends Controller
                     [
                         'nama' => $request->nama,
                         'periode' => $request->periode,
+                        'tempat' => $request->tempat,
+                        'waktu_pelaksanaan' => $request->waktu_pelaksanaan,
                         'mulai_pendaftaran' => $request->mulai_pendaftaran,
                         'selesai_pendaftaran' => $request->selesai_pendaftaran,
                     ]
@@ -140,6 +150,8 @@ class SettingWisudaController extends Controller
                     [
                         'nama' => $request->nama,
                         'periode' => $request->periode,
+                        'tempat' => $request->tempat,
+                        'waktu_pelaksanaan' => $request->waktu_pelaksanaan,
                         'mulai_pendaftaran' => $request->mulai_pendaftaran,
                         'selesai_pendaftaran' => $request->selesai_pendaftaran,
                     ]
