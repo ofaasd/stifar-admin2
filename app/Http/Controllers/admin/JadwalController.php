@@ -166,6 +166,7 @@ class JadwalController extends Controller
                                 ->where(['pengajars.id_dsn' => $dsn->id_dsn,'jadwals.hari' => $row->hari, 'jadwals.id_tahun' => $row->id_tahun])
                                 ->where('waktu_mulai','>=',$waktu->waktu_mulai)->where('waktu_mulai','<=',$waktu->waktu_selesai)
                                 ->where('jadwals.id','<>',$row->id)
+                                ->where('jadwals.id_tahun', $curr_ta->id)
                                 ->first();
                 if ($cekDosen) {
                     $pesan = 'jadwal dengan dosen ' . $pegawai->nama_lengkap . ' bertabrakan dengan jadwal ' . $cekDosen->kode_jadwal . ' matakulianh : ' . $cekDosen->nama_matkul;
