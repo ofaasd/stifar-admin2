@@ -34,6 +34,7 @@ class MasterPt extends Model
 	protected $table = 'master_pt';
 
 	protected $fillable = [
+		'kode',
 		'nama',
 		'deskripsi',
 		'lat',
