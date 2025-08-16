@@ -64,18 +64,12 @@
                                                                                 <li><strong>Nama Gelombang:</strong> {{ $registered->nama ?? '-' }}</li>
                                                                                 <li><strong>Tempat Pelaksanaan:</strong> {{ $registered->tempat ?? '-' }}</li>
                                                                                 <li><strong>Waktu Pelaksanaan:</strong> {{ \Carbon\Carbon::parse($registered->waktu_pelaksanaan)->translatedFormat('d F Y H:i') ?? '-' }}</li>
-                                                                                <li>
-                                                                                        <strong>Status:</strong>
-                                                                                        <span class="badge {{ $registered->status == 1 ? 'bg-success' : 'bg-secondary' }}">
-                                                                                                {{ $registered->status == 1 ? 'Sudah diacc' : 'Pengajuan' }}
-                                                                                        </span>
-                                                                                </li>
                                                                         </ul>
                                                                         Mohon tunggu informasi selanjutnya dari panitia.<br>
                                                                 </div>
                                                         @else
                                                                  <div class="alert alert-{{ $registered->status == 1 ? 'success' : 'warning' }}" role="alert">
-                                                                        Selamat 🎉 <strong>{{ $mhs->nama }}</strong> Anda telah berhasil mendaftar wisuda.<br>
+                                                                        Selamat 🎉 <strong>{{ $mhs->nama }}</strong> Anda telah berhasil mengajukan pendaftaran wisuda.<br>
                                                                         <ul class="mb-2">
                                                                                 <li><strong>Nama Gelombang:</strong> {{ $registered->nama ?? '-' }}</li>
                                                                                 <li><strong>Tempat Pelaksanaan:</strong> {{ $registered->tempat ?? '-' }}</li>
@@ -112,9 +106,15 @@
                                                                                                 @endif
                                                                                         </select>
                                                                                 </div>
+                                                                        </div>
+                                                                        <div class="row mb-2">
                                                                                 <div class="col">
                                                                                         <h5 class="mb-2">Judul Skripsi</h5>
-                                                                                        <input type="text" class="form-control" name="judul_skripsi" value="{{ $mhs->judul ?? '' }}" placeholder="Masukkan judul skripsi">
+                                                                                        <input type="text" class="form-control" name="judul_skripsi" value="{{ $mhs->judul ?? '' }}" placeholder="Masukkan Judul Skripsi">
+                                                                                </div>
+                                                                                <div class="col">
+                                                                                        <h5 class="mb-2">Judul Skripsi Inggris</h5>
+                                                                                        <input type="text" class="form-control" name="judul_skripsi_eng" value="{{ $mhs->judulEng ?? '' }}" placeholder="Masukkan Judul Skripsi Inggris">
                                                                                 </div>
                                                                         </div>
                                                                         <div class="row mb-2">

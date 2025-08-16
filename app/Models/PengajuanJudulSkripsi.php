@@ -14,6 +14,7 @@ class PengajuanJudulSkripsi extends Model
     protected $fillable = [
         'id_master',
         'judul',
+        'judul_eng',
         'abstrak',
         'latar_belakang',
         'rumusan_masalah',

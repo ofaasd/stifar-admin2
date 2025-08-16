@@ -33,6 +33,7 @@ class DaftarWisudaController extends Controller
             'mahasiswa.no_ktp AS noKtp',
             'gelombang_yudisium.nama AS namaGelombangYudisium',
             'pengajuan_judul_skripsi.judul',
+            'pengajuan_judul_skripsi.judul_eng AS judulEng',
         ])
         ->where('user_id', auth()->user()->id)
         ->where('pengajuan_judul_skripsi.status', 1)
@@ -84,6 +85,7 @@ class DaftarWisudaController extends Controller
             'gelombang_id' => 'required|exists:tb_gelombang_wisuda,id',
             'nim' => 'required|exists:mahasiswa,nim',
             'judul_skripsi' => 'required',
+            'judul_skripsi_eng' => 'required',
             'no_ktp' => 'required',
             'tempat_lahir' => 'required',
             'nama_lengkap' => 'required',
@@ -145,6 +147,7 @@ class DaftarWisudaController extends Controller
             $judulBaru = PengajuanJudulSkripsi::create([
                 'id_master' => $masterSkripsi->id,
                 'judul' => $request->judul_skripsi,
+                'judul_eng' => $request->judul_skripsi_eng,
                 'abstrak' => $skripsi->abstrak,
                 'latar_belakang' => $skripsi->latar_belakang,
                 'rumusan_masalah' => $skripsi->rumusan_masalah,
