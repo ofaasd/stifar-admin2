@@ -9,6 +9,7 @@ use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Controllers\Controller;
+use App\Models\TbFlagging;
 use Illuminate\Support\Facades\Crypt;
 
 class AlumniController extends Controller
@@ -248,21 +249,48 @@ class AlumniController extends Controller
                 'program_studi.nama_prodi AS prodiIndo',
                 'program_studi.nama_prodi_eng AS prodiInggris',
                 'program_studi.nama_ijazah AS namaIjazahIndo',
-                'program_studi.nama_ijazah_eng AS namaIjazahInggris'
+                'program_studi.nama_ijazah_eng AS namaIjazahInggris',
+                'gelombang_yudisium.tanggal_pengesahan AS lulusPada',
             )
             ->where('mahasiswa.nim', $nim)
             ->leftJoin('program_studi', 'program_studi.id', '=', 'mahasiswa.id_program_studi')
+            ->leftJoin('tb_yudisium', 'mahasiswa.nim', '=', 'tb_yudisium.nim')
+            ->leftJoin('gelombang_yudisium', 'tb_yudisium.id_gelombang_yudisium', '=', 'gelombang_yudisium.id')
             ->first();
+
+        if (!$mahasiswa) 
+        {
+            return response()->json(['message' => 'Data tidak ditemukan.']);
+        }
+        
+        if(!$mahasiswa->lulusPada)
+        {
+            return response()->json(['message' => 'Yudisium belum disahkan.']);
+        }
+
+        $cekDuplikate = TbFlagging::where('nim', $nim)->where('jenis', 1)->first();
+        if (!$cekDuplikate) {
+            TbFlagging::create([
+                'nim' => $nim,
+                'jenis' => 1,
+                'count' => 0,
+            ]);
+            $duplikatKe = 0;
+        } else {
+            $cekDuplikate->count = $cekDuplikate->count + 1;
+            $cekDuplikate->save();
+            $duplikatKe = $cekDuplikate->count;
+        }
 
         // Kirim data ke view dan render HTML
         $html = view('mahasiswa.ijazah.index', [
             'nomorSeri' => $request->seri_ijazah,
-            'lulusPada' => $request->lulus_pada,
             'akreditasiBadanPtKes' => $request->akreditasi1,
             'akreditasiLamPtKes' => $request->akreditasi2,
             'akreditasiLamPtKesInggris' => $request->akreditasi2Eng,
             'namaKaprodi' => $request->nama_ketua_prodi,
             'niyKaprodi' => $request->niy_ketua_prodi,
+            'duplikatKe' => $duplikatKe,
             'data' => $mahasiswa,
         ])->render();
 
@@ -285,7 +313,7 @@ class AlumniController extends Controller
         $mpdf->WriteHTML($html);
 
         // Output PDF ke browser secara inline
-        return response($mpdf->Output('ijazah-' . $mahasiswa->nim . '.pdf', 'I'))
+        return response($mpdf->Output('ijazah-' . $mahasiswa->nim . ' ' . $mahasiswa->nama . '.pdf', 'I'))
             ->header('Content-Type', 'application/pdf');
     }
 

@@ -4,10 +4,11 @@ namespace App\Http\Controllers\admin\akademik\yudisium;
 
 use App\Models\Mahasiswa;
 use App\Models\TbYudisium;
+use App\Models\master_nilai;
 use Illuminate\Http\Request;
 use App\Models\GelombangYudisium;
 use App\Http\Controllers\Controller;
-use App\Models\master_nilai;
+use Illuminate\Support\Facades\Crypt;
 
 class ProsesYudisiumController extends Controller
 {
@@ -46,7 +47,11 @@ class ProsesYudisiumController extends Controller
                     'mahasiswa.foto_mhs',
                 ])
                 ->groupBy('mahasiswa.id')
-                ->get();
+                ->get()
+                ->map(function ($item) {
+                    $item->nimEnkripsi = Crypt::encryptString($item->nim . "stifar");
+                    return $item;
+                });
 
             foreach ($mhs as $item) {   
                 $getNilai = master_nilai::select(
@@ -88,7 +93,6 @@ class ProsesYudisiumController extends Controller
                 3 => 'nilai',
                 4 => 'nilai2',
                 5 => 'gelombang',
-                5 => 'gelombang',
             ];
 
             $search = [];
@@ -115,7 +119,11 @@ class ProsesYudisiumController extends Controller
                     ->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
-                    ->get();
+                    ->get()
+                    ->map(function ($item) {
+                        $item->nimEnkripsi = Crypt::encryptString($item->nim . "stifar");
+                        return $item;
+                    });
 
                 foreach ($proses as $item) {
                     $getNilai = master_nilai::select(
@@ -168,7 +176,11 @@ class ProsesYudisiumController extends Controller
                     ->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
-                    ->get();
+                    ->get()
+                    ->map(function ($item) {
+                        $item->nimEnkripsi = Crypt::encryptString($item->nim . "stifar");
+                        return $item;
+                    });
 
                 foreach ($proses as $item) {
                     $getNilai = master_nilai::select(
@@ -232,6 +244,8 @@ class ProsesYudisiumController extends Controller
                     $nestedData['nilai'] = $row->totalSks . " | " . $row->ipk ;
                     $nestedData['nilai2'] = $row->totalD . " | " . $row->totalE ;
                     $nestedData['gelombang'] = $row->gelombang . " | " . $row->namaGelombang;
+                    $nestedData['nimEnkripsi'] = $row->nimEnkripsi;
+                    $nestedData['namaMahasiswa'] = $row->namaMahasiswa;
                     $data[] = $nestedData;
                 }
             }

@@ -3,26 +3,30 @@
 namespace App\Http\Controllers\mahasiswa;
 
 use stdClass;
+use App\helpers;
 use App\Models\User;
 use App\Models\Prodi;
 use App\Models\Wilayah;
+use App\Models\MasterPt;
 use App\Models\Mahasiswa;
 use App\Models\TahunAjaran;
-use App\Models\ModelHasRole;
-use App\Models\LogMh as LogMhs;
-use Illuminate\Http\Request;
+use App\Models\master_nilai;
 // use Illuminate\Support\Facades\Request;
+use App\Models\ModelHasRole;
+use Illuminate\Http\Request;
 use App\Models\DetailTagihan;
+use App\Models\LogMh as LogMhs;
 use App\Models\PegawaiBiodatum;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\JabatanStruktural;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Intervention\Image\ImageManager;
-use App\Models\MahasiswaBerkasPendukung;
-use Illuminate\Support\Facades\Crypt;
-use Intervention\Image\Drivers\Gd\Driver;
 
+use Illuminate\Support\Facades\Crypt;
 use Picqer\Barcode\BarcodeGeneratorPNG;
-use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\MahasiswaBerkasPendukung;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class MahasiswaController extends Controller
 {
@@ -601,5 +605,144 @@ class MahasiswaController extends Controller
 
         // Tampilkan inline di browser
         return $pdf->stream('KTM-'. $mahasiswa->nim .'.pdf');
+    }
+
+    public function cetakTranskripNilai(Request $request)
+    {
+        // Dekripsi NIM
+        $nimDekrip = Crypt::decryptString($request->nimEnkripsi);
+        $nim = str_replace("stifar", "", $nimDekrip);
+        
+        $helpers = new helpers;
+        $data = Mahasiswa::select([
+            'mahasiswa.nim',
+            'mahasiswa.nama',
+            'mahasiswa.tempat_lahir AS tempatLahir',
+            'mahasiswa.tgl_lahir AS tglLahir',
+            'program_studi.nama_prodi AS programStudi',
+            'program_studi.jenjang',
+            'program_studi.nama_ijazah AS gelar',
+            'pengajuan_judul_skripsi.judul',
+            'pengajuan_judul_skripsi.judul_eng AS judulEng',
+            'pegawai_biodata.npp AS nppKaprodi',
+            'pegawai_biodata.nama_lengkap AS namaKaprodi',
+            'gelombang_yudisium.tanggal_pengesahan AS tanggalLulus'
+        ])
+        ->leftJoin('program_studi', 'program_studi.id', '=', 'mahasiswa.id_program_studi')
+        ->leftJoin('master_skripsi', 'mahasiswa.nim', '=', 'master_skripsi.nim')
+        ->leftJoin('pengajuan_judul_skripsi', 'master_skripsi.id', '=', 'pengajuan_judul_skripsi.id_master')
+        ->leftJoin('jabatan_struktural', 'mahasiswa.id_program_studi', '=', 'jabatan_struktural.prodi_id')
+        ->leftJoin('pegawai_biodata', 'jabatan_struktural.id_pegawai', '=', 'pegawai_biodata.id_pegawai')
+        ->leftJoin('tb_yudisium', 'mahasiswa.nim', '=', 'tb_yudisium.nim')
+        ->leftJoin('gelombang_yudisium', 'tb_yudisium.id_gelombang_yudisium', '=', 'gelombang_yudisium.id')
+        ->where('mahasiswa.nim', $nim)
+        ->where('pengajuan_judul_skripsi.status', 1)
+        ->first();
+
+        if(!$data){
+            return response()->json(["message"  => "Data tidak ditemukan."], 404);
+        }
+
+        if(!$data->tanggalLulus)
+        {
+            return response()->json(["message"  => "Yudisium Belum Disahkan."], 403);
+        }
+
+        $data->tglLahir = \Carbon\Carbon::parse($data->tglLahir)->translatedFormat('d F Y');
+        $data->tanggalLulus = \Carbon\Carbon::parse($data->tanggalLulus)->translatedFormat('d F Y');
+
+        if (preg_match('/\((.*?)\)/', $data->gelar, $matches)) {
+            $data->gelar = $matches[1];
+        } else {
+            $data->gelar = $data->gelar;
+        }
+
+        $getNilai = master_nilai::select(
+                'master_nilai.*',
+                'a.hari',
+                'a.kel',
+                'b.kode_matkul',
+                'b.nama_matkul',
+                'b.nama_matkul_eng',
+                'b.sks_teori',
+                'b.sks_praktek',
+                'b.kode_matkul',
+            )
+            ->join('jadwals as a', 'master_nilai.id_jadwal', '=', 'a.id')
+            ->join('mata_kuliahs as b', 'a.id_mk', '=', 'b.id')
+            ->where(['nim' => $data->nim])
+            ->get();
+
+        $totalSks = 0;
+        $totalIps = 0;
+        $totalMutu = 0;
+        $totalBobot = 0;
+        $mataKuliah = [];
+        foreach ($getNilai as $row) {
+            $mutu = $helpers->getKualitas($row->nhuruf) ?? 0;
+            $countBobot = ($row->sks_teori + $row->sks_praktek) * $helpers->getKualitas($row->nhuruf);
+
+            $mataKuliah[] = [
+                'kodeMatkul'        => $row->kode_matkul ?? 'data tidak ditemukan',
+                'namaMataKuliah'    => $row->nama_matkul ?? 'data tidak ditemukan',
+                'namaMataKuliahEng' => $row->nama_matkul_eng ?? 'data tidak ditemukan',
+                'totalSks'          => $row->sks_teori + $row->sks_praktek,
+                'nilai'             => $row->nhuruf,
+                'mutu'              => $mutu,
+                'bobot'             => $countBobot,
+            ];
+
+            $sks = ($row->sks_teori + $row->sks_praktek);
+            $totalSks += $sks;
+            if($row->validasi_tugas == 1 && $row->validasi_uts == 1 && $row->validasi_uas == 1)
+            {
+                $totalIps +=  ($row->sks_teori+$row->sks_praktek) * $helpers->getKualitas($row->nhuruf);
+                $totalMutu += $mutu;
+                $totalBobot += $countBobot;
+            }
+        }
+        $data->totalSks = $totalSks;
+        $data->totalMutu = $totalMutu;
+        $data->totalBobot = $totalBobot;
+        $data->ipk = $totalSks > 0 ? floatval(number_format($totalIps / $totalSks, 2)) : 0;
+        $data->mataKuliah = $mataKuliah;
+
+        $jabatanStruktural = JabatanStruktural::select([
+            'pegawai_biodata.npp',
+            'pegawai_biodata.nama_lengkap',
+        ])
+        ->where('jabatan', 'Ketua')
+        ->leftJoin('pegawai_biodata', 'jabatan_struktural.id_pegawai', '=', 'pegawai_biodata.id_pegawai')
+        ->first();
+
+        $data->nppKetua = $jabatanStruktural->npp ?? '-';
+        $data->namaKetua = $jabatanStruktural->nama_lengkap ?? '-';
+
+        $dataKampus = MasterPt::latest()->  first();
+        $printedAt = now();
+
+        // Kirim data ke view dan render HTML
+        $html = view('mahasiswa.transkrip-nilai.index', [
+            'nomorSk' => $request->nomorSk,
+            'nomorSeri' => $request->nomorSeri,
+            'data' => $data,
+            'dataKampus' => $dataKampus,
+            'printedAt' => $printedAt,
+        ])->render();
+
+        // Inisialisasi mPDF
+        $mpdf = new \Mpdf\Mpdf();
+
+        // Pastikan HTML tidak kosong atau error
+        if (empty(trim($html))) {
+            return response()->json(['message' => 'Template kosong atau error.']);
+        }
+
+        // Tulis HTML ke PDF
+        $mpdf->WriteHTML($html);
+
+        // Output PDF ke browser secara inline
+        return response($mpdf->Output('transkrip-nilai-' . $data->nim . '-'. $data->nama .'.pdf', 'I'))
+            ->header('Content-Type', 'application/pdf');
     }
 }

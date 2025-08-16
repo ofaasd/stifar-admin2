@@ -79,6 +79,7 @@ use App\Http\Controllers\admin\akademik\NilaiSusulanController;
 use App\Http\Controllers\admin\kepegawaian\SuratIzinController;
 use App\Http\Controllers\admin\master\JenisKendaaranController;
 use App\Http\Controllers\mahasiswa\skripsi\BimbinganController;
+use App\Http\Controllers\mahasiswa\skripsi\PengajuanController;
 use App\Http\Controllers\admin\akademik\SoalKuesionerController;
 use App\Http\Controllers\admin\berkas\BerkasMahasiswaController;
 use App\Http\Controllers\admin\master\ProdiAkreditasiController;
@@ -96,6 +97,7 @@ use App\Http\Controllers\admin\kepegawaian\PegawaiKaryaController;
 use App\Http\Controllers\admin\master\JabatanStrukturalController;
 use App\Http\Controllers\admin\skripsi\ManajemenSkripsiController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiBerkasController;
+use App\Http\Controllers\mahasiswa\akademik\DaftarWisudaController;
 use App\Http\Controllers\mahasiswa\skripsi\BerkasSkripsiController;
 use App\Http\Controllers\mahasiswa\skripsi\DaftarSkripsiController;
 use App\Http\Controllers\dosen\skripsi\BimbinganMahasiswaController;
@@ -104,26 +106,29 @@ use App\Http\Controllers\admin\kepegawaian\PegawaiMengajarController;
 use App\Http\Controllers\mahasiswa\KrsController as mhsKrsController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiPekerjaanController;
 use App\Http\Controllers\mahasiswa\skripsi\BimbinganSkripsiController;
+use App\Http\Controllers\mahasiswa\skripsi\PengajuanSkripsiController;
+use App\Http\Controllers\admin\akademik\wisuda\SettingWisudaController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiKompetensiController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiOrganisasiController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiPendidikanController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiPenelitianController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiPengabdianController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiRepositoryController;
+use App\Http\Controllers\admin\akademik\wisuda\CetakWisudawanController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiPenghargaanController;
 use App\Http\Controllers\admin\akademik\NilaiController as nilaiakademik;
 use App\Http\Controllers\admin\akademik\yudisium\CetakYudisiumController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiKegiatanLuarController;
+use App\Http\Controllers\mahasiswa\skripsi\PengajuanPembimbingController;
 use App\Http\Controllers\admin\akademik\yudisium\ProsesYudisiumController;
 use App\Http\Controllers\admin\akademik\yudisium\SettingYudisiumController;
 use App\Http\Controllers\mahasiswa\AbsensiController as mhsAbsensiController;
+use App\Http\Controllers\admin\akademik\wisuda\AdminDaftarWisudawanController;
+use App\Http\Controllers\admin\akademik\yudisium\PengesahanYudisiumController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiJabatanFungsionalController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiJabatanStrukturalController;
 use App\Http\Controllers\mahasiswa\skripsi\SidangController as SidangMahasiswa;
 use App\Http\Controllers\admin\admisi\StatistikController as AdmisiStatistikController;
-use App\Http\Controllers\mahasiswa\skripsi\PengajuanController;
-use App\Http\Controllers\mahasiswa\skripsi\PengajuanPembimbingController;
-use App\Http\Controllers\mahasiswa\skripsi\PengajuanSkripsiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -359,7 +364,15 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
     // Yudisium
     Route::resource('/admin/akademik/yudisium/setting', SettingYudisiumController::class)->name('index','setting-yudisium');
     Route::resource('/admin/akademik/yudisium/proses', ProsesYudisiumController::class)->name('index','proses-yudisium');
+    Route::post('/admin/akademik/yudisium/cetak-transkrip-nilai', [MahasiswaController::class, 'cetakTranskripNilai']);
     Route::resource('/admin/akademik/yudisium/cetak', CetakYudisiumController::class)->name('index','cetak-yudisium');
+    Route::resource('/admin/akademik/yudisium/pengesahan', PengesahanYudisiumController::class)->name('index','pengesahan-yudisium');
+
+    // Wisuda
+    Route::resource('/admin/akademik/wisuda/setting', SettingWisudaController::class)->name('index','setting-wisuda');
+    Route::resource('/admin/akademik/wisuda/daftar-wisudawan', AdminDaftarWisudawanController::class)->name('index','daftar-wisudawan');
+    Route::put('/admin/akademik/wisuda/daftar-wisudawan/acc/{id}', [AdminDaftarWisudawanController::class, 'acc'])->name('index','acc-wisudawan');
+    Route::resource('/admin/akademik/wisuda/cetak', CetakWisudawanController::class)->name('index','cetak-wisudawan');
 
     // route KRS
     Route::get('/admin/masterdata/krs', [KrsController::class, 'index']);
@@ -492,6 +505,8 @@ Route::group(['middleware' => ['auth', 'role:mhs|super-admin']], function () {
     Route::post('mahasiswa/berkas_update', [MahasiswaController::class, 'berkas_update'])->name('berkas_update');
     Route::get('mhs/absensi', [mhsAbsensiController::class, 'index'])->name('index_absensi');
     Route::post('mahasiswa', [MahasiswaController::class, 'store'])->name('input');
+    Route::get('/mahasiswa/cetak-transkrip', [MahasiswaController::class, 'cetakTranskrip']);
+
 
     Route::get('mhs/profile', [ProfileController::class, 'index'])->name('index');
     // Route::get('mhs/heregistrasi', [ProfileController::class, 'heregistrasi'])->name('index_heregistrasi');
@@ -519,6 +534,19 @@ Route::group(['middleware' => ['auth', 'role:mhs|super-admin']], function () {
     Route::post('mhs/kuesioner_mhs', [KuesionerMhsController::class, 'store'])->name('save_kuesioner');
     Route::get('mhs/cetak_khs', [KhsController::class, 'cetak_khs'])->name('cetak_khs');
     Route::get('mhs/cetak_khs/{nim}', [KhsController::class, 'cetak_khs'])->name('cetak_khs');
+
+    // daftar wisuda
+    Route::group(['prefix' => 'mhs/akademik', 'as' => 'mhs.akademik.'], function () {
+
+        Route::group(['prefix' => 'daftar-wisuda', 'as' => 'daftar-wisuda.', 'controller' => DaftarWisudaController::class], function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/store', 'store')->name('store');
+            Route::get('/edit/{id}', 'edit')->name('edit');
+            Route::patch('/update/{id}', 'update')->name('update');
+            Route::post('/delete/{id}', 'delete')->name('delete');
+        });
+
+    });
 
     Route::get('/mhs/absensi/history/{id_jadwal}', [mhsAbsensiController::class, 'setAbsensiSatuan'] );
     Route::get('/mhs/absensi/save/{id_jadwal}', [mhsAbsensiController::class, 'saveAbsensi'] );

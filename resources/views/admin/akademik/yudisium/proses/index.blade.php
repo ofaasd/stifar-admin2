@@ -28,6 +28,8 @@
                 <div class="card">
                     <div class="card-header pb-0 card-no-border">
                         <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal">+ {{$title}}</button>
+
+                        {{-- Tambah proses --}}
                         <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
                             <div class="modal-dialog modal-xl" role="document">
                                 <div class="modal-content">
@@ -87,6 +89,8 @@
                             </div>
                         </div>
 
+
+                        {{-- Edit proses --}}
                         <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModal" aria-hidden="true">
                             <div class="modal-dialog modal-lg" role="document">
                                 <div class="modal-content">
@@ -112,7 +116,7 @@
                                                         @endforeach
                                                     </select>
                                                 </div>
-                                                <div class="row">
+                                                {{-- <div class="row">
                                                     <div class="col-12">
                                                         <label>Mahasiswa</label>
                                                         <select id="nim" name="nim" class="form-control">
@@ -121,7 +125,7 @@
                                                             @endforeach
                                                         </select>
                                                     </div>
-                                                </div>
+                                                </div> --}}
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -130,6 +134,84 @@
                                         </div>
                                     </form>
                                 </div>
+                            </div>
+                        </div>
+
+                        {{-- Modal ijazah --}}
+                        <div class="modal fade" id="cetakIjazahModal" tabindex="-1" aria-labelledby="cetak-ijazah" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <form method="POST" id="formCetakIjazah" action="{{ url('/admin/alumni/cetak-ijazah') }}" target="_blank">
+                                    @csrf
+                                    <input type="hidden" name="nimEnkripsi" id="nim-cetak">
+                                    <div class="modal-content">
+                                    <div class="modal-header">
+                                    <h5 class="modal-title" id="cetak-ijazah">Cetak Ijazah | <span id="nama-cetak"></span></h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                    <div class="row mb-3">
+                                        <div class="col">
+                                        <label for="seri_ijazah" class="form-label">Nomor Seri Ijazah</label>
+                                        <input type="text" class="form-control" id="seri_ijazah" name="seri_ijazah" value="063032481012025100001" required>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="akreditasi1" class="form-label">Akreditasi BAN-PT</label>
+                                        <input type="text" class="form-control" id="akreditasi1" name="akreditasi1" value=" TERAKREDITASI B SK BAN-PT No. 500/SK/BAN-PT/Ak.Ppj/PT/VIII/2022" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="akreditasi2" class="form-label">Akreditasi LAM-PTKes</label>
+                                        <input type="text" class="form-control" id="akreditasi2" name="akreditasi2" value=" Terakreditasi Baik Sekali SK LAM-PTKes 0815/LAM-PTKes/Akr/Sar/IX/2022" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="akreditasi2Eng" class="form-label">Akreditasi LAM-PTKes Inggris</label>
+                                        <input type="text" class="form-control" id="akreditasi2Eng" name="akreditasi2Eng" value=" accredited with grade 'very good' SK LAM-PTKes 0815/LAM-PTKes/Akr/Sar/IX/2022" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="nama_ketua_prodi" class="form-label">Nama Ketua Program Studi</label>
+                                        <input type="text" class="form-control" id="nama_ketua_prodi" name="nama_ketua_prodi" value=" Dr. apt. Dwi Hadi Setya Palupi, M.Si." required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="niy_ketua_prodi" class="form-label">NIY Ketua Program Studi</label>
+                                        <input type="text" class="form-control" id="niy_ketua_prodi" name="niy_ketua_prodi" value="YP 040204002" required>
+                                    </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+                                        <button type="submit" class="btn btn-primary btn-sm" id="btn-cetak">Cetak</button>
+                                    </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        {{-- Modal Transkrip Nilai --}}
+                        <div class="modal fade" id="cetakTranskripModal" tabindex="-1" aria-labelledby="cetak-transkrip-nilai" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <form method="POST" id="formCetakTranskripNilai" action="{{ url('/admin/akademik/yudisium/cetak-transkrip-nilai') }}" target="_blank">
+                                    @csrf
+                                        <input type="hidden" name="nimEnkripsi" id="nim-transkrip">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="cetak-ijazah">Cetak Transkrip Nilai <span id="nama-transkrip"></span></h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                <label for="nomor-sk" class="form-label">Nomor SK</label>
+                                                <input type="text" class="form-control" id="nomor-sk" name="nomorSk" value="153/D/O/2000 tanggal 10 Agustus 2000" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="nomor-seri" class="form-label">Nomor Seri Transkrip</label>
+                                                <input type="text" class="form-control" id="nomor-seri" name="nomorSeri" value="063032" required>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+                                            <button type="submit" class="btn btn-primary btn-sm" id="btn-submit">Cetak</button>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -188,42 +270,46 @@
                 columns: my_data,
                 columnDefs: [
                     {
-                    // For Responsive
-                    className: 'control',
-                    searchable: false,
-                    orderable: false,
-                    responsivePriority: 2,
-                    targets: 0,
-                    render: function render(data, type, full, meta) {
-                        return '';
-                    }
+                        // For Responsive
+                        className: 'control',
+                        searchable: false,
+                        orderable: false,
+                        responsivePriority: 2,
+                        targets: 0,
+                        render: function render(data, type, full, meta) {
+                            return '';
+                        }
                     },
                     {
-                    searchable: false,
-                    orderable: false,
-                    targets: 1,
-                    render: function render(data, type, full, meta) {
-                        return '<span>'.concat(full.fake_id, '</span>');
-                    }
+                        searchable: false,
+                        orderable: false,
+                        targets: 1,
+                        render: function render(data, type, full, meta) {
+                            return '<span>'.concat(full.fake_id, '</span>');
+                        }
                     },
                     {
-                    // Actions
-                    targets: -1,
-                    title: 'Actions',
-                    searchable: false,
-                    orderable: false,
-                    render: function render(data, type, full, meta) {
-                        return (
-                        '<div class="d-inline-block text-nowrap">' +
-                        '<button class="btn btn-sm btn-icon edit-record text-primary" data-id="'
-                            .concat(full['id'], '" data-bs-toggle="modal" data-original-title="test" data-bs-target="#editModal"')
-                            .concat(title, '"><i class="fa fa-pencil"></i></button>') +
-                        '<button class="btn btn-sm btn-icon delete-record text-primary" data-id="'.concat(
-                            full['id'],
-                            '"><i class="fa fa-trash"></i></button>'
-                        )
-                        );
-                    }
+                        // Actions
+                        targets: -1,
+                        title: 'Actions',
+                        searchable: false,
+                        orderable: false,
+                        render: function render(data, type, full, meta) {
+                            return (
+                                '<div class="d-inline-block text-nowrap">' +
+                                '<button class="btn btn-sm btn-icon cetak-transkrip-record text-info" title="Cetak Transkrip Nilai" data-nim="' + full['nimEnkripsi'] +
+                                '" data-nama="' + full['namaMahasiswa'] +
+                                '" data-bs-toggle="modal" data-original-title="Cetak Transkrip" data-bs-target="#cetakTranskripModal"><i class="fa fa-file-text"></i></button> | ' +
+                                '<button class="btn btn-sm btn-icon cetak-ijazah-record text-info" title="Cetak Ijazah" data-nim="' + full['nimEnkripsi'] +
+                                '" data-nama="' + full['namaMahasiswa'] +
+                                '" data-bs-toggle="modal" data-original-title="Cetak Ijazah" data-bs-target="#cetakIjazahModal"><i class="fa fa-print"></i></button> | ' +
+                                '<button class="btn btn-sm btn-icon edit-record text-primary" data-id="' + full['id'] +
+                                '" data-bs-toggle="modal" data-original-title="Edit" data-bs-target="#editModal"><i class="fa fa-pencil"></i></button>' +
+                                '<button class="btn btn-sm btn-icon delete-record text-primary" data-id="' + full['id'] +
+                                '"><i class="fa fa-trash"></i></button>' +
+                                '</div>'
+                            );
+                        }
                     }
                 ],
                 order: [[2, 'desc']],
@@ -263,6 +349,22 @@
                         .trigger('change');
                     });
                 });
+            });
+
+            //Cetak ijazah Record
+            $(document).on('click', '.cetak-ijazah-record', function () {
+                const nim = $(this).data('nim');
+                const nama = $(this).data('nama');
+                $('#nim-cetak').val(nim);
+                $('#nama-cetak').text(nama);
+            });
+
+            //Cetak transkrip Record
+            $(document).on('click', '.cetak-transkrip-record', function () {
+                const nim = $(this).data('nim');
+                const nama = $(this).data('nama');
+                $('#nim-transkrip').val(nim);
+                $('#nama-transkrip').text(nama);
             });
 
             //save record
@@ -306,6 +408,40 @@
                         });
                         btnSubmit.prop('disabled', false);
                         btnSubmit.html(oldBtnHtml);
+                    }
+                });
+            });
+
+            $('#formCetakIjazah').on('submit', function(e) {
+                e.preventDefault();
+                swal({
+                    title: 'Konfirmasi Cetak Ijazah',
+                    text: 'Hati-hati dalam mencetak, karena hitungan duplikat terus bertambah setiap kali mencetak. Lanjutkan mencetak?',
+                    icon: 'warning',
+                    buttons: {
+                        cancel: {
+                            text: 'Batal',
+                            value: null,
+                            visible: true,
+                            className: 'btn btn-label-secondary',
+                            closeModal: true,
+                        },
+                        confirm: {
+                            text: 'Lanjutkan Cetak',
+                            value: true,
+                            visible: true,
+                            className: 'btn btn-primary me-3',
+                            closeModal: true
+                        }
+                    },
+                    dangerMode: true,
+                    customClass: {
+                        confirmButton: 'btn btn-primary me-3',
+                        cancelButton: 'btn btn-label-secondary'
+                    }
+                }).then(function(result) {
+                    if (result) {
+                        $('#formCetakIjazah')[0].submit();
                     }
                 });
             });

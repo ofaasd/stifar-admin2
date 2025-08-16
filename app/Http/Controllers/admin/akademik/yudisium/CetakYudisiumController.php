@@ -7,6 +7,7 @@ use App\Models\master_nilai;
 use Illuminate\Http\Request;
 use App\Models\GelombangYudisium;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Crypt;
 
 class CetakYudisiumController extends Controller
@@ -62,6 +63,7 @@ class CetakYudisiumController extends Controller
                         'gelombang_yudisium.nama',
                         'gelombang_yudisium.periode',
                         \DB::raw('(SELECT COUNT(*) FROM tb_yudisium WHERE tb_yudisium.id_gelombang_yudisium = gelombang_yudisium.id) as jmlPeserta'),
+                        'gelombang_yudisium.tanggal_pengesahan AS tanggalPengesahan',
                     ])
                     ->offset($start)
                     ->limit($limit)
@@ -79,6 +81,7 @@ class CetakYudisiumController extends Controller
                         'gelombang_yudisium.nama',
                         'gelombang_yudisium.periode',
                         \DB::raw('(SELECT COUNT(*) FROM tb_yudisium WHERE tb_yudisium.id_gelombang_yudisium = gelombang_yudisium.id) as jmlPeserta'),
+                        'gelombang_yudisium.tanggal_pengesahan AS tanggalPengesahan'
                     ])
                     ->where('periode', 'LIKE', "%{$search}%")
                     ->orWhere('nama', 'LIKE', "%{$search}%")
@@ -96,7 +99,8 @@ class CetakYudisiumController extends Controller
                         'gelombang_yudisium.nama',
                         'gelombang_yudisium.periode',
                         \DB::raw('(SELECT COUNT(*) FROM tb_yudisium WHERE tb_yudisium.id_gelombang_yudisium = gelombang_yudisium.id) as jmlPeserta'),
-                    ])
+                        'gelombang_yudisium.tanggal_pengesahan AS tanggalPengesahan'
+                    ])  
                     ->where('periode', 'LIKE', "%{$search}%")
                     ->orWhere('nama', 'LIKE', "%{$search}%")
                     ->count();
@@ -105,16 +109,19 @@ class CetakYudisiumController extends Controller
             $data = [];
 
             if (!empty($gelombang)) {
-            // providing a dummy id instead of database ids
+                // providing a dummy id instead of database ids
                 $ids = $start;
-
+                
                 foreach ($gelombang as $row) {
+                    $tanggalPengesahan = $row->tanggalPengesahan ? Carbon::parse($row->tanggalPengesahan)->translatedFormat('d F Y') : null;
+
                     $nestedData['id'] = $row->id;
                     $nestedData['fake_id'] = ++$ids;
                     $nestedData['periode'] = $row->periode;
                     $nestedData['nama'] = $row->nama;
                     $nestedData['jml_peserta'] = $row->jmlPeserta;
                     $nestedData['idEnkripsi'] = $row->idEnkripsi;
+                    $nestedData['tanggalPengesahan'] = $tanggalPengesahan;
                     $data[] = $nestedData;
                 }
             }
@@ -151,13 +158,15 @@ class CetakYudisiumController extends Controller
 
         $data = TbYudisium::where('id_gelombang_yudisium', $id)
         ->leftJoin('mahasiswa', 'tb_yudisium.nim', '=', 'mahasiswa.nim')
-        ->leftJoin('skripsi', 'mahasiswa.nim', '=', 'skripsi.nim')
-        ->leftJoin('sidang', 'skripsi.id', '=', 'sidang.skripsi_id')
+        ->leftJoin('master_skripsi', 'mahasiswa.nim', '=', 'master_skripsi.nim')
+        ->leftJoin('sidang', 'master_skripsi.id', '=', 'sidang.skripsi_id')
+        ->leftJoin('pengajuan_judul_skripsi', 'master_skripsi.id', '=', 'pengajuan_judul_skripsi.id_master')
+        ->where('pengajuan_judul_skripsi.status', 1)
         ->select([
             'mahasiswa.nama',
             'mahasiswa.nim',
             'mahasiswa.foto_mhs',
-            'skripsi.judul',
+            'pengajuan_judul_skripsi.judul',
             'sidang.tanggal AS tanggalSidang'
             ])
         ->get();
