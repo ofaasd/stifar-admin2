@@ -19,10 +19,16 @@ class MatkulController extends Controller
         $title = "Master Matakuliah";
         $mk = MataKuliah::select('mata_kuliahs.*')->leftJoin('kelompok_mata_kuliahs', 'kelompok_mata_kuliahs.id','=','mata_kuliahs.kel_mk')
                           ->leftJoin('rumpuns', 'rumpuns.id','=','mata_kuliahs.rumpun')->get();
+        $list_mk = [];
+        $list_kode_mk = [];
+        foreach($mk as $row){
+            $list_mk[$row->id] = $row->nama_matkul;
+            $list_kode_mk[$row->id] = $row->kode_matkul;
+        }
         $kelompok = KelompokMatakuliah::get();
         $rumpun = Rumpun::get();
         $no = 1;
-        return view('admin.akademik.Matakuliah.index', compact('title', 'mk', 'kelompok', 'rumpun', 'no'));
+        return view('admin.akademik.Matakuliah.index', compact('title', 'mk', 'kelompok', 'rumpun', 'no', 'list_mk', 'list_kode_mk'));
     }
 
     public function simpanMK(Request $request)
@@ -46,6 +52,7 @@ class MatkulController extends Controller
                     'sks_praktek' => $request->sks_praktek,
                     'status_mk' => $request->status_mk,
                     'rumpun' => $request->rumpun,
+                    'prasyarat1' => $request->prasyarat1,
                     'rps' => $filename,
                     'rps_log' => date('Y-m-d H:i:s'),
                     'status' => $request->status
@@ -62,11 +69,12 @@ class MatkulController extends Controller
                     'sks_teori' => $request->sks_teori,
                     'sks_praktek' => $request->sks_praktek,
                     'status_mk' => $request->status_mk,
+                    'prasyarat1' => $request->prasyarat1,
                     'rumpun' => $request->rumpun,
                     'status' => $request->status
                 ]
             );
-        }   
+        }
         if ($mk) {
             return json_encode(['status' => 'ok', 'kode' => 200]);
         } else {
@@ -94,6 +102,7 @@ class MatkulController extends Controller
                 'rumpun' => $request->rumpun,
                 'rps' => $filename,
                 'rps_log' => date('Y-m-d H:i:s'),
+                'prasyarat1' => $request->prasyarat1,
                 'status' => $request->status
             ]);
         }else{
@@ -107,6 +116,7 @@ class MatkulController extends Controller
                 'sks_praktek' => $request->sks_praktek,
                 'status_mk' => $request->status_mk,
                 'rumpun' => $request->rumpun,
+                'prasyarat1' => $request->prasyarat1,
                 'status' => $request->status
             ]);
         }

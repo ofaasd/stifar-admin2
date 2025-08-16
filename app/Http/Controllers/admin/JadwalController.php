@@ -164,10 +164,13 @@ class JadwalController extends Controller
                                 ->leftJoin('pengajars', 'pengajars.id_jadwal','=','jadwals.id')
                                 ->join('waktus','waktus.id','=','jadwals.id_sesi')
                                 ->where(['pengajars.id_dsn' => $dsn->id_dsn,'jadwals.hari' => $row->hari, 'jadwals.id_tahun' => $row->id_tahun])
-                                ->where('waktu_mulai','>=',$waktu->waktu_mulai)->where('waktu_mulai','<=',$waktu->waktu_selesai)
+                                ->where('waktu_mulai','>=',$waktu->waktu_mulai)->where('waktu_mulai','<',$waktu->waktu_selesai)
                                 ->where('jadwals.id','<>',$row->id)
-                                ->first();
-                if ($cekDosen) {
+                                ;
+
+                if ($cekDosen->count() > 0) {
+
+                    $cekDosen = $cekDosen->first();
                     $pesan = 'jadwal dengan dosen ' . $pegawai->nama_lengkap . ' bertabrakan dengan jadwal ' . $cekDosen->kode_jadwal . ' matakulianh : ' . $cekDosen->nama_matkul;
                     $warning[$i] = $pesan;
                     $i++;
