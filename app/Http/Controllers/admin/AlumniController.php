@@ -313,7 +313,7 @@ class AlumniController extends Controller
         $mpdf->WriteHTML($html);
 
         // Output PDF ke browser secara inline
-        return response($mpdf->Output('ijazah-' . $mahasiswa->nim . '.pdf', 'I'))
+        return response($mpdf->Output('ijazah-' . $mahasiswa->nim . ' ' . $mahasiswa->nama . '.pdf', 'I'))
             ->header('Content-Type', 'application/pdf');
     }
 

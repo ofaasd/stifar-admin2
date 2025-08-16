@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {{-- <title>Ijazah-{{ $data->nim }}</title> --}}
+    <title>Ijazah - {{ $data->nama }}</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Times+New+Roman:wght@400;700&display=swap');
         
@@ -18,12 +18,26 @@
             background-color: #f5f5f5;
         }
         
-        .certificate {
-            padding: 20px;
+        .bg-duplikat {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            height: 210mm;
-            padding: 22px;
+            height: 100%;
+            min-height: 210mm;
+            min-width: 100%;
+            background-image: url('{{ asset('assets/images/mahasiswa/ijazah/bg-duplikat.png') }}');
+            background-size: cover;
+            background-repeat: no-repeat;
+            z-index: 0;
+        }
+
+        .certificate {
             position: relative;
+            padding: 22px;
+            width: 100%;
+            min-height: 210mm;
+            z-index: 1;
         }
 
         .mark-duplikat {
@@ -148,7 +162,7 @@
     </style>
 </head>
 <body>
-    <div class="certificate">
+    <div class="certificate  @if (isset($duplikatKe) && $duplikatKe) bg-duplikat @endif">
         <div class="header">
             <div class="serial-number">
                 <div>Nomor Seri Ijazah : {{ $nomorSeri ?? '-' }}</div>
