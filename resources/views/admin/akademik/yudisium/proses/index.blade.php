@@ -116,7 +116,7 @@
                                                         @endforeach
                                                     </select>
                                                 </div>
-                                                <div class="row">
+                                                {{-- <div class="row">
                                                     <div class="col-12">
                                                         <label>Mahasiswa</label>
                                                         <select id="nim" name="nim" class="form-control">
@@ -125,7 +125,7 @@
                                                             @endforeach
                                                         </select>
                                                     </div>
-                                                </div>
+                                                </div> --}}
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -154,10 +154,6 @@
                                         <label for="seri_ijazah" class="form-label">Nomor Seri Ijazah</label>
                                         <input type="text" class="form-control" id="seri_ijazah" name="seri_ijazah" value="063032481012025100001" required>
                                         </div>
-                                        <div class="col">
-                                        <label for="lulus_pada" class="form-label">Lulus Pada</label>
-                                        <input type="date" class="form-control" id="lulus_pada" name="lulus_pada" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" required>
-                                        </div>
                                     </div>
                                     <div class="mb-3">
                                         <label for="akreditasi1" class="form-label">Akreditasi BAN-PT</label>
@@ -184,6 +180,36 @@
                                         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
                                         <button type="submit" class="btn btn-primary btn-sm" id="btn-cetak">Cetak</button>
                                     </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        {{-- Modal Transkrip Nilai --}}
+                        <div class="modal fade" id="cetakTranskripModal" tabindex="-1" aria-labelledby="cetak-transkrip-nilai" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <form method="POST" id="formCetakTranskripNilai" action="{{ url('/admin/akademik/yudisium/cetak-transkrip-nilai') }}" target="_blank">
+                                    @csrf
+                                        <input type="hidden" name="nimEnkripsi" id="nim-transkrip">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="cetak-ijazah">Cetak Transkrip Nilai <span id="nama-transkrip"></span></h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                <label for="nomor-sk" class="form-label">Nomor SK</label>
+                                                <input type="text" class="form-control" id="nomor-sk" name="nomorSk" value="153/D/O/2000 tanggal 10 Agustus 2000" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="nomor-seri" class="form-label">Nomor Seri Transkrip</label>
+                                                <input type="text" class="form-control" id="nomor-seri" name="nomorSeri" value="063032" required>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+                                            <button type="submit" class="btn btn-primary btn-sm" id="btn-submit">Cetak</button>
+                                        </div>
                                     </div>
                                 </form>
                             </div>
@@ -271,10 +297,10 @@
                         render: function render(data, type, full, meta) {
                             return (
                                 '<div class="d-inline-block text-nowrap">' +
-                                '<button class="btn btn-sm btn-icon cetak-transkrip-record text-success" title="Cetak Transkrip Nilai" data-nim="' + full['nimEnkripsi'] +
+                                '<button class="btn btn-sm btn-icon cetak-transkrip-record text-info" title="Cetak Transkrip Nilai" data-nim="' + full['nimEnkripsi'] +
                                 '" data-nama="' + full['namaMahasiswa'] +
-                                '" data-bs-toggle="modal" data-original-title="Cetak Transkrip" data-bs-target="#cetakTranskripModal"><i class="fa fa-document"></i></button> | ' +
-                                '<button class="btn btn-sm btn-icon cetak-ijazah-record text-success" title="Cetak Ijazah" data-nim="' + full['nimEnkripsi'] +
+                                '" data-bs-toggle="modal" data-original-title="Cetak Transkrip" data-bs-target="#cetakTranskripModal"><i class="fa fa-file-text"></i></button> | ' +
+                                '<button class="btn btn-sm btn-icon cetak-ijazah-record text-info" title="Cetak Ijazah" data-nim="' + full['nimEnkripsi'] +
                                 '" data-nama="' + full['namaMahasiswa'] +
                                 '" data-bs-toggle="modal" data-original-title="Cetak Ijazah" data-bs-target="#cetakIjazahModal"><i class="fa fa-print"></i></button> | ' +
                                 '<button class="btn btn-sm btn-icon edit-record text-primary" data-id="' + full['id'] +
@@ -337,8 +363,8 @@
             $(document).on('click', '.cetak-transkrip-record', function () {
                 const nim = $(this).data('nim');
                 const nama = $(this).data('nama');
-                $('#nim-cetak-transkrip').val(nim);
-                $('#nama-cetak-transkrip').text(nama);
+                $('#nim-transkrip').val(nim);
+                $('#nama-transkrip').text(nama);
             });
 
             //save record

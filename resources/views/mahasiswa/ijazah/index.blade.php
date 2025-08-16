@@ -195,8 +195,8 @@
         </div>
         
         <div class="graduation-info bilingual">
-            <div>Yang Bersangkutan Dinyatakan Lulus Pada Tanggal : {{ \Carbon\Carbon::parse($lulusPada)->translatedFormat('d F Y') ?? '-' }}, Sehingga kepadanya diberikan :</div>
-            <div class="english">Has Passed Graduate on {{ \Carbon\Carbon::parse($lulusPada)->format('F j') }}<sup>{{ date('S', strtotime($lulusPada)) }}</sup>, {{ \Carbon\Carbon::parse($lulusPada)->format('Y') ?? '-' }} and there by has been declared a :</div>
+            <div>Yang Bersangkutan Dinyatakan Lulus Pada Tanggal : {{ \Carbon\Carbon::parse($data->lulusPada)->translatedFormat('d F Y') ?? '-' }}, Sehingga kepadanya diberikan :</div>
+            <div class="english">Has Passed Graduate on {{ \Carbon\Carbon::parse($data->lulusPada)->format('F j') }}<sup>{{ date('S', strtotime($data->lulusPada)) }}</sup>, {{ \Carbon\Carbon::parse($data->lulusPada)->format('Y') ?? '-' }} and there by has been declared a :</div>
         </div>
         
         <div class="certificate-title bilingual">

@@ -362,6 +362,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
     // Yudisium
     Route::resource('/admin/akademik/yudisium/setting', SettingYudisiumController::class)->name('index','setting-yudisium');
     Route::resource('/admin/akademik/yudisium/proses', ProsesYudisiumController::class)->name('index','proses-yudisium');
+    Route::post('/admin/akademik/yudisium/cetak-transkrip-nilai', [MahasiswaController::class, 'cetakTranskripNilai']);
     Route::resource('/admin/akademik/yudisium/cetak', CetakYudisiumController::class)->name('index','cetak-yudisium');
     Route::resource('/admin/akademik/yudisium/pengesahan', PengesahanYudisiumController::class)->name('index','pengesahan-yudisium');
     
@@ -502,6 +503,8 @@ Route::group(['middleware' => ['auth', 'role:mhs|super-admin']], function () {
     Route::post('mahasiswa/berkas_update', [MahasiswaController::class, 'berkas_update'])->name('berkas_update');
     Route::get('mhs/absensi', [mhsAbsensiController::class, 'index'])->name('index_absensi');
     Route::post('mahasiswa', [MahasiswaController::class, 'store'])->name('input');
+    Route::get('/mahasiswa/cetak-transkrip', [MahasiswaController::class, 'cetakTranskrip']);
+
 
     Route::get('mhs/profile', [ProfileController::class, 'index'])->name('index');
     // Route::get('mhs/heregistrasi', [ProfileController::class, 'heregistrasi'])->name('index_heregistrasi');
