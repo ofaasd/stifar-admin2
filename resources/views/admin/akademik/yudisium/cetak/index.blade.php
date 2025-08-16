@@ -21,6 +21,32 @@
 @endsection
 
 @section('content')
+    {{-- Modal Sahkan --}}
+    <div class="modal fade" id="pengesahanModal" tabindex="-1" aria-labelledby="cetak-ijazah" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <form method="POST" id="formPengesahanYudisium" action="{{ url('/admin/akademik/yudisium/pengesahan') }}">
+                @csrf
+                <input type="hidden" name="idEnkripsi" id="id-pengesahan">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="cetak-ijazah">Pengesahan Yudisium | <span id="nama-pengesahan"></span></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="tanggal_pengesahan" class="form-label">Disahkan Pada Tanggal</label>
+                        <input type="date" class="form-control" id="tanggal_pengesahan" name="tanggalPengesahan" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary btn-sm" id="btn-submit">Cetak</button>
+                </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div class="container-fluid">
         <div class="row">
             <!-- Zero Configuration  Starts-->
@@ -105,12 +131,24 @@
                     searchable: false,
                     orderable: false,
                     render: function render(data, type, full, meta) {
-                        return (
-                            '<div class="d-inline-block text-nowrap">' +
-                            '<a target="_blank" href="/admin/akademik/yudisium/cetak/' + full['idEnkripsi'] + '" class="btn btn-sm btn-icon text-primary" title="Cetak">' +
-                            '<i class="fa fa-print"></i></a>' +
-                            '</div>'
-                        );
+                        if(full['tanggalPengesahan'] == null)
+                        {
+                            return (
+                                '<div class="d-inline-block text-nowrap">' +
+                                    '<a target="_blank" href="/admin/akademik/yudisium/cetak/' + full['idEnkripsi'] + '" class="btn btn-sm btn-icon text-primary" title="Cetak">' +
+                                        '<i class="fa fa-print"></i></a> | ' +
+                                        '<button class="btn btn-sm btn-icon btn-pengesahan text-info" title="Sahkan Yudisium" data-nama="'+ full['nama'] + '" data-id="' + full['idEnkripsi'] +
+                                        '" data-bs-toggle="modal" data-original-title="Sahkan Yudisium" data-bs-target="#pengesahanModal"><i class="fa fa-check"></i></button>' +
+                                        '</div>'
+                                    );
+                        }else{
+                            return (
+                                '<div class="d-inline-block text-nowrap">' +
+                                    '<a target="_blank" href="/admin/akademik/yudisium/cetak/' + full['idEnkripsi'] + '" class="btn btn-sm btn-icon text-primary" title="Cetak">' +
+                                        '<i class="fa fa-print"></i></a> | Disahkan pada' + full['tanggalPengesahan'] +
+                                        '</div>'
+                                    );
+                        }
                     }
                     }
                 ],
@@ -151,6 +189,15 @@
                     });
                 });
             });
+
+            //Pengesahan 
+            $(document).on('click', '.btn-pengesahan', function () {
+                const id = $(this).data('id');
+                const nama = $(this).data('nama');
+                $('#id-pengesahan').val(id);
+                $('#nama-pengesahan').text(nama);
+            });
+
             //save record
             $('#formAdd').on('submit', function(e) {
                 e.preventDefault();

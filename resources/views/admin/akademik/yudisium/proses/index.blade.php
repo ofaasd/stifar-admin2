@@ -271,6 +271,9 @@
                         render: function render(data, type, full, meta) {
                             return (
                                 '<div class="d-inline-block text-nowrap">' +
+                                '<button class="btn btn-sm btn-icon cetak-transkrip-record text-success" title="Cetak Transkrip Nilai" data-nim="' + full['nimEnkripsi'] +
+                                '" data-nama="' + full['namaMahasiswa'] +
+                                '" data-bs-toggle="modal" data-original-title="Cetak Transkrip" data-bs-target="#cetakTranskripModal"><i class="fa fa-document"></i></button> | ' +
                                 '<button class="btn btn-sm btn-icon cetak-ijazah-record text-success" title="Cetak Ijazah" data-nim="' + full['nimEnkripsi'] +
                                 '" data-nama="' + full['namaMahasiswa'] +
                                 '" data-bs-toggle="modal" data-original-title="Cetak Ijazah" data-bs-target="#cetakIjazahModal"><i class="fa fa-print"></i></button> | ' +
@@ -322,12 +325,20 @@
                 });
             });
 
-            //Cetak Record
+            //Cetak ijazah Record
             $(document).on('click', '.cetak-ijazah-record', function () {
                 const nim = $(this).data('nim');
                 const nama = $(this).data('nama');
                 $('#nim-cetak').val(nim);
                 $('#nama-cetak').text(nama);
+            });
+
+            //Cetak transkrip Record
+            $(document).on('click', '.cetak-transkrip-record', function () {
+                const nim = $(this).data('nim');
+                const nama = $(this).data('nama');
+                $('#nim-cetak-transkrip').val(nim);
+                $('#nama-cetak-transkrip').text(nama);
             });
 
             //save record
