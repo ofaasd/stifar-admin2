@@ -13,6 +13,7 @@ use App\Models\Prodi;
 use App\Models\Kurikulum;
 use App\Models\Jadwal;
 use App\Models\MatakuliahKurikulum;
+use App\Models\master_nilai;
 use App\Models\LogKr as LogKrs;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Auth;
@@ -93,14 +94,35 @@ class KrsController extends Controller
         $id_mk = $request->id_mk;
         $ta = $request->ta;
         $idmhs = $request->idmhs;
-        $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'c.nama_sesi', 'mata_kuliahs.sks_teori', 'mata_kuliahs.sks_praktek','ruang.nama_ruang', 'mata_kuliahs.nama_matkul')
-                  ->leftJoin('mata_kuliahs', 'mata_kuliahs.id', '=', 'jadwals.id_mk')
-                  ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
-                  ->leftJoin('waktus as c', 'jadwals.id_sesi', '=', 'c.id')
-                  ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
-                  ->where(['jadwals.id_mk' => $id_mk, 'jadwals.status' => 'Aktif', 'jadwals.id_tahun' => $ta])->get();
+        $mhs = Mahasiswa::find($idmhs);
+        $nim = $mhs->nim;
+        $mk = MataKuliah::find($id_mk);
+        $error = '';
+        if(!empty($mk->prasyarat1)){
+            $riwayat_mhs = master_nilai::join('jadwals','jadwals.id','=','master_nilai.id_jadwal')->where('nim',$nim)->where('id_mk',$mk->prasyarat1)->count();
+            $syarat = Matakuliah::find($mk->prasyarat1);
+            if($riwayat_mhs == 0){
+                $error = 'Matakuliah Prsayarat Blm DIambil :' . $syarat->nama_matkul;
+                $jadwal = []    ;
+            }else{
+              $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'c.nama_sesi', 'mata_kuliahs.sks_teori', 'mata_kuliahs.sks_praktek','ruang.nama_ruang', 'mata_kuliahs.nama_matkul')
+                    ->leftJoin('mata_kuliahs', 'mata_kuliahs.id', '=', 'jadwals.id_mk')
+                    ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
+                    ->leftJoin('waktus as c', 'jadwals.id_sesi', '=', 'c.id')
+                    ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
+                    ->where(['jadwals.id_mk' => $id_mk, 'jadwals.status' => 'Aktif', 'jadwals.id_tahun' => $ta])->get();
+            }
+        }else{
+            $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'c.nama_sesi', 'mata_kuliahs.sks_teori', 'mata_kuliahs.sks_praktek','ruang.nama_ruang', 'mata_kuliahs.nama_matkul')
+                    ->leftJoin('mata_kuliahs', 'mata_kuliahs.id', '=', 'jadwals.id_mk')
+                    ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
+                    ->leftJoin('waktus as c', 'jadwals.id_sesi', '=', 'c.id')
+                    ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
+                    ->where(['jadwals.id_mk' => $id_mk, 'jadwals.status' => 'Aktif', 'jadwals.id_tahun' => $ta])->get();
+
+        }
         $n = 1;
-        return view('admin.akademik.krs.showJadwal', compact('jadwal', 'n', 'idmhs'));
+        return view('admin.akademik.krs.showJadwal', compact('jadwal', 'n', 'idmhs','error'));
     }
     public function tambahadminKRS($id, $mhs){
         $data_jadwal = Jadwal::where('id', $id)->first();

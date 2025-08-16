@@ -1,5 +1,5 @@
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/vendors/datatables.css') }}">
-
+@if(empty($error) )
 <div class="table-responsive mt-2">
     <table class="table" id="tableJadwal">
         <thead>
@@ -35,7 +35,10 @@
         </tbody>
     </table>
     <hr>
-</div>
+</div
+@else
+    <div class="alert alert-danger">{{$error}}</div>
+@endif
 <script src="{{ asset('assets/js/datatable/datatables/jquery.dataTables.min.js') }}"></script>
 <script src="{{asset('assets/js/sweet-alert/sweetalert.min.js')}}"></script>
 <script>

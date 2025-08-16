@@ -20,13 +20,15 @@ class MatkulController extends Controller
         $mk = MataKuliah::select('mata_kuliahs.*')->leftJoin('kelompok_mata_kuliahs', 'kelompok_mata_kuliahs.id','=','mata_kuliahs.kel_mk')
                           ->leftJoin('rumpuns', 'rumpuns.id','=','mata_kuliahs.rumpun')->get();
         $list_mk = [];
+        $list_kode_mk = [];
         foreach($mk as $row){
             $list_mk[$row->id] = $row->nama_matkul;
+            $list_kode_mk[$row->id] = $row->kode_matkul;
         }
         $kelompok = KelompokMatakuliah::get();
         $rumpun = Rumpun::get();
         $no = 1;
-        return view('admin.akademik.Matakuliah.index', compact('title', 'mk', 'kelompok', 'rumpun', 'no', 'list_mk'));
+        return view('admin.akademik.Matakuliah.index', compact('title', 'mk', 'kelompok', 'rumpun', 'no', 'list_mk', 'list_kode_mk'));
     }
 
     public function simpanMK(Request $request)

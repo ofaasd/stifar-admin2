@@ -62,7 +62,7 @@
                                                             <select class="form-control" name="prasyarat1" id="prasyarat1_c">
                                                                 <option value=0>--Input Matkul Prasyarat--</option>
                                                                 @foreach($mk as $row)
-                                                                <option value="{{$row->id}}">{{$row->nama_matkul}}</option>
+                                                                <option value="{{$row->id}}">{{$row->kode_matkul}} - {{$row->nama_matkul}}</option>
                                                                 @endforeach
                                                             </select>
                                                         </div>
@@ -155,7 +155,7 @@
                                                     <td>{{ $mk['nama_matkul_eng'] }}</td>
                                                     {{-- <td>{{ $mk['nama_kelompok'] }}</td>
                                                     <td>{{ $mk['nama_rumpun'] }}</td> --}}
-                                                    <td>{{ $list_mk[$mk['prasyarat1']] ?? "-"}}</td>
+                                                    <td>{{ $list_kode_mk[$mk['prasyarat1']]   ?? "-"}} - {{ $list_mk[$mk['prasyarat1']]   ?? "-"}}</td>
                                                     <td>{{ $mk['status']}}</td>
                                                     <td>
                                                         <div class="btn-group">
@@ -193,7 +193,7 @@
                                                                                 <select class="form-control" name="prasyarat1" id="prasyarat1_u{{$mk->id}}">
                                                                                     <option value=0>--Input Matkul Prasyarat--</option>
                                                                                     @foreach($mks as $rows)
-                                                                                    <option value="{{$rows->id}}">{{$rows->nama_matkul}}</option>
+                                                                                    <option value="{{$rows->id}}">{{$rows->kode_matkul}} - {{$rows->nama_matkul}}</option>
                                                                                     @endforeach
                                                                                 </select>
                                                                             </div>
