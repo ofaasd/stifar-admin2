@@ -241,6 +241,15 @@ class DaftarWisudaController extends Controller
             }
         }
 
+        activity()
+        ->performedOn($savePendaftaranWisuda)
+        ->causedBy(auth()->user())
+        ->withProperties([
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+            ])
+        ->log('mendaftar-wisuda');
+
         return response()->json(['message' => 'Berhasil Menyimpan Berkas']);
     }
 }
