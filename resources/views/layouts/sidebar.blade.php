@@ -101,7 +101,15 @@
                     <li><a href="{{URL::to('admin/admisi/verifikasi/pembayaran')}}">Verifikasi Pembayaran</a></li>
                     <li><a href="{{URL::to('admin/admisi/pengumuman')}}">Pengumuman Peserta</a></li> {{-- Butuh format surat pengumuman resmi dari pihak kampus --}}
                     <li><a href="{{URL::to('admin/admisi/verifikasi_pembayaran')}}">Verifikasi Pembayaran Daftar Ulang </a></li>
-                    <li><a href="#">KTM (s) <label class="badge badge-light-danger">!</label></a></li>
+                    <li>
+                        <a class="submenu-title" href="#" >
+                        <span>NIM Generator</span>
+                        </a>
+                        <ul class="nav-sub-childmenu submenu-content">
+                            <li><a href="{{URL::to('admin/admisi/generate_nim')}}">Calon Mahasiswa</a></li>
+                            <li><a href="{{URL::to('admin/admisi/generate_nim/preview')}}">Preview</a></li>
+                        </ul>
+                    </li>
                     <li><a href="{{URL::to('admin/admisi/statistik')}}">Statistik</a></li>
 
                     <li><a href="#">History PMB <label class="badge badge-light-danger">!</label></a></li>

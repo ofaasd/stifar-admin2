@@ -24,7 +24,14 @@
         <div class="row">
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
-
+                <div class="alert alert-primary inverse alert-dismissible fade show" role="alert"><i class="icon-help-alt"></i>
+                    Pada halaman ini user dapat melihat list mahasiswa sebelum di ubah menjadi NIM. User dapat melakukan edit nim, delete list mahasiswa dan menggenerate ulang NIM untuk mengurutkan NIM kembali berdasarkan NIM terakhir yang tersimpan dan diurutkan otomatis berdasarkan nama
+                    <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close" data-bs-original-title="" title=""></button>
+                </div>
+                <div class="alert alert-warning inverse alert-dismissible fade show" role="alert"><i class="fa fa-exclamation-triangle"></i>
+                    Hati-hati ketika mengubah nim karena dapat menimbulkan duplikasi NIM, pastikan NIM yang diubah belum terdaftar
+                    <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close" data-bs-original-title="" title=""></button>
+                </div>
                 <div class="card">
                     <div class="card-header pb-0 card-no-border">
                         <h4>Preview Generate Mahasiswa</h4>
@@ -33,7 +40,9 @@
                         <form action="{{url('admin/admisi/generate_nim/save_temp')}}" method="POST">
                         @csrf
                         <div class="col-md-12 text-end mb-3">
-                            <button class="btn btn-success">Generate NIM</button>
+                            <a href="{{url('admin/admisi/generate_nim/regenerate')}}" class="btn btn-info float-start">Re-generate Preview NIM</a>
+                            <a href="{{url('admin/admisi/generate_nim/generate')}}" class="btn btn-success">Generate NIM</a>
+
                         </div>
                         <div class="table-responsive" id="my-table">
 
@@ -51,16 +60,15 @@
                                 <tbody>
                                     @php $i = 0; @endphp
                                     @foreach($mhs as $row)
-                                        <input type="hidden" name="id[]" value="{{$row->id}}">
                                         <tr>
                                             <td>{{++$i}}</td>
-                                            <td><input type="text" name="form-control" name="nim[]" value="{{$row->nim}}"></td>
+                                            <td><input type="hidden" name="id_mhs[]" value="{{$row->id}}"><input type="text" name="nim[]" value="{{$row->nim}}"></td>
                                             <td>{{$row->nama}}</td>
                                             <td>{{$row->nopen}}</td>
                                             <td>{{$row->nama_prodi}}</td>
                                             <td>
                                                 <div class="btn-group">
-                                                    <button class="btn btn-danger delete-record" data-id="{{$row->id}}" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal"><i class="fa fa-trash"></i></button>
+                                                    <a href="javascript:void(0)" class="btn btn-danger delete-record" data-id="{{$row->id}}" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal"><i class="fa fa-trash"></i></a>
                                                 </div>
                                             </td>
                                         </tr>
@@ -71,7 +79,6 @@
                         <div class="row">
                             <div class="col-md-12 mt-3">
                                 <button class="btn btn-primary col-md-12 mb-3">Simpan Perubahan</button>
-
                             </div>
                         </div>
                         </form>
@@ -116,13 +123,13 @@
                     // delete the data
                     $.ajax({
                     type: 'DELETE',
-                    url: ''.concat(baseUrl).concat(page, '/delete_preview/').concat(id),
+                    url: ''.concat(baseUrl).concat('/admin/admisi/generate_nim/delete_temp/').concat(id),
                     data:{
                         'id': id,
                         '_token': '{{ csrf_token() }}',
                     },
                     success: function success() {
-                        dt.draw();
+                        window.location.reload();
                     },
                     error: function error(_error) {
                         console.log(_error);

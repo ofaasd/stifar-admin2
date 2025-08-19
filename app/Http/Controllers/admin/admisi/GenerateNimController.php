@@ -147,18 +147,17 @@ class GenerateNimController extends Controller
             $gabung = $kode_nim . $angkatan . $kode_asal;
 
             if($no_urutan_nim[$row->pilihan1] == 0){
-                $last_nim_mhs = Mahasiswa::where('nim','like','%' . $gabung . '%')->orderBy('nim','desc')->limit(1)->first();
-                $last_nim_mhs2 = MahasiswaTemp::where('nim','like','%' . $gabung . '%')->orderBy('nim','desc')->limit(1)->first();
-                if(!empty($last_nim_mhs) && !empty($last_nim_mhs2)){
-                    $last_num1 = (int)substr($last_nim_mhs->nim,-3);
-                    $last_num2 = (int)substr($last_nim_mhs2->nim,-3);
-                    if($last_num > $last_num2){
-                        $no_urutan_nim[$row->pilihan1] = $last_num;
-                    }else{
-                        $no_urutan_nim[$row->pilihan1] = $last_num2;
-                    }
-                }else{
+                $last_nim_mhs = Mahasiswa::where('nim','like','%' . $gabung . '%')->orderBy('nim','desc')->limit(1)->first()->nim ?? '000';
+                $last_nim_mhs2 = MahasiswaTemp::where('nim','like','%' . $gabung . '%')->orderBy('nim','desc')->limit(1)->first()->nim ?? '000';
+
+                $last_num1 = (int)substr($last_nim_mhs,-3);
+                $last_num2 = (int)substr($last_nim_mhs2,-3);
+                if($last_num1 == 0 && $last_num2 == 0){
                     $no_urutan_nim[$row->pilihan1] = 1;
+                }elseif($last_num1 > $last_num2){
+                    $no_urutan_nim[$row->pilihan1] = $last_num1+1;
+                }else{
+                    $no_urutan_nim[$row->pilihan1] = $last_num2+1;
                 }
             }
 
@@ -210,10 +209,114 @@ class GenerateNimController extends Controller
         $title = "Preview NIM Mahasiswa";
         $mhs = MahasiswaTemp::select('mahasiswa_temp.*','program_studi.nama_prodi')
                 ->join('program_studi','program_studi.id','=','mahasiswa_temp.id_program_studi')
+                ->orderBy('nim','asc')
                 ->get();
         return view('admin.admisi.generate_nim.preview',compact('title','mhs'));
     }
     public function save_temp(Request $request){
+        $id = $request->id_mhs;
+        $nim = $request->nim;
+       // var_dump($id);
+        foreach($id as $key=>$value){
+            $mhs = MahasiswaTemp::find($value);
+            $mhs->nim = $nim[$key];
+            $mhs->save();
 
+            PmbPesertaOnline::where('nopen',$mhs->nopen)->update(['nim'=>$nim[$key]]);
+        }
+        return redirect()->back();
     }
+    public function delete_temp(String $id){
+        $temp = MahasiswaTemp::find($id);
+        $pmb = PmbPesertaOnline::where('nopen',$temp->nopen)->update(['nim'=>NULL]);
+        $temp = MahasiswaTemp::where('id', $id)->delete();
+    }
+    public function regenerate(){
+        $temp1 = MahasiswaTemp::distinct()->get(['id_program_studi']);
+        $no_urutan_nim = [];
+        foreach($temp1 as $rows){
+            $no_urutan_nim[$rows->id_program_studi] = 0;
+        }
+        $peserta = MahasiswaTemp::orderBy('nama','asc')->get();
+        foreach($peserta as $row){
+
+            $angkatan = date('y');
+            $nim_awal = '';
+            $prodi = Prodi::find($row->id_program_studi);
+            $kode_nim = $prodi->kode_nim;
+            $kode_asal = '11';
+            $gabung = $kode_nim . $angkatan . $kode_asal;
+
+            if($no_urutan_nim[$row->id_program_studi] == 0){
+                $last_nim_mhs = Mahasiswa::where('nim','like','%' . $gabung . '%')->orderBy('nim','desc')->limit(1)->first()->nim ?? '000';
+                $last_nim_mhs2 = MahasiswaTemp::where('nim','like','%' . $gabung . '%')->orderBy('nim','asc')->limit(1)->first()->nim ?? '000';
+
+                $last_num1 = (int)substr($last_nim_mhs,-3);
+                $last_num2 = (int)substr($last_nim_mhs2,-3);
+
+                if($last_num1 == 0 && $last_num2 == 0){
+                    $no_urutan_nim[$row->id_program_studi] = 1;
+                }elseif($last_num1 > $last_num2){
+                    $no_urutan_nim[$row->id_program_studi] = $last_num1+1;
+                }else{
+                    $no_urutan_nim[$row->id_program_studi] = $last_num2;
+                }
+            }
+
+            $angka = '';
+            if(strlen($no_urutan_nim[$row->id_program_studi]) == 1){
+                $angka = '00' . (string)$no_urutan_nim[$row->id_program_studi];
+            }elseif(strlen($no_urutan_nim[$row->id_program_studi]) == 2){
+                $angka = '0' . (string)$no_urutan_nim[$row->id_program_studi];
+            }else{
+                $angka = (string)$no_urutan_nim[$row->id_program_studi];
+            }
+            $new_nim = $gabung . $angka;
+            $data = [
+                'nim' => $new_nim,
+            ];
+            $simpan=MahasiswaTemp::UpdateorCreate([
+                'id' => $row->id,
+            ],$data);
+            $pmb_peserta=PmbPesertaOnline::where('nopen',$row->nopen)->update(['nim'=>$new_nim]);
+            $no_urutan_nim[$row->id_program_studi]++;
+
+        }
+        return redirect('/admin/admisi/generate_nim/preview');
+    }
+    public function generate(){
+        $temp = MahasiswaTemp::all();
+        foreach($temp as $row){
+            $data = [
+                'nisn' => $row->nisn,
+                'nim' => $row->nim  ,
+                'nama' => $row->nama,
+                'no_ktp' => $row->no_ktp,
+                'jk' => $row->jk,
+                'agama' => $row->agama,
+                'tempat_lahir' => $row->tempat_lahir,
+                'tgl_lahir' => $row->tgl_lahir,
+                'nama_ibu' => $row->nama_ibu,
+                'nama_ayah' => $row->nama_ayah,
+                'hp_ortu' => $row->hp_ortu,
+                'alamat' => $row->alamat,
+                'rt' => $row->rt,
+                'rw' => $row->rw    ,
+                'kelurahan' => $row->kelurahan,
+                'kecamatan' => $row->kecamatan,
+                'kokab' => $row->kokab,
+                'provinsi' => $row->provinsi,
+                'telp' => $row->telp,
+                'hp' => $row->hp,
+                'status' => 1,
+                'angkatan' => $row->angkatan,
+                'nopen' => $row->nopen,
+                'id_program_studi' => $row->id_program_studi,
+            ];
+            $simpan=Mahasiswa::create($data);
+        }
+        $hapus=MahasiswaTemp::truncate();
+        return redirect('mahasiswa');
+    }
+
 }
