@@ -215,8 +215,14 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
     Route::get('admin/admisi/pengumuman/{id}/peserta', [PengumumanController::class, 'peserta'])->name('pengumuman_peserta');
     Route::get('admin/admisi/pengumuman/{id}/edit_peserta', [PengumumanController::class, 'edit_peserta'])->name('edit_peserta');
     Route::post('admin/admisi/pengumuman/{id}/edit_peserta', [PengumumanController::class, 'simpan_peserta'])->name('simpan_peserta');
+    Route::get('admin/admisi/generate_nim/preview', [GenerateNimController::class, 'preview'])->name('preview_nim2');
     Route::resource('admin/admisi/verifikasi_pembayaran', VerifikasiPembayaranController::class);
     Route::resource('admin/admisi/generate_nim', GenerateNimController::class);
+    Route::get('admin/admisi/generate_nim/{id}/{status}', [GenerateNimController::class, 'show'])->name('show_generate_nim');
+
+    Route::post('admin/admisi/generate_nim/generate_preview', [GenerateNimController::class, 'generate_preview'])->name('preview_nim');
+    Route::post('admin/admisi/generate_nim/save_temp', [GenerateNimController::class, 'save_temp'])->name('save_temp');
+    Route::post('admin/admisi/generate_nim/delete_temp', [GenerateNimController::class, 'delete_temp'])->name('delete_temp');
     //Route::get('admin/admisi/verifikasi_pembayaran', [VerifikasiPembayaranController::class, 'index'])->name('verifikasi');
 
 

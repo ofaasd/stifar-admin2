@@ -48,15 +48,9 @@
                                 </div>
                                 @endrole
                                 @role('admin-prodi')
-                                <input type="hidden" name="prodi" id="prodi" value="{{ $curr_prodi }}">
-                                 <div class="form-group">
-                                    <label for="tahun_ajaran">Program Studi</label>
-                                    <select name="angkatan"  id="angkatan" class="form-control">
-                                        @foreach($angkatan as $row)
-                                            <option value="{{ $row['angkatan'] }}">{{ $row['angkatan'] }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                                <input type="hidden" name="prodi" id="prodi" value="{{ $curr_prodi->id }}">
+                                <input type="text" name="prodi_preview" id="prodi" class="form-control" readonly value="{{ $curr_prodi->nama_prodi }}">
+
                                 @endrole
                                 <div class="form-group">
                                     <label for="tahun_ajaran">Angkatan</label>
