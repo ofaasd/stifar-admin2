@@ -24,27 +24,31 @@
         <div class="row">
             <div class="col-md-4">
                 <div class="card">
-                    <div class="card-header bg-primary">
-                        <h6 class="text-white text-bold">Generate Keuangan Mahasiswa</h6>
-                    </div>
+                    @if($jumlah_keuangan < $jumlah_mhs)
+                        <div class="card-header bg-danger">
+                            <h6 class="text-white text-bold">Generate Keuangan Mahasiswa</h6>
+                        </div>
 
                         <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
-                        @if($jumlah_keuangan < $jumlah_mhs)
-                            <div class="card-body">
-                                <small>Data Keuangan Mahasiswa TA {{$ta->kode_ta}} Belum tersedia / Terdapat tambahan mahasiswa baru. klik tombol di bawah untuk generate keuangan mahasiswa</small>
-                            </div>
-                            <div class="card-footer">
-                                <a href="{{URL::to('admin/keuangan/generate_mhs')}}" class="btn btn-warning btn-sm">
-                                    <i class="fa fa-plus"></i>
-                                    Generate keuangan Mahasiswa
-                                </a>
-                            </div>
-                        @else
-                            <div class="card-body ">
+
+                        <div class="card-body">
+                            <small>Data Keuangan Mahasiswa TA {{$ta->kode_ta}} Belum tersedia / Terdapat tambahan mahasiswa baru. klik tombol di bawah untuk generate keuangan mahasiswa</small>
+                        </div>
+                        <div class="card-footer">
+                            <a href="{{URL::to('admin/keuangan/generate_mhs')}}" class="btn btn-warning btn-sm">
+                                <i class="fa fa-plus"></i>
+                                Generate keuangan Mahasiswa
+                            </a>
+                        </div>
+                    @else
+                        <div class="card-header bg-primary">
+                            <h6 class="text-white text-bold">Generate Keuangan Mahasiswa</h6>
+                        </div>
+                        <div class="card-body ">
                             <small>Data jumlah Keuangan Mahasiswa sudah sesuai dengan data jumlah mahasiswa</small>
-                            </div>
-                            <div class="card-footer"></div>
-                        @endif
+                        </div>
+                        <div class="card-footer"></div>
+                    @endif
 
 
                 </div>
