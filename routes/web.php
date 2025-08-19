@@ -52,6 +52,8 @@ use App\Http\Controllers\mahasiswa\KuesionerMhsController;
 use App\Http\Controllers\pegawai\RiwayatPegawaiController;
 use App\Http\Controllers\admin\admisi\DaftarSoalController;
 use App\Http\Controllers\admin\admisi\PengumumanController;
+use App\Http\Controllers\admin\admisi\VerifikasiPembayaranController;
+use App\Http\Controllers\admin\admisi\GenerateNimController;
 use App\Http\Controllers\admin\admisi\PmbPesertaController;
 use App\Http\Controllers\admin\admisi\VerifikasiController;
 use App\Http\Controllers\admin\keuangan\KeuanganController;
@@ -100,7 +102,6 @@ use App\Http\Controllers\mahasiswa\skripsi\BerkasSkripsiController;
 use App\Http\Controllers\mahasiswa\skripsi\DaftarSkripsiController;
 use App\Http\Controllers\dosen\skripsi\BimbinganMahasiswaController;
 use App\Http\Controllers\dosen\skripsi\PengajuanBimbinganController;
-use App\Http\Controllers\admin\admisi\VerifikasiPembayaranController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiMengajarController;
 use App\Http\Controllers\mahasiswa\KrsController as mhsKrsController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiPekerjaanController;
@@ -215,6 +216,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
     Route::get('admin/admisi/pengumuman/{id}/edit_peserta', [PengumumanController::class, 'edit_peserta'])->name('edit_peserta');
     Route::post('admin/admisi/pengumuman/{id}/edit_peserta', [PengumumanController::class, 'simpan_peserta'])->name('simpan_peserta');
     Route::resource('admin/admisi/verifikasi_pembayaran', VerifikasiPembayaranController::class);
+    Route::resource('admin/admisi/generate_nim', GenerateNimController::class);
     //Route::get('admin/admisi/verifikasi_pembayaran', [VerifikasiPembayaranController::class, 'index'])->name('verifikasi');
 
 
@@ -365,7 +367,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
     Route::post('/admin/akademik/yudisium/cetak-transkrip-nilai', [MahasiswaController::class, 'cetakTranskripNilai']);
     Route::resource('/admin/akademik/yudisium/cetak', CetakYudisiumController::class)->name('index','cetak-yudisium');
     Route::resource('/admin/akademik/yudisium/pengesahan', PengesahanYudisiumController::class)->name('index','pengesahan-yudisium');
-    
+
     // Wisuda
     Route::resource('/admin/akademik/wisuda/setting', SettingWisudaController::class)->name('index','setting-wisuda');
     Route::resource('/admin/akademik/wisuda/daftar-wisudawan', AdminDaftarWisudawanController::class)->name('index','daftar-wisudawan');
