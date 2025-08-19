@@ -252,6 +252,16 @@ class AdminDaftarWisudawanController extends Controller
     {
         try {
             $data = DaftarWisudawan::where('id', $id)->first();
+            activity()
+            ->performedOn($data)
+            ->causedBy(auth()->user())
+            ->withProperties([
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'data_wisudawan'  => $data
+                ])
+            ->log('acc-wisudawan');
+
             $data->update(['status' => 1]);
             return response()->json(['message' => 'Accepted successfully'], 200);
         } catch (\Exception $e) {
@@ -266,6 +276,17 @@ class AdminDaftarWisudawanController extends Controller
     {
         try {
             $data = DaftarWisudawan::where('id', $id)->first();
+
+            activity()
+            ->performedOn($data)
+            ->causedBy(auth()->user())
+            ->withProperties([
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'data_wisudawan'  => $data
+                ])
+            ->log('delete-wisudawan');
+
             $data->delete();
             return response()->json(['message' => 'Rejected successfully'], 200);
         } catch (\Exception $e) {
