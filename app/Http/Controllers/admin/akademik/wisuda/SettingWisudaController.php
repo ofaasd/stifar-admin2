@@ -148,6 +148,14 @@ class SettingWisudaController extends Controller
                     ]
                 );
 
+                activity()
+                ->performedOn($save)
+                ->causedBy(auth()->user())
+                ->withProperties([
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                    ])
+                ->log('update-gelombang-wisuda');
                 // user updated
                 return response()->json('Updated', 200);
             } else {
@@ -167,6 +175,14 @@ class SettingWisudaController extends Controller
                 );
 
             if ($save) {
+                activity()
+                ->performedOn($save)
+                ->causedBy(auth()->user())
+                ->withProperties([
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                    ])
+                ->log('create-gelombang-wisuda');
                 return response()->json('Created');
             } else {
                 return response()->json('Failed Create Gelombang Wisuda');
@@ -220,6 +236,14 @@ class SettingWisudaController extends Controller
         try {
             $deleted = TbGelombangWisuda::where('id', $id)->delete();
             if ($deleted) {
+                activity()
+                ->performedOn($deleted)
+                ->causedBy(auth()->user())
+                ->withProperties([
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                    ])
+                ->log('update-gelombang-wisuda');
                 return response()->json('Deleted', 200);
             } else {
                 return response()->json('Data not found', 404);

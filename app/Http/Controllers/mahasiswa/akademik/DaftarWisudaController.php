@@ -253,8 +253,8 @@ class DaftarWisudaController extends Controller
         ->performedOn($savePendaftaranWisuda)
         ->causedBy(auth()->user())
         ->withProperties([
-            'ip_address' => $request->ip(),
-            'user_agent' => $request->userAgent(),
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent(),
             ])
         ->log('mendaftar-wisuda');
 
@@ -304,8 +304,8 @@ class DaftarWisudaController extends Controller
             activity()
                 ->causedBy(auth()->user())
                 ->withProperties([
-                    'ip_address' => $request->ip(),
-                    'user_agent' => $request->userAgent(),
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
                 ])
                 ->log('upload-bukti-bayar-wisuda');
 
