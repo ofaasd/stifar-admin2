@@ -52,12 +52,11 @@ use App\Http\Controllers\mahasiswa\KuesionerMhsController;
 use App\Http\Controllers\pegawai\RiwayatPegawaiController;
 use App\Http\Controllers\admin\admisi\DaftarSoalController;
 use App\Http\Controllers\admin\admisi\PengumumanController;
-use App\Http\Controllers\admin\admisi\VerifikasiPembayaranController;
-use App\Http\Controllers\admin\admisi\GenerateNimController;
 use App\Http\Controllers\admin\admisi\PmbPesertaController;
 use App\Http\Controllers\admin\admisi\VerifikasiController;
 use App\Http\Controllers\admin\keuangan\KeuanganController;
 use App\Http\Controllers\admin\master\JenisRuangController;
+use App\Http\Controllers\admin\admisi\GenerateNimController;
 use App\Http\Controllers\admin\akademik\KuesionerController;
 use App\Http\Controllers\admin\akademik\PerwalianController;
 use App\Http\Controllers\admin\aset\AsetKendaraanController;
@@ -102,6 +101,7 @@ use App\Http\Controllers\mahasiswa\skripsi\BerkasSkripsiController;
 use App\Http\Controllers\mahasiswa\skripsi\DaftarSkripsiController;
 use App\Http\Controllers\dosen\skripsi\BimbinganMahasiswaController;
 use App\Http\Controllers\dosen\skripsi\PengajuanBimbinganController;
+use App\Http\Controllers\admin\admisi\VerifikasiPembayaranController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiMengajarController;
 use App\Http\Controllers\mahasiswa\KrsController as mhsKrsController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiPekerjaanController;
@@ -128,6 +128,7 @@ use App\Http\Controllers\admin\akademik\yudisium\PengesahanYudisiumController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiJabatanFungsionalController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiJabatanStrukturalController;
 use App\Http\Controllers\mahasiswa\skripsi\SidangController as SidangMahasiswa;
+use App\Http\Controllers\admin\akademik\wisuda\AdminDaftarPendaftarWisudaController;
 use App\Http\Controllers\admin\admisi\StatistikController as AdmisiStatistikController;
 
 /*
@@ -378,8 +379,9 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
 
     // Wisuda
     Route::resource('/admin/akademik/wisuda/setting', SettingWisudaController::class)->name('index','setting-wisuda');
+    Route::resource('/admin/akademik/wisuda/daftar-pendaftar-wisuda', AdminDaftarPendaftarWisudaController::class)->name('index','daftar-pendaftar-wisuda');
+    Route::put('/admin/akademik/wisuda/daftar-pendaftar-wisuda/acc/{id}', [AdminDaftarPendaftarWisudaController::class, 'acc'])->name('index','acc-wisudawan');
     Route::resource('/admin/akademik/wisuda/daftar-wisudawan', AdminDaftarWisudawanController::class)->name('index','daftar-wisudawan');
-    Route::put('/admin/akademik/wisuda/daftar-wisudawan/acc/{id}', [AdminDaftarWisudawanController::class, 'acc'])->name('index','acc-wisudawan');
     Route::resource('/admin/akademik/wisuda/cetak', CetakWisudawanController::class)->name('index','cetak-wisudawan');
 
     // route KRS
@@ -552,6 +554,7 @@ Route::group(['middleware' => ['auth', 'role:mhs|super-admin']], function () {
             Route::get('/edit/{id}', 'edit')->name('edit');
             Route::patch('/update/{id}', 'update')->name('update');
             Route::post('/delete/{id}', 'delete')->name('delete');
+            Route::post('/upload-bukti-bayar', 'uploadBuktiBayar')->name('upload-bukti-bayar');
         });
 
     });

@@ -13,6 +13,7 @@ use App\Models\PengajuanJudulSkripsi;
 use Illuminate\Support\Facades\Crypt;
 use App\Models\BerkasPendukungMahasiswa;
 use App\Models\MahasiswaBerkasPendukung;
+use App\Models\TbPembayaranWisuda;
 
 class DaftarWisudaController extends Controller
 {
@@ -54,10 +55,17 @@ class DaftarWisudaController extends Controller
             'tb_gelombang_wisuda.nama',
             'tb_gelombang_wisuda.tempat',
             'tb_gelombang_wisuda.waktu_pelaksanaan',
-            'tb_daftar_wisudawan.status'
+            'tb_gelombang_wisuda.tanggal_pemberkasan',
+            'tb_gelombang_wisuda.tanggal_gladi',
+            'tb_gelombang_wisuda.tarif_wisuda',
+            'tb_daftar_wisudawan.status',
+            'tb_daftar_wisudawan.nim',
+            'tb_pembayaran_wisuda.status AS statusPembayaran',
+            'tb_pembayaran_wisuda.bukti AS buktiPembayaran'
         ])
         ->leftJoin('tb_gelombang_wisuda', 'tb_gelombang_wisuda.id', '=', 'tb_daftar_wisudawan.id_gelombang_wisuda')
-        ->where('nim', $mhs->nim)
+        ->leftJoin('tb_pembayaran_wisuda', 'tb_daftar_wisudawan.nim', '=', 'tb_pembayaran_wisuda.nim')
+        ->where('tb_daftar_wisudawan.nim', $mhs->nim)
         ->first();
 
         $data = [
@@ -251,5 +259,59 @@ class DaftarWisudaController extends Controller
         ->log('mendaftar-wisuda');
 
         return response()->json(['message' => 'Berhasil Menyimpan Berkas']);
+    }
+
+    public function uploadBuktiBayar(Request $request)
+    {
+        try {
+            // Validasi input
+            $request->validate([
+                'bukti_bayar' => 'required|file|mimes:jpg,jpeg|max:5120', // Maksimal 5MB
+                'nim' => 'required|exists:mahasiswa,nim',
+                'atas_nama' => 'required|string|max:255',
+                'bank' => 'required|string|max:255',
+                'nominal' => 'required|numeric|min:1000',
+            ]);
+
+            $mhs = DaftarWisudawan::where('nim', $request->nim)->first();
+            if (!$mhs) {
+                return response()->json(['message' => 'Mahasiswa tidak ditemukan'], 404);
+            }
+
+            // Simpan bukti bayar
+            $file = $request->file('bukti_bayar');
+            $fileName = date('YmdHi') . $mhs->nim . $file->getClientOriginalName();
+            $fileName = str_replace(' ', '-', $fileName);
+
+            $tujuan_upload = 'assets/upload/mahasiswa/wisuda/bukti-bayar';
+
+            if (!file_exists($tujuan_upload)) {
+                mkdir($tujuan_upload, 0777, true);
+            }
+
+            $file->move($tujuan_upload, $fileName);
+
+            TbPembayaranWisuda::create([
+                'nim' => $mhs->nim,
+                'nominal' => $request->nominal,
+                'tanggal_bayar' => now(),
+                'bukti' => $fileName,
+                'atas_nama' => $request->atas_nama,
+                'bank_pengirim' => $request->bank,
+                'status' => 0
+            ]);
+
+            activity()
+                ->causedBy(auth()->user())
+                ->withProperties([
+                    'ip_address' => $request->ip(),
+                    'user_agent' => $request->userAgent(),
+                ])
+                ->log('upload-bukti-bayar-wisuda');
+
+            return response()->json(['message' => 'Upload bukti bayar berhasil.']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
+        }
     }
 }

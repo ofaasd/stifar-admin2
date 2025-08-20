@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\admin\akademik\wisuda;
 
-use App\Models\Alumni;
-use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use App\Models\DaftarWisudawan;
+use App\Models\TbGelombangWisuda;
 use App\Http\Controllers\Controller;
+use App\Models\Mahasiswa;
 use App\Models\MahasiswaBerkasPendukung;
+use App\Models\TbPembayaranWisuda;
 
-class AdminDaftarWisudawanController extends Controller
+class AdminDaftarPendaftarWisudaController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,11 +19,15 @@ class AdminDaftarWisudawanController extends Controller
     public function index(Request $request)
     {
         if (empty($request->input('length'))) {
-            $title = "Daftar Wisudawan";
-            $title2 = "daftar-wisudawan";
+            $title = "Pendaftar Wisuda";
+            $title2 = "daftar-pendaftar-wisuda"; 
 
+            $mhs = Mahasiswa::where('is_yudisium', 1)
+                ->whereNotIn('nim', DaftarWisudawan::pluck('nim'))
+                ->get();
+            $gelombang = TbGelombangWisuda::all();
             $indexed = $this->indexed;
-            return view('admin.akademik.wisuda.daftar-wisudawan.index', compact('title', 'title2','indexed'));
+            return view('admin.akademik.wisuda.daftar-pendaftar-wisuda.index', compact('title', 'title2','indexed', 'gelombang', 'mhs'));
         }else{
             $columns = [
                 1 => 'id',
@@ -55,7 +60,7 @@ class AdminDaftarWisudawanController extends Controller
                         'tb_pembayaran_wisuda.status AS statusPembayaran',
                         'tb_pembayaran_wisuda.bukti AS buktiPembayaran'
                     ])
-                    ->where('tb_daftar_wisudawan.status', '=', 1)
+                    ->where('tb_daftar_wisudawan.status', '=', 0)
                     ->leftJoin('mahasiswa', 'tb_daftar_wisudawan.nim', '=', 'mahasiswa.nim')
                     ->leftJoin('tb_yudisium', 'mahasiswa.nim', '=', 'tb_yudisium.nim')
                     ->leftJoin('gelombang_yudisium', 'tb_yudisium.id_gelombang_yudisium', '=', 'gelombang_yudisium.id')
@@ -135,10 +140,15 @@ class AdminDaftarWisudawanController extends Controller
                     
                     $rowStatusPembayaran = '';
                     $tujuan_upload = 'assets/upload/mahasiswa/wisuda/bukti-bayar';
-                    if($row->statusPembayaran == 'Sudah diverifikasi'){
+                    if ($row->statusPembayaran == 'Belum diverifikasi' && $row->buktiPembayaran) {
+                        $rowStatusPembayaran = '<span class="badge bg-warning text-dark">' . $row->statusPembayaran .
+                            ' <a href="' . asset($tujuan_upload . '/' . $row->buktiPembayaran) . '" target="_blank" class="ms-2">Lihat Bukti</a></span>';
+                    }else if($row->statusPembayaran == 'Sudah diverifikasi'){
                         $rowStatusPembayaran = '<span class="badge bg-success">' . $row->statusPembayaran . '</span>';
                     } else {
-                        $rowStatusPembayaran = '<span class="badge bg-success">' . $row->statusPembayaran . '</span>';
+                        $rowStatusPembayaran = '<span class="badge ' .
+                            ($row->statusPembayaran == 'Belum upload bukti' ? 'bg-secondary' : ($row->statusPembayaran == 'Belum diverifikasi' ? 'bg-warning text-dark' : 'bg-success')) . '">' .
+                            $row->statusPembayaran . '</span>';
                     }
                     
                     $nestedData['id'] = $row->id;
@@ -189,48 +199,44 @@ class AdminDaftarWisudawanController extends Controller
      */
     public function store(Request $request)
     {
+        $id = $request->id;
+
         try {
-            foreach ($request->nim as $nim) {
-                $mhs = Mahasiswa::select([
-                    'mahasiswa.nim',
-                    'mahasiswa.nama',
-                    'mahasiswa.angkatan',
-                    'mahasiswa.jk',
-                    'mahasiswa.hp',
-                    'mahasiswa.email',
-                    'gelombang_yudisium.tanggal_pengesahan AS tahunLulus',
-                    'program_studi.jenjang',
-                    'program_studi.nama_prodi AS prodi',
-                    'pengajuan_judul_skripsi.judul AS judulSkripsi',
-                ])
-                ->where('mahasiswa.nim', $nim)
-                ->where('pengajuan_judul_skripsi.status', 1)
-                ->leftJoin('program_studi', 'mahasiswa.id_program_studi', '=', 'program_studi.id')
-                ->leftJoin('tb_yudisium', 'mahasiswa.nim', '=', 'tb_yudisium.nim')
-                ->leftJoin('gelombang_yudisium', 'tb_yudisium.id_gelombang_yudisium', '=', 'gelombang_yudisium.id')
-                ->leftJoin('master_skripsi', 'mahasiswa.nim', '=', 'master_skripsi.nim')
-                ->leftJoin('pengajuan_judul_skripsi', 'master_skripsi.id', '=', 'pengajuan_judul_skripsi.id_master')
-                ->first();
+            $request->validate([
+                'gelombang_id' => 'required',
+                'nim' => 'required',
+            ]);
 
-                Alumni::create([    
-                    'nim' => $mhs->nim,
-                    'nama' => $mhs->nama,
-                    'jenjang' => $mhs->jenjang,
-                    'angkatan' => $mhs->angkatan,
-                    'tahun_lulus' => !empty($mhs->tahunLulus) ? date('Y', strtotime($mhs->tahunLulus)) : null,
-                    'jenis_kelamin' => $mhs->jk,
-                    'no_hp' => $mhs->hp,
-                    'email_pribadi' => $mhs->email,
-                    'prodi' => $mhs->prodi,
-                    'judul_skripsi' => $mhs->judulSkripsi
-                ]);
+            if ($id) {
+                $save = DaftarWisudawan::updateOrCreate(
+                    ['id' => $id],
+                    [
+                        'id_gelombang_wisuda' => $request->gelombang_id,
+                        'nim' => $request->nim,
+                        'status' => 0
+                    ]
+                );
 
-                DaftarWisudawan::where('nim', $mhs->nim)->delete();
-                $mhs->delete();
+                // user updated
+                return response()->json('Updated', 200);
+            } else {
+                $save = DaftarWisudawan::updateOrCreate(
+                    ['id' => $id],
+                    [
+                        'id_gelombang_wisuda' => $request->gelombang_id,
+                        'nim' => $request->nim,
+                        'status' => 0
+                    ]
+                );
+
+            if ($save) {
+                return response()->json('Created');
+            } else {
+                return response()->json('Failed Create Daftar Wisudawan');
             }
-            return response()->json(['message' => 'Data alumni berhasil ditambahkan', 'code' => 200]);
+        }
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Gagal menambahkan data alumni', 'error' => $e->getMessage()], 500);
+            return response()->json($e->getMessage(), 500);
         }
     }
 
@@ -258,11 +264,51 @@ class AdminDaftarWisudawanController extends Controller
         //
     }
 
+    public function acc(Request $request, string $id)
+    {
+        try {
+            $data = DaftarWisudawan::where('id', $id)->first();
+            $pembayaran = TbPembayaranWisuda::where('nim', $data->nim)->first();
+            activity()
+            ->performedOn($data)
+            ->causedBy(auth()->user())
+            ->withProperties([
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'data_wisudawan'  => $data
+                ])
+                ->log('acc-wisudawan');
+                
+            $pembayaran->update(['status' => 1]);
+            $data->update(['status' => 1]);
+            return response()->json(['message' => 'Accepted successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to accept', 'error' => $e->getMessage()], 500);
+        }
+    }
+
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            $data = DaftarWisudawan::where('id', $id)->first();
+
+            activity()
+            ->performedOn($data)
+            ->causedBy(auth()->user())
+            ->withProperties([
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'data_wisudawan'  => $data
+                ])
+            ->log('delete-wisudawan');
+
+            $data->delete();
+            return response()->json(['message' => 'Rejected successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to reject', 'error' => $e->getMessage()], 500);
+        }
     }
 }

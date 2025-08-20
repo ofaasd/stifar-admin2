@@ -27,57 +27,8 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header pb-0 card-no-border">
-                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal">+ {{$title}}</button>
-                        <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
-                            <div class="modal-dialog modal-xl" role="document">
-                                <div class="modal-content">
-                                    <form action="javascript:void(0)" id="formAdd">
-                                        @csrf
-                                        <input type="hidden" name="id" id="id">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="ModalLabel">Tambah {{$title}}</h5>
-                                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="row mb-2">
-                                                <div class="col">
-                                                    <h5 class="mb-2">Pilih Gelombang Wisuda</h5>
-                                                    <select class="form-select" name="gelombang_id" id="gelombang_id" {{ count($gelombang) == 0 ? 'disabled' : '' }}>
-                                                            @if(count($gelombang) > 0)
-                                                                    @foreach($gelombang as $row)
-                                                                            <option value="{{ $row->id }}"> 
-                                                                                {{ $row->nama }} | {{ $row->tempat }} | {{ \Carbon\Carbon::parse($row->waktu_pelaksanaan)->translatedFormat('d F Y H:i'); }} | {{ \Carbon\Carbon::parse($row->mulai_pendaftaran)->translatedFormat('d F Y') . ' - ' . \Carbon\Carbon::parse($row->selesai_pendaftaran)->translatedFormat('d F Y') }}
-                                                                            </option>
-                                                                    @endforeach
-                                                            @else
-                                                                    <option value="">Tidak ada gelombang wisuda tersedia</option>
-                                                            @endif
-                                                    </select>
-                                                </div>
-                                                <div class="col">
-                                                    <h5 class="mb-2">Pilih Mahasiswa</h5>
-                                                    <select class="form-select" name="nim" id="nim" {{ count($mhs) == 0 ? 'disabled' : '' }}>
-                                                            @if(count($mhs) > 0)
-                                                                    @foreach($mhs as $row)
-                                                                            <option value="{{ $row->nim }}"> 
-                                                                                {{ $row->nim }} | {{ $row->nama }}
-                                                                            </option>
-                                                                    @endforeach
-                                                            @else
-                                                                    <option value="">Tidak ada mahasiswa tersedia</option>
-                                                            @endif
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
-                                            <button class="btn btn-primary" type="submit" id="btn-submit">Simpan</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
+                        <button class="btn btn-primary" type="button" id="btn-select-all-nim">Pilih Semua</button>
+                        <button class="btn btn-primary d-none" type="button" id="btn-submit">Pindahkan ke alumni</button>
                     </div>
                     <div class="card-body">
                         <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
@@ -91,6 +42,7 @@
                                         <th>Wisuda</th>
                                         <th>Yudisium</th>
                                         <th>Berkas</th>
+                                        <th>Status Pembayaran</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -149,7 +101,10 @@
                         orderable: false,
                         targets: 1,
                         render: function render(data, type, full, meta) {
-                            return '<span>'.concat(full.fake_id, '</span>');
+                            return `
+                                <input type="checkbox" class="form-check-input me-2 list-mhs" style="width:24px;height:24px;border-radius:0;" value="${full.nim}">
+                                <span>${full.fake_id}</span>
+                            `;
                         }
                     },
                     {
@@ -157,7 +112,7 @@
                         orderable: false,
                         targets: 2,
                         render: function render(data, type, full, meta) {
-                            // Render NIM, Nama, and Photo
+                            // Render NIM, Nama, Photo, and Checkbox
                             var photoUrl = full.photo ? `{{ asset("assets/images/mahasiswa/") }}/${full.photo}` : '{{ asset("assets/images/user/1.jpg") }}';
                             return `
                                 <div class="d-flex align-items-center">
@@ -193,29 +148,7 @@
                         searchable: false,
                         orderable: false,
                         render: function render(data, type, full, meta) {
-                            if (full['status_daftar'] == 0) {
-                                return (
-                                    '<div class="d-inline-block text-nowrap">' +
-                                    '<button class="btn btn-sm btn-icon acc-record text-primary" data-id="' +
-                                    full['id'] +
-                                    '" title="Acc"><i class="fa fa-check"></i></button>' +
-                                    '<button class="btn btn-sm btn-icon delete-record text-primary" title="Hapus" data-id="' +
-                                    full['id'] +
-                                    '"><i class="fa fa-times"></i></button>' +
-                                    '</div>'
-                                );
-                            } else if (full['status_daftar'] == 1) {
-                                return (
-                                    '<div class="d-inline-block text-nowrap">' +
-                                    '<span class="badge bg-success me-1">Sudah disetujui</span>' +
-                                    '<button class="btn btn-sm btn-icon delete-record text-primary" title="Hapus" data-id="' +
-                                    full['id'] +
-                                    '"><i class="fa fa-times"></i></button>' +
-                                    '</div>'
-                                );
-                            } else {
-                                return '';
-                            }
+                            return '';
                         }
                     }
                 ],
@@ -235,86 +168,47 @@
                     searchPlaceholder: 'Search..'
                 },
             });
-            $('#tambahModal').on('hidden.bs.modal', function () {
-                $('#formAdd').find('input, textarea, select').val('');
-                $('#formAdd').trigger("reset");
-                $('#id').val('');
-                $('#mhs-selected').empty();
-            });
-            //Edit Record
-            $(document).on('click', '.edit-record', function () {
-                const id = $(this).data('id');
 
-                // changing the title of offcanvas
-                $('#ModalLabelEdit').html('Edit ' + title);
-
-                // get data
-                $.get(''.concat(baseUrl).concat(page, '/').concat(id, '/edit'), function (data) {
-                    Object.keys(data).forEach(key => {
-                        $('#' + key)
-                        .val(data[key])
-                        .trigger('change');
-                    });
-                });
-            });
-
-            //save record
-            $('#formAdd').on('submit', function(e) {
-                e.preventDefault();
-                var btnSubmit = $('#btn-submit');
-                var oldBtnHtml = btnSubmit.html();
-                btnSubmit.prop('disabled', true);
-                btnSubmit.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Please Wait...');
-                $('#mhs-selected option').prop('selected', true);
-
-                $.ajax({
-                    data: $('#formAdd').serialize(),
-                    url: ''.concat(baseUrl).concat(page),
-                    type: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') || '{{ csrf_token() }}'
-                    },
-                    success: function success(message) {
-                        dt.draw();
-                        $("#tambahModal").modal('hide');
-                        swal({
-                            icon: 'success',
-                            title: 'Successfully '.concat(message, '!'),
-                            text: ''.concat(title, ' ').concat(message, ' Successfully.'),
-                            customClass: {
-                                confirmButton: 'btn btn-success'
-                            }
-                        });
-                        btnSubmit.prop('disabled', false);
-                        btnSubmit.html(oldBtnHtml);
-                    },
-                    error: function error(err) {
-                        swal({
-                            title: err.responseText || 'Duplicate Entry.',
-                            text: title + ' Not Saved !',
-                            icon: 'error',
-                            customClass: {
-                                confirmButton: 'btn btn-success'
-                            }
-                        });
-                        btnSubmit.prop('disabled', false);
-                        btnSubmit.html(oldBtnHtml);
+            let dataMhs = [];
+            // Toggle all checkboxes and collect checked values
+            $(document).on('click', '#btn-select-all-nim', function () {
+                $('.list-mhs').each(function () {
+                    this.checked = !this.checked;
+                    const value = $(this).val();
+                    if (this.checked) {
+                        if (!dataMhs.includes(value)) dataMhs.push(value);
+                    } else {
+                        dataMhs = dataMhs.filter(v => v !== value);
                     }
                 });
             });
 
-            //acc record
-            $(document).on('click', '.acc-record', function () {
-                const id = $(this).data('id');
-                // sweetalert for confirmation of acc
+            $(document).on('change', '.list-mhs', function () {
+                const value = $(this).val();
+                if (this.checked) {
+                    if (!dataMhs.includes(value)) dataMhs.push(value);
+                } else {
+                    dataMhs = dataMhs.filter(v => v !== value);
+                }
+            });
+
+            $(document).on('change click', '.list-mhs, #btn-select-all-nim', function () {
+                if (dataMhs.length > 0) {
+                    $('#btn-submit').removeClass('d-none');
+                } else {
+                    $('#btn-submit').addClass('d-none');
+                }
+            });
+
+            $(document).on('click', '#btn-submit', function () {
                 swal({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert accept this!",
+                    title: 'Apakah anda yakin?',
+                    text: "Data tidak dapat dikembalikan!",
                     icon: 'warning',
                     buttons: true,
                     dangerMode: true,
                     showCancelButton: true,
-                    confirmButtonText: 'Yes, acc!',
+                    confirmButtonText: 'Yes, alumnikan!',
                     customClass: {
                         confirmButton: 'btn btn-primary me-3',
                         cancelButton: 'btn btn-label-secondary'
@@ -322,31 +216,36 @@
                     buttonsStyling: false
                 }).then(function (result) {
                 if (result) {
+                    dataNim = {
+                        'nim': dataMhs,
+                        '_token': '{{ csrf_token() }}'
+                    }
 
                     // acc the data
                     $.ajax({
                     type: 'POST',
-                    url: ''.concat(baseUrl).concat(page, '/acc/').concat(id),
-                    data:{
-                        'id': id,
-                        '_method': 'PUT',
-                        '_token': '{{ csrf_token() }}',
+                    url: ''.concat(baseUrl).concat(page),
+                    data: dataNim,
+                    success: function success(response) {
+                        swal({
+                            title: 'Success!',
+                            text: response.message,
+                            icon: 'success',
+                            customClass: {
+                                confirmButton: 'btn btn-success'
+                            }
+                        });
                     },
-                    success: function success() {
-                        dt.draw();
-                    },
-                    error: function error(_error) {
+                    error: function error(xhr) {
+                        const message = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'An error occurred while processing your request.';
                         swal({
                             title: 'Failed!',
-                            text: _error.message,
+                            text: message,
                             icon: 'error',
                             customClass: {
                                 confirmButton: 'btn btn-success'
                             }
                         });
-                        // console.log('====================================');
-                        // console.log(_error);
-                        // console.log('====================================');
                     }
                     });
 
@@ -372,73 +271,6 @@
                 });
             });
 
-            //reject record
-            $(document).on('click', '.delete-record', function () {
-                const id = $(this).data('id');
-                // sweetalert for confirmation of reject
-                swal({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert the reject this!",
-                    icon: 'warning',
-                    buttons: true,
-                    dangerMode: true,
-                    showCancelButton: true,
-                    confirmButtonText: 'Yes, reject it!',
-                    customClass: {
-                        confirmButton: 'btn btn-primary me-3',
-                        cancelButton: 'btn btn-label-secondary'
-                    },
-                    buttonsStyling: false
-                }).then(function (result) {
-                if (result) {
-
-                    // delete the data
-                    $.ajax({
-                    type: 'DELETE',
-                    url: ''.concat(baseUrl).concat(page, '/').concat(id),
-                    data:{
-                        'id': id,
-                        '_token': '{{ csrf_token() }}',
-                    },
-                    success: function success() {
-                        dt.draw();
-                    },
-                    error: function error(_error) {
-                        swal({
-                            title: 'Failed!',
-                            text: _error.message,
-                            icon: 'error',
-                            customClass: {
-                                confirmButton: 'btn btn-success'
-                            }
-                        });
-                        // console.log('====================================');
-                        // console.log(_error.error);
-                        // console.log('====================================');
-                    }
-                    });
-
-                    // success sweetalert
-                    swal({
-                        icon: 'success',
-                        title: 'Rejected!',
-                        text: 'The Record has been rejected!',
-                        customClass: {
-                            confirmButton: 'btn btn-success'
-                        }
-                    });
-                } else {
-                    swal({
-                        title: 'Cancelled',
-                        text: 'The record is not rejected!',
-                        icon: 'error',
-                        customClass: {
-                            confirmButton: 'btn btn-success'
-                        }
-                    });
-                }
-                });
-            });
         });
 
     </script>

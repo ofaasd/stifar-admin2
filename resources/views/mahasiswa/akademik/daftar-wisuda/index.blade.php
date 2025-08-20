@@ -62,18 +62,23 @@
                                                                         Selamat 🎉 <strong>{{ $mhs->nama }}</strong> Anda telah berhasil mendaftar wisuda.<br>
                                                                         <ul class="mb-2">
                                                                                 <li><strong>Nama Gelombang:</strong> {{ $registered->nama ?? '-' }}</li>
+                                                                                <li><strong>Tanggal Pemberkasan:</strong> {{ \Carbon\Carbon::parse($registered->tanggal_pemberkasan)->translatedFormat('d F Y') ?? '-' }}</li>
+                                                                                <li><strong>Tanggal Gladi:</strong> {{ \Carbon\Carbon::parse($registered->tanggal_gladi)->translatedFormat('d F Y') ?? '-' }}</li>
                                                                                 <li><strong>Tempat Pelaksanaan:</strong> {{ $registered->tempat ?? '-' }}</li>
                                                                                 <li><strong>Waktu Pelaksanaan:</strong> {{ \Carbon\Carbon::parse($registered->waktu_pelaksanaan)->translatedFormat('d F Y H:i') ?? '-' }}</li>
                                                                         </ul>
                                                                         Mohon tunggu informasi selanjutnya dari panitia.<br>
                                                                 </div>
                                                         @else
-                                                                 <div class="alert alert-{{ $registered->status == 1 ? 'success' : 'warning' }}" role="alert">
+                                                                <div class="alert alert-{{ $registered->status == 1 ? 'success' : 'secondary' }}" role="alert">
                                                                         Selamat 🎉 <strong>{{ $mhs->nama }}</strong> Anda telah berhasil mengajukan pendaftaran wisuda.<br>
                                                                         <ul class="mb-2">
                                                                                 <li><strong>Nama Gelombang:</strong> {{ $registered->nama ?? '-' }}</li>
+                                                                                <li><strong>Tanggal Pemberkasan:</strong> {{ \Carbon\Carbon::parse($registered->tanggal_pemberkasan)->translatedFormat('d F Y') ?? '-' }}</li>
+                                                                                <li><strong>Tanggal Gladi:</strong> {{ \Carbon\Carbon::parse($registered->tanggal_gladi)->translatedFormat('d F Y') ?? '-' }}</li>
                                                                                 <li><strong>Tempat Pelaksanaan:</strong> {{ $registered->tempat ?? '-' }}</li>
                                                                                 <li><strong>Waktu Pelaksanaan:</strong> {{ \Carbon\Carbon::parse($registered->waktu_pelaksanaan)->translatedFormat('d F Y H:i') ?? '-' }}</li>
+                                                                                <li><strong>Biaya Wisuda:</strong> {{ 'Rp ' . number_format($registered->tarif_wisuda ?? 0, 0, ',', '.') }}</li>
                                                                                 <li>
                                                                                         <strong>Status:</strong>
                                                                                         <span class="badge {{ $registered->status == 1 ? 'bg-success' : 'bg-info' }}">
@@ -81,7 +86,46 @@
                                                                                         </span>
                                                                                 </li>
                                                                         </ul>
-                                                                        Mohon tunggu informasi selanjutnya dari panitia.<br>
+                                                                        @if ($registered->statusPembayaran == 0 || $registered->statusPembayaran == 1)
+                                                                            <div class="alert" role="alert">
+                                                                                Bukti pembayaran telah diunggah. <a href="{{ asset('assets/upload/mahasiswa/wisuda/bukti-bayar/' . $registered->buktiPembayaran) }}" target="_blank">disini</a>
+                                                                            </div>
+                                                                        @else
+                                                                                Silahkan lanjutkan dengan mengunggah bukti pembayaran.<br>
+
+                                                                                <form id="form-bukti-bayar" method="POST" enctype="multipart/form-data" class="p-3 rounded">
+                                                                                        @csrf
+                                                                                        <input type="hidden" name="nim" value="{{ $registered->nim }}">
+                                                                                        <div class="mb-3 row">
+                                                                                                <label for="atas_nama" class="col-sm-3 col-form-label">Atas Nama</label>
+                                                                                                <div class="col-sm-9">
+                                                                                                        <input type="text" class="form-control" id="atas_nama" name="atas_nama" placeholder="Nama pada rekening" required>
+                                                                                                </div>
+                                                                                        </div>
+                                                                                        <div class="mb-3 row">
+                                                                                                <label for="bank" class="col-sm-3 col-form-label">Bank</label>
+                                                                                                <div class="col-sm-9">
+                                                                                                        <input type="text" class="form-control" id="bank" name="bank" placeholder="Nama Bank" required>
+                                                                                                </div>
+                                                                                        </div>
+                                                                                        <div class="mb-3 row">
+                                                                                                <label for="nominal" class="col-sm-3 col-form-label">Nominal</label>
+                                                                                                <div class="col-sm-9">
+                                                                                                        <input type="number" class="form-control" id="nominal" name="nominal" placeholder="Nominal pembayaran" value="{{ $registered->tarif_wisuda }}" required>
+                                                                                                </div>
+                                                                                        </div>
+                                                                                        <div class="mb-3 row">
+                                                                                                <label for="buktiBayar" class="col-sm-3 col-form-label">Bukti Bayar</label>
+                                                                                                <div class="col-sm-9">
+                                                                                                        <input type="file" class="form-control" id="buktiBayar" name="bukti_bayar" accept=".jpg,.jpeg,.png,.pdf" required>
+                                                                                                        <small class="text-muted">File jpg/jpeg, maksimal 5MB</small>
+                                                                                                </div>
+                                                                                        </div>
+                                                                                        <div class="text-end">
+                                                                                                <button type="submit" class="btn btn-primary">Upload Bukti Bayar</button>
+                                                                                        </div>
+                                                                                </form>
+                                                                        @endif
                                                                 </div>
                                                         @endif   
                                                 @else
@@ -264,6 +308,58 @@
                                                 Swal.fire({
                                                     icon: 'error',
                                                     title: 'error',
+                                                    text: xhr.responseJSON.message,
+                                                });
+                                            }
+                                        });
+                                }
+                        });
+                });
+
+                $('#form-bukti-bayar').on('submit', function(e) {
+                        e.preventDefault();
+                        Swal.fire({
+                                title: 'Konfirmasi',
+                                text: 'Apakah Anda yakin ingin mengupload bukti bayar?',
+                                icon: 'question',
+                                showCancelButton: true,
+                                confirmButtonText: 'Ya, Upload',
+                                cancelButtonText: 'Batal'
+                        }).then((result) => {
+                                if (result.isConfirmed) {
+                                        $('#btn-submit').prop('disabled', true);
+                                        $('#btn-submit').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Please Wait...');
+                                        
+                                        var formData = new FormData(this);
+
+                                        // Uncomment AJAX for actual use
+                                        $.ajax({
+                                            url: '{{ route('mhs.akademik.daftar-wisuda.upload-bukti-bayar') }}',
+                                            type: 'POST',
+                                            data: formData,
+                                            contentType: false,
+                                            processData: false,
+                                            success: function(response) {
+                                                $('#btn-submit').prop('disabled', false);
+                                                $('#btn-submit').html('Simpan');
+                                                Swal.fire({
+                                                    icon: 'success',
+                                                    title: 'Upload bukti bayar berhasil.',
+                                                    text: response.message,
+                                                    timer: 1500
+                                                }).then(() => {
+                                                    location.reload();
+                                                });
+                                            },
+                                            error: function(xhr) {
+                                                // console.log('====================================');
+                                                // console.log(xhr);
+                                                // console.log('====================================');
+                                                $('#btn-submit').prop('disabled', false);
+                                                $('#btn-submit').html('Simpan');
+                                                Swal.fire({
+                                                    icon: 'error',
+                                                    title: 'error.',
                                                     text: xhr.responseJSON.message,
                                                 });
                                             }

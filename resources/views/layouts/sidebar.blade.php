@@ -183,6 +183,7 @@
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
                             <li><a href="{{Url::to('admin/akademik/wisuda/setting')}}">Setting Wisuda</a></li>
+                            <li><a href="{{Url::to('admin/akademik/wisuda/daftar-pendaftar-wisuda')}}">Daftar Pendaftar Wisuda</a></li>
                             <li><a href="{{Url::to('admin/akademik/wisuda/daftar-wisudawan')}}">Daftar Wisudawan</a></li>
                             <li><a href="{{Url::to('admin/akademik/wisuda/cetak')}}">Cetak Wisudawan</a></li>
                         </ul>

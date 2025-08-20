@@ -60,6 +60,16 @@
                                                     <input type="datetime-local" class="form-control" id="waktu_pelaksanaan" name="waktu_pelaksanaan" required placeholder="Waktu pelaksanaan">
                                                 </div>
                                             </div>
+                                            <div class="row">
+                                                <div class="mb-3 col">
+                                                    <label for="tanggal_pemberkasan" class="form-label">Tanggal Pemberkasan</label>
+                                                    <input type="date" class="form-control" id="tanggal_pemberkasan" name="tanggal_pemberkasan" required>
+                                                </div>
+                                                <div class="mb-3 col">
+                                                    <label for="tanggal_gladi" class="form-label">Tanggal Gladi</label>
+                                                    <input type="date" class="form-control" id="tanggal_gladi" name="tanggal_gladi" required>
+                                                </div>
+                                            </div>
 
                                             <div class="row">
                                                 <div class="mb-3 col">
@@ -71,7 +81,13 @@
                                                     <input type="date" class="form-control" id="selesai_pendaftaran" name="selesai_pendaftaran" required>
                                                 </div>
                                             </div>
+                                            
+                                            <div class="col">
+                                                <label for="tarif_wisuda" class="form-label">Tarif Wisuda</label>
+                                                <input type="number" class="form-control" id="tarif_wisuda" name="tarif_wisuda" required placeholder="Masukkan tarif wisuda">
+                                            </div>
                                         </div>
+
                                         <div class="modal-footer">
                                             <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
                                             <button class="btn btn-primary" type="submit" id="btn-submit">Simpan</button>
@@ -206,7 +222,7 @@
                 // get data
                 $.get(''.concat(baseUrl).concat(page, '/').concat(id, '/edit'), function (data) {
                     Object.keys(data).forEach(key => {
-                        if(key == 'mulai_pendaftaran' || key == 'selesai_pendaftaran'){
+                        if(key == 'mulai_pendaftaran' || key == 'selesai_pendaftaran' || key == 'tanggal_pemberkasan' || key == 'tanggal_gladi'){
                             let formattedDate = data[key] ? data[key].slice(0, 10) : '';
                             $('#' + key)
                                 .val(formattedDate)

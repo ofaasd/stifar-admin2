@@ -10,5 +10,5 @@ class Alumni extends Model
     use HasFactory;
 
     protected $table = 'tb_alumni';
-    protected $guarded = [];
+    protected $guarded = ['id'];
 }
