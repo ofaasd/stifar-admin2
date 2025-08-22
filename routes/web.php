@@ -89,6 +89,7 @@ use App\Http\Controllers\admin\akademik\NilaiKuesionerController;
 use App\Http\Controllers\admin\aset\AsetGedungBangunanController;
 use App\Http\Controllers\admin\keuangan\ProdiBukaTutupController;
 use App\Http\Controllers\admin\keuangan\JenisKeuanganController;
+use App\Http\Controllers\admin\keuangan\SettingKeuanganController;
 use App\Http\Controllers\admin\skripsi\DosenPembimbingController;
 use App\Http\Controllers\mahasiswa\skripsi\PembimbingController1;
 use App\Http\Controllers\admin\akademik\KhsController as adminKhs;
@@ -459,6 +460,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
     Route::resource('admin/keuangan/bank_data_va', VaController::class)->name('index','index_va');
     Route::resource('admin/keuangan/buka_tutup_prodi', ProdiBukaTutupController::class)->name('index', 'buka_tutup_prodi');
     Route::resource('admin/keuangan/jenis_keuangan', JenisKeuanganController::class)->name('index','keuangan');
+    Route::resource('admin/keuangan/setting_keuangan', SettingKeuanganController::class)->name('index','setting_keuangan');
     Route::resource('admin/keuangan', KeuanganController::class)->name('index','keuangan');
 
 
