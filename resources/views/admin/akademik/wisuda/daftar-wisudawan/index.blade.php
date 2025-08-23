@@ -26,9 +26,17 @@
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
                 <div class="card">
-                    <div class="card-header pb-0 card-no-border">
-                        <button class="btn btn-primary" type="button" id="btn-select-all-nim">Pilih Semua</button>
-                        <button class="btn btn-primary d-none" type="button" id="btn-submit">Pindahkan ke alumni</button>
+                    <div class="card-header pb-0 card-no-border d-flex justify-content-between align-items-center">
+                        <div>
+                            <button class="btn btn-primary" type="button" id="btn-select-all-nim">Pilih Semua</button>
+                            <button class="btn btn-primary d-none" type="button" id="btn-submit">Pindahkan ke alumni</button>
+                        </div>
+                        <!-- Notes Section -->
+                        <div class="mb-0 ms-3">
+                            <div class="alert alert-warning mb-0" role="alert">
+                                <strong>Catatan:</strong> Wisudawan yang telah menyelesaikan proses wisuda dapat dipindahkan ke data alumni melalui tombol di samping.
+                            </div>
+                        </div>
                     </div>
                     <div class="card-body">
                         <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
