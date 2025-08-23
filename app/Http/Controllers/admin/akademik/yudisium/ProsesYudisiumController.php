@@ -35,18 +35,19 @@ class ProsesYudisiumController extends Controller
             $title2 = "proses"; 
             $data = TbYudisium::all();
             $indexed = $this->indexed;
-            $mhs = Mahasiswa::join('krs', 'mahasiswa.id', '=', 'krs.id_mhs')
-                ->join('krs_arsip', 'mahasiswa.id', '=', 'krs_arsip.id_mhs')
-                ->leftJoin('jadwals', 'krs.id_jadwal', '=', 'jadwals.id')
-                ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
-                ->where('mata_kuliahs.nama_matkul', 'like', '%skripsi%')
-                ->select([  
+            $getNim = master_nilai::join('jadwals as a', 'master_nilai.id_jadwal', '=', 'a.id')
+                    ->join('mata_kuliahs as b', 'a.id_mk', '=', 'b.id')
+                    ->where('b.nama_matkul', 'like', '%skripsi%')
+                    ->whereNotNull('master_nilai.nakhir')
+                    ->pluck('nim');
+
+            $mhs = Mahasiswa::select([  
                     'mahasiswa.id',
                     'mahasiswa.nama',
                     'mahasiswa.nim',
                     'mahasiswa.foto_mhs',
                 ])
-                ->groupBy('mahasiswa.id')
+                ->whereIn('mahasiswa.nim', $getNim)
                 ->get()
                 ->map(function ($item) {
                     $item->nimEnkripsi = Crypt::encryptString($item->nim . "stifar");
@@ -65,7 +66,8 @@ class ProsesYudisiumController extends Controller
                     )
                     ->join('jadwals as a', 'master_nilai.id_jadwal', '=', 'a.id')
                     ->join('mata_kuliahs as b', 'a.id_mk', '=', 'b.id')
-                    ->where(['nim' => $item->nim])
+                    ->where('nim', $item->nim)
+                    ->whereNotNull('master_nilai.nakhir')
                     ->get();
 
                 $totalSks = 0;
