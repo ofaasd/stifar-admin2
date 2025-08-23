@@ -6,14 +6,27 @@ use Illuminate\Http\Request;
 use App\Models\TbGelombangWisuda;
 use App\Http\Controllers\Controller;
 use App\Models\DaftarWisudawan;
+use App\Models\master_nilai;
 use Illuminate\Support\Facades\Crypt;
 
 class CetakWisudawanController extends Controller
 {
+    protected $kualitas = [
+        'A' => 4,
+        'AB' => 3.5,
+        'B' => 3,
+        'BC' => 2.5,
+        'C' => 2,
+        'CD' => 1.5,
+        'D' => 1,
+        'ED' => 0.5,
+        'E' => 0
+    ];
+
     /**
      * Display a listing of the resource.
      */
-    public $indexed = ['', 'id', 'periode', 'nama', 'tempat', 'waktu_pelaksanaan', 'tanggal_pendaftaran', 'jml_peserta'];
+    public $indexed = ['', 'id', 'periode', 'nama', 'tempat', 'waktu_pelaksanaan', 'tanggal_pendaftaran', 'tanggal_pemberkasan', 'tanggal_gladi', 'tarif_wisuda', 'jml_peserta'];
     public function index(Request $request)
     {
         if (empty($request->input('length'))) {
@@ -30,7 +43,10 @@ class CetakWisudawanController extends Controller
                 4 => 'tempat',
                 5 => 'waktu_pelaksanaan',
                 6 => 'tanggal_pendaftaran',
-                7 => 'jml_peserta'
+                7 => 'tanggal_pemberkasan',
+                8 => 'tanggal_gladi',
+                9 => 'tarif_wisuda',
+                10 => 'jml_peserta'
             ];
 
             $search = [];
@@ -44,9 +60,7 @@ class CetakWisudawanController extends Controller
             $order = $columns[$request->input('order.0.column')];
             $dir = $request->input('order.0.dir');
 
-
-            if (empty($request->input('search.value'))) {
-                $gelombang = TbGelombangWisuda::select([
+            $query = TbGelombangWisuda::select([
                         'id',
                         'periode',
                         'nama',
@@ -54,8 +68,15 @@ class CetakWisudawanController extends Controller
                         'waktu_pelaksanaan',
                         'mulai_pendaftaran',
                         'selesai_pendaftaran',
+                        'tanggal_pemberkasan',
+                        'tanggal_gladi',
+                        'tarif_wisuda',
                         \DB::raw('(SELECT COUNT(*) FROM tb_daftar_wisudawan WHERE tb_daftar_wisudawan.id_gelombang_wisuda = tb_gelombang_wisuda.id AND tb_daftar_wisudawan.status = 1) as jml_peserta'),
-                    ])
+            ]);
+
+
+            if (empty($request->input('search.value'))) {
+                $gelombang = $query
                     ->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
@@ -67,12 +88,15 @@ class CetakWisudawanController extends Controller
             } else {
                 $search = $request->input('search.value');
 
-                $gelombang = TbGelombangWisuda::where('nama', 'LIKE', "%{$search}%")
+                $gelombang = $query->where('nama', 'LIKE', "%{$search}%")
                     ->orWhere('periode', 'LIKE', "%{$search}%")
                     ->orWhere('tempat', 'LIKE', "%{$search}%")
                     ->orWhere('mulai_pendaftaran', 'LIKE', "%{$search}%")
                     ->orWhere('selesai_pendaftaran', 'LIKE', "%{$search}%")
                     ->orWhere('waktu_pelaksanaan', 'LIKE', "%{$search}%")
+                    ->orWhere('tanggal_pemberkasan', 'LIKE', "%{$search}%")
+                    ->orWhere('tanggal_gladi', 'LIKE', "%{$search}%")
+                    ->orWhere('tarif_wisuda', 'LIKE', "%{$search}%")
                     ->orWhere('jml_peserta', 'LIKE', "%{$search}%")
                     ->offset($start)
                     ->limit($limit)
@@ -83,7 +107,7 @@ class CetakWisudawanController extends Controller
                         return $item;
                     });
 
-                $totalFiltered = TbGelombangWisuda::where('nama', 'LIKE', "%{$search}%")
+                $totalFiltered = $query->where('nama', 'LIKE', "%{$search}%")
                     ->orWhere('periode', 'LIKE', "%{$search}%")
                     ->orWhere('tempat', 'LIKE', "%{$search}%")
                     ->orWhere('mulai_pendaftaran', 'LIKE', "%{$search}%")
@@ -107,6 +131,9 @@ class CetakWisudawanController extends Controller
                     $nestedData['tempat'] = $row->tempat;
                     $nestedData['waktu_pelaksanaan'] = \Carbon\Carbon::parse($row->waktu_pelaksanaan)->translatedFormat('d F Y H:i');
                     $nestedData['tanggal_pendaftaran'] = \Carbon\Carbon::parse($row->mulai_pendaftaran)->translatedFormat('d F Y') . ' - ' . \Carbon\Carbon::parse($row->selesai_pendaftaran)->translatedFormat('d F Y');
+                    $nestedData['tanggal_pemberkasan'] = \Carbon\Carbon::parse($row->tanggal_pemberkasan)->translatedFormat('d F Y');
+                    $nestedData['tanggal_gladi'] = \Carbon\Carbon::parse($row->tanggal_gladi)->translatedFormat('d F Y');
+                    $nestedData['tarif_wisuda'] = 'Rp ' . number_format($row->tarif_wisuda, 0, ',', '.');
                     $nestedData['jml_peserta'] = $row->jml_peserta;
                     $nestedData['idEnkripsi'] = $row->idEnkripsi;
                     $data[] = $nestedData;
@@ -147,7 +174,7 @@ class CetakWisudawanController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Cetak Wisudawan.
      */
     public function show(string $idEnkripsi)
     {
@@ -156,23 +183,58 @@ class CetakWisudawanController extends Controller
 
         $gelombang = TbGelombangWisuda::find($id);
         if (!$gelombang) {
-            return redirect()->back()->with('error', 'Data not found');
+            return response()->json(['message' => 'Gelombang not found.'], 404);
         }
 
-        $data = DaftarWisudawan::where('tb_daftar_wisudawan.id_gelombang_wisuda', 1)
+        $data = DaftarWisudawan::where('tb_daftar_wisudawan.id_gelombang_wisuda', $gelombang->id)
         ->leftJoin('mahasiswa', 'tb_daftar_wisudawan.nim', '=', 'mahasiswa.nim')
         ->leftJoin('tb_yudisium', 'tb_yudisium.nim', '=', 'mahasiswa.nim')
         ->leftJoin('gelombang_yudisium', 'gelombang_yudisium.id', '=', 'tb_yudisium.id_gelombang_yudisium')
+        ->join('program_studi','program_studi.id','=','mahasiswa.id_program_studi')
         ->where('tb_daftar_wisudawan.status', 1)
         ->select([
             'mahasiswa.nama',
             'mahasiswa.nim',
             'mahasiswa.foto_mhs',
-            'gelombang_yudisium.nama AS gelombangYudisium'
+            'gelombang_yudisium.nama AS gelombangYudisium',
+            'program_studi.nama_prodi AS prodi'
             ])
         ->get();
+
+        foreach ($data as $item) {   
+            $getNilai = master_nilai::select(
+                    'master_nilai.*',
+                    'a.hari',
+                    'a.kel',
+                    'b.nama_matkul',
+                    'b.sks_teori',
+                    'b.sks_praktek',
+                    'b.kode_matkul'
+                )
+                ->join('jadwals as a', 'master_nilai.id_jadwal', '=', 'a.id')
+                ->join('mata_kuliahs as b', 'a.id_mk', '=', 'b.id')
+                ->where(['nim' => $item->nim])
+                ->get();
+
+            $totalSks = 0;
+            $totalIps = 0;
+            foreach ($getNilai as $row) {
+                $sks = ($row->sks_teori + $row->sks_praktek);
+                $totalSks += $sks;
+                if($row->validasi_tugas == 1 && $row->validasi_uts == 1 && $row->validasi_uas == 1)
+                {
+                    $totalIps +=  ($row->sks_teori+$row->sks_praktek) * $this->kualitas[$row['nhuruf']];
+                }
+            }
+            $ipk = $totalSks > 0 ? number_format($totalIps / $totalSks, 2) : 0;
+            $item->predikat = ($ipk >= 3.51 && $ipk <= 4.00) ? 'Dengan Pujian / Cumlaude'
+                : (($ipk >= 2.76 && $ipk <= 3.50) ? 'Sangat Memuaskan / Very Satisfying'
+                : (($ipk >= 2.00 && $ipk <= 2.75) ? 'Memuaskan / Satisfying'
+                : '-'));
+        }
+
         if ($data->isEmpty()) {
-            return redirect()->back()->with('error', 'No data found for this gelombang');
+            return response()->json(['message' => 'No data found for this gelombang'], 404);
         }
 
         // Kirim data ke view dan render HTML

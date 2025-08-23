@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <title>{{ 'Yudisium-' . $gelombang->nama  }}</title>
+    <title>{{ 'Wisuda-' . $gelombang->nama  }}</title>
     <style>
         body { font-family: 'Times New Roman', serif; font-size: 16px; line-height: 1.15; }
         .contai-portrait { width: 100%; }
@@ -31,7 +31,40 @@
         <section class="section-1">
             <div class="header mb-2">
                 <div class="mt-4">
-                    <div class="report-title" style="font-size: 0.8rem;">Daftar {{ $gelombang->nama }}</div>
+                    <table class="table table-borderless" style="font-size: 0.9rem; margin-top: 10px;">
+                        <tr>
+                            <td style="width: 180px;">Nama Wisuda</td>
+                            <td>: {{ $gelombang->nama }}</td>
+                        </tr>
+                        <tr>
+                            <td>Tempat</td>
+                            <td>: {{ $gelombang->tempat }}</td>
+                        </tr>
+                        <tr>
+                            <td>Mulai Pendaftaran</td>
+                            <td>: {{ \Carbon\Carbon::parse($gelombang->mulai_pendaftaran)->translatedFormat('d F Y') }}</td>
+                        </tr>
+                        <tr>
+                            <td>Selesai Pendaftaran</td>
+                            <td>: {{ \Carbon\Carbon::parse($gelombang->selesai_pendaftaran)->translatedFormat('d F Y') }}</td>
+                        </tr>
+                        <tr>
+                            <td>Tanggal Pemberkasan</td>
+                            <td>: {{ \Carbon\Carbon::parse($gelombang->tanggal_pemberkasan)->translatedFormat('d F Y') }}</td>
+                        </tr>
+                        <tr>
+                            <td>Tanggal Gladi</td>
+                            <td>: {{ \Carbon\Carbon::parse($gelombang->tanggal_gladi)->translatedFormat('d F Y') }}</td>
+                        </tr>
+                        <tr>
+                            <td>Tarif Wisuda</td>
+                            <td>: Rp{{ number_format($gelombang->tarif_wisuda, 0, ',', '.') }}</td>
+                        </tr>
+                        <tr>
+                            <td>Waktu Pelaksanaan</td>
+                            <td>: {{ \Carbon\Carbon::parse($gelombang->waktu_pelaksanaan)->translatedFormat('d F Y H:i') }}</td>
+                        </tr>
+                    </table>
                 </div>
             </div>
             <div class="table-container">
@@ -41,6 +74,8 @@
                             <th style="vertical-align: middle;">No.</th>
                             <th style="vertical-align: middle; width: 12%;">NIM</th>
                             <th style="vertical-align: middle;">Nama</th>
+                            <th style="vertical-align: middle;">Program Studi</th>
+                            <th style="vertical-align: middle;">Predikat</th>
                             <th style="vertical-align: middle;">Gelombang Yudisium</th>
                         </tr>
                     </thead>
@@ -57,6 +92,8 @@
                                 <td style="vertical-align: middle;">{{ $loop->iteration }}</td>
                                 <td style="vertical-align: middle;">{{ $row->nim ?? '-' }}</td>
                                 <td style="vertical-align: middle;">{{ $row->nama ?? '-' }}</td>
+                                <td style="vertical-align: middle;">{{ $row->prodi ?? '-' }}</td>
+                                <td style="vertical-align: middle;">{{ $row->predikat ?? '-' }}</td>
                                 <td style="vertical-align: middle;">{{ $row->gelombangYudisium ?? '-' }}</td>
                             </tr>
                         @endforeach

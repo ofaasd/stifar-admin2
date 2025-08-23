@@ -141,7 +141,7 @@ class AdminDaftarPendaftarWisudaController extends Controller
                     $rowStatusPembayaran = '';
                     $tujuan_upload = 'assets/upload/mahasiswa/wisuda/bukti-bayar';
                     if ($row->statusPembayaran == 'Belum diverifikasi' && $row->buktiPembayaran) {
-                        $rowStatusPembayaran = '<span class="badge bg-warning text-dark">' . $row->statusPembayaran .
+                        $rowStatusPembayaran = '<span class="badge bg-warning">' . $row->statusPembayaran .
                             ' <a href="' . asset($tujuan_upload . '/' . $row->buktiPembayaran) . '" target="_blank" class="ms-2">Lihat Bukti</a></span>';
                     }else if($row->statusPembayaran == 'Sudah diverifikasi'){
                         $rowStatusPembayaran = '<span class="badge bg-success">' . $row->statusPembayaran . '</span>';

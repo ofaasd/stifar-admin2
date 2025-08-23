@@ -39,6 +39,9 @@
                                         <th>Tempat</th>
                                         <th>Waktu Pelaksanaan</th>
                                         <th>Tanggal Pendaftaran</th>
+                                        <th>Tanggal Pemberkasan</th>
+                                        <th>Tanggal Gladi</th>
+                                        <th>Tarif Wisuda</th>
                                         <th>Jumlah Peserta</th>
                                         <th>Actions</th>
                                     </tr>

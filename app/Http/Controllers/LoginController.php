@@ -98,6 +98,7 @@ class LoginController extends Controller
                 ];
                 $berkas = BerkasPendukungMahasiswa::where("nim", $mhs->nim)->latest()->first();
                 if($mhs->update_password == 0){
+                    Session::put($session);
                     return redirect('mhs/profile');
                 }else{
                     Session::put($session);
