@@ -261,13 +261,14 @@
                 <span><i class="fa fa-money"></i> Keuangan</span></a>
                 <ul class="sidebar-submenu">
                     <li><a href="{{URL::to('admin/keuangan')}}">Buka Tutup KRS</a></li> {{-- Menu dasar untuk buka tutup krs --}}
-                    <li><a href="#">Setting SKS - UKT <label class="badge badge-light-danger">!</label></a></li> {{-- Untuk setting pembayaran sks dalam bentuk paket --}}
+                    <li><a href="{{URL::to('admin/keuangan/jenis_keuangan')}}">Jenis Keuangan</a></li> {{-- Untuk setting pembayaran sks dalam bentuk paket --}}
+                    <li><a href="{{URL::to('admin/keuangan/setting_keuangan')}}">Setting Keuangan</a></li> {{-- Untuk setting pembayaran sks dalam bentuk paket --}}
+                    <li><a href="{{URL::to('admin/keuangan/tagihan')}}">Buat Tagihan <label class="badge badge-light-danger">!</label></a></li> {{--Buat dan Publish Tagihan --}}
                     <li><a href="#">Input Laporan Pembayaran <label class="badge badge-light-danger">!</label></a></li>
-                    <li><a href="#">Buat Tagihan <label class="badge badge-light-danger">!</label></a></li> {{--Buat dan Publish Tagihan --}}
                     <li><a href="#">Statistik <label class="badge badge-light-danger">!</label></a></li>
                     <li><a href="#">Cetak <label class="badge badge-light-danger">!</label></a></li>
-                    <li><a href="#">Sync <label class="badge badge-light-danger">!</label></a></li>
-                    <li><a href="#">Pembayaran Lain-lain <label class="badge badge-light-danger">!</label></a></li>
+                    {{-- <li><a href="#">Sync <label class="badge badge-light-danger">!</label></a></li> --}}
+                    {{-- <li><a href="#">Pembayaran Lain-lain <label class="badge badge-light-danger">!</label></a></li> --}}
                     <li><a href="{{URL::to('admin/keuangan/bank_data_va')}}">Bank Data VA</a></li> {{-- Menu dasar untuk buka tutup krs --}}
                 </ul>
             </li>
