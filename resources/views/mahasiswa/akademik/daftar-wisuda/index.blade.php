@@ -86,7 +86,7 @@
                                                                                         </span>
                                                                                 </li>
                                                                         </ul>
-                                                                        @if ($registered->statusPembayaran == 0 || $registered->statusPembayaran == 1)
+                                                                        @if ($registered->statusPembayaran === 0 || $registered->statusPembayaran === 1)
                                                                             <div class="alert" role="alert">
                                                                                 Bukti pembayaran telah diunggah. <a href="{{ asset('assets/upload/mahasiswa/wisuda/bukti-bayar/' . $registered->buktiPembayaran) }}" target="_blank">disini</a>
                                                                             </div>
@@ -105,7 +105,7 @@
                                                                                         <div class="mb-3 row">
                                                                                                 <label for="bank" class="col-sm-3 col-form-label">Bank</label>
                                                                                                 <div class="col-sm-9">
-                                                                                                        <input type="text" class="form-control" id="bank" name="bank" placeholder="Nama Bank" required>
+                                                                                                        <input type="text" class="form-control" id="bank" name="bank" placeholder="BCA / BRI / Mandiri / dll" required>
                                                                                                 </div>
                                                                                         </div>
                                                                                         <div class="mb-3 row">
@@ -142,7 +142,7 @@
                                                                                                 @if(count($gelombangWisuda) > 0)
                                                                                                         @foreach($gelombangWisuda as $row)
                                                                                                                 <option value="{{ $row->id }}"> 
-                                                                                                                        {{ $row->nama }} | {{ $row->tempat }} | {{ \Carbon\Carbon::parse($row->waktu_pelaksanaan)->translatedFormat('d F Y H:i'); }} | {{ \Carbon\Carbon::parse($row->mulai_pendaftaran)->translatedFormat('d F Y') . ' - ' . \Carbon\Carbon::parse($row->selesai_pendaftaran)->translatedFormat('d F Y') }}
+                                                                                                                        Wisuda: {{ $row->nama }} | Tempat: {{ $row->tempat }} | Waktu Pelaksanaan: {{ \Carbon\Carbon::parse($row->waktu_pelaksanaan)->translatedFormat('d F Y H:i'); }} | Tanggal Daftar: {{ \Carbon\Carbon::parse($row->mulai_pendaftaran)->translatedFormat('d F Y') . ' - ' . \Carbon\Carbon::parse($row->selesai_pendaftaran)->translatedFormat('d F Y') }} | Pemberkasan: {{ $row->tanggal_pemberkasan ? \Carbon\Carbon::parse($row->tanggal_pemberkasan)->translatedFormat('d F Y') : '-' }} | Gladi: {{ $row->tanggal_gladi ? \Carbon\Carbon::parse($row->tanggal_gladi)->translatedFormat('d F Y') : '-' }} | Biaya: {{ 'Rp ' . number_format($row->tarif_wisuda ?? 0, 0, ',', '.') }}
                                                                                                                 </option>
                                                                                                         @endforeach
                                                                                                 @else

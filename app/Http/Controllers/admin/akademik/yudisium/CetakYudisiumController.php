@@ -144,7 +144,7 @@ class CetakYudisiumController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Cetak daftar Yudisium.
      */
     public function show(string $idEnkripsi)
     {

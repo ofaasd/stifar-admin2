@@ -51,6 +51,7 @@ class AdminDaftarWisudawanController extends Controller
                         'mahasiswa.foto_mhs AS fotoMhs',
                         'tb_daftar_wisudawan.status AS statusDaftar',
                         'tb_gelombang_wisuda.nama AS gelombangWisuda',
+                        'tb_gelombang_wisuda.waktu_pelaksanaan AS pelaksanaanWisuda',
                         'gelombang_yudisium.nama AS gelombangYudisium',
                         'tb_pembayaran_wisuda.status AS statusPembayaran',
                         'tb_pembayaran_wisuda.bukti AS buktiPembayaran'
@@ -140,13 +141,18 @@ class AdminDaftarWisudawanController extends Controller
                     } else {
                         $rowStatusPembayaran = '<span class="badge bg-success">' . $row->statusPembayaran . '</span>';
                     }
-                    
+
+                    $teksWisuda = $row->gelombangWisuda;
+                    if ($row->pelaksanaanWisuda && strtotime($row->pelaksanaanWisuda) < time()) {
+                        $teksWisuda .= ' <i class="bi bi-check-circle-fill text-success"></i>';
+                    }
+
                     $nestedData['id'] = $row->id;
                     $nestedData['fake_id'] = ++$ids;
                     $nestedData['nim'] = $row->nim ;
                     $nestedData['nama'] = $row->nama ;
                     $nestedData['photo'] = $row->fotoMhs ;
-                    $nestedData['wisuda'] = $row->gelombangWisuda;
+                    $nestedData['wisuda'] = $teksWisuda;
                     $nestedData['yudisium'] = $row->gelombangYudisium ?? '-';
                     $nestedData['kk'] = $row->kk;
                     $nestedData['ktp'] = $row->ktp;
