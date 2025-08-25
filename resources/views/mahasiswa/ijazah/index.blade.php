@@ -257,8 +257,8 @@
             <tr>
                 <td style="text-align:center; padding-top: 58px;">
                     <div class="signature-block" style="border:none;">  
-                        <div class="signature-name">{{ $namaKaprodi ?? '-' }}</div>
-                        <div class="signature-niy">NIY : {{ $niyKaprodi ?? '-' }}</div>
+                        <div class="signature-name">{{ $data->namaKaprodi ?? '-' }}</div>
+                        <div class="signature-niy">NIY : {{ $data->nppKaprodi ?? '-' }}</div>
                     </div>
                 </td>
                 <td style="text-align:right;">
@@ -268,8 +268,8 @@
                 </td>
                 <td style="text-align: center; padding-top: 58px;">
                     <div class="signature-block" style="border:none; text-align: center; width: 100%;">
-                        <div class="signature-name">Dr. apt. Sri Haryanti, M.Si.</div>
-                        <div class="signature-niy">NIY : YP.030795003</div>
+                        <div class="signature-name">{{ $data->namaKetua ?? '-' }}</div>
+                        <div class="signature-niy">NIY : {{ $data->nppKetua ?? '-' }}</div>
                     </div>
                 </td>
             </tr>

@@ -161,14 +161,6 @@
                                         <label for="akreditasi2Eng" class="form-label">Akreditasi LAM-PTKes Inggris</label>
                                         <input type="text" class="form-control" id="akreditasi2Eng" name="akreditasi2Eng" value=" accredited with grade 'very good' SK LAM-PTKes 0815/LAM-PTKes/Akr/Sar/IX/2022" required>
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="nama_ketua_prodi" class="form-label">Nama Ketua Program Studi</label>
-                                        <input type="text" class="form-control" id="nama_ketua_prodi" name="nama_ketua_prodi" value=" Dr. apt. Dwi Hadi Setya Palupi, M.Si." required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="niy_ketua_prodi" class="form-label">NIY Ketua Program Studi</label>
-                                        <input type="text" class="form-control" id="niy_ketua_prodi" name="niy_ketua_prodi" value="YP 040204002" required>
-                                    </div>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
@@ -235,6 +227,7 @@
             <!-- Zero Configuration  Ends-->
         </div>
     </div>
+    @include('admin.akademik.transkrip-ijazah.modal.modal-ijazah')
 @endsection
 
 @section('script')
@@ -345,14 +338,6 @@
                 });
             });
 
-            //Cetak ijazah Record
-            $(document).on('click', '.cetak-ijazah-record', function () {
-                const nim = $(this).data('nim');
-                const nama = $(this).data('nama');
-                $('#nim-cetak').val(nim);
-                $('#nama-cetak').text(nama);
-            });
-
             //Cetak transkrip Record
             $(document).on('click', '.cetak-transkrip-record', function () {
                 const nim = $(this).data('nim');
@@ -402,40 +387,6 @@
                         });
                         btnSubmit.prop('disabled', false);
                         btnSubmit.html(oldBtnHtml);
-                    }
-                });
-            });
-
-            $('#formCetakIjazah').on('submit', function(e) {
-                e.preventDefault();
-                swal({
-                    title: 'Konfirmasi Cetak Ijazah',
-                    text: 'Hati-hati dalam mencetak, karena hitungan duplikat terus bertambah setiap kali mencetak. Lanjutkan mencetak?',
-                    icon: 'warning',
-                    buttons: {
-                        cancel: {
-                            text: 'Batal',
-                            value: null,
-                            visible: true,
-                            className: 'btn btn-label-secondary',
-                            closeModal: true,
-                        },
-                        confirm: {
-                            text: 'Lanjutkan Cetak',
-                            value: true,
-                            visible: true,
-                            className: 'btn btn-primary me-3',
-                            closeModal: true
-                        }
-                    },
-                    dangerMode: true,
-                    customClass: {
-                        confirmButton: 'btn btn-primary me-3',
-                        cancelButton: 'btn btn-label-secondary'
-                    }
-                }).then(function(result) {
-                    if (result) {
-                        $('#formCetakIjazah')[0].submit();
                     }
                 });
             });

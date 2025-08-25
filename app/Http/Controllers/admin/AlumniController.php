@@ -6,10 +6,11 @@ use Carbon\Carbon;
 use App\Models\Prodi;
 use App\Models\Alumni;
 use App\Models\Mahasiswa;
+use App\Models\TbFlagging;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\JabatanStruktural;
 use App\Http\Controllers\Controller;
-use App\Models\TbFlagging;
 use Illuminate\Support\Facades\Crypt;
 
 class AlumniController extends Controller
@@ -116,6 +117,49 @@ class AlumniController extends Controller
     }
 
     /**
+     * Get data alumni.
+     */
+    public function get_alumni(Request $request)
+    {
+        $id = $request->id;
+
+        $no = 1;
+        $prodi = Prodi::all();
+        $jumlah = [];
+        $nama = [];
+
+        foreach($prodi as $row){
+            $jumlah[$row->id] = Alumni::where('id_program_studi',$row->id)->count();
+            $nama_prodi = explode(' ',$row->nama_prodi);
+            $nama[$row->id] = $nama_prodi[0] . " " . $nama_prodi[1];
+        }
+        
+        $isAlumni = true;
+        $isPrintIjazah = true;
+
+        $query = Alumni::select([
+            'tb_alumni.*',
+            'tb_flagging.count AS tercetak'
+        ])
+        ->leftJoin('tb_flagging', 'tb_alumni.nim', '=', 'tb_flagging.nim')
+        ->get()
+        ->map(function ($item) {
+            $item->nimEnkripsi = Crypt::encryptString($item->nim . "stifar");
+            return $item;
+        });
+
+        if($id == 0){
+            $alumni = $query;
+
+            return view('mahasiswa._table_alumni_mhs', compact('alumni', 'no', 'prodi', 'jumlah', 'nama', 'isAlumni', 'isPrintIjazah'));
+        }else{
+            $alumni = $query->where('id_program_studi', $id);
+
+            return view('mahasiswa._table_alumni_mhs', compact('alumni', 'no', 'prodi', 'jumlah', 'nama', 'isAlumni', 'isPrintIjazah'));
+        }
+    }
+
+    /**
      * Show the form for creating a new resource.
      */
     public function create()
@@ -144,21 +188,21 @@ class AlumniController extends Controller
                 $save = Alumni::updateOrCreate(
                     ['id' => $id],
                     [
-                    'nim' => $request->nim,
-                    'nama' => $request->nama,
-                    'jenjang' => $request->jenjang,
-                    'angkatan' => $request->angkatan,
-                    'tahun_lulus' => $request->tahun_lulus,
-                    'jenis_kelamin' => $request->jenis_kelamin,
-                    'no_hp' => $request->no_hp,
-                    'email_pribadi' => $request->email_pribadi,
-                    'prodi' => $request->prodi,
-                    'judul_skripsi' => $request->judul_skripsi,
-                    'waktu_awal_kerja' => $request->waktu_awal_kerja,
-                    'waktu_mulai' => $request->waktu_mulai,
-                    'status_pekerjaan' => $request->status_pekerjaan,
-                    'posisi' => $request->posisi,
-                    'tempat_pekerjaan' => $request->tempat_pekerjaan,
+                        'nim' => $request->nim,
+                        'nama' => $request->nama,
+                        'jenjang' => $request->jenjang,
+                        'angkatan' => $request->angkatan,
+                        'tahun_lulus' => $request->tahun_lulus,
+                        'jenis_kelamin' => $request->jenis_kelamin,
+                        'no_hp' => $request->no_hp,
+                        'email_pribadi' => $request->email_pribadi,
+                        'prodi' => $request->prodi,
+                        'judul_skripsi' => $request->judul_skripsi,
+                        'waktu_awal_kerja' => $request->waktu_awal_kerja,
+                        'waktu_mulai' => $request->waktu_mulai,
+                        'status_pekerjaan' => $request->status_pekerjaan,
+                        'posisi' => $request->posisi,
+                        'tempat_pekerjaan' => $request->tempat_pekerjaan,
                     ]
                 );
 
@@ -252,11 +296,16 @@ class AlumniController extends Controller
                 'program_studi.nama_ijazah_eng AS namaIjazahInggris',
                 'gelombang_yudisium.tanggal_pengesahan AS lulusPada',
                 'mahasiswa.no_pisn AS noPisn',
+                'pegawai_biodata.npp AS nppKaprodi',
+                'pegawai_biodata.nama_lengkap AS namaKaprodi',
             )
-            ->where('mahasiswa.nim', $nim)
             ->leftJoin('program_studi', 'program_studi.id', '=', 'mahasiswa.id_program_studi')
             ->leftJoin('tb_yudisium', 'mahasiswa.nim', '=', 'tb_yudisium.nim')
             ->leftJoin('gelombang_yudisium', 'tb_yudisium.id_gelombang_yudisium', '=', 'gelombang_yudisium.id')
+            ->leftJoin('jabatan_struktural', 'mahasiswa.id_program_studi', '=', 'jabatan_struktural.prodi_id')
+            ->leftJoin('pegawai_biodata', 'jabatan_struktural.id_pegawai', '=', 'pegawai_biodata.id_pegawai')
+            ->where('mahasiswa.nim', $nim)
+            ->where('jabatan_struktural.jabatan', 'like', '%kepala%')
             ->first();
 
         if (!$mahasiswa) 
@@ -273,6 +322,17 @@ class AlumniController extends Controller
         {
             return response()->json(['message' => 'No PISN belum ada.']);
         }
+
+        $jabatanStruktural = JabatanStruktural::select([
+            'pegawai_biodata.npp',
+            'pegawai_biodata.nama_lengkap',
+        ])
+        ->where('jabatan', 'Ketua')
+        ->leftJoin('pegawai_biodata', 'jabatan_struktural.id_pegawai', '=', 'pegawai_biodata.id_pegawai')
+        ->first();
+
+        $mahasiswa->nppKetua = $jabatanStruktural->npp ?? '-';
+        $mahasiswa->namaKetua = $jabatanStruktural->nama_lengkap ?? '-';
 
         $cekDuplikate = TbFlagging::where('nim', $nim)->where('jenis', 1)->first();
         if (!$cekDuplikate) {
@@ -293,8 +353,6 @@ class AlumniController extends Controller
             'akreditasiBadanPtKes' => $request->akreditasi1,
             'akreditasiLamPtKes' => $request->akreditasi2,
             'akreditasiLamPtKesInggris' => $request->akreditasi2Eng,
-            'namaKaprodi' => $request->nama_ketua_prodi,
-            'niyKaprodi' => $request->niy_ketua_prodi,
             'duplikatKe' => $duplikatKe,
             'data' => $mahasiswa,
         ])->render();

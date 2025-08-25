@@ -105,7 +105,7 @@
             $(".tbl-mhs").html(`<div class="loader-box">
                             <div class="loader-2"></div>
                         </div>`);
-            const url = "{{URL::to('/alumni/get_mhs')}}";
+            const url = "{{URL::to('/alumni/get_alumni')}}";
             $.ajax({
                 url: url,
                 method: "GET",

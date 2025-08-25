@@ -4,6 +4,7 @@ namespace App\Http\Controllers\admin\akademik\wisuda;
 
 use App\Models\Alumni;
 use App\Models\Mahasiswa;
+use App\Models\TbYudisium;
 use Illuminate\Http\Request;
 use App\Models\DaftarWisudawan;
 use App\Http\Controllers\Controller;
@@ -204,7 +205,9 @@ class AdminDaftarWisudawanController extends Controller
                     'mahasiswa.jk',
                     'mahasiswa.hp',
                     'mahasiswa.email',
+                    'mahasiswa.no_pisn AS noPisn',
                     'gelombang_yudisium.tanggal_pengesahan AS tahunLulus',
+                    'program_studi.id AS idProgramStudi',
                     'program_studi.jenjang',
                     'program_studi.nama_prodi AS prodi',
                     'pengajuan_judul_skripsi.judul AS judulSkripsi',
@@ -226,13 +229,14 @@ class AdminDaftarWisudawanController extends Controller
                     'tahun_lulus' => !empty($mhs->tahunLulus) ? date('Y', strtotime($mhs->tahunLulus)) : null,
                     'jenis_kelamin' => $mhs->jk,
                     'no_hp' => $mhs->hp,
+                    'no_pisn' => $mhs->noPisn,
                     'email_pribadi' => $mhs->email,
                     'prodi' => $mhs->prodi,
+                    'id_program_studi' => $mhs->idProgramStudi,
                     'judul_skripsi' => $mhs->judulSkripsi
                 ]);
 
-                DaftarWisudawan::where('nim', $mhs->nim)->delete();
-                $mhs->delete();
+                Mahasiswa::where('nim', $mhs->nim)->delete();
             }
             return response()->json(['message' => 'Data alumni berhasil ditambahkan', 'code' => 200]);
         } catch (\Exception $e) {

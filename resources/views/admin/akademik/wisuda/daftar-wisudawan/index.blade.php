@@ -34,7 +34,7 @@
                         <!-- Notes Section -->
                         <div class="mb-0 ms-3">
                             <div class="alert alert-warning mb-0" role="alert">
-                                <strong>Catatan:</strong> Wisudawan yang telah menyelesaikan proses wisuda dapat dipindahkan ke data alumni melalui tombol di samping.
+                                <strong>Catatan:</strong> Wisudawan yang telah bertanda <i class="bi bi-check-circle-fill text-success bg-white rounded-circle"></i> dapat dipindahkan ke data alumni melalui tombol di samping kiri.
                             </div>
                         </div>
                     </div>
@@ -235,6 +235,7 @@
                     url: ''.concat(baseUrl).concat(page),
                     data: dataNim,
                     success: function success(response) {
+                        dt.draw();
                         swal({
                             title: 'Success!',
                             text: response.message,

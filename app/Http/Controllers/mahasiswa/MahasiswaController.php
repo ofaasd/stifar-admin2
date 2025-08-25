@@ -637,6 +637,10 @@ class MahasiswaController extends Controller
         ->leftJoin('gelombang_yudisium', 'tb_yudisium.id_gelombang_yudisium', '=', 'gelombang_yudisium.id')
         ->where('mahasiswa.nim', $nim)
         ->where('pengajuan_judul_skripsi.status', 1)
+        ->where(function($query){
+            $query->where('jabatan_struktural.jabatan', 'like', '%kepala%')
+                  ->orWhereNull('jabatan_struktural.jabatan');
+        })
         ->first();
 
         if(!$data){

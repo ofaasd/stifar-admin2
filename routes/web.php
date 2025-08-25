@@ -6,7 +6,6 @@ use App\Http\Controllers\admin\MkKurikulum;
 use App\Http\Controllers\dosen\KrmController;
 use App\Http\Controllers\admin\RoleController;
 use App\Http\Controllers\admin\SesiController;
-use App\Http\Controllers\TempAlumniController;
 use App\Http\Controllers\admin\NilaiController;
 use App\Http\Controllers\admin\ProdiController;
 use App\Http\Controllers\admin\RuangController;
@@ -133,6 +132,7 @@ use App\Http\Controllers\admin\kepegawaian\PegawaiJabatanStrukturalController;
 use App\Http\Controllers\mahasiswa\skripsi\SidangController as SidangMahasiswa;
 use App\Http\Controllers\admin\akademik\wisuda\AdminDaftarPendaftarWisudaController;
 use App\Http\Controllers\admin\admisi\StatistikController as AdmisiStatistikController;
+use App\Http\Controllers\admin\akademik\transkripIjazah\PrintIjazahController;
 use App\Http\Controllers\admin\akademik\yudisium\SettingPisnController;
 
 /*
@@ -389,6 +389,15 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
     Route::resource('/admin/akademik/wisuda/daftar-wisudawan', AdminDaftarWisudawanController::class)->name('index','daftar-wisudawan');
     Route::resource('/admin/akademik/wisuda/cetak', CetakWisudawanController::class)->name('index','cetak-wisudawan');
 
+    // Admin Akademik
+    Route::prefix('/admin/akademik')->group(function () {
+        
+        Route::prefix('/transkrip-ijazah')->group(function () {
+            Route::resource('/print-ijazah', PrintIjazahController::class)->name('index','print-ijazah');
+        });
+
+    });
+
     // route KRS
     Route::get('/admin/masterdata/krs', [KrsController::class, 'index']);
     Route::post('/admin/masterdata/krs/list-mhs', [KrsController::class, 'listMhs']);
@@ -510,8 +519,8 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
 
     Route::resource('admin/nilai_lama', NilaiLamaController::class)->name('index','nilai_lama');
 
-    Route::resource('/admin/alumni', TempAlumniController::class)->name('index','alumni');
-    Route::get('/alumni/get_mhs', [TempAlumniController::class, 'get_mhs'])->name('get_alumni_mhs');
+    
+    Route::get('/alumni/get_alumni', [AlumniController::class, 'get_alumni'])->name('get_alumni');
     Route::post('/admin/alumni/cetak-ijazah', [AlumniController::class, 'cetakIjazah']);
 });
 
