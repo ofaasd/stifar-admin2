@@ -251,6 +251,7 @@ class AlumniController extends Controller
                 'program_studi.nama_ijazah AS namaIjazahIndo',
                 'program_studi.nama_ijazah_eng AS namaIjazahInggris',
                 'gelombang_yudisium.tanggal_pengesahan AS lulusPada',
+                'gelombang_yudisium.no_pisn AS noPisn',
             )
             ->where('mahasiswa.nim', $nim)
             ->leftJoin('program_studi', 'program_studi.id', '=', 'mahasiswa.id_program_studi')
@@ -266,6 +267,11 @@ class AlumniController extends Controller
         if(!$mahasiswa->lulusPada)
         {
             return response()->json(['message' => 'Yudisium belum disahkan.']);
+        }
+
+        if(!$mahasiswa->noPisn)
+        {
+            return response()->json(['message' => 'No PISN belum ada.']);
         }
 
         $cekDuplikate = TbFlagging::where('nim', $nim)->where('jenis', 1)->first();
