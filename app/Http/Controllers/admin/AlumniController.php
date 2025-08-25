@@ -251,7 +251,7 @@ class AlumniController extends Controller
                 'program_studi.nama_ijazah AS namaIjazahIndo',
                 'program_studi.nama_ijazah_eng AS namaIjazahInggris',
                 'gelombang_yudisium.tanggal_pengesahan AS lulusPada',
-                'gelombang_yudisium.no_pisn AS noPisn',
+                'mahasiswa.no_pisn AS noPisn',
             )
             ->where('mahasiswa.nim', $nim)
             ->leftJoin('program_studi', 'program_studi.id', '=', 'mahasiswa.id_program_studi')
@@ -290,7 +290,6 @@ class AlumniController extends Controller
 
         // Kirim data ke view dan render HTML
         $html = view('mahasiswa.ijazah.index', [
-            'nomorSeri' => $request->seri_ijazah,
             'akreditasiBadanPtKes' => $request->akreditasi1,
             'akreditasiLamPtKes' => $request->akreditasi2,
             'akreditasiLamPtKesInggris' => $request->akreditasi2Eng,

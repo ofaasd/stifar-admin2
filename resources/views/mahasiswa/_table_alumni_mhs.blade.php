@@ -42,10 +42,6 @@
             <div class="modal-body">
               <div class="row mb-3">
                 <div class="col">
-                  <label for="seri_ijazah{{ $row_mhs['nim'] }}" class="form-label">Nomor Seri Ijazah</label>
-                  <input type="text" class="form-control" id="seri_ijazah{{ $row_mhs['nim'] }}" name="seri_ijazah" value="063032481012025100001" required>
-                </div>
-                <div class="col">
                   <label for="lulus_pada{{ $row_mhs['nim'] }}" class="form-label">Lulus Pada</label>
                   <input type="date" class="form-control" id="lulus_pada{{ $row_mhs['nim'] }}" name="lulus_pada" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" required>
                 </div>

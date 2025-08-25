@@ -149,12 +149,6 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                    <div class="row mb-3">
-                                        <div class="col">
-                                        <label for="seri_ijazah" class="form-label">Nomor Seri Ijazah</label>
-                                        <input type="text" class="form-control" id="seri_ijazah" name="seri_ijazah" value="063032481012025100001" required>
-                                        </div>
-                                    </div>
                                     <div class="mb-3">
                                         <label for="akreditasi1" class="form-label">Akreditasi BAN-PT</label>
                                         <input type="text" class="form-control" id="akreditasi1" name="akreditasi1" value=" TERAKREDITASI B SK BAN-PT No. 500/SK/BAN-PT/Ak.Ppj/PT/VIII/2022" required>

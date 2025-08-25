@@ -165,8 +165,8 @@
     <div class="certificate  @if (isset($duplikatKe) && $duplikatKe) bg-duplikat @endif">
         <div class="header">
             <div class="serial-number">
-                <div>Nomor Seri Ijazah : {{ $nomorSeri ?? '-' }}</div>
-                <div class="english">Certificate Serial Number : {{ $nomorSeri ?? '-' }}</div>
+                <div>Nomor Seri Ijazah : {{ $data->noPisn ?? '-' }}</div>
+                <div class="english">Certificate Serial Number : {{ $data->noPisn ?? '-' }}</div>
             </div>
         </div>
         
