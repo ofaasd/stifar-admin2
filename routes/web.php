@@ -401,6 +401,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
     Route::get('/admin/keuangan/generate_user_mhs', [KeuanganController::class, 'generate_user_mhs']);
     Route::post('/admin/keuangan/bulk_action', [KeuanganController::class, 'bulk_action']);
     Route::get('/admin/keuangan/tagihan_show/{id}', [TagihanController::class, 'index']);
+
     // Route::get('/admin/keuangan/buka_tutup_prodi', [BukaTutupController::class, 'index']);
 
 
