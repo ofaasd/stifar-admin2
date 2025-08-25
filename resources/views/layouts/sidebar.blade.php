@@ -173,6 +173,7 @@
                         <ul class="nav-sub-childmenu submenu-content">
                             <li><a href="{{Url::to('admin/akademik/yudisium/setting')}}">Setting</a></li>
                             <li><a href="{{Url::to('admin/akademik/yudisium/proses')}}">Proses</a></li>
+                            <li><a href="{{Url::to('admin/akademik/yudisium/setting-pisn')}}">Setting PISN</a></li>
                             <li><a href="{{Url::to('admin/akademik/yudisium/cetak')}}">Cetak</a></li>
                         </ul>
                     </li>

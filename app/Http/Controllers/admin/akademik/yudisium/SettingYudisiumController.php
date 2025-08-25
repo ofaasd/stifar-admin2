@@ -138,12 +138,12 @@ class SettingYudisiumController extends Controller
                     ]
                 );
 
-            if ($save) {
-                return response()->json('Created');
-            } else {
-                return response()->json('Failed Create Alumni');
+                if ($save) {
+                    return response()->json('Created');
+                } else {
+                    return response()->json('Failed Create Yudisium');
+                }
             }
-        }
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 500);
         }
