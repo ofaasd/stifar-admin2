@@ -36,7 +36,9 @@ class TagihanController extends Controller
                 $jumlah_jenis[$jen->id] = SettingKeuangan::where('id_tahun',$id_tahun)->where('id_jenis',$jen->id)->where('id_prodi',$id)->first()->jumlah ?? 0;
                 $indexed[] = str_replace(' ', '', $jen->nama);
             }
-
+            $indexed[] = 'total';
+            $indexed[] = 'total_bayar';
+            $indexed[] = 'status';
             $title = "tagihan";
             $title2 = "Tagihan";
             return view('admin.keuangan.tagihan.index', compact('title', 'angkatan','prodi','title2', 'jenis','jumlah_jenis','TagihanKeuangan', 'indexed','id','nama'));
@@ -54,6 +56,9 @@ class TagihanController extends Controller
                 $columns[$last_id] = str_replace(' ', '', $jen->nama);
                 $last_id++;
             }
+             $columns[$last_id] = 'total';
+             $columns[++$last_id] = 'total_bayar';
+             $columns[++$last_id] = 'status';
 
             $totalData = Mahasiswa::where('id_program_studi',$id)->count();
             $totalFiltered = $totalData;
@@ -72,32 +77,38 @@ class TagihanController extends Controller
             } else {
                 $search = $request->input('search.value');
 
-                $tagihan = Mahasiswa::where('id_program_studi',$id)
-                    ->where('id', 'LIKE', "%{$search}%")
-                    ->orWhere('nim', 'LIKE', "%{$search}%")
-                    ->orWhere('nama', 'LIKE', "%{$search}%")
-                    ->offset($start)
-                    ->limit($limit)
-                    ->orderBy($order, $dir)
-                    ->get();
+                $tagihan = Mahasiswa::where('id_program_studi', $id)
+                            ->where(function ($query) use ($search) {
+                                $query->where('id', 'LIKE', "%{$search}%")
+                                    ->orWhere('nim', 'LIKE', "%{$search}%")
+                                    ->orWhere('nama', 'LIKE', "%{$search}%");
+                            })
+                            ->offset($start)
+                            ->limit($limit)
+                            ->orderBy($order, $dir)
+                            ->get();
 
-                $totalFiltered = Mahasiswa::where('id_program_studi',$id)
-                    ->where('id', 'LIKE', "%{$search}%")
-                    ->orWhere('nim', 'LIKE', "%{$search}%")
-                    ->orWhere('nama', 'LIKE', "%{$search}%")
+                $totalFiltered = Mahasiswa::where('id_program_studi', $id)
+                    ->where(function ($query) use ($search) {
+                        $query->where('id', 'LIKE', "%{$search}%")
+                            ->orWhere('nim', 'LIKE', "%{$search}%")
+                            ->orWhere('nama', 'LIKE', "%{$search}%");
+                    })
                     ->count();
             }
 
             $data = [];
             if (!empty($tagihan)) {
                 $list_keu = [];
+                $list_tagihan = [];
                 $tahun = TahunAjaran::where('status','Aktif')->first();
                 foreach($tagihan as $tag){
                     $real_tagihan = TagihanKeuangan::where('nim',$tag->nim)->where('id_tahun',$tahun->id);
                     if($real_tagihan->count() > 0){
-                        $id_tagihan = $real_tagihan->first()->id;
+                        $list_tagihan[$tag->id] = $real_tagihan->first();
+                        $id_tagihan = $list_tagihan[$tag->id]->id;
                         foreach($jenis as $jen){
-                            $list_keu[$tag->id][$jen->id] = DetailTagihanKeuangan::where('id_tagihan',$id_tagihan)->where('id_jenis',$jen->id)->first()->jumlah;
+                            $list_keu[$tag->id][$jen->id] = DetailTagihanKeuangan::where('id_tagihan',$id_tagihan)->where('id_jenis',$jen->id)->first()->jumlah ?? 0;
                         }
                     }else{
                         foreach($jenis as $jen){
@@ -116,6 +127,10 @@ class TagihanController extends Controller
                     foreach($jenis as $jen){
                         $nestedData[str_replace(' ', '', $jen->nama)] = $list_keu[$row->id][$jen->id];
                     }
+                    $nestedData['total'] = $list_tagihan[$row->id]->total ?? 0;
+                    $nestedData['total_bayar'] = $list_tagihan[$row->id]->total_bayar ?? 0;
+                    $nestedData['status'] = $list_tagihan[$row->id]->status ?? 0;
+                    $nestedData['id_tagihan'] = $list_tagihan[$row->id]->id ?? 0;
                     $data[] = $nestedData;
                 }
             }
@@ -145,37 +160,97 @@ class TagihanController extends Controller
         // Validasi data
         $angkatan = $request->angkatan;
         $id_prodi = $request->id_prodi;
-        $mhs = Mahasiswa::where('angkatan',$angkatan)->where('id_program_studi',$id_prodi)->get();
-        $ta = TahunAjaran::where('status','Aktif')->first();
-        $jenis = $request->jenis;
-        foreach($mhs as $row){
-            $tagihan = TagihanKeuangan::where('nim',$row->nim)->where('id_tahun',$ta->id);
-            if($tagihan->count() > 0){
-                $tagihan = $tagihan->first();
-                $new_tagihan = TagihanKeuangan::find($tagihan->id);
-                $detail_delete = DetailTagihanKeuangan::where('id_tagihan',$tagihan->id)->delete();
-                $total = 0;
-                foreach($jenis as $key=>$value){
+        if(!empty($angkatan)){
+            $mhs = Mahasiswa::where('angkatan',$angkatan)->where('id_program_studi',$id_prodi)->get();
+            $ta = TahunAjaran::where('status','Aktif')->first();
+            $jenis = $request->jenis;
+            foreach($mhs as $row){
+                $tagihan = TagihanKeuangan::where('nim',$row->nim)->where('id_tahun',$ta->id);
+                if($tagihan->count() > 0){
+                    $tagihan = $tagihan->first();
+                    $new_tagihan = TagihanKeuangan::find($tagihan->id);
+                    $detail_delete = DetailTagihanKeuangan::where('id_tagihan',$tagihan->id)->delete();
+                    $total = 0;
+                    foreach($jenis as $key=>$value){
 
-                    $new_detail = DetailTagihanKeuangan::create(
+                        $new_detail = DetailTagihanKeuangan::create(
+                            [
+                                'id_tagihan' => $tagihan->id,
+                                'id_jenis' => $request->id_jenis[$key],
+                                'jumlah' => $value,
+                            ]
+                        );
+                        $total += $value;
+                    }
+                    $new_tagihan->total = $total;
+                    $new_tagihan->save();
+                    return response()->json([
+                        'status' => 'success',
+                        'message' => 'Update Generate Tagihan Berhasil Dilakukan',
+                    ], 200);
+                }else{
+                    $tagihan = TagihanKeuangan::create(
                         [
-                            'id_tagihan' => $tagihan->id,
-                            'id_jenis' => $request->id_jenis[$key],
-                            'jumlah' => $value,
+                            'id_tahun' => $ta->id,
+                            'nim' => $row->nim,
                         ]
                     );
-                    $total += $value;
+                    $total = 0;
+                    foreach($jenis as $key=>$value){
+
+                        $new_detail = DetailTagihanKeuangan::create(
+                            [
+                                'id_tagihan' => $tagihan->id,
+                                'id_jenis' => $request->id_jenis[$key],
+                                'jumlah' => $value,
+                            ]
+                        );
+                        $total += $value;
+                    }
+                    $new_tagihan = TagihanKeuangan::find($tagihan->id);
+                    $new_tagihan->total = $total;
+                    $new_tagihan->save();
+                    return response()->json([
+                        'status' => 'success',
+                        'message' => 'Generate Tagihan Berhasil Dilakukan',
+                    ], 200);
                 }
-                $new_tagihan->total = $total;
-                $new_tagihan->save();
-            }else{
-                $tagihan = TagihanKeuangan::create(
+            }
+        }elseif(!empty($request->id)){
+            $id = $request->id;
+            $new_tagihan = TagihanKeuangan::find($id);
+            $detail_delete = DetailTagihanKeuangan::where('id_tagihan',$id)->delete();
+            $total = 0;
+            $jenis = $request->jenis;
+            foreach($jenis as $key=>$value){
+
+                $new_detail = DetailTagihanKeuangan::create(
                     [
-                        'id_tahun' => $ta->id,
-                        'nim' => $row->nim,
+                        'id_tagihan' => $id,
+                        'id_jenis' => $request->id_jenis[$key],
+                        'jumlah' => $value,
                     ]
                 );
+                $total += $value;
+            }
+            $new_tagihan->total = $total;
+            $new_tagihan->total_bayar = $request->total_bayar;
+            if($total == $request->total_bayar){
+                $new_tagihan->status = 1;
+            }else{
+                $new_tagihan->status = $request->status_bayar;
+            }
+            $new_tagihan->save();
+        }else{
+            if(!empty($jenis[0]) || !empty($jenis[1])){
+                $tagihan = TagihanKeuangan::create(
+                        [
+                            'id_tahun' => $ta->id,
+                            'nim' => $request->nim,
+                        ]
+                    );
                 $total = 0;
+                $jenis = $request->jenis;
                 foreach($jenis as $key=>$value){
 
                     $new_detail = DetailTagihanKeuangan::create(
@@ -189,8 +264,19 @@ class TagihanController extends Controller
                 }
                 $new_tagihan = TagihanKeuangan::find($tagihan->id);
                 $new_tagihan->total = $total;
+                $new_tagihan->total_bayar = $request->total_bayar;
+                $new_tagihan->status = $request->status_bayar;
                 $new_tagihan->save();
-            }
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Generate Tagihan Berhasil Dilakukan',
+                ], 200);
+             }else{
+                return response()->json([
+                    'status' => 'Error' ,
+                    'message' => 'Data Form tidak ditemukan',
+                ], 404);
+             }
         }
     }
 
@@ -207,14 +293,18 @@ class TagihanController extends Controller
      */
     public function edit(string $id)
     {
+
         $tagihan = TagihanKeuangan::find($id);
 
         if ($tagihan) {
-            return response()->json($tagihan);
+            $detail = DetailTagihanKeuangan::where('id_tagihan',$id)->get();
+            $gabung[0] = $tagihan;
+            $gabung[1] = $detail;
+            return response()->json($gabung);
         } else {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Aset tagihan not found',
+                'message' => 'tagihan not found',
             ], 404);
         }
     }

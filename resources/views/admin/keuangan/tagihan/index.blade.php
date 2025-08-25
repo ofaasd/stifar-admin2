@@ -93,6 +93,9 @@
                                         @foreach($jenis as $row)
                                         <th>{{$row->nama}}</th>
                                         @endforeach
+                                        <th>Total</th>
+                                        <th>Total Bayar</th>
+                                        <th>Status</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -100,6 +103,51 @@
 
                                 </tbody>
                             </table>
+                        </div>
+                        <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModal" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <form action="javascript:void(0)" id="formAdd2">
+                                        @csrf
+
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="ModalLabel">Edit Tagihan <span id="tpt-nim"></span></h5>
+                                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <input type="hidden" name="id_prodi" id="id_prodi_edit" value="{{$id}}">
+                                            <input type="hidden" name="id" id="id">
+                                            <input type="hidden" name="nim" id="nim">
+                                            @foreach($jenis as $row)
+                                            <div class="mb-3" id="field-nama">
+                                                <label for="jenis" class="form-label">{{$row->nama}}</label>
+                                                <input type="hidden" name="id_jenis[]" id="id_jenis{{$row->id}}" value="{{$row->id}}">
+                                                <input type="number" class="form-control" name="jenis[]" id="jenis_edit{{$row->id}}" value="0">
+                                            </div>
+                                            @endforeach
+                                            <div class="mb-3" id="field-nama">
+                                                <label for="total" class="form-label">Total</label>
+                                                <input type="number" class="form-control" name="total" id="total" value="" readonly>
+                                            </div>
+                                            <div class="mb-3" id="field-nama">
+                                                <label for="total_bayar" class="form-label">Total Bayar</label>
+                                                <input type="number" class="form-control" name="total_bayar" id="total_bayar" value="">
+                                            </div>
+                                            <div class="mb-3" id="field-nama">
+                                                <label for="total_bayar" class="form-label">Status</label>
+                                                <select name="status_bayar" id="status_bayar" class="form-control">
+                                                    <option value="0">Belum Lunas</option>
+                                                    <option value="1">Lunas</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                                            <button class="btn btn-primary" id="btn-submit" type="submit">Generate</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -164,7 +212,7 @@
                     render: function render(data, type, full) {
                         return `
                             <div class="d-inline-block text-nowrap">
-                                <button class="btn btn-sm btn-primary edit-record" data-id="${full['id']}" data-bs-toggle="modal" data-bs-target="#editModal">
+                                <button class="btn btn-sm btn-primary edit-record" data-nama="${full['nama']}" data-nim="${full['nim']}" data-id="${full['id_tagihan']}" data-bs-toggle="modal" data-bs-target="#editModal">
                                     <i class="fa fa-pencil"></i>
                                 </button>
                             </div>`;
@@ -196,16 +244,30 @@
         $(document).on('click', '#add-record', function () {
             $('#ModalLabel').html('Tambah ' + title2);
             $("#id").val('');
+
             $('#formAdd').trigger("reset");
         });
 
         $(document).on('click', '.edit-record', function () {
             const id = $(this).data('id');
+            $('#formAdd2').trigger("reset");
+            $("#id").val('0');
+             $("#nim").val($(this).data('nim'));
+             $("#tpt-nim").html($(this).data('nim'));
             $('#ModalLabel').html('Edit ' + title2);
 
-            $.get(`${baseUrl}${page}/${id}/edit`, function (data) {
-                Object.keys(data).forEach(key => {
-                    $('#' + key).val(data[key]).trigger('change');
+            $.get(`${baseUrl}/admin/keuangan/tagihan/${id}/edit`, function (data) {
+                Object.keys(data[0]).forEach(key => {
+                    $('#' + key).val(data[0][key]).trigger('change');
+                });
+                // Object.keys(data[1]).forEach(key => {
+                //     console.log(data[1][key][id_jenis]);
+                //     //$('#' + key).val(data[1][key]).trigger('change');
+                // });
+                data[1].forEach(item => {
+                    // 'item' represents each object in the 'data' array
+                    $(`#id_jenis${item.id_jenis}`).val(`${item.id}`);
+                    $(`#jenis_edit${item.id_jenis}`).val(`${item.jumlah}`);
                 });
             }).fail(function (jqXHR, textStatus, errorThrown) {
                 console.error('Error fetching data:', textStatus, errorThrown);
@@ -256,63 +318,48 @@
                 }
             });
         });
+        $('#formAdd2').on('submit', function (e) {
+            e.preventDefault();
+            const myFormData = new FormData(this);
 
-        // Delete record
-        $(document).on('click', '.delete-record', function () {
-            const id = $(this).data('id');
-                // sweetalert for confirmation of delete
-                swal({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                buttons: true,
-                dangerMode: true,
-                showCancelButton: true,
-                confirmButtonText: 'Yes, delete it!',
-                customClass: {
-                    confirmButton: 'btn btn-primary me-3',
-                    cancelButton: 'btn btn-label-secondary'
+            var btnSubmit = $('#btn-submit');
+            btnSubmit.prop('disabled', true);
+
+            $.ajax({
+                data: myFormData,
+                url: `${baseUrl}${page2}`,
+                type: 'POST',
+                processData: false,
+                contentType: false,
+                success: function (status) {
+                    dt.draw();
+                    $("#tambahModal").modal('hide');
+                    swal({
+                        icon: 'success',
+                        title: `Successfully ${status}!`,
+                        text: `${title} ${status} successfully.`,
+                        customClass: {
+                            confirmButton: 'btn btn-success'
+                        }
+                    });
+                    btnSubmit.prop('disabled', false);
                 },
-                buttonsStyling: false
-                }).then(function (result) {
-                if (result) {
-
-                    // delete the data
-                    $.ajax({
-                    type: 'DELETE',
-                    url: ''.concat(baseUrl).concat(page, '/').concat(id),
-                    data:{
-                        'id': id,
-                        '_token': '{{ csrf_token() }}',
-                    },
-                    success: function success() {
-                        dt.draw();
-                    },
-                    error: function error(_error) {
-                        console.log(_error);
+                error: function (xhr) {
+                    $("#tambahModal").modal('hide');
+                    let errMsg = 'An error occurred. Please try again.';
+                    if (xhr.status === 422) { // Laravel validation error
+                        errMsg = xhr.responseJSON.message;
                     }
-                    });
-
-                    // success sweetalert
                     swal({
-                    icon: 'success',
-                    title: 'Deleted!',
-                    text: 'The Record has been deleted!',
-                    customClass: {
-                        confirmButton: 'btn btn-success'
-                    }
-                    });
-                } else {
-                    swal({
-                    title: 'Cancelled',
-                    text: 'The record is not deleted!',
-                    icon: 'error',
-                    customClass: {
-                        confirmButton: 'btn btn-success'
-                    }
+                        icon: 'error',
+                        title: 'Error!',
+                        text: errMsg,
+                        customClass: {
+                            confirmButton: 'btn btn-danger'
+                        }
                     });
                 }
-                });
+            });
         });
     });
 
