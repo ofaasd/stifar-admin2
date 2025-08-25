@@ -22,32 +22,57 @@
 @section('content')
     <div class="container-fluid">
         <div class="row">
+            <div class="col-md-12 project-list">
+                    <div class="card">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <ul class="nav nav-tabs border-tab" id="top-tab" role="tablist">
+                                    @foreach($prodi as $prod)
+                                        <li class="nav-item"><a href="{{URL::to('admin/keuangan/tagihan_show/' . $prod->id)}}" class="nav-link {{($id==$prod->id)?"active":""}}" style="font-size:10pt;"><i data-feather="info"></i>{{$nama[$prod->id]}} </a></li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header pb-0 card-no-border">
                         @if(empty($link))
-                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal" id="add-record">+ {{$title2}}</button>
+                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal" id="add-record">+ Generate {{$title2}}</button>
                         @endif
                         <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <form action="javascript:void(0)" id="formAdd">
                                         @csrf
-                                        <input type="hidden" name="id" id="id">
+
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="ModalLabel">Tambah {{$title2}}</h5>
+                                            <h5 class="modal-title" id="ModalLabel">Generate {{$title2}}</h5>
                                             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
+                                            <input type="hidden" name="id_prodi" id="id_prodi" value="{{$id}}">
+                                            @foreach($jenis as $row)
                                             <div class="mb-3" id="field-nama">
-                                                <label for="nama" class="form-label">Nama</label>
-                                                <input type="text" class="form-control" name="nama" id="nama">
+                                                <label for="jenis" class="form-label">{{$row->nama}}</label>
+                                                <input type="hidden" name="id_jenis[]" value="{{$row->id}}">
+                                                <input type="number" class="form-control" name="jenis[]" id="jenis{{$row->id}}" value="{{$jumlah_jenis[$row->id]}}">
+                                            </div>
+                                            @endforeach
+                                            <div class="form-group">
+                                                <label for="tahun_ajaran">Angkatan</label>
+                                                <select name="angkatan"  id="angkatan" class="form-control">
+                                                    @foreach($angkatan as $row)
+                                                        <option value="{{ $row['angkatan'] }}">{{ $row['angkatan'] }}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         </div>
                                         <div class="modal-footer">
                                             <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
-                                            <button class="btn btn-primary" id="btn-submit" type="submit">Simpan</button>
+                                            <button class="btn btn-primary" id="btn-submit" type="submit">Generate</button>
                                         </div>
                                     </form>
                                 </div>
@@ -64,6 +89,7 @@
                                         <th>No</th>
                                         <th>NIM</th>
                                         <th>Nama</th>
+                                        <th>Prodi</th>
                                         @foreach($jenis as $row)
                                         <th>{{$row->nama}}</th>
                                         @endforeach
@@ -94,6 +120,7 @@
         const title = "{{strtolower($title)}}";
         const title2 = "{{ $title2 }}";
         const page = '/'.concat("admin/keuangan/").concat(title,'_show/{{$id}}');
+        const page2 = '/'.concat("admin/keuangan/").concat(title);
         var my_column = $('#my_column').val();
         const pecah = my_column.split('\n');
         let my_data = [];
@@ -137,11 +164,8 @@
                     render: function render(data, type, full) {
                         return `
                             <div class="d-inline-block text-nowrap">
-                                <button class="btn btn-sm btn-icon edit-record text-primary" data-id="${full['id']}" data-bs-toggle="modal" data-bs-target="#tambahModal">
+                                <button class="btn btn-sm btn-primary edit-record" data-id="${full['id']}" data-bs-toggle="modal" data-bs-target="#editModal">
                                     <i class="fa fa-pencil"></i>
-                                </button>
-                                <button class="btn btn-sm btn-icon delete-record text-primary" data-id="${full['id']}">
-                                    <i class="fa fa-trash"></i>
                                 </button>
                             </div>`;
                     }
@@ -198,7 +222,7 @@
 
             $.ajax({
                 data: myFormData,
-                url: `${baseUrl}${page}`,
+                url: `${baseUrl}${page2}`,
                 type: 'POST',
                 processData: false,
                 contentType: false,
