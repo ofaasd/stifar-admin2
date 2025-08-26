@@ -64,7 +64,7 @@
 
     <script>
         $(function() {
-            var isAlumni = {{ isset($isAlumni) && $isAlumni ? 'true' : 'false' }};
+            var isAlumni = {{ isset($isAlumni) && $isAlumni ? true : false }};
             if (isAlumni) {
                 $(".nav-link").click(function(){
                     const id = $(this).data('id');
@@ -111,6 +111,9 @@
                 method: "GET",
                 data: { id: id },
                 success: function(data) {
+                    console.log('====================================');
+                    console.log(data);
+                    console.log('====================================');
                     $(".tbl-mhs").html(data);
                 },
                 error: function(xhr, status, error) {

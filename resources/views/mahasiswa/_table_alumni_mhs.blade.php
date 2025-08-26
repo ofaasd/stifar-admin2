@@ -46,7 +46,6 @@
   </tr>
 @endif
 </table>
-@include('admin.akademik.transkrip-ijazah.modal.modal-ijazah')
 <script>
   $(function () {
       $("#myTable").DataTable({
@@ -54,3 +53,4 @@
       });
   });
 </script>
+@include('admin.akademik.transkrip-ijazah.modal.modal-ijazah')

@@ -34,6 +34,7 @@
 
 <!-- Add jQuery before your script -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{{ asset('assets/js/datatable/datatables/jquery.dataTables.min.js') }}"></script>
 
 <script>
     $(function () {
