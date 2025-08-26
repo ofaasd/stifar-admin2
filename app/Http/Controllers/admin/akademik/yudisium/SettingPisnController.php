@@ -17,7 +17,7 @@ class SettingPisnController extends Controller
         $query = Mahasiswa::where('is_yudisium', 1)
             ->where(function ($q) {
                 $q->whereNull('no_pisn')
-                  ->orWhere('no_pisn', '!=', '');
+                  ->orWhere('no_pisn', '==', '');
             });
 
         if (empty($request->input('length'))) {

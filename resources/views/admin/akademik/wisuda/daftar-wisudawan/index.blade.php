@@ -17,7 +17,7 @@
 @section('breadcrumb-items')
     <li class="breadcrumb-item">Akademik</li>
     <li class="breadcrumb-item">Wisuda</li>
-    <li class="breadcrumb-item active">{{ $title2 }}</li>
+    <li class="breadcrumb-item active">{{ $title }}</li>
 @endsection
 
 @section('content')
@@ -26,18 +26,28 @@
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
                 <div class="card">
-                    <div class="card-header pb-0 card-no-border d-flex justify-content-between align-items-center">
-                        <div>
-                            <button class="btn btn-primary" type="button" id="btn-select-all-nim">Pilih Semua</button>
-                            <button class="btn btn-primary d-none" type="button" id="btn-submit">Pindahkan ke alumni</button>
-                        </div>
-                        <!-- Notes Section -->
-                        <div class="mb-0 ms-3">
-                            <div class="alert alert-warning mb-0" role="alert">
-                                <strong>Catatan:</strong> Wisudawan yang telah bertanda <i class="bi bi-check-circle-fill text-success bg-white rounded-circle"></i> dapat dipindahkan ke data alumni melalui tombol di samping kiri.
+                    
+                    @if (empty($isArsip))
+                        <div class="card-header pb-0 card-no-border d-flex justify-content-between align-items-center">
+                            <div>
+                                <button class="btn btn-primary" type="button" id="btn-select-all-nim">Pilih Semua</button>
+                                <button class="btn btn-primary d-none" type="button" id="btn-submit">Pindahkan ke alumni</button>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <a href="{{ url('/admin/akademik/wisuda/daftar-wisudawan-arsip') }}" class="btn btn-outline-info" title="Arsip Wisudawan">
+                                    <i class="fa fa-archive"></i> Arsip
+                                </a>
+
+                                <!-- Notes Section -->
+                                <div class="mb-0 flex-grow-1">
+                                    <div class="alert alert-warning mb-0" role="alert">
+                                        <strong>Catatan:</strong> Wisudawan yang telah bertanda <i class="bi bi-check-circle-fill text-success bg-white rounded-circle"></i> dapat dipindahkan ke data alumni melalui tombol di samping kiri.
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    @endif
+
                     <div class="card-body">
                         <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
                         <div class="table-responsive">

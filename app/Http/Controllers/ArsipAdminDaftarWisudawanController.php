@@ -1,18 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\admin\akademik\wisuda;
+namespace App\Http\Controllers;
 
-use App\Models\Alumni;
-use App\Models\Mahasiswa;
-use App\Models\TbYudisium;
 use Illuminate\Http\Request;
-use App\Models\DaftarWisudawan;
-use App\Http\Controllers\Controller;
 use App\Models\MahasiswaBerkasPendukung;
 use App\Models\TbDaftarWisudawanArchive;
-use App\Models\TbYudisiumArchive;
 
-class AdminDaftarWisudawanController extends Controller
+class ArsipAdminDaftarWisudawanController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -21,11 +15,12 @@ class AdminDaftarWisudawanController extends Controller
     public function index(Request $request)
     {
         if (empty($request->input('length'))) {
-            $title = "Daftar Wisudawan";
-            $title2 = "daftar-wisudawan";
+            $title = "Daftar Wisudawan Arsip";
+            $title2 = "daftar-wisudawan-arsip";
 
             $indexed = $this->indexed;
-            return view('admin.akademik.wisuda.daftar-wisudawan.index', compact('title', 'title2','indexed'));
+            $isArsip = true;
+            return view('admin.akademik.wisuda.daftar-wisudawan.index', compact('title', 'title2','indexed', 'isArsip'));
         }else{
             $columns = [
                 1 => 'id',
@@ -38,7 +33,7 @@ class AdminDaftarWisudawanController extends Controller
 
             $search = [];
 
-            $totalData = DaftarWisudawan::count();
+            $totalData = TbDaftarWisudawanArchive::count();
 
             $totalFiltered = $totalData;
 
@@ -47,26 +42,24 @@ class AdminDaftarWisudawanController extends Controller
             $order = $columns[$request->input('order.0.column')];
             $dir = $request->input('order.0.dir');
 
-            $query = DaftarWisudawan::select([
-                        'tb_daftar_wisudawan.id',
-                        'mahasiswa.nim',
-                        'mahasiswa.nama',
-                        'mahasiswa.foto_mhs AS fotoMhs',
-                        'tb_daftar_wisudawan.status AS statusDaftar',
+            $query = TbDaftarWisudawanArchive::select([
+                        'tb_daftar_wisudawan_archive.id',
+                        'tb_alumni.nim',
+                        'tb_alumni.nama',
+                        'tb_alumni.foto AS fotoMhs',
+                        'tb_daftar_wisudawan_archive.status AS statusDaftar',
                         'tb_gelombang_wisuda.nama AS gelombangWisuda',
                         'tb_gelombang_wisuda.waktu_pelaksanaan AS pelaksanaanWisuda',
                         'gelombang_yudisium.nama AS gelombangYudisium',
                         'tb_pembayaran_wisuda.status AS statusPembayaran',
                         'tb_pembayaran_wisuda.bukti AS buktiPembayaran',
-                        'tb_alumni.nim AS nimAlumni'
                     ])
-                    ->where('tb_daftar_wisudawan.status', '=', 1)
-                    ->leftJoin('mahasiswa', 'tb_daftar_wisudawan.nim', '=', 'mahasiswa.nim')
-                    ->leftJoin('tb_yudisium', 'mahasiswa.nim', '=', 'tb_yudisium.nim')
-                    ->leftJoin('gelombang_yudisium', 'tb_yudisium.id_gelombang_yudisium', '=', 'gelombang_yudisium.id')
-                    ->leftJoin('tb_gelombang_wisuda', 'tb_daftar_wisudawan.id_gelombang_wisuda', '=', 'tb_gelombang_wisuda.id')
-                    ->leftJoin('tb_pembayaran_wisuda', 'tb_daftar_wisudawan.nim', '=', 'tb_pembayaran_wisuda.nim')
-                    ->leftJoin('tb_alumni', 'tb_alumni.nim', '=', 'mahasiswa.nim');
+                    ->where('tb_daftar_wisudawan_archive.status', '=', 1)
+                    ->leftJoin('tb_alumni', 'tb_daftar_wisudawan_archive.nim', '=', 'tb_alumni.nim')
+                    ->leftJoin('tb_yudisium_archive', 'tb_alumni.nim', '=', 'tb_yudisium_archive.nim')
+                    ->leftJoin('gelombang_yudisium', 'tb_yudisium_archive.id_gelombang_yudisium', '=', 'gelombang_yudisium.id')
+                    ->leftJoin('tb_gelombang_wisuda', 'tb_daftar_wisudawan_archive.id_gelombang_wisuda', '=', 'tb_gelombang_wisuda.id')
+                    ->leftJoin('tb_pembayaran_wisuda', 'tb_daftar_wisudawan_archive.nim', '=', 'tb_pembayaran_wisuda.nim');
 
             if (empty($request->input('search.value'))) {
                     $pendaftar = $query->offset($start)
@@ -95,8 +88,8 @@ class AdminDaftarWisudawanController extends Controller
             } else {
                 $search = $request->input('search.value');
 
-                $pendaftar = $query->where('mahasiswa.nim', 'LIKE', "%{$search}%")
-                    ->orWhere('mahasiswa.nama', 'LIKE', "%{$search}%")
+                $pendaftar = $query->where('tb_alumni.nim', 'LIKE', "%{$search}%")
+                    ->orWhere('tb_alumni.nama', 'LIKE', "%{$search}%")
                     ->orWhere('tb_gelombang_wisuda.nama', 'LIKE', "%{$search}%")
                     ->orWhere('gelombang_yudisium.nama', 'LIKE', "%{$search}%")
                     ->offset($start)
@@ -123,8 +116,8 @@ class AdminDaftarWisudawanController extends Controller
                 });
 
 
-                $totalFiltered = $query->where('mahasiswa.nim', 'LIKE', "%{$search}%")
-                    ->orWhere('mahasiswa.nama', 'LIKE', "%{$search}%")
+                $totalFiltered = $query->where('tb_alumni.nim', 'LIKE', "%{$search}%")
+                    ->orWhere('tb_alumni.nama', 'LIKE', "%{$search}%")
                     ->orWhere('tb_gelombang_wisuda.nama', 'LIKE', "%{$search}%")
                     ->orWhere('gelombang_yudisium.nama', 'LIKE', "%{$search}%")
                     ->count();
@@ -204,69 +197,7 @@ class AdminDaftarWisudawanController extends Controller
      */
     public function store(Request $request)
     {
-        try {
-            foreach ($request->nim as $nim) {
-                $mhs = Mahasiswa::select([
-                    'mahasiswa.nim',
-                    'mahasiswa.nama',
-                    'mahasiswa.angkatan',
-                    'mahasiswa.jk',
-                    'mahasiswa.hp',
-                    'mahasiswa.email',
-                    'mahasiswa.no_pisn AS noPisn',
-                    'mahasiswa.foto_yudisium AS foto',
-                    'gelombang_yudisium.tanggal_pengesahan AS tahunLulus',
-                    'program_studi.id AS idProgramStudi',
-                    'program_studi.jenjang',
-                    'program_studi.nama_prodi AS prodi',
-                    'pengajuan_judul_skripsi.judul AS judulSkripsi',
-                ])
-                ->where('mahasiswa.nim', $nim)
-                ->where('pengajuan_judul_skripsi.status', 1)
-                ->leftJoin('program_studi', 'mahasiswa.id_program_studi', '=', 'program_studi.id')
-                ->leftJoin('tb_yudisium', 'mahasiswa.nim', '=', 'tb_yudisium.nim')
-                ->leftJoin('gelombang_yudisium', 'tb_yudisium.id_gelombang_yudisium', '=', 'gelombang_yudisium.id')
-                ->leftJoin('master_skripsi', 'mahasiswa.nim', '=', 'master_skripsi.nim')
-                ->leftJoin('pengajuan_judul_skripsi', 'master_skripsi.id', '=', 'pengajuan_judul_skripsi.id_master')
-                ->first();
-
-                Alumni::create([    
-                    'nim' => $mhs->nim,
-                    'nama' => $mhs->nama,
-                    'foto' => $mhs->foto,
-                    'jenjang' => $mhs->jenjang,
-                    'angkatan' => $mhs->angkatan,
-                    'tahun_lulus' => !empty($mhs->tahunLulus) ? date('Y', strtotime($mhs->tahunLulus)) : null,
-                    'jenis_kelamin' => $mhs->jk,
-                    'no_hp' => $mhs->hp,
-                    'no_pisn' => $mhs->noPisn,
-                    'email_pribadi' => $mhs->email,
-                    'prodi' => $mhs->prodi,
-                    'id_program_studi' => $mhs->idProgramStudi,
-                    'judul_skripsi' => $mhs->judulSkripsi
-                ]);
-                
-                $yudisiumAktif = TbYudisium::where('nim', $mhs->nim)->first();
-                TbYudisiumArchive::create([
-                    'nim' => $yudisiumAktif->nim,
-                    'id_gelombang_yudisium' => $yudisiumAktif->id_gelombang_yudisium,
-                ]);
-                $yudisiumAktif->delete();
-
-                $daftarWisudawanAktif = DaftarWisudawan::where('nim', $mhs->nim)->first();
-                TbDaftarWisudawanArchive::create([
-                    'nim' => $daftarWisudawanAktif->nim,
-                    'id_gelombang_wisuda' => $daftarWisudawanAktif->id_gelombang_wisuda,
-                    'status' => $daftarWisudawanAktif->status,
-                ]);
-                $daftarWisudawanAktif->delete();
-
-                Mahasiswa::where('nim', $mhs->nim)->delete();
-            }
-            return response()->json(['message' => 'Berhasil dipindahkan ke Alumni', 'code' => 200]);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Gagal memindahkan data', 'error' => $e->getMessage()], 500);
-        }
+        //
     }
 
     /**

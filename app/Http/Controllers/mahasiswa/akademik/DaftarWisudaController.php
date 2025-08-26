@@ -19,7 +19,11 @@ class DaftarWisudaController extends Controller
 {
     public function index()
     {
-        $gelombangWisuda = TbGelombangWisuda::whereDate('mulai_pendaftaran', '<=', now()->toDateString())
+        $gelombangWisuda = TbGelombangWisuda::select([
+                'tb_gelombang_wisuda.*',
+                \DB::raw('(SELECT COUNT(*) FROM tb_daftar_wisudawan WHERE tb_daftar_wisudawan.id_gelombang_wisuda = tb_gelombang_wisuda.id AND tb_daftar_wisudawan.status = 1) as jml_peserta'),
+            ])
+            ->whereDate('mulai_pendaftaran', '<=', now()->toDateString())
             ->whereDate('selesai_pendaftaran', '>=', now()->toDateString())
             ->get();
 

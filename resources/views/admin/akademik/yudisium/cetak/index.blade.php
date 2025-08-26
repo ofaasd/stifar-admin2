@@ -40,7 +40,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary btn-sm" id="btn-submit">Cetak</button>
+                    <button type="submit" class="btn btn-primary btn-sm" id="btn-submit">Simpan</button>
                 </div>
                 </div>
             </form>
