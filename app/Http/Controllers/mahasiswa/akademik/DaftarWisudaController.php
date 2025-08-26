@@ -32,7 +32,7 @@ class DaftarWisudaController extends Controller
         $mhs = Mahasiswa::select([
             'mahasiswa.nim',
             'mahasiswa.nama',
-            'mahasiswa.foto_mhs AS fotoMhs',
+            'mahasiswa.foto_yudisium AS fotoMhs',
             'mahasiswa.tempat_lahir AS tempatLahir',
             'mahasiswa.tgl_lahir AS tanggalLahir',
             'mahasiswa.no_ktp AS noKtp',
@@ -270,7 +270,7 @@ class DaftarWisudaController extends Controller
         try {
             // Validasi input
             $request->validate([
-                'bukti_bayar' => 'required|file|mimes:jpg,jpeg|max:5120', // Maksimal 5MB
+                'bukti_bayar' => 'required|file|mimes:jpg,jpeg,png|max:5120', // Maksimal 5MB
                 'nim' => 'required|exists:mahasiswa,nim',
                 'atas_nama' => 'required|string|max:255',
                 'bank' => 'required|string|max:255',

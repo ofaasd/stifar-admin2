@@ -258,7 +258,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
     Route::resource('admin/masterdata/prodi/akreditasi', ProdiAkreditasiController::class)->name('index', 'akreditasi_prodi');
     Route::resource('admin/masterdata/ruang', RuangController::class)->name('index', 'ruang');
     Route::resource('admin/masterdata/sekolah', AsalSekolahController::class)->name('index', 'sekolah');
-    Route::resource('admin/masterdata/struktur-pegawai', StrukturPegawaiController::class)->name('index', 'struktur-pegawai');
+    // Route::resource('admin/masterdata/struktur-pegawai', StrukturPegawaiController::class)->name('index', 'struktur-pegawai');
 
 
 
@@ -388,10 +388,8 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
         // Yudisium
         Route::prefix('/yudisium')->group(function () {
             Route::resource('/setting', SettingYudisiumController::class)->name('index','setting-yudisium');
-            Route::prefix('/proses')->group(function () {
-                Route::resource('/', ProsesYudisiumController::class)->name('index','proses-yudisium');
-                Route::post('/upload-foto-yudisium', [ProsesYudisiumController::class, 'storeFotoYudisium']);
-            });
+            Route::resource('/proses', ProsesYudisiumController::class)->name('index','proses-yudisium');
+            Route::post('/proses/upload-foto-yudisium', [ProsesYudisiumController::class, 'storeFotoYudisium']);
             Route::resource('/proses-arsip', ArsipProsesYudisiumController::class)->name('index','proses-yudisium');
 
             Route::resource('/setting-pisn', SettingPisnController::class)->name('index','setting-pisn-yudisium');

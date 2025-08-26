@@ -35,23 +35,21 @@
                                                 <div class="row mb-2">
                                                         <div class="profile-title card-header mb-3">
                                                                 <div class="media align-items-center">
-                                                                        <div class="photo-profile position-relative d-inline-block">
-                                                                                <img class="img-70 rounded-circle" alt="Foto Mahasiswa"
-                                                                                        src="{{ !empty($mhs->fotoMhs) ? asset('assets/images/mahasiswa/' . $mhs->fotoMhs) : asset('assets/images/user/7.jpg') }}">
+                                                                        <div class="photo-profile position-relative d-inline-block" style="width:90px; height:120px;">
+                                                                                <img 
+                                                                                        class="rounded" 
+                                                                                        alt="Foto Mahasiswa"
+                                                                                        src="{{ !empty($mhs->fotoMhs) ? asset('assets/images/mahasiswa/foto-yudisium/' . $mhs->fotoMhs) : asset('assets/images/user/7.jpg') }}"
+                                                                                        style="width:90px; height:120px; object-fit:cover;"
+                                                                                >
                                                                         </div>
                                                                         <div class="media-body ms-3">
                                                                                 <h5 class="mb-1">{{ $mhs->nama }}</h5>
                                                                                 <h5 class="mb-1">{{ $mhs->nim }}</h5>
                                                                         </div>
-                                                                        @if (isset($registered) && $registered)
-                                                                                {{-- <div class="ms-auto">
-                                                                                        <span class="badge bg-primary">Pendaftaran Wisuda</span>
-                                                                                </div> --}}
-                                                                        @else
-                                                                                <div class="ms-auto">
-                                                                                        <span class="px-3 py-1 rounded bg-primary">Yudisium: {{ $mhs->namaGelombangYudisium ?? '-' }}</span>
-                                                                                </div>
-                                                                        @endif
+                                                                        <div class="ms-auto">
+                                                                                <span class="px-3 py-1 rounded bg-primary">Yudisium: {{ $mhs->namaGelombangYudisium ?? '-' }}</span>
+                                                                        </div>
                                                                 </div>
                                                         </div>
                                                 </div>
@@ -70,7 +68,7 @@
                                                                         Mohon tunggu informasi selanjutnya dari panitia.<br>
                                                                 </div>
                                                         @else
-                                                                <div class="alert alert-{{ $registered->status == 1 ? 'success' : 'secondary' }}" role="alert">
+                                                                <div class="alert {{ $registered->buktiPembayaran ? 'alert-secondary' : '' }}" role="alert">
                                                                         Selamat 🎉 <strong>{{ $mhs->nama }}</strong> Anda telah berhasil mengajukan pendaftaran wisuda.<br>
                                                                         <ul class="mb-2">
                                                                                 <li><strong>Nama Gelombang:</strong> {{ $registered->nama ?? '-' }}</li>
@@ -118,7 +116,7 @@
                                                                                                 <label for="buktiBayar" class="col-sm-3 col-form-label">Bukti Bayar</label>
                                                                                                 <div class="col-sm-9">
                                                                                                         <input type="file" class="form-control" id="buktiBayar" name="bukti_bayar" accept=".jpg,.jpeg,.png,.pdf" required>
-                                                                                                        <small class="text-muted">File jpg/jpeg, maksimal 5MB</small>
+                                                                                                        <small class="text-muted">File jpg/jpeg, png, maksimal 5MB</small>
                                                                                                 </div>
                                                                                         </div>
                                                                                         <div class="text-end">

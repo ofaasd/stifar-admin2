@@ -36,28 +36,34 @@
                             <div class="mb-3 flex-fill w-100">
                                 <div class="mb-3">
                                     <label for="gelombang" class="form-label">Gelombang Yudisium</label>
-                                    <select class="form-control form-control-lg" id="gelombang" name="gelombang" required style="width:100%;">
-                                        <option value="">-- Pilih Gelombang --</option>
-                                        @foreach($gelombang as $row)
-                                            <option value="{{ $row->id }}">
-                                                {{ $row->periode }} | 
-                                                {{ $row->nama }}
-                                            </option>
-                                        @endforeach
+                                    <select class="form-control form-control-lg" id="gelombang" name="gelombang" required style="width:100%;" {{ count($gelombang) == 0 ? 'disabled' : '' }}>
+                                        @if(count($gelombang) == 0)
+                                            <option value="">Tidak ada gelombang tersedia</option>
+                                        @else
+                                            <option value="">-- Pilih Gelombang --</option>
+                                            @foreach($gelombang as $row)
+                                                <option value="{{ $row->id }}">
+                                                    {{ $row->periode }} | 
+                                                    {{ $row->nama }}
+                                                </option>
+                                            @endforeach
+                                        @endif
                                     </select>
                                 </div>
                                 <div class="row">
                                     <div class="col-6">
                                         <label>Daftar Mahasiswa Lulus</label>
-                                        <select id="mhs-available" class="form-control" size="10" multiple style="height:auto;">
-                                            @foreach($mhs as $row)
+                                        <select id="mhs-available" class="form-control" size="10" multiple style="height:auto;" {{ count($mhs) == 0 ? 'disabled' : '' }}>
+                                            @forelse ($mhs as $row)
                                                 <option value="{{ $row->nim }}"
                                                     title="{{ $row->nim }} | {{ $row->nama }} | sks: {{ $row->totalSks }} | ipk: {{ $row->ipk }}"
                                                     data-foto="{{ $row->foto_mhs ? asset('assets/images/mahasiswa/' . $row->foto_mhs) : asset('assets/images/user/1.jpg') }}"
                                                     class="px-3 py-2">
                                                     {{ $row->nim }} | {{ $row->nama }} | sks: {{ $row->totalSks }} | ipk: {{ $row->ipk }}
                                                 </option>
-                                            @endforeach
+                                            @empty
+                                                <option value="">Tidak ada mahasiswa tersedia</option>
+                                            @endforelse
                                         </select>
                                     </div>
                                     <div class="col-1 d-flex flex-column justify-content-center align-items-center gap-2">
@@ -330,7 +336,7 @@
                                     '<button class="btn btn-sm btn-icon cetak-transkrip-record text-info" title="Cetak Transkrip Nilai" data-nim="' + full['nimEnkripsi'] +
                                     '" data-nama="' + full['namaMahasiswa'] +
                                     '" data-bs-toggle="modal" data-original-title="Cetak Transkrip" data-bs-target="#cetakTranskripModal"><i class="fa fa-file-text"></i></button> | ' +
-                                    '<button class="btn btn-sm btn-icon cetak-ijazah-record text-info" title="Cetak Ijazah" data-nim="' + full['nimEnkripsi'] +
+                                    '<button class="btn btn-sm btn-icon text-info cetak-ijazah-record" title="Cetak Ijazah" data-nim="' + full['nimEnkripsi'] +
                                     '" data-nama="' + full['namaMahasiswa'] +
                                     '" data-bs-toggle="modal" data-original-title="Cetak Ijazah" data-bs-target="#cetakIjazahModal"><i class="fa fa-print"></i></button> | ' +
                                     '<button class="btn btn-sm btn-icon edit-record text-primary" data-id="' + full['id'] +

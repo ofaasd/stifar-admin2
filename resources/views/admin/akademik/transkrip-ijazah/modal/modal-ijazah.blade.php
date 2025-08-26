@@ -2,10 +2,10 @@
   <div class="modal-dialog modal-lg">
       <form method="POST" id="formCetakIjazah" action="{{ url('/admin/alumni/cetak-ijazah') }}" target="_blank">
           @csrf
-          <input type="hidden" name="nimEnkripsi" id="nim-cetak">
+          <input type="hidden" name="nimEnkripsi" id="nim-ijazah-cetak">
           <div class="modal-content">
           <div class="modal-header">
-          <h5 class="modal-title" id="cetak-ijazah">Cetak Ijazah | <span id="nama-cetak"></span></h5>
+          <h5 class="modal-title" id="cetak-ijazah">Cetak Ijazah | <span id="nama-ijazah-cetak"></span></h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -32,14 +32,17 @@
 </div>
 
 
+<!-- Add jQuery before your script -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
     $(function () {
       //Cetak ijazah Record
       $(document).on('click', '.cetak-ijazah-record', function () {
           const nim = $(this).data('nim');
           const nama = $(this).data('nama');
-          $('#nim-cetak').val(nim);
-          $('#nama-cetak').text(nama);
+          $('#nim-ijazah-cetak').val(nim);
+          $('#nama-ijazah-cetak').text(nama);
       });
 
       $('#formCetakIjazah').on('submit', function(e) {

@@ -159,10 +159,10 @@
                         targets: 2,
                         render: function render(data, type, full, meta) {
                             // Render NIM, Nama, and Photo
-                            var photoUrl = full.photo ? `{{ asset("assets/images/mahasiswa/") }}/${full.photo}` : '{{ asset("assets/images/user/1.jpg") }}';
+                            var photoUrl = full.photo ? `{{ asset("assets/images/mahasiswa/foto-yudisium/") }}/${full.photo}` : '{{ asset("assets/images/user/1.jpg") }}';
                             return `
                                 <div class="d-flex align-items-center">
-                                    <img src="${photoUrl}" alt="Photo" class="rounded-circle me-2" width="40" height="40">
+                                    <img src="${photoUrl}" alt="Photo" class="rounded me-2" style="width:45px; height:60px; object-fit:cover;">
                                     <div>
                                         <div><strong>${full.nim}</strong></div>
                                         <div>${full.nama}</div>

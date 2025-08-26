@@ -53,7 +53,7 @@ class AdminDaftarPendaftarWisudaController extends Controller
                         'tb_daftar_wisudawan.id',
                         'mahasiswa.nim',
                         'mahasiswa.nama',
-                        'mahasiswa.foto_mhs AS fotoMhs',
+                        'mahasiswa.foto_yudisium AS fotoMhs',
                         'tb_daftar_wisudawan.status AS statusDaftar',
                         'tb_gelombang_wisuda.nama AS gelombangWisuda',
                         'gelombang_yudisium.nama AS gelombangYudisium',
