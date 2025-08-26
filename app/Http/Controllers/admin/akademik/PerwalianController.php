@@ -46,9 +46,10 @@ class PerwalianController extends Controller
         $jumlah_sks = [];
         $jumlah_sks_validasi = [];
         foreach($mhs as $row){
-            $krs = Krs::select('a.*','krs.is_publish')->join('jadwals as a', 'krs.id_jadwal', '=', 'a.id')->where('a.id_tahun',$ta)->where('id_mhs',$row->id)->get();
+            $krs = Krs::select('a.*','krs.is_publish')->join('jadwals as a', 'krs.id_jadwal', '=', 'a.id')->where('krs.id_tahun',$ta)->where('id_mhs',$row->id)->get();
             $jumlah_sks[$row->id] = 0;
             $jumlah_sks_validasi[$row->id] = 0;
+            $i = 1;
             foreach($krs as $k){
                 $jumlah_sks[$row->id] += $list_sks[$k->id_mk];
                 if($k->is_publish == 1){
@@ -56,7 +57,6 @@ class PerwalianController extends Controller
                 }
             }
         }
-
         $no = 1;
         return view('dosen.perwalian', compact('title', 'mhs', 'no', 'jumlah_sks', 'jumlah_sks_validasi'));
     }
