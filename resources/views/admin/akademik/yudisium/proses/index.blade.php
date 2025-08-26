@@ -227,6 +227,37 @@
             <!-- Zero Configuration  Ends-->
         </div>
     </div>
+    <!-- Modal Upload Foto Yudisium -->
+    <div class="modal fade" id="uploadFotoYudisiumModal" tabindex="-1" aria-labelledby="uploadFotoYudisiumModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <form id="formUploadFotoYudisium" enctype="multipart/form-data" method="POST" action="javascript:void(0)">
+                @csrf
+                <input type="hidden" name="nim" id="nim-upload-foto">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="uploadFotoYudisiumModalLabel">Upload Foto Yudisium</span></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3 text-center">
+                            <img id="preview-foto-yudisium" src="{{ asset('assets/images/mahasiswa/ijazah/pas-foto-3x4.png') }}" alt="Preview Foto" class="rounded mb-2" style="width:120px; height:160px; object-fit:contain;">
+                            <div id="nama-upload-foto" class="fw-bold mt-2"></div>
+                            <small class="text-muted">Ukuran foto: 3x4</small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="foto-yudisium" class="form-label">Pilih Foto Yudisium</label>
+                            <input type="file" class="form-control" id="foto-yudisium" name="foto_yudisium" accept="image/*" required>
+                            <small class="text-muted">Format: JPG, JPEG. Maksimal 5MB.</small>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary btn-sm" id="btn-submit">Upload</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
     @include('admin.akademik.transkrip-ijazah.modal.modal-ijazah')
 @endsection
 
@@ -276,26 +307,65 @@
                         }
                     },
                     {
+                        searchable: false,
+                        orderable: false,
+                        targets: 2,
+                        render: function render(data, type, full, meta) {
+                            // Render NIM, Nama, Photo, and Checkbox
+                            var photoUrl = full.fotoYudisium ? `{{ asset("assets/images/mahasiswa/foto-yudisium/") }}/${full.fotoYudisium}` : '{{ asset("assets/images/mahasiswa/ijazah/pas-foto-3x4.png") }}';
+                            var photoHtml = `
+                                <img src="${photoUrl}" alt="Photo" class="rounded me-2" style="width:40px; height:53px; object-fit:cover;">
+                            `;
+                            var uploadBtn = '';
+                            if (!full.fotoYudisium) {
+                                uploadBtn = `
+                                    <button class="btn btn-sm btn-warning ms-2 upload-foto-yudisium" 
+                                        data-nim="${full.nim}" 
+                                        data-nama="${full.namaMahasiswa}" 
+                                        title="Upload Foto Yudisium"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#uploadFotoYudisiumModal">
+                                        <i class="fa fa-upload"></i>
+                                    </button>
+                                `;
+                            }
+                            return `
+                                <div class="d-flex align-items-center">
+                                    ${photoHtml}
+                                    <div>
+                                        <div><strong>${full.nim}</strong></div>
+                                        <div>${full.namaMahasiswa}</div>
+                                    </div>
+                                    ${uploadBtn}
+                                </div>
+                            `;
+                        }
+                    },
+                    {
                         // Actions
                         targets: -1,
                         title: 'Actions',
                         searchable: false,
                         orderable: false,
                         render: function render(data, type, full, meta) {
-                            return (
-                                '<div class="d-inline-block text-nowrap">' +
-                                '<button class="btn btn-sm btn-icon cetak-transkrip-record text-info" title="Cetak Transkrip Nilai" data-nim="' + full['nimEnkripsi'] +
-                                '" data-nama="' + full['namaMahasiswa'] +
-                                '" data-bs-toggle="modal" data-original-title="Cetak Transkrip" data-bs-target="#cetakTranskripModal"><i class="fa fa-file-text"></i></button> | ' +
-                                '<button class="btn btn-sm btn-icon cetak-ijazah-record text-info" title="Cetak Ijazah" data-nim="' + full['nimEnkripsi'] +
-                                '" data-nama="' + full['namaMahasiswa'] +
-                                '" data-bs-toggle="modal" data-original-title="Cetak Ijazah" data-bs-target="#cetakIjazahModal"><i class="fa fa-print"></i></button> | ' +
-                                '<button class="btn btn-sm btn-icon edit-record text-primary" data-id="' + full['id'] +
-                                '" data-bs-toggle="modal" data-original-title="Edit" data-bs-target="#editModal"><i class="fa fa-pencil"></i></button>' +
-                                '<button class="btn btn-sm btn-icon delete-record text-primary" data-id="' + full['id'] +
-                                '"><i class="fa fa-trash"></i></button>' +
-                                '</div>'
-                            );
+                            if (full['tanggalPengesahan']) {
+                                return "Disahkan pada tanggal " + full['tanggalPengesahan'];
+                            }else{
+                                return (
+                                    '<div class="d-inline-block text-nowrap">' +
+                                    '<button class="btn btn-sm btn-icon cetak-transkrip-record text-info" title="Cetak Transkrip Nilai" data-nim="' + full['nimEnkripsi'] +
+                                    '" data-nama="' + full['namaMahasiswa'] +
+                                    '" data-bs-toggle="modal" data-original-title="Cetak Transkrip" data-bs-target="#cetakTranskripModal"><i class="fa fa-file-text"></i></button> | ' +
+                                    '<button class="btn btn-sm btn-icon cetak-ijazah-record text-info" title="Cetak Ijazah" data-nim="' + full['nimEnkripsi'] +
+                                    '" data-nama="' + full['namaMahasiswa'] +
+                                    '" data-bs-toggle="modal" data-original-title="Cetak Ijazah" data-bs-target="#cetakIjazahModal"><i class="fa fa-print"></i></button> | ' +
+                                    '<button class="btn btn-sm btn-icon edit-record text-primary" data-id="' + full['id'] +
+                                    '" data-bs-toggle="modal" data-original-title="Edit" data-bs-target="#editModal"><i class="fa fa-pencil"></i></button>' +
+                                    '<button class="btn btn-sm btn-icon delete-record text-primary" data-id="' + full['id'] +
+                                    '"><i class="fa fa-trash"></i></button>' +
+                                    '</div>'
+                                );
+                            }
                         }
                     }
                 ],
@@ -344,6 +414,62 @@
                 const nama = $(this).data('nama');
                 $('#nim-transkrip').val(nim);
                 $('#nama-transkrip').text(nama);
+            });
+
+            //modal upload foto yudisium
+            $(document).on('click', '.upload-foto-yudisium', function () {
+                const nim = $(this).data('nim');
+                const nama = $(this).data('nama');
+                $('#nim-upload-foto').val(nim);
+                $('#nama-upload-foto').text(nama);
+            });
+
+            //form upload foto yudisium
+            $('#formUploadFotoYudisium').on('submit', function(e) {
+                e.preventDefault();
+                var btnSubmit = $(this).find('#btn-submit');
+                var oldBtnHtml = btnSubmit.html();
+                btnSubmit.prop('disabled', true);
+                btnSubmit.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Please Wait...');
+
+                var formData = new FormData(this);
+
+                $.ajax({
+                    url: ''.concat(baseUrl).concat(page, '/upload-foto-yudisium'),
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') || '{{ csrf_token() }}'
+                    },
+                    success: function(message) {
+                        dt.draw();
+                        $("#uploadFotoYudisiumModal").modal('hide');
+                        swal({
+                            icon: 'success',
+                            title: 'Successfully '.concat(message, '!'),
+                            text: ''.concat(title, ' ').concat(message, ' Successfully.'),
+                            customClass: {
+                                confirmButton: 'btn btn-success'
+                            }
+                        });
+                        btnSubmit.prop('disabled', false);
+                        btnSubmit.html(oldBtnHtml);
+                    },
+                    error: function(err) {
+                        swal({
+                            title: err.responseText || 'Upload Failed.',
+                            text: title + ' Not Saved !',
+                            icon: 'error',
+                            customClass: {
+                                confirmButton: 'btn btn-success'
+                            }
+                        });
+                        btnSubmit.prop('disabled', false);
+                        btnSubmit.html(oldBtnHtml);
+                    }
+                });
             });
 
             //save record
@@ -441,6 +567,7 @@
                     $(this).remove();
                 });
             });
+
             $(document).on('click', '#remove-mhs', function() {
                 $('#mhs-selected option:selected').each(function() {
                     $('#mhs-available').append($(this).clone());

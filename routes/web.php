@@ -374,14 +374,6 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
 
     Route::get('/admin/akademik/nilai_susulan', [NilaiSusulanController::class, 'index']);
 
-    // Yudisium
-    Route::resource('/admin/akademik/yudisium/setting', SettingYudisiumController::class)->name('index','setting-yudisium');
-    Route::resource('/admin/akademik/yudisium/proses', ProsesYudisiumController::class)->name('index','proses-yudisium');
-    Route::resource('/admin/akademik/yudisium/setting-pisn', SettingPisnController::class)->name('index','setting-pisn-yudisium');
-    Route::post('/admin/akademik/yudisium/cetak-transkrip-nilai', [MahasiswaController::class, 'cetakTranskripNilai']);
-    Route::resource('/admin/akademik/yudisium/cetak', CetakYudisiumController::class)->name('index','cetak-yudisium');
-    Route::resource('/admin/akademik/yudisium/pengesahan', PengesahanYudisiumController::class)->name('index','pengesahan-yudisium');
-
     // Wisuda
     Route::resource('/admin/akademik/wisuda/setting', SettingWisudaController::class)->name('index','setting-wisuda');
     Route::resource('/admin/akademik/wisuda/daftar-pendaftar-wisuda', AdminDaftarPendaftarWisudaController::class)->name('index','daftar-pendaftar-wisuda');
@@ -389,11 +381,26 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
     Route::resource('/admin/akademik/wisuda/daftar-wisudawan', AdminDaftarWisudawanController::class)->name('index','daftar-wisudawan');
     Route::resource('/admin/akademik/wisuda/cetak', CetakWisudawanController::class)->name('index','cetak-wisudawan');
 
-    // Admin Akademik
+    // Admin akademik
     Route::prefix('/admin/akademik')->group(function () {
         
+        // Transkrip ijazah
         Route::prefix('/transkrip-ijazah')->group(function () {
+            // Print ijazah
             Route::resource('/print-ijazah', PrintIjazahController::class)->name('index','print-ijazah');
+        });
+        
+        // Yudisium
+        Route::prefix('/yudisium')->group(function () {
+            Route::resource('/setting', SettingYudisiumController::class)->name('index','setting-yudisium');
+            Route::prefix('/proses')->group(function () {
+                Route::resource('/', ProsesYudisiumController::class)->name('index','proses-yudisium');
+                Route::post('/upload-foto-yudisium', [ProsesYudisiumController::class, 'storeFotoYudisium']);
+            });
+            Route::resource('/setting-pisn', SettingPisnController::class)->name('index','setting-pisn-yudisium');
+            Route::post('/cetak-transkrip-nilai', [MahasiswaController::class, 'cetakTranskripNilai']);
+            Route::resource('/cetak', CetakYudisiumController::class)->name('index','cetak-yudisium');
+            Route::resource('/pengesahan', PengesahanYudisiumController::class)->name('index','pengesahan-yudisium');
         });
 
     });
