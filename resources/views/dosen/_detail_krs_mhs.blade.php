@@ -72,7 +72,6 @@
                                 <table class="table">
                                     <thead>
                                         <td>No.</td>
-                                        <td>ID MK</td>
                                         <td>Kelas</td>
                                         <td>Nama Matakuliah</td>
                                         <td>SKS</td>
@@ -89,7 +88,6 @@
                                             @endphp
                                             <tr>
                                                 <td>{{ $no++ }}</td>
-                                                <td>{{ $row_krs['id_mk'] }}</td>
                                                 <td>{{ $row_krs['kel'] }}</td>
                                                 <td>{{ $row_krs['nama_matkul'] }}</td>
                                                 <td>{{ ($row_krs['sks_teori'] + $row_krs['sks_praktek']) }}</td>
