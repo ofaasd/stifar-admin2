@@ -405,8 +405,23 @@
             <tr>
                 <td></td>
                 <td>
-                    <img src="{{ asset('assets/images/mahasiswa/ijazah/frame-3x4.png') }}" alt="Foto frame pas foto" style="position: relative; height:80px; width:auto; max-width:90px; object-fit:cover; border-radius:6px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-                </td> 
+                    @php
+                        function imageExists($path) {
+                            return file_exists(public_path($path));
+                        }
+                        $fotoYudisiumPath = 'assets/images/mahasiswa/foto-yudisium/' . ($data->fotoYudisium ?? '');
+                        $fotoMhsPath = 'assets/images/mahasiswa/' . ($data->fotoMhs ?? '');
+                        $framePath = 'assets/images/mahasiswa/ijazah/frame-3x4.png';
+                    @endphp
+
+                    @if(!empty($data->fotoYudisium) && imageExists($fotoYudisiumPath))
+                        <img src="{{ asset($fotoYudisiumPath) }}" alt="Foto Yudisium" style="position: relative; height:80px; width:auto; max-width:90px; object-fit:cover; border-radius:6px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                    @elseif(!empty($data->fotoMhs) && imageExists($fotoMhsPath))
+                        <img src="{{ asset($fotoMhsPath) }}" alt="Foto Mahasiswa" style="position: relative; height:80px; width:auto; max-width:90px; object-fit:cover; border-radius:6px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                    @else
+                        <img src="{{ asset($framePath) }}" alt="Foto frame pas foto" style="position: relative; height:80px; width:auto; max-width:90px; object-fit:cover; border-radius:6px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                    @endif
+                </td>
                 <td></td>
             </tr>
             {{-- /Bingkai --}}
