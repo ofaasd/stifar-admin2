@@ -156,10 +156,10 @@ class KrsController extends Controller
             return back();
         }else{
             $jumlah_kuota = Krs::where(['id_jadwal' => $id, 'id_tahun' => $data_jadwal['id_tahun']])->count();
-            if($jumlah_kuota >  $data_jadwal->kuota){
+            if($data_jadwal->kuota == 0){
                 $tabel = '
                     <div class="alert alert-danger dark" role="alert">
-                    <span class="mt-4"><b>maaf kuota matakuliah sudah penuh</b></span>
+                    <span class="mt-4"><b>Maaf kuota matakuliah sudah penuh</b></span>
                     </div>
                 ';
                 Session::put('krs', $tabel);

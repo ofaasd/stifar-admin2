@@ -721,7 +721,7 @@ class JadwalController extends Controller
         $taAktif = $request->tahun_ajaran;
         $waktu = Sesi::where('id',$sesi)->first();
 
-        $cekJadwal = Jadwal::join('waktus','waktus.id','=','jadwals.id_sesi')->where(['hari' => $hari, 'id_tahun' => $taAktif, 'id_ruang' => $ruang])->where('waktu_mulai','>=',$waktu->waktu_mulai)->where('waktu_mulai','<=',$waktu->waktu_selesai)->where('jadwals.id', '<>', $id)->first();
+        $cekJadwal = Jadwal::join('waktus','waktus.id','=','jadwals.id_sesi')->where(['hari' => $hari, 'id_tahun' => $taAktif, 'id_ruang' => $ruang])->where('waktu_mulai','>=',$waktu->waktu_mulai)->where('waktu_mulai','<',$waktu->waktu_selesai)->where('jadwals.id', '<>', $id)->first();
         // var_dump($taAktif);
         if($cekJadwal){
             return json_encode(['status' => 'bentrok', 'kode' => 203, 'kode_jadwal' => $cekJadwal['kode_jadwal']]);

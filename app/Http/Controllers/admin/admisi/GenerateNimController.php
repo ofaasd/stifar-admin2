@@ -191,7 +191,7 @@ class GenerateNimController extends Controller
                 'provinsi' => $row->provinsi,
                 'telp' => $row->telpon,
                 'hp' => $row->hp,
-                'status' => $row->provinsi,
+                'status' => 0,
                 'angkatan' => $row->angkatan,
                 'nopen' => $row->nopen,
                 'id_program_studi' => $row->pilihan1,

@@ -24,7 +24,7 @@
     <div class="container-fluid">
         <div class="row">
             @include('admin.akademik.jadwal.note')
-            @role('super-admin')   
+            @role('super-admin')
             <div class="col-md-12 project-list">
                 <div class="card">
                    <div class="row">
@@ -111,7 +111,7 @@
                                                             {{-- <td>{{ $jad['kode_ta'] }}</td>
                                                             <td>{{ $jad['status'] }}</td> --}}
                                                             <td>{{ $jad['tp'] }}</td>
-                                                            <td>{{$jumlah_input_krs[$jad->id]}} / {{ $jad['kuota'] }}</td>
+                                                            <td>{{$jumlah_input_krs[$jad->id]}} / {{ ((int)$jad['kuota'] +(int)$jumlah_input_krs[$jad->id])}}</td>
                                                             <td>
                                                                 <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                                                                     #
