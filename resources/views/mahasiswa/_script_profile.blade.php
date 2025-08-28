@@ -21,7 +21,7 @@
                     //window.location = "{{URL::to('/mahasiswa/')}}" + '/' + data.id + '/edit';
                     $(".update-btn").prop('disabled', false);
                     $(".update-btn").html('Simpan');
-                    window.location = "{{URL::to('/mahasiswa/')}}";
+                    window.location = "{{URL::to('mhs/profile')}}";
                 });
             },
             error: function error(err) {
