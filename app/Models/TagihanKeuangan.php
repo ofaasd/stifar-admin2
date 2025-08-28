@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class TagihanKeuangan
- * 
+ *
  * @property int $id
  * @property int $id_tahun
  * @property int $total
@@ -41,7 +41,10 @@ class TagihanKeuangan extends Model
 		'id_tahun',
 		'total',
 		'total_bayar',
+        'angkatan',
 		'status',
+		'is_pubish',
+		'id_prodi',
 		'nim'
 	];
 }

@@ -39,6 +39,7 @@ class TagihanController extends Controller
             $indexed[] = 'total';
             $indexed[] = 'total_bayar';
             $indexed[] = 'status';
+            $indexed[] = 'is_publish';
             $title = "tagihan";
             $title2 = "Tagihan";
             return view('admin.keuangan.tagihan.index', compact('title', 'angkatan','prodi','title2', 'jenis','jumlah_jenis','TagihanKeuangan', 'indexed','id','nama'));
@@ -59,6 +60,7 @@ class TagihanController extends Controller
              $columns[$last_id] = 'total';
              $columns[++$last_id] = 'total_bayar';
              $columns[++$last_id] = 'status';
+             $columns[++$last_id] = 'is_pubish';
 
             $totalData = Mahasiswa::where('id_program_studi',$id)->count();
             $totalFiltered = $totalData;
@@ -131,6 +133,7 @@ class TagihanController extends Controller
                     $nestedData['total_bayar'] = $list_tagihan[$row->id]->total_bayar ?? 0;
                     $nestedData['status'] = $list_tagihan[$row->id]->status ?? 0;
                     $nestedData['id_tagihan'] = $list_tagihan[$row->id]->id ?? 0;
+                    $nestedData['is_publish'] = $list_tagihan[$row->id]->is_publish ?? 0;
                     $data[] = $nestedData;
                 }
             }
@@ -184,14 +187,13 @@ class TagihanController extends Controller
                     }
                     $new_tagihan->total = $total;
                     $new_tagihan->save();
-                    return response()->json([
-                        'status' => 'success',
-                        'message' => 'Update Generate Tagihan Berhasil Dilakukan',
-                    ], 200);
+
                 }else{
                     $tagihan = TagihanKeuangan::create(
                         [
                             'id_tahun' => $ta->id,
+                            'angkatan' => $request->angkatan,
+                            'id_prodi' => $request->id_prodi,
                             'nim' => $row->nim,
                         ]
                     );
@@ -202,6 +204,7 @@ class TagihanController extends Controller
                             [
                                 'id_tagihan' => $tagihan->id,
                                 'id_jenis' => $request->id_jenis[$key],
+                                'angkatan' => $request->angkatan,
                                 'jumlah' => $value,
                             ]
                         );
@@ -210,12 +213,13 @@ class TagihanController extends Controller
                     $new_tagihan = TagihanKeuangan::find($tagihan->id);
                     $new_tagihan->total = $total;
                     $new_tagihan->save();
-                    return response()->json([
-                        'status' => 'success',
-                        'message' => 'Generate Tagihan Berhasil Dilakukan',
-                    ], 200);
+
                 }
             }
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Update Generate Tagihan Berhasil Dilakukan',
+            ], 200);
         }elseif(!empty($request->id)){
             $id = $request->id;
             $new_tagihan = TagihanKeuangan::find($id);
@@ -223,17 +227,19 @@ class TagihanController extends Controller
             $total = 0;
             $jenis = $request->jenis;
             foreach($jenis as $key=>$value){
-
-                $new_detail = DetailTagihanKeuangan::create(
-                    [
+                $data = [
                         'id_tagihan' => $id,
                         'id_jenis' => $request->id_jenis[$key],
+
                         'jumlah' => $value,
-                    ]
+                ];
+                $new_detail = DetailTagihanKeuangan::create(
+                    $data
                 );
                 $total += $value;
             }
             $new_tagihan->total = $total;
+            $new_tagihan->is_publish = $request->is_publish;
             $new_tagihan->total_bayar = $request->total_bayar;
             if($total == $request->total_bayar){
                 $new_tagihan->status = 1;
@@ -241,11 +247,16 @@ class TagihanController extends Controller
                 $new_tagihan->status = $request->status_bayar;
             }
             $new_tagihan->save();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Update Tagihan Berhasil Dilakukan',
+            ], 200);
         }else{
             if(!empty($jenis[0]) || !empty($jenis[1])){
                 $tagihan = TagihanKeuangan::create(
                         [
                             'id_tahun' => $ta->id,
+                            'angkatan' => $request->angkatan,
                             'nim' => $request->nim,
                         ]
                     );
@@ -257,6 +268,7 @@ class TagihanController extends Controller
                         [
                             'id_tagihan' => $tagihan->id,
                             'id_jenis' => $request->id_jenis[$key],
+                            'angkatan' => $request->angkatan,
                             'jumlah' => $value,
                         ]
                     );
@@ -309,6 +321,16 @@ class TagihanController extends Controller
         }
     }
 
+    public function publish(string $id)
+    {
+        $new_tagihan = TagihanKeuangan::where('id_prodi',$id)->update(['is_publish'=>1]);
+        return redirect()->back();
+    }
+    public function unpublish(string $id)
+    {
+        $new_tagihan = TagihanKeuangan::where('id_prodi',$id)->update(['is_publish'=>0]);
+        return redirect()->back();
+    }
     /**
      * Update the specified resource in storage.
      */

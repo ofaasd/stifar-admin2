@@ -29,7 +29,7 @@
                             <h6 class="text-white text-bold">Generate Keuangan Mahasiswa</h6>
                         </div>
 
-                        <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
+
 
                         <div class="card-body">
                             <small>Data Keuangan Mahasiswa TA {{$ta->kode_ta}} Belum tersedia / Terdapat tambahan mahasiswa baru. klik tombol di bawah untuk generate keuangan mahasiswa</small>
@@ -82,7 +82,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-
+                        <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
                         <div class="table-responsive">
                             <table class="display" id="basic-1">
                                 <thead>

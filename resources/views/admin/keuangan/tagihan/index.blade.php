@@ -41,6 +41,8 @@
                     <div class="card-header pb-0 card-no-border">
                         @if(empty($link))
                         <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal" id="add-record">+ Generate {{$title2}}</button>
+                        <a href="{{url("admin/keuangan/tagihan/publish/" . $id)}}" class="btn btn-success" >Publish Tagihan</a>
+                        <a href="{{url("admin/keuangan/tagihan/unpublish/" . $id)}}" class="btn btn-danger" >UnPublish Tagihan</a>
                         @endif
                         <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
                             <div class="modal-dialog" role="document">
@@ -96,6 +98,7 @@
                                         <th>Total</th>
                                         <th>Total Bayar</th>
                                         <th>Status</th>
+                                        <th>Publish</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -134,16 +137,23 @@
                                                 <input type="number" class="form-control" name="total_bayar" id="total_bayar" value="">
                                             </div>
                                             <div class="mb-3" id="field-nama">
-                                                <label for="total_bayar" class="form-label">Status</label>
-                                                <select name="status_bayar" id="status_bayar" class="form-control">
+                                                <label for="status" class="form-label">Status</label>
+                                                <select name="status_bayar" id="status" class="form-control">
                                                     <option value="0">Belum Lunas</option>
                                                     <option value="1">Lunas</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-3" id="field-nama">
+                                                <label for="is_publish" class="form-label">Publilsh Tagihan</label>
+                                                <select name="is_publish" id="is_publish" class="form-control">
+                                                    <option value="0">Draft</option>
+                                                    <option value="1">Publish</option>
                                                 </select>
                                             </div>
                                         </div>
                                         <div class="modal-footer">
                                             <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
-                                            <button class="btn btn-primary" id="btn-submit" type="submit">Generate</button>
+                                            <button class="btn btn-primary" id="btn-submit2" type="submit">Generate</button>
                                         </div>
                                     </form>
                                 </div>
@@ -202,6 +212,32 @@
                     targets: 1,
                     render: function render(data, type, full) {
                         return `<span>${full['fake_id']}</span>`;
+                    }
+                },
+                {
+                    searchable: false,
+                    orderable: false,
+                    targets: 9,
+                    render: function render(data, type, full) {
+                        if(full['status'] == 1){
+                            return `<i class="fa fa-check text-success" title="Sudah Bayar"></i>`;
+                        }else{
+                            return `<i class="fa fa-times text-danger" title="Belum Bayar"></i>`;
+                        }
+
+                    }
+                },
+                {
+                    searchable: false,
+                    orderable: false,
+                    targets: 10,
+                    render: function render(data, type, full) {
+                        if(full['is_publish'] == 1){
+                            return `<i class="fa fa-check text-success" title="Sudah Publish"></i>`;
+                        }else{
+                            return `<i class="fa fa-times text-danger" title="Belum Publish"></i>`;
+                        }
+
                     }
                 },
                 {
@@ -266,7 +302,7 @@
                 // });
                 data[1].forEach(item => {
                     // 'item' represents each object in the 'data' array
-                    $(`#id_jenis${item.id_jenis}`).val(`${item.id}`);
+                    $(`#id_jenis${item.id_jenis}`).val(`${item.id_jenis}`);
                     $(`#jenis_edit${item.id_jenis}`).val(`${item.jumlah}`);
                 });
             }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -322,7 +358,7 @@
             e.preventDefault();
             const myFormData = new FormData(this);
 
-            var btnSubmit = $('#btn-submit');
+            var btnSubmit = $('#btn-submit2');
             btnSubmit.prop('disabled', true);
 
             $.ajax({
