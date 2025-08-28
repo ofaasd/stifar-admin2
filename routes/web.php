@@ -523,7 +523,7 @@ Route::group(['middleware' => ['auth', 'role:mhs|super-admin']], function () {
     Route::post('mahasiswa/foto_update', [MahasiswaController::class, 'foto_update'])->name('foto_update');
     Route::post('mahasiswa/berkas_update', [MahasiswaController::class, 'berkas_update'])->name('berkas_update');
     Route::get('mhs/absensi', [mhsAbsensiController::class, 'index'])->name('index_absensi');
-    Route::post('mahasiswa', [MahasiswaController::class, 'store'])->name('input');
+    Route::post('mahasiswa_new', [MahasiswaController::class, 'store'])->name('input');
     Route::get('/mahasiswa/cetak-transkrip', [MahasiswaController::class, 'cetakTranskrip']);
 
 

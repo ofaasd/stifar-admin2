@@ -6,7 +6,7 @@
 
         const form = $(this).serialize();
         $.ajax({
-            url:'{{URL::to('mahasiswa')}}',
+            url:'{{URL::to('mahasiswa_new')}}',
             method:'POST',
             data:form,
             success:function(data){
