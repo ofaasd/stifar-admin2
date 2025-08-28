@@ -6,7 +6,7 @@
 
         const form = $(this).serialize();
         $.ajax({
-            url:'{{URL::to('mahasiswa')}}',
+            url:'{{URL::to('mahasiswa_new')}}',
             method:'POST',
             data:form,
             success:function(data){
@@ -21,7 +21,7 @@
                     //window.location = "{{URL::to('/mahasiswa/')}}" + '/' + data.id + '/edit';
                     $(".update-btn").prop('disabled', false);
                     $(".update-btn").html('Simpan');
-                    window.location = "{{URL::to('/mahasiswa/')}}";
+                    window.location = "{{URL::to('mhs/profile')}}";
                 });
             },
             error: function error(err) {
