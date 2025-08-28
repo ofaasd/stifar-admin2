@@ -6,7 +6,6 @@ use App\Http\Controllers\admin\MkKurikulum;
 use App\Http\Controllers\dosen\KrmController;
 use App\Http\Controllers\admin\RoleController;
 use App\Http\Controllers\admin\SesiController;
-use App\Http\Controllers\TempAlumniController;
 use App\Http\Controllers\admin\NilaiController;
 use App\Http\Controllers\admin\ProdiController;
 use App\Http\Controllers\admin\RuangController;
@@ -46,6 +45,7 @@ use App\Http\Controllers\mahasiswa\DaftarNilaiController;
 use App\Http\Controllers\admin\admisi\GelombangController;
 use App\Http\Controllers\admin\admisi\UserGuestController;
 use App\Http\Controllers\admin\akademik\AbsensiController;
+use App\Http\Controllers\admin\keuangan\TagihanController;
 use App\Http\Controllers\admin\master\AtributPTController;
 use App\Http\Controllers\admin\master\RenstraPTController;
 use App\Http\Controllers\mahasiswa\KuesionerMhsController;
@@ -70,6 +70,7 @@ use App\Http\Controllers\admin\kepegawaian\PegawaiController;
 use App\Http\Controllers\admin\master\AsetKategoriController;
 use App\Http\Controllers\admin\master\AtributProdiController;
 use App\Http\Controllers\admin\master\RenstraProdiController;
+use App\Http\Controllers\ArsipAdminDaftarWisudawanController;
 use App\Http\Controllers\mahasiswa\MahasiswaBerkasController;
 use App\Http\Controllers\admin\admisi\PeringkatPmdpController;
 use App\Http\Controllers\admin\kepegawaian\JamkerjaController;
@@ -81,6 +82,7 @@ use App\Http\Controllers\mahasiswa\skripsi\BimbinganController;
 use App\Http\Controllers\mahasiswa\skripsi\PengajuanController;
 use App\Http\Controllers\admin\akademik\SoalKuesionerController;
 use App\Http\Controllers\admin\berkas\BerkasMahasiswaController;
+use App\Http\Controllers\admin\keuangan\JenisKeuanganController;
 use App\Http\Controllers\admin\master\ProdiAkreditasiController;
 use App\Http\Controllers\admin\master\StrukturPegawaiController;
 use App\Http\Controllers\admin\admisi\BiayaPendaftaranController;
@@ -88,14 +90,12 @@ use App\Http\Controllers\admin\admisi\PmbNilaiTambahanController;
 use App\Http\Controllers\admin\akademik\NilaiKuesionerController;
 use App\Http\Controllers\admin\aset\AsetGedungBangunanController;
 use App\Http\Controllers\admin\keuangan\ProdiBukaTutupController;
-use App\Http\Controllers\admin\keuangan\JenisKeuanganController;
-use App\Http\Controllers\admin\keuangan\TagihanController;
-use App\Http\Controllers\admin\keuangan\SettingKeuanganController;
 use App\Http\Controllers\admin\skripsi\DosenPembimbingController;
 use App\Http\Controllers\mahasiswa\skripsi\PembimbingController1;
 use App\Http\Controllers\admin\akademik\KhsController as adminKhs;
 use App\Http\Controllers\admin\akademik\PengaturanUjianController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiKaryaController;
+use App\Http\Controllers\admin\keuangan\SettingKeuanganController;
 use App\Http\Controllers\admin\master\JabatanStrukturalController;
 use App\Http\Controllers\admin\skripsi\ManajemenSkripsiController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiBerkasController;
@@ -111,6 +111,7 @@ use App\Http\Controllers\admin\kepegawaian\PegawaiPekerjaanController;
 use App\Http\Controllers\mahasiswa\skripsi\BimbinganSkripsiController;
 use App\Http\Controllers\mahasiswa\skripsi\PengajuanSkripsiController;
 use App\Http\Controllers\admin\akademik\wisuda\SettingWisudaController;
+use App\Http\Controllers\admin\akademik\yudisium\SettingPisnController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiKompetensiController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiOrganisasiController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiPendidikanController;
@@ -126,10 +127,12 @@ use App\Http\Controllers\mahasiswa\skripsi\PengajuanPembimbingController;
 use App\Http\Controllers\admin\akademik\yudisium\ProsesYudisiumController;
 use App\Http\Controllers\admin\akademik\yudisium\SettingYudisiumController;
 use App\Http\Controllers\mahasiswa\AbsensiController as mhsAbsensiController;
+use App\Http\Controllers\admin\akademik\transkripIjazah\PrintIjazahController;
 use App\Http\Controllers\admin\akademik\wisuda\AdminDaftarWisudawanController;
 use App\Http\Controllers\admin\akademik\yudisium\PengesahanYudisiumController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiJabatanFungsionalController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiJabatanStrukturalController;
+use App\Http\Controllers\admin\akademik\yudisium\ArsipProsesYudisiumController;
 use App\Http\Controllers\mahasiswa\skripsi\SidangController as SidangMahasiswa;
 use App\Http\Controllers\admin\akademik\wisuda\AdminDaftarPendaftarWisudaController;
 use App\Http\Controllers\admin\admisi\StatistikController as AdmisiStatistikController;
@@ -255,7 +258,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
     Route::resource('admin/masterdata/prodi/akreditasi', ProdiAkreditasiController::class)->name('index', 'akreditasi_prodi');
     Route::resource('admin/masterdata/ruang', RuangController::class)->name('index', 'ruang');
     Route::resource('admin/masterdata/sekolah', AsalSekolahController::class)->name('index', 'sekolah');
-    Route::resource('admin/masterdata/struktur-pegawai', StrukturPegawaiController::class)->name('index', 'struktur-pegawai');
+    // Route::resource('admin/masterdata/struktur-pegawai', StrukturPegawaiController::class)->name('index', 'struktur-pegawai');
 
 
 
@@ -373,19 +376,40 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
 
     Route::get('/admin/akademik/nilai_susulan', [NilaiSusulanController::class, 'index']);
 
-    // Yudisium
-    Route::resource('/admin/akademik/yudisium/setting', SettingYudisiumController::class)->name('index','setting-yudisium');
-    Route::resource('/admin/akademik/yudisium/proses', ProsesYudisiumController::class)->name('index','proses-yudisium');
-    Route::post('/admin/akademik/yudisium/cetak-transkrip-nilai', [MahasiswaController::class, 'cetakTranskripNilai']);
-    Route::resource('/admin/akademik/yudisium/cetak', CetakYudisiumController::class)->name('index','cetak-yudisium');
-    Route::resource('/admin/akademik/yudisium/pengesahan', PengesahanYudisiumController::class)->name('index','pengesahan-yudisium');
+    // Admin akademik
+    Route::prefix('/admin/akademik')->group(function () {
+        
+        // Transkrip ijazah
+        Route::prefix('/transkrip-ijazah')->group(function () {
+            // Print ijazah
+            Route::resource('/print-ijazah', PrintIjazahController::class)->name('index','print-ijazah');
+        });
+        
+        // Yudisium
+        Route::prefix('/yudisium')->group(function () {
+            Route::resource('/setting', SettingYudisiumController::class)->name('index','setting-yudisium');
+            Route::resource('/proses', ProsesYudisiumController::class)->name('index','proses-yudisium');
+            Route::post('/proses/upload-foto-yudisium', [ProsesYudisiumController::class, 'storeFotoYudisium']);
+            Route::resource('/proses-arsip', ArsipProsesYudisiumController::class)->name('index','proses-yudisium');
 
-    // Wisuda
-    Route::resource('/admin/akademik/wisuda/setting', SettingWisudaController::class)->name('index','setting-wisuda');
-    Route::resource('/admin/akademik/wisuda/daftar-pendaftar-wisuda', AdminDaftarPendaftarWisudaController::class)->name('index','daftar-pendaftar-wisuda');
-    Route::put('/admin/akademik/wisuda/daftar-pendaftar-wisuda/acc/{id}', [AdminDaftarPendaftarWisudaController::class, 'acc'])->name('index','acc-wisudawan');
-    Route::resource('/admin/akademik/wisuda/daftar-wisudawan', AdminDaftarWisudawanController::class)->name('index','daftar-wisudawan');
-    Route::resource('/admin/akademik/wisuda/cetak', CetakWisudawanController::class)->name('index','cetak-wisudawan');
+            Route::resource('/setting-pisn', SettingPisnController::class)->name('index','setting-pisn-yudisium');
+            Route::post('/cetak-transkrip-nilai', [MahasiswaController::class, 'cetakTranskripNilai']);
+            Route::resource('/cetak', CetakYudisiumController::class)->name('index','cetak-yudisium');
+            Route::resource('/pengesahan', PengesahanYudisiumController::class)->name('index','pengesahan-yudisium');
+        });
+
+        // Wisuda
+        Route::prefix('/wisuda')->group(function (){
+            Route::resource('/setting', SettingWisudaController::class)->name('index','setting-wisuda');
+            Route::resource('/daftar-pendaftar-wisuda', AdminDaftarPendaftarWisudaController::class)->name('index','daftar-pendaftar-wisuda');
+            Route::put('/daftar-pendaftar-wisuda/acc/{id}', [AdminDaftarPendaftarWisudaController::class, 'acc'])->name('index','acc-wisudawan');
+            Route::resource('/daftar-wisudawan', AdminDaftarWisudawanController::class)->name('index','daftar-wisudawan');
+
+            Route::resource('/daftar-wisudawan-arsip', ArsipAdminDaftarWisudawanController::class)->name('index','daftar-wisudawan-arsip');
+            Route::resource('/cetak', CetakWisudawanController::class)->name('index','cetak-wisudawan');
+        });
+
+    });
 
     // route KRS
     Route::get('/admin/masterdata/krs', [KrsController::class, 'index']);
@@ -510,8 +534,8 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
 
     Route::resource('admin/nilai_lama', NilaiLamaController::class)->name('index','nilai_lama');
 
-    Route::resource('/admin/alumni', TempAlumniController::class)->name('index','alumni');
-    Route::get('/alumni/get_mhs', [TempAlumniController::class, 'get_mhs'])->name('get_alumni_mhs');
+    
+    Route::get('/alumni/get_alumni', [AlumniController::class, 'get_alumni'])->name('get_alumni');
     Route::post('/admin/alumni/cetak-ijazah', [AlumniController::class, 'cetakIjazah']);
 });
 

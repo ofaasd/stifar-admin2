@@ -17,7 +17,7 @@ class SettingYudisiumController extends Controller
     public function index(Request $request)
     {
         if (empty($request->input('length'))) {
-            $title = "Setting Yudisium";
+            $title = "Setting Yudisium.";
             $title2 = "setting";
             $data = GelombangYudisium::all();
             $indexed = $this->indexed;
@@ -69,10 +69,15 @@ class SettingYudisiumController extends Controller
                 $ids = $start;
 
                 foreach ($gelombang as $row) {
+                    $teksNama = $row->nama;
+                    if ($row->tanggal_pengesahan) {
+                        $teksNama .= ' <i class="bi bi-check-circle-fill text-success"></i>';
+                    }
+
                     $nestedData['id'] = $row->id;
                     $nestedData['fake_id'] = ++$ids;
                     $nestedData['periode'] = $row->periode;
-                    $nestedData['nama'] = $row->nama;
+                    $nestedData['nama'] = $teksNama;
                     $data[] = $nestedData;
                 }
             }
@@ -138,12 +143,12 @@ class SettingYudisiumController extends Controller
                     ]
                 );
 
-            if ($save) {
-                return response()->json('Created');
-            } else {
-                return response()->json('Failed Create Alumni');
+                if ($save) {
+                    return response()->json('Created');
+                } else {
+                    return response()->json('Failed Create Yudisium');
+                }
             }
-        }
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 500);
         }

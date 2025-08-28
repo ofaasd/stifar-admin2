@@ -4,10 +4,13 @@ namespace App\Http\Controllers\admin\akademik\wisuda;
 
 use App\Models\Alumni;
 use App\Models\Mahasiswa;
+use App\Models\TbYudisium;
 use Illuminate\Http\Request;
 use App\Models\DaftarWisudawan;
 use App\Http\Controllers\Controller;
 use App\Models\MahasiswaBerkasPendukung;
+use App\Models\TbDaftarWisudawanArchive;
+use App\Models\TbYudisiumArchive;
 
 class AdminDaftarWisudawanController extends Controller
 {
@@ -48,21 +51,22 @@ class AdminDaftarWisudawanController extends Controller
                         'tb_daftar_wisudawan.id',
                         'mahasiswa.nim',
                         'mahasiswa.nama',
-                        'mahasiswa.foto_mhs AS fotoMhs',
+                        'mahasiswa.foto_yudisium AS fotoMhs',
                         'tb_daftar_wisudawan.status AS statusDaftar',
                         'tb_gelombang_wisuda.nama AS gelombangWisuda',
                         'tb_gelombang_wisuda.waktu_pelaksanaan AS pelaksanaanWisuda',
                         'gelombang_yudisium.nama AS gelombangYudisium',
                         'tb_pembayaran_wisuda.status AS statusPembayaran',
-                        'tb_pembayaran_wisuda.bukti AS buktiPembayaran'
+                        'tb_pembayaran_wisuda.bukti AS buktiPembayaran',
+                        'tb_alumni.nim AS nimAlumni'
                     ])
                     ->where('tb_daftar_wisudawan.status', '=', 1)
                     ->leftJoin('mahasiswa', 'tb_daftar_wisudawan.nim', '=', 'mahasiswa.nim')
                     ->leftJoin('tb_yudisium', 'mahasiswa.nim', '=', 'tb_yudisium.nim')
                     ->leftJoin('gelombang_yudisium', 'tb_yudisium.id_gelombang_yudisium', '=', 'gelombang_yudisium.id')
                     ->leftJoin('tb_gelombang_wisuda', 'tb_daftar_wisudawan.id_gelombang_wisuda', '=', 'tb_gelombang_wisuda.id')
-                    ->leftJoin('tb_pembayaran_wisuda', 'tb_daftar_wisudawan.nim', '=', 'tb_pembayaran_wisuda.nim');
-
+                    ->leftJoin('tb_pembayaran_wisuda', 'tb_daftar_wisudawan.nim', '=', 'tb_pembayaran_wisuda.nim')
+                    ->leftJoin('tb_alumni', 'tb_alumni.nim', '=', 'mahasiswa.nim');
 
             if (empty($request->input('search.value'))) {
                     $pendaftar = $query->offset($start)
@@ -147,9 +151,14 @@ class AdminDaftarWisudawanController extends Controller
                         $teksWisuda .= ' <i class="bi bi-check-circle-fill text-success"></i>';
                     }
 
+                    $teksNim = $row->nim;
+                    if ($row->nimAlumni) {
+                        $teksNim .= ' <i class="bi bi-check-circle-fill text-success"></i>';
+                    }
+
                     $nestedData['id'] = $row->id;
                     $nestedData['fake_id'] = ++$ids;
-                    $nestedData['nim'] = $row->nim ;
+                    $nestedData['nim'] = $teksNim;
                     $nestedData['nama'] = $row->nama ;
                     $nestedData['photo'] = $row->fotoMhs ;
                     $nestedData['wisuda'] = $teksWisuda;
@@ -204,7 +213,10 @@ class AdminDaftarWisudawanController extends Controller
                     'mahasiswa.jk',
                     'mahasiswa.hp',
                     'mahasiswa.email',
+                    'mahasiswa.no_pisn AS noPisn',
+                    'mahasiswa.foto_yudisium AS foto',
                     'gelombang_yudisium.tanggal_pengesahan AS tahunLulus',
+                    'program_studi.id AS idProgramStudi',
                     'program_studi.jenjang',
                     'program_studi.nama_prodi AS prodi',
                     'pengajuan_judul_skripsi.judul AS judulSkripsi',
@@ -221,22 +233,39 @@ class AdminDaftarWisudawanController extends Controller
                 Alumni::create([    
                     'nim' => $mhs->nim,
                     'nama' => $mhs->nama,
+                    'foto' => $mhs->foto,
                     'jenjang' => $mhs->jenjang,
                     'angkatan' => $mhs->angkatan,
                     'tahun_lulus' => !empty($mhs->tahunLulus) ? date('Y', strtotime($mhs->tahunLulus)) : null,
                     'jenis_kelamin' => $mhs->jk,
                     'no_hp' => $mhs->hp,
+                    'no_pisn' => $mhs->noPisn,
                     'email_pribadi' => $mhs->email,
                     'prodi' => $mhs->prodi,
+                    'id_program_studi' => $mhs->idProgramStudi,
                     'judul_skripsi' => $mhs->judulSkripsi
                 ]);
+                
+                $yudisiumAktif = TbYudisium::where('nim', $mhs->nim)->first();
+                TbYudisiumArchive::create([
+                    'nim' => $yudisiumAktif->nim,
+                    'id_gelombang_yudisium' => $yudisiumAktif->id_gelombang_yudisium,
+                ]);
+                $yudisiumAktif->delete();
 
-                DaftarWisudawan::where('nim', $mhs->nim)->delete();
-                $mhs->delete();
+                $daftarWisudawanAktif = DaftarWisudawan::where('nim', $mhs->nim)->first();
+                TbDaftarWisudawanArchive::create([
+                    'nim' => $daftarWisudawanAktif->nim,
+                    'id_gelombang_wisuda' => $daftarWisudawanAktif->id_gelombang_wisuda,
+                    'status' => $daftarWisudawanAktif->status,
+                ]);
+                $daftarWisudawanAktif->delete();
+
+                Mahasiswa::where('nim', $mhs->nim)->delete();
             }
-            return response()->json(['message' => 'Data alumni berhasil ditambahkan', 'code' => 200]);
+            return response()->json(['message' => 'Berhasil dipindahkan ke Alumni', 'code' => 200]);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Gagal menambahkan data alumni', 'error' => $e->getMessage()], 500);
+            return response()->json(['message' => 'Gagal memindahkan data', 'error' => $e->getMessage()], 500);
         }
     }
 

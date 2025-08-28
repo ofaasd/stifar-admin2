@@ -19,7 +19,11 @@ class DaftarWisudaController extends Controller
 {
     public function index()
     {
-        $gelombangWisuda = TbGelombangWisuda::whereDate('mulai_pendaftaran', '<=', now()->toDateString())
+        $gelombangWisuda = TbGelombangWisuda::select([
+                'tb_gelombang_wisuda.*',
+                \DB::raw('(SELECT COUNT(*) FROM tb_daftar_wisudawan WHERE tb_daftar_wisudawan.id_gelombang_wisuda = tb_gelombang_wisuda.id AND tb_daftar_wisudawan.status = 1) as jml_peserta'),
+            ])
+            ->whereDate('mulai_pendaftaran', '<=', now()->toDateString())
             ->whereDate('selesai_pendaftaran', '>=', now()->toDateString())
             ->get();
 
@@ -28,7 +32,7 @@ class DaftarWisudaController extends Controller
         $mhs = Mahasiswa::select([
             'mahasiswa.nim',
             'mahasiswa.nama',
-            'mahasiswa.foto_mhs AS fotoMhs',
+            'mahasiswa.foto_yudisium AS fotoMhs',
             'mahasiswa.tempat_lahir AS tempatLahir',
             'mahasiswa.tgl_lahir AS tanggalLahir',
             'mahasiswa.no_ktp AS noKtp',
@@ -266,7 +270,7 @@ class DaftarWisudaController extends Controller
         try {
             // Validasi input
             $request->validate([
-                'bukti_bayar' => 'required|file|mimes:jpg,jpeg|max:5120', // Maksimal 5MB
+                'bukti_bayar' => 'required|file|mimes:jpg,jpeg,png|max:5120', // Maksimal 5MB
                 'nim' => 'required|exists:mahasiswa,nim',
                 'atas_nama' => 'required|string|max:255',
                 'bank' => 'required|string|max:255',

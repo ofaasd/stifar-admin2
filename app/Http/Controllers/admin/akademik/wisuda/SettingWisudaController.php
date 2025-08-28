@@ -41,7 +41,6 @@ class SettingWisudaController extends Controller
             $order = $columns[$request->input('order.0.column')];
             $dir = $request->input('order.0.dir');
 
-
             if (empty($request->input('search.value'))) {
                 $gelombang = TbGelombangWisuda::offset($start)
                     ->limit($limit)
@@ -75,10 +74,15 @@ class SettingWisudaController extends Controller
                 $ids = $start;
 
                 foreach ($gelombang as $row) {
+                    $teksNamaWisuda = $row->nama;
+                    if ($row->waktu_pelaksanaan && strtotime($row->waktu_pelaksanaan) < time()) {
+                        $teksNamaWisuda .= ' <i class="bi bi-check-circle-fill text-success"></i>';
+                    }
+
                     $nestedData['id'] = $row->id;
                     $nestedData['fake_id'] = ++$ids;
                     $nestedData['periode'] = $row->periode;
-                    $nestedData['nama'] = $row->nama;
+                    $nestedData['nama'] = $teksNamaWisuda;
                     $nestedData['tempat'] = $row->tempat;
                     $nestedData['waktu_pelaksanaan'] = \Carbon\Carbon::parse($row->waktu_pelaksanaan)->translatedFormat('d F Y H:i');
                     $nestedData['tanggal_pendaftaran'] = \Carbon\Carbon::parse($row->mulai_pendaftaran)->translatedFormat('d F Y') . ' - ' . \Carbon\Carbon::parse($row->selesai_pendaftaran)->translatedFormat('d F Y');
@@ -130,7 +134,6 @@ class SettingWisudaController extends Controller
                 'mulai_pendaftaran' => 'required|date',
                 'selesai_pendaftaran' => 'required|date|after_or_equal:mulai_pendaftaran',
             ]);
-
 
             if ($id) {
                 $save = TbGelombangWisuda::updateOrCreate(

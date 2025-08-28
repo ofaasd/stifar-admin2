@@ -1,16 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\admin\akademik\wisuda;
+namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\DaftarWisudawan;
-use App\Models\TbGelombangWisuda;
-use App\Http\Controllers\Controller;
-use App\Models\Mahasiswa;
 use App\Models\MahasiswaBerkasPendukung;
-use App\Models\TbPembayaranWisuda;
+use App\Models\TbDaftarWisudawanArchive;
 
-class AdminDaftarPendaftarWisudaController extends Controller
+class ArsipAdminDaftarWisudawanController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,15 +15,12 @@ class AdminDaftarPendaftarWisudaController extends Controller
     public function index(Request $request)
     {
         if (empty($request->input('length'))) {
-            $title = "Pendaftar Wisuda";
-            $title2 = "daftar-pendaftar-wisuda"; 
+            $title = "Daftar Wisudawan Arsip";
+            $title2 = "daftar-wisudawan-arsip";
 
-            $mhs = Mahasiswa::where('is_yudisium', 1)
-                ->whereNotIn('nim', DaftarWisudawan::pluck('nim'))
-                ->get();
-            $gelombang = TbGelombangWisuda::all();
             $indexed = $this->indexed;
-            return view('admin.akademik.wisuda.daftar-pendaftar-wisuda.index', compact('title', 'title2','indexed', 'gelombang', 'mhs'));
+            $isArsip = true;
+            return view('admin.akademik.wisuda.daftar-wisudawan.index', compact('title', 'title2','indexed', 'isArsip'));
         }else{
             $columns = [
                 1 => 'id',
@@ -40,7 +33,7 @@ class AdminDaftarPendaftarWisudaController extends Controller
 
             $search = [];
 
-            $totalData = DaftarWisudawan::count();
+            $totalData = TbDaftarWisudawanArchive::count();
 
             $totalFiltered = $totalData;
 
@@ -49,24 +42,24 @@ class AdminDaftarPendaftarWisudaController extends Controller
             $order = $columns[$request->input('order.0.column')];
             $dir = $request->input('order.0.dir');
 
-            $query = DaftarWisudawan::select([
-                        'tb_daftar_wisudawan.id',
-                        'mahasiswa.nim',
-                        'mahasiswa.nama',
-                        'mahasiswa.foto_yudisium AS fotoMhs',
-                        'tb_daftar_wisudawan.status AS statusDaftar',
+            $query = TbDaftarWisudawanArchive::select([
+                        'tb_daftar_wisudawan_archive.id',
+                        'tb_alumni.nim',
+                        'tb_alumni.nama',
+                        'tb_alumni.foto AS fotoMhs',
+                        'tb_daftar_wisudawan_archive.status AS statusDaftar',
                         'tb_gelombang_wisuda.nama AS gelombangWisuda',
+                        'tb_gelombang_wisuda.waktu_pelaksanaan AS pelaksanaanWisuda',
                         'gelombang_yudisium.nama AS gelombangYudisium',
                         'tb_pembayaran_wisuda.status AS statusPembayaran',
-                        'tb_pembayaran_wisuda.bukti AS buktiPembayaran'
+                        'tb_pembayaran_wisuda.bukti AS buktiPembayaran',
                     ])
-                    ->where('tb_daftar_wisudawan.status', '=', 0)
-                    ->leftJoin('mahasiswa', 'tb_daftar_wisudawan.nim', '=', 'mahasiswa.nim')
-                    ->leftJoin('tb_yudisium', 'mahasiswa.nim', '=', 'tb_yudisium.nim')
-                    ->leftJoin('gelombang_yudisium', 'tb_yudisium.id_gelombang_yudisium', '=', 'gelombang_yudisium.id')
-                    ->leftJoin('tb_gelombang_wisuda', 'tb_daftar_wisudawan.id_gelombang_wisuda', '=', 'tb_gelombang_wisuda.id')
-                    ->leftJoin('tb_pembayaran_wisuda', 'tb_daftar_wisudawan.nim', '=', 'tb_pembayaran_wisuda.nim');
-
+                    ->where('tb_daftar_wisudawan_archive.status', '=', 1)
+                    ->leftJoin('tb_alumni', 'tb_daftar_wisudawan_archive.nim', '=', 'tb_alumni.nim')
+                    ->leftJoin('tb_yudisium_archive', 'tb_alumni.nim', '=', 'tb_yudisium_archive.nim')
+                    ->leftJoin('gelombang_yudisium', 'tb_yudisium_archive.id_gelombang_yudisium', '=', 'gelombang_yudisium.id')
+                    ->leftJoin('tb_gelombang_wisuda', 'tb_daftar_wisudawan_archive.id_gelombang_wisuda', '=', 'tb_gelombang_wisuda.id')
+                    ->leftJoin('tb_pembayaran_wisuda', 'tb_daftar_wisudawan_archive.nim', '=', 'tb_pembayaran_wisuda.nim');
 
             if (empty($request->input('search.value'))) {
                     $pendaftar = $query->offset($start)
@@ -95,8 +88,8 @@ class AdminDaftarPendaftarWisudaController extends Controller
             } else {
                 $search = $request->input('search.value');
 
-                $pendaftar = $query->where('mahasiswa.nim', 'LIKE', "%{$search}%")
-                    ->orWhere('mahasiswa.nama', 'LIKE', "%{$search}%")
+                $pendaftar = $query->where('tb_alumni.nim', 'LIKE', "%{$search}%")
+                    ->orWhere('tb_alumni.nama', 'LIKE', "%{$search}%")
                     ->orWhere('tb_gelombang_wisuda.nama', 'LIKE', "%{$search}%")
                     ->orWhere('gelombang_yudisium.nama', 'LIKE', "%{$search}%")
                     ->offset($start)
@@ -123,8 +116,8 @@ class AdminDaftarPendaftarWisudaController extends Controller
                 });
 
 
-                $totalFiltered = $query->where('mahasiswa.nim', 'LIKE', "%{$search}%")
-                    ->orWhere('mahasiswa.nama', 'LIKE', "%{$search}%")
+                $totalFiltered = $query->where('tb_alumni.nim', 'LIKE', "%{$search}%")
+                    ->orWhere('tb_alumni.nama', 'LIKE', "%{$search}%")
                     ->orWhere('tb_gelombang_wisuda.nama', 'LIKE', "%{$search}%")
                     ->orWhere('gelombang_yudisium.nama', 'LIKE', "%{$search}%")
                     ->count();
@@ -140,23 +133,28 @@ class AdminDaftarPendaftarWisudaController extends Controller
                     
                     $rowStatusPembayaran = '';
                     $tujuan_upload = 'assets/upload/mahasiswa/wisuda/bukti-bayar';
-                    if ($row->statusPembayaran == 'Belum diverifikasi' && $row->buktiPembayaran) {
-                        $rowStatusPembayaran = '<span class="badge bg-warning">' . $row->statusPembayaran .
-                            ' <a href="' . asset($tujuan_upload . '/' . $row->buktiPembayaran) . '" target="_blank" class="ms-2">Lihat Bukti</a></span>';
-                    }else if($row->statusPembayaran == 'Sudah diverifikasi'){
+                    if($row->statusPembayaran == 'Sudah diverifikasi'){
                         $rowStatusPembayaran = '<span class="badge bg-success">' . $row->statusPembayaran . '</span>';
                     } else {
-                        $rowStatusPembayaran = '<span class="badge ' .
-                            ($row->statusPembayaran == 'Belum upload bukti' ? 'bg-secondary' : ($row->statusPembayaran == 'Belum diverifikasi' ? 'bg-warning text-dark' : 'bg-success')) . '">' .
-                            $row->statusPembayaran . '</span>';
+                        $rowStatusPembayaran = '<span class="badge bg-success">' . $row->statusPembayaran . '</span>';
                     }
-                    
+
+                    $teksWisuda = $row->gelombangWisuda;
+                    if ($row->pelaksanaanWisuda && strtotime($row->pelaksanaanWisuda) < time()) {
+                        $teksWisuda .= ' <i class="bi bi-check-circle-fill text-success"></i>';
+                    }
+
+                    $teksNim = $row->nim;
+                    if ($row->nimAlumni) {
+                        $teksNim .= ' <i class="bi bi-check-circle-fill text-success"></i>';
+                    }
+
                     $nestedData['id'] = $row->id;
                     $nestedData['fake_id'] = ++$ids;
-                    $nestedData['nim'] = $row->nim ;
+                    $nestedData['nim'] = $teksNim;
                     $nestedData['nama'] = $row->nama ;
                     $nestedData['photo'] = $row->fotoMhs ;
-                    $nestedData['wisuda'] = $row->gelombangWisuda;
+                    $nestedData['wisuda'] = $teksWisuda;
                     $nestedData['yudisium'] = $row->gelombangYudisium ?? '-';
                     $nestedData['kk'] = $row->kk;
                     $nestedData['ktp'] = $row->ktp;
@@ -199,45 +197,7 @@ class AdminDaftarPendaftarWisudaController extends Controller
      */
     public function store(Request $request)
     {
-        $id = $request->id;
-
-        try {
-            $request->validate([
-                'gelombang_id' => 'required',
-                'nim' => 'required',
-            ]);
-
-            if ($id) {
-                $save = DaftarWisudawan::updateOrCreate(
-                    ['id' => $id],
-                    [
-                        'id_gelombang_wisuda' => $request->gelombang_id,
-                        'nim' => $request->nim,
-                        'status' => 0
-                    ]
-                );
-
-                // user updated
-                return response()->json('Updated', 200);
-            } else {
-                $save = DaftarWisudawan::updateOrCreate(
-                    ['id' => $id],
-                    [
-                        'id_gelombang_wisuda' => $request->gelombang_id,
-                        'nim' => $request->nim,
-                        'status' => 0
-                    ]
-                );
-
-            if ($save) {
-                return response()->json('Created');
-            } else {
-                return response()->json('Failed Create Daftar Wisudawan');
-            }
-        }
-        } catch (\Exception $e) {
-            return response()->json($e->getMessage(), 500);
-        }
+        //
     }
 
     /**
@@ -264,51 +224,11 @@ class AdminDaftarPendaftarWisudaController extends Controller
         //
     }
 
-    public function acc(Request $request, string $id)
-    {
-        try {
-            $data = DaftarWisudawan::where('id', $id)->first();
-            $pembayaran = TbPembayaranWisuda::where('nim', $data->nim)->first();
-            activity()
-            ->performedOn($data)
-            ->causedBy(auth()->user())
-            ->withProperties([
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'data_wisudawan'  => $data
-                ])
-                ->log('acc-wisudawan');
-                
-            $pembayaran->update(['status' => 1]);
-            $data->update(['status' => 1]);
-            return response()->json(['message' => 'Accepted successfully'], 200);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to accept', 'error' => $e->getMessage()], 500);
-        }
-    }
-
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        try {
-            $data = DaftarWisudawan::where('id', $id)->first();
-
-            activity()
-            ->performedOn($data)
-            ->causedBy(auth()->user())
-            ->withProperties([
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-                'data_wisudawan'  => $data
-                ])
-            ->log('delete-wisudawan');
-
-            $data->delete();
-            return response()->json(['message' => 'Rejected successfully'], 200);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to reject', 'error' => $e->getMessage()], 500);
-        }
+        //
     }
 }

@@ -7,6 +7,7 @@ use App\Models\TbGelombangWisuda;
 use App\Http\Controllers\Controller;
 use App\Models\DaftarWisudawan;
 use App\Models\master_nilai;
+use App\Models\TbDaftarWisudawanArchive;
 use Illuminate\Support\Facades\Crypt;
 
 class CetakWisudawanController extends Controller
@@ -71,7 +72,6 @@ class CetakWisudawanController extends Controller
                         'tanggal_pemberkasan',
                         'tanggal_gladi',
                         'tarif_wisuda',
-                        \DB::raw('(SELECT COUNT(*) FROM tb_daftar_wisudawan WHERE tb_daftar_wisudawan.id_gelombang_wisuda = tb_gelombang_wisuda.id AND tb_daftar_wisudawan.status = 1) as jml_peserta'),
             ]);
 
 
@@ -83,6 +83,17 @@ class CetakWisudawanController extends Controller
                     ->get()
                     ->map(function ($item) {
                         $item->idEnkripsi = Crypt::encryptString($item->id . "stifar");
+                        if ($item->waktu_pelaksanaan && strtotime($item->waktu_pelaksanaan) < time()) {
+                            $item->jml_peserta = \DB::table('tb_daftar_wisudawan_archive')
+                                ->where('id_gelombang_wisuda', $item->id)
+                                ->where('status', 1)
+                                ->count();
+                        } else {
+                            $item->jml_peserta = \DB::table('tb_daftar_wisudawan')
+                                ->where('id_gelombang_wisuda', $item->id)
+                                ->where('status', 1)
+                                ->count();
+                        }
                         return $item;
                     });
             } else {
@@ -124,10 +135,16 @@ class CetakWisudawanController extends Controller
                 $ids = $start;
 
                 foreach ($gelombang as $row) {
+
+                    $teksWisuda = $row->nama;
+                    if ($row->waktu_pelaksanaan && strtotime($row->waktu_pelaksanaan) < time()) {
+                        $teksWisuda .= ' <i class="bi bi-check-circle-fill text-success"></i>';
+                    }
+                    
                     $nestedData['id'] = $row->id;
                     $nestedData['fake_id'] = ++$ids;
                     $nestedData['periode'] = $row->periode;
-                    $nestedData['nama'] = $row->nama;
+                    $nestedData['nama'] = $teksWisuda;
                     $nestedData['tempat'] = $row->tempat;
                     $nestedData['waktu_pelaksanaan'] = \Carbon\Carbon::parse($row->waktu_pelaksanaan)->translatedFormat('d F Y H:i');
                     $nestedData['tanggal_pendaftaran'] = \Carbon\Carbon::parse($row->mulai_pendaftaran)->translatedFormat('d F Y') . ' - ' . \Carbon\Carbon::parse($row->selesai_pendaftaran)->translatedFormat('d F Y');
@@ -186,20 +203,40 @@ class CetakWisudawanController extends Controller
             return response()->json(['message' => 'Gelombang not found.'], 404);
         }
 
-        $data = DaftarWisudawan::where('tb_daftar_wisudawan.id_gelombang_wisuda', $gelombang->id)
-        ->leftJoin('mahasiswa', 'tb_daftar_wisudawan.nim', '=', 'mahasiswa.nim')
-        ->leftJoin('tb_yudisium', 'tb_yudisium.nim', '=', 'mahasiswa.nim')
-        ->leftJoin('gelombang_yudisium', 'gelombang_yudisium.id', '=', 'tb_yudisium.id_gelombang_yudisium')
-        ->join('program_studi','program_studi.id','=','mahasiswa.id_program_studi')
-        ->where('tb_daftar_wisudawan.status', 1)
-        ->select([
-            'mahasiswa.nama',
-            'mahasiswa.nim',
-            'mahasiswa.foto_mhs',
-            'gelombang_yudisium.nama AS gelombangYudisium',
-            'program_studi.nama_prodi AS prodi'
-            ])
-        ->get();
+        if ($gelombang->waktu_pelaksanaan && strtotime($gelombang->waktu_pelaksanaan) < time()) {
+            $data = TbDaftarWisudawanArchive::where('tb_daftar_wisudawan_archive.id_gelombang_wisuda', $gelombang->id)
+            ->leftJoin('tb_alumni', 'tb_daftar_wisudawan_archive.nim', '=', 'tb_alumni.nim')
+            ->leftJoin('tb_yudisium_archive', 'tb_yudisium_archive.nim', '=', 'tb_alumni.nim')
+            ->leftJoin('gelombang_yudisium', 'gelombang_yudisium.id', '=', 'tb_yudisium_archive.id_gelombang_yudisium')
+            ->join('program_studi','program_studi.id','=','tb_alumni.id_program_studi')
+            ->where('tb_daftar_wisudawan_archive.status', 1)
+            ->select([
+                'tb_alumni.nama',
+                'tb_alumni.nim',
+                'gelombang_yudisium.nama AS gelombangYudisium',
+                'program_studi.nama_prodi AS prodi'
+                ])
+            ->get();
+        }else
+        {
+            $data = DaftarWisudawan::where('tb_daftar_wisudawan.id_gelombang_wisuda', $gelombang->id)
+            ->leftJoin('mahasiswa', 'tb_daftar_wisudawan.nim', '=', 'mahasiswa.nim')
+            ->leftJoin('tb_yudisium', 'tb_yudisium.nim', '=', 'mahasiswa.nim')
+            ->leftJoin('gelombang_yudisium', 'gelombang_yudisium.id', '=', 'tb_yudisium.id_gelombang_yudisium')
+            ->join('program_studi','program_studi.id','=','mahasiswa.id_program_studi')
+            ->where('tb_daftar_wisudawan.status', 1)
+            ->select([
+                'mahasiswa.nama',
+                'mahasiswa.nim',
+                'gelombang_yudisium.nama AS gelombangYudisium',
+                'program_studi.nama_prodi AS prodi'
+                ])
+            ->get();
+        }
+
+        if ($data->isEmpty()) {
+            return response()->json(['message' => 'Tidak ada Mahasiswa tidak ditemukan'], 404);
+        }
 
         foreach ($data as $item) {   
             $getNilai = master_nilai::select(

@@ -35,23 +35,21 @@
                                                 <div class="row mb-2">
                                                         <div class="profile-title card-header mb-3">
                                                                 <div class="media align-items-center">
-                                                                        <div class="photo-profile position-relative d-inline-block">
-                                                                                <img class="img-70 rounded-circle" alt="Foto Mahasiswa"
-                                                                                        src="{{ !empty($mhs->fotoMhs) ? asset('assets/images/mahasiswa/' . $mhs->fotoMhs) : asset('assets/images/user/7.jpg') }}">
+                                                                        <div class="photo-profile position-relative d-inline-block" style="width:90px; height:120px;">
+                                                                                <img 
+                                                                                        class="rounded" 
+                                                                                        alt="Foto Mahasiswa"
+                                                                                        src="{{ !empty($mhs->fotoMhs) ? asset('assets/images/mahasiswa/foto-yudisium/' . $mhs->fotoMhs) : asset('assets/images/user/7.jpg') }}"
+                                                                                        style="width:90px; height:120px; object-fit:cover;"
+                                                                                >
                                                                         </div>
                                                                         <div class="media-body ms-3">
                                                                                 <h5 class="mb-1">{{ $mhs->nama }}</h5>
                                                                                 <h5 class="mb-1">{{ $mhs->nim }}</h5>
                                                                         </div>
-                                                                        @if (isset($registered) && $registered)
-                                                                                {{-- <div class="ms-auto">
-                                                                                        <span class="badge bg-primary">Pendaftaran Wisuda</span>
-                                                                                </div> --}}
-                                                                        @else
-                                                                                <div class="ms-auto">
-                                                                                        <span class="badge bg-primary">Gelombang Yudisium: {{ $mhs->namaGelombangYudisium ?? '-' }}</span>
-                                                                                </div>
-                                                                        @endif
+                                                                        <div class="ms-auto">
+                                                                                <span class="px-3 py-1 rounded bg-primary">Yudisium: {{ $mhs->namaGelombangYudisium ?? '-' }}</span>
+                                                                        </div>
                                                                 </div>
                                                         </div>
                                                 </div>
@@ -70,7 +68,7 @@
                                                                         Mohon tunggu informasi selanjutnya dari panitia.<br>
                                                                 </div>
                                                         @else
-                                                                <div class="alert alert-{{ $registered->status == 1 ? 'success' : 'secondary' }}" role="alert">
+                                                                <div class="alert {{ $registered->buktiPembayaran ? 'alert-secondary' : '' }}" role="alert">
                                                                         Selamat 🎉 <strong>{{ $mhs->nama }}</strong> Anda telah berhasil mengajukan pendaftaran wisuda.<br>
                                                                         <ul class="mb-2">
                                                                                 <li><strong>Nama Gelombang:</strong> {{ $registered->nama ?? '-' }}</li>
@@ -118,7 +116,7 @@
                                                                                                 <label for="buktiBayar" class="col-sm-3 col-form-label">Bukti Bayar</label>
                                                                                                 <div class="col-sm-9">
                                                                                                         <input type="file" class="form-control" id="buktiBayar" name="bukti_bayar" accept=".jpg,.jpeg,.png,.pdf" required>
-                                                                                                        <small class="text-muted">File jpg/jpeg, maksimal 5MB</small>
+                                                                                                        <small class="text-muted">File jpg/jpeg, png, maksimal 5MB</small>
                                                                                                 </div>
                                                                                         </div>
                                                                                         <div class="text-end">
@@ -138,17 +136,42 @@
                                                                         <div class="row mb-2">
                                                                                 <div class="col">
                                                                                         <h5 class="mb-2">Pilih Gelombang Wisuda</h5>
-                                                                                        <select class="form-select" name="gelombang_id" id="gelombang_id" {{ count($gelombangWisuda) == 0 ? 'disabled' : '' }}>
+                                                                                        <select class="form-select mb-2" name="gelombang_id" id="gelombang_id" {{ count($gelombangWisuda) == 0 ? 'disabled' : '' }}>
                                                                                                 @if(count($gelombangWisuda) > 0)
+                                                                                                        <option value="">-- Pilih Gelombang Wisuda --</option>
                                                                                                         @foreach($gelombangWisuda as $row)
-                                                                                                                <option value="{{ $row->id }}"> 
-                                                                                                                        Wisuda: {{ $row->nama }} | Tempat: {{ $row->tempat }} | Waktu Pelaksanaan: {{ \Carbon\Carbon::parse($row->waktu_pelaksanaan)->translatedFormat('d F Y H:i'); }} | Tanggal Daftar: {{ \Carbon\Carbon::parse($row->mulai_pendaftaran)->translatedFormat('d F Y') . ' - ' . \Carbon\Carbon::parse($row->selesai_pendaftaran)->translatedFormat('d F Y') }} | Pemberkasan: {{ $row->tanggal_pemberkasan ? \Carbon\Carbon::parse($row->tanggal_pemberkasan)->translatedFormat('d F Y') : '-' }} | Gladi: {{ $row->tanggal_gladi ? \Carbon\Carbon::parse($row->tanggal_gladi)->translatedFormat('d F Y') : '-' }} | Biaya: {{ 'Rp ' . number_format($row->tarif_wisuda ?? 0, 0, ',', '.') }}
+                                                                                                                <option value="{{ $row->id }}"
+                                                                                                                        data-tempat="{{ $row->tempat }}"
+                                                                                                                        data-peserta="{{ $row->jml_peserta }}"
+                                                                                                                        data-waktu="{{ \Carbon\Carbon::parse($row->waktu_pelaksanaan)->translatedFormat('d F Y H:i') }}"
+                                                                                                                        data-daftar="{{ \Carbon\Carbon::parse($row->mulai_pendaftaran)->translatedFormat('d F Y') . ' - ' . \Carbon\Carbon::parse($row->selesai_pendaftaran)->translatedFormat('d F Y') }}"
+                                                                                                                        data-pemberkasan="{{ $row->tanggal_pemberkasan ? \Carbon\Carbon::parse($row->tanggal_pemberkasan)->translatedFormat('d F Y') : '-' }}"
+                                                                                                                        data-gladi="{{ $row->tanggal_gladi ? \Carbon\Carbon::parse($row->tanggal_gladi)->translatedFormat('d F Y') : '-' }}"
+                                                                                                                        data-biaya="{{ 'Rp ' . number_format($row->tarif_wisuda ?? 0, 0, ',', '.') }}"
+                                                                                                                >
+                                                                                                                        {{ $row->nama }}
                                                                                                                 </option>
                                                                                                         @endforeach
                                                                                                 @else
                                                                                                         <option value="">Tidak ada gelombang wisuda tersedia</option>
                                                                                                 @endif
                                                                                         </select>
+                                                                                        <div id="gelombang-detail" style="display:none;">
+                                                                                                <div class="card border shadow-sm bg-info">
+                                                                                                        <div class="card-body">
+                                                                                                                <h5 class="card-title" id="detail-nama"></h5>
+                                                                                                                <ul class="list-unstyled mb-0">
+                                                                                                                        <li><strong>Tempat:</strong> <span id="detail-tempat"></span></li>
+                                                                                                                        <li><strong>Waktu Pelaksanaan:</strong> <span id="detail-waktu"></span></li>
+                                                                                                                        <li><strong>Tanggal Daftar:</strong> <span id="detail-daftar"></span></li>
+                                                                                                                        <li><strong>Pemberkasan:</strong> <span id="detail-pemberkasan"></span></li>
+                                                                                                                        <li><strong>Gladi:</strong> <span id="detail-gladi"></span></li>
+                                                                                                                        <li><strong>Biaya:</strong> <span id="detail-biaya"></span></li>
+                                                                                                                        <li><strong>Jumlah Peserta:</strong> <span id="detail-peserta"></span></li>
+                                                                                                                </ul>
+                                                                                                        </div>
+                                                                                                </div>
+                                                                                        </div>
                                                                                 </div>
                                                                         </div>
                                                                         <div class="row mb-2">
@@ -197,8 +220,9 @@
                                                                                 {{-- KTP --}}
                                                                                 <div class="mb-2">
                                                                                         <div class="col-sm-12" id="input-ktp">
+                                                                                                <label for="ktp" class="mb-0">KTP</label>
                                                                                                 <div class="input-group">
-                                                                                                        <input type="file" name="ktp" class="form-control" aria-describedby="inputGroupPrepend">
+                                                                                                        <input type="file" id="ktp" name="ktp" class="form-control" aria-describedby="inputGroupPrepend">
                                                                                                 </div>
                                                                                         </div>
                                                                                         <hr>
@@ -206,8 +230,9 @@
                                                                                 {{-- KK --}}
                                                                                 <div class="mb-2">
                                                                                         <div class="col-sm-12" id="input-kk">
+                                                                                                <label for="kk" class="mb-0">KK</label>
                                                                                                 <div class="input-group">
-                                                                                                        <input type="file" name="kk" class="form-control" aria-describedby="inputGroupPrepend">
+                                                                                                        <input type="file" id="kk" name="kk" class="form-control" aria-describedby="inputGroupPrepend">
                                                                                                 </div>
                                                                                         </div>
                                                                                         <hr>
@@ -215,8 +240,9 @@
                                                                                 {{-- Akte --}}
                                                                                 <div class="mb-2">
                                                                                         <div class="col-sm-12" id="input-akte">
+                                                                                                <label for="akte" class="mb-0">Akte</label>
                                                                                                 <div class="input-group">
-                                                                                                        <input type="file" name="akte" class="form-control" aria-describedby="inputGroupPrepend">
+                                                                                                        <input type="file" id="akte" name="akte" class="form-control" aria-describedby="inputGroupPrepend">
                                                                                                 </div>
                                                                                         </div>
                                                                                         <hr>
@@ -314,6 +340,23 @@
                                         });
                                 }
                         });
+                });
+
+                $('#gelombang_id').on('change', function() {
+                        var selected = $(this).find('option:selected');
+                        if(selected.val()) {
+                                $('#gelombang-detail').show();
+                                $('#detail-nama').text(selected.text());
+                                $('#detail-tempat').text(selected.data('tempat'));
+                                $('#detail-waktu').text(selected.data('waktu'));
+                                $('#detail-daftar').text(selected.data('daftar'));
+                                $('#detail-pemberkasan').text(selected.data('pemberkasan'));
+                                $('#detail-gladi').text(selected.data('gladi'));
+                                $('#detail-biaya').text(selected.data('biaya'));
+                                $('#detail-peserta').text(selected.data('peserta'));
+                        } else {
+                                $('#gelombang-detail').hide();
+                        }
                 });
 
                 $('#form-bukti-bayar').on('submit', function(e) {

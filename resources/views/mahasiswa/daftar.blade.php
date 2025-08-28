@@ -64,7 +64,7 @@
 
     <script>
         $(function() {
-            var isAlumni = {{ isset($isAlumni) && $isAlumni ? 'true' : 'false' }};
+            var isAlumni = {{ isset($isAlumni) && $isAlumni ? true : false }};
             if (isAlumni) {
                 $(".nav-link").click(function(){
                     const id = $(this).data('id');
@@ -105,12 +105,15 @@
             $(".tbl-mhs").html(`<div class="loader-box">
                             <div class="loader-2"></div>
                         </div>`);
-            const url = "{{URL::to('/alumni/get_mhs')}}";
+            const url = "{{URL::to('/alumni/get_alumni')}}";
             $.ajax({
                 url: url,
                 method: "GET",
                 data: { id: id },
                 success: function(data) {
+                    console.log('====================================');
+                    console.log(data);
+                    console.log('====================================');
                     $(".tbl-mhs").html(data);
                 },
                 error: function(xhr, status, error) {

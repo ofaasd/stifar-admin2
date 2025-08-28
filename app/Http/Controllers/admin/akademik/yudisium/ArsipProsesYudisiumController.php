@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers\admin\akademik\yudisium;
 
+use Carbon\Carbon;
 use App\Models\Mahasiswa;
 use App\Models\TbYudisium;
-use App\Models\master_nilai;
 use Illuminate\Http\Request;
 use App\Models\GelombangYudisium;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Crypt;
+use App\Models\master_nilai;
+use App\Models\TbYudisiumArchive;
 
-class ProsesYudisiumController extends Controller
+class ArsipProsesYudisiumController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -31,9 +33,9 @@ class ProsesYudisiumController extends Controller
     public function index(Request $request)
     {
         if (empty($request->input('length'))) {
-            $title = "Proses Yudisium";
-            $title2 = "proses"; 
-            $data = TbYudisium::all();
+            $title = "Proses Yudisium Arsip";
+            $title2 = "proses-arsip"; 
+            $data = TbYudisiumArchive::all();
             $indexed = $this->indexed;
             $nimMatkulSkripsi = master_nilai::join('jadwals as a', 'master_nilai.id_jadwal', '=', 'a.id')
                     ->join('mata_kuliahs as b', 'a.id_mk', '=', 'b.id')
@@ -41,7 +43,7 @@ class ProsesYudisiumController extends Controller
                     ->whereNotNull('master_nilai.nakhir')
                     ->pluck('nim');
 
-            $nimSudahTerdaftarYudisium = TbYudisium::whereIn('nim', $nimMatkulSkripsi)->pluck('nim');
+            $nimSudahTerdaftarYudisium = TbYudisiumArchive::whereIn('nim', $nimMatkulSkripsi)->pluck('nim');
 
             $mhs = Mahasiswa::select([  
                     'mahasiswa.id',
@@ -89,8 +91,8 @@ class ProsesYudisiumController extends Controller
             }
 
             $gelombang = GelombangYudisium::all();
-
-            return view('admin.akademik.yudisium.proses.index', compact('title', 'title2', 'data','indexed', 'mhs', 'gelombang'));
+            $isArsip = true;
+            return view('admin.akademik.yudisium.proses.index', compact('title', 'title2', 'data','indexed', 'mhs', 'gelombang', 'isArsip'));
         }else{
             $columns = [
                 1 => 'id',
@@ -102,7 +104,7 @@ class ProsesYudisiumController extends Controller
 
             $search = [];
 
-            $totalData = TbYudisium::count();
+            $totalData = TbYudisiumArchive::count();
 
             $totalFiltered = $totalData;
 
@@ -111,16 +113,16 @@ class ProsesYudisiumController extends Controller
             $order = $columns[$request->input('order.0.column')];
             $dir = $request->input('order.0.dir');
 
-            $query = TbYudisium::select([
-                        'tb_yudisium.*',
+            $query = TbYudisiumArchive::select([
+                        'tb_yudisium_archive.*',
                         'gelombang_yudisium.periode as gelombang',
                         'gelombang_yudisium.nama as namaGelombang',
                         'gelombang_yudisium.tanggal_pengesahan as tanggalPengesahan',
-                        'mahasiswa.nama AS namaMahasiswa',
-                        'mahasiswa.foto_yudisium AS fotoYudisium'
+                        'tb_alumni.nama AS namaMahasiswa',
+                        'tb_alumni.foto AS fotoYudisium'
                     ])
-                    ->leftJoin('mahasiswa', 'tb_yudisium.nim', '=', 'mahasiswa.nim')
-                    ->leftJoin('gelombang_yudisium', 'tb_yudisium.id_gelombang_yudisium', '=', 'gelombang_yudisium.id');
+                    ->leftJoin('tb_alumni', 'tb_yudisium_archive.nim', '=', 'tb_alumni.nim')
+                    ->leftJoin('gelombang_yudisium', 'tb_yudisium_archive.id_gelombang_yudisium', '=', 'gelombang_yudisium.id');
 
             if (empty($request->input('search.value'))) {
                 $proses = $query
@@ -172,7 +174,7 @@ class ProsesYudisiumController extends Controller
                 $search = $request->input('search.value');
 
                 $proses = $query
-                    ->where('tb_yudisium.nim', 'LIKE', "%{$search}%")
+                    ->where('tb_yudisium_archive.nim', 'LIKE', "%{$search}%")
                     ->orWhere('gelombang_yudisium.periode', 'LIKE', "%{$search}%")
                     ->offset($start)
                     ->limit($limit)
@@ -219,7 +221,7 @@ class ProsesYudisiumController extends Controller
                 }
 
                 $totalFiltered = $query
-                    ->where('tb_yudisium.nim', 'LIKE', "%{$search}%")
+                    ->where('tb_yudisium_archive.nim', 'LIKE', "%{$search}%")
                     ->orWhere('gelombang_yudisium.periode', 'LIKE', "%{$search}%")
                     ->count();
             }
@@ -246,7 +248,7 @@ class ProsesYudisiumController extends Controller
                     $nestedData['nimEnkripsi'] = $row->nimEnkripsi;
                     $nestedData['namaMahasiswa'] = $row->namaMahasiswa;
                     $nestedData['fotoYudisium'] = $row->fotoYudisium;
-                    $nestedData['tanggalPengesahan'] =  null;
+                    $nestedData['tanggalPengesahan'] = $row->tanggalPengesahan ? \Carbon\Carbon::parse($row->tanggalPengesahan)->translatedFormat('d F Y') : null;
                     $data[] = $nestedData;
                 }
             }
@@ -289,7 +291,7 @@ class ProsesYudisiumController extends Controller
             ]);
 
             if ($id) {
-                $save = TbYudisium::updateOrCreate(
+                $save = TbYudisiumArchive::updateOrCreate(
                     ['id' => $id],
                     [
                         'id_gelombang_yudisium' => $request->gelombang,
@@ -302,7 +304,7 @@ class ProsesYudisiumController extends Controller
             } else {
                 $save = true;
                 foreach ($request->listMahasiswa as $nim) {
-                    $created = TbYudisium::updateOrCreate(
+                    $created = TbYudisiumArchive::updateOrCreate(
                         ['nim' => $nim, 'id_gelombang_yudisium' => $request->gelombang],
                         [
                             'id_gelombang_yudisium' => $request->gelombang,
@@ -345,61 +347,10 @@ class ProsesYudisiumController extends Controller
     {
         try {
             $where = ['id' => $id];
-            $data = TbYudisium::where($where)->first();
+            $data = TbYudisiumArchive::where($where)->first();
             return response()->json($data, 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Failed to fetch data', 'error' => $e->getMessage()], 500);
-        }
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        try {
-            $data = TbYudisium::where('id', $id)->first();
-            Mahasiswa::where('nim', $data->nim)->update(['is_yudisium' => 0]);
-            $data->delete();
-            return response()->json(['message' => 'Deleted successfully'], 200);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to delete', 'error' => $e->getMessage()], 500);
-        }
-    }
-
-    /**
-     * Upload Foto Yudisium
-     */
-    public function storeFotoYudisium(Request $request)
-    {
-        $request->validate([
-            'nim' => 'required',
-            'foto_yudisium' => 'required|image|mimes:jpeg,jpg|max:5024',
-        ]);
-
-        try {
-            $mhs = Mahasiswa::where('nim', $request->nim)->first();
-            $file = $request->file('foto_yudisium');
-            $filename = $mhs->nim . '-' . time() . '.' . $file->getClientOriginalExtension();
-            $mhs->update([
-                'foto_yudisium' => $filename,
-            ]);
-            
-            $file->move(public_path('assets/images/mahasiswa/foto-yudisium'), $filename);
-
-            // Save the filename to the database or perform any other necessary actions
-
-            return response()->json(['Berhasil mengupload foto Yudisium'], 200);
-        } catch (\Exception $e) {
-            return response()->json(['Gagal mengupload foto Yudisium', 'error' => $e->getMessage()], 500);
         }
     }
 }

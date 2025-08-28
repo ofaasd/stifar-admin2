@@ -17,41 +17,53 @@
 @section('breadcrumb-items')
     <li class="breadcrumb-item">Akademik</li>
     <li class="breadcrumb-item">Yudisium</li>
-    <li class="breadcrumb-item active">{{ $title2 }}</li>
+    <li class="breadcrumb-item active">{{ $title }}</li>
 @endsection
 
 @section('content')
-    {{-- Modal Sahkan --}}
-    <div class="modal fade" id="pengesahanModal" tabindex="-1" aria-labelledby="cetak-ijazah" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <form method="POST" id="formPengesahanYudisium" action="{{ url('/admin/akademik/yudisium/pengesahan') }}">
-                @csrf
-                <input type="hidden" name="idEnkripsi" id="id-pengesahan">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="cetak-ijazah">Pengesahan Yudisium | <span id="nama-pengesahan"></span></h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="tanggal_pengesahan" class="form-label">Disahkan Pada Tanggal</label>
-                        <input type="date" class="form-control" id="tanggal_pengesahan" name="tanggalPengesahan" required>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary btn-sm" id="btn-submit">Simpan</button>
-                </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <div class="container-fluid">
         <div class="row">
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
                 <div class="card">
+                    <div class="card-header pb-0 card-no-border">
+                        <button class="btn btn-primary edit-record" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal">+ {{$title}}</button>
+                        <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content">
+                                    <form action="javascript:void(0)" id="formAdd">
+                                        @csrf
+                                        <input type="hidden" name="nim" id="id">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="ModalLabel">Tambah {{$title}}</h5>
+                                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body d-flex flex-wrap gap-3">
+                                            <div class="mb-3 flex-fill">
+                                                <label for="nim" class="form-label">Mahasiswa</label>
+                                                <select name="nim" id="nim" class="form-control" {{ count($data) == 0 ? 'disabled' : '' }}>
+                                                    <option value="">-- Pilih Mahasiswa --</option>
+                                                    @forelse($data as $mhs)
+                                                        <option value="{{ $mhs->nim }}">{{ $mhs->nim . ' | ' . $mhs->nama }}</option>
+                                                    @empty
+                                                        <option value="">Data mahasiswa tidak tersedia</option>
+                                                    @endforelse
+                                                </select>
+                                            </div>
+                                            <div class="mb-3 flex-fill">
+                                                <label for="no_pisn" class="form-label">No PISN</label>
+                                                <input type="text" name="noPisn" id="no_pisn" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                                            <button class="btn btn-primary" type="submit" id="btn-submit">Simpan</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="card-body">
                         <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
                         <div class="table-responsive">
@@ -60,9 +72,8 @@
                                     <tr>
                                         <th></th>
                                         <th>ID</th>
-                                        <th>Nama</th>
-                                        <th>Periode</th>
-                                        <th>Jumlah Peserta</th>
+                                        <th>NIM</th>
+                                        <th>No PISN</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -131,25 +142,16 @@
                     searchable: false,
                     orderable: false,
                     render: function render(data, type, full, meta) {
-                        if(full['tanggalPengesahan'] == null)
-                        {
-                            return (
-                                '<div class="d-inline-block text-nowrap">' +
-                                    '<a target="_blank" href="/admin/akademik/yudisium/cetak/' + full['idEnkripsi'] + '" class="btn btn-sm btn-icon text-primary" title="Cetak">' +
-                                        '<i class="fa fa-print"></i></a> | ' +
-                                        '<button class="btn btn-sm btn-icon btn-pengesahan text-info" title="Pengesahan Yudisium" data-nama="'+ full['nama'] + '" data-id="' + full['idEnkripsi'] +
-                                        '" data-bs-toggle="modal" data-original-title="Pengesahan Yudisium" data-bs-target="#pengesahanModal"><i class="fa fa-check"></i></button>' +
-                                        '</div>'
-                                    );
-                        }else{
-                            return (
-                                '<div class="d-inline-block text-nowrap">' +
-                                    '<a target="_blank" href="/admin/akademik/yudisium/cetak/' + full['idEnkripsi'] + '" class="btn btn-sm btn-icon text-primary" title="Cetak">' +
-                                        '<i class="fa fa-print"></i></a> | ' +
-                                        '<span class="badge bg-success">Disahkan pada ' + full['tanggalPengesahan'] + '</span>' +
-                                    '</div>'
-                            );
-                        }
+                        return (
+                        '<div class="d-inline-block text-nowrap">' +
+                        '<button class="btn btn-sm btn-icon edit-record text-primary" data-id="'
+                            .concat(full['nim_value'], '" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal"')
+                            .concat(title, '"><i class="fa fa-pencil"></i></button>') +
+                        '<button class="btn btn-sm btn-icon delete-record text-primary" data-id="'.concat(
+                            full['nim_value'],
+                            '"><i class="fa fa-trash"></i></button>'
+                        )
+                        );
                     }
                     }
                 ],
@@ -190,15 +192,6 @@
                     });
                 });
             });
-
-            //Pengesahan 
-            $(document).on('click', '.btn-pengesahan', function () {
-                const id = $(this).data('id');
-                const nama = $(this).data('nama');
-                $('#id-pengesahan').val(id);
-                $('#nama-pengesahan').text(nama);
-            });
-
             //save record
             $('#formAdd').on('submit', function(e) {
                 e.preventDefault();
