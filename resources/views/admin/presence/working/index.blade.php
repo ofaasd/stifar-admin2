@@ -26,7 +26,7 @@
         <div class="row">
         <div class="card col-md-12">
             <div class="card-header">
-                {{-- <a href="javascript:void(0)" class="btn btn-primary btn-create" data-toggle="modal" data-target="#modal-add">+ Add Working Hour</a> --}}
+                <a href="javascript:void(0)" class="btn btn-primary btn-create" data-toggle="modal" data-target="#modal-add">+ Add Working Hour</a>
                 <div class="modal fade" id="modal-add" aria-hidden="true" style="display: none;">
                     <form action="javascript:void(0)" method="post" id="formWorking">
                         <div class="modal-dialog">
