@@ -64,7 +64,7 @@
 
     <script>
         $(function() {
-            var isAlumni = {{ isset($isAlumni) && $isAlumni ? true : false }};
+            var isAlumni = {{ isset($isAlumni) && $isAlumni ? "true" : "false" }};
             if (isAlumni) {
                 $(".nav-link").click(function(){
                     const id = $(this).data('id');
