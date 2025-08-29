@@ -193,7 +193,7 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-4 mb-3">
-                        <a href="" class="card h-100 pengajuan-option">
+                        <a href="{{ route('mhs.pengajuan.pembimbing.index') }}" class="card h-100 pengajuan-option">
                             <div class="card-body text-center">
                                 <i class="bi bi-person-plus fs-1 text-primary mb-3"></i>
                                 <h6>Dosen Pembimbing</h6>
@@ -203,12 +203,14 @@
                     </div>
                     <div class="col-md-4 mb-3">
                         <div class="card h-100 pengajuan-option" onclick="selectPengajuan('judul')">
+                        <a href="{{ route('mhs.pengajuan.judul.index') }}" class="card h-100 pengajuan-option">
                             <div class="card-body text-center">
                                 <i class="bi bi-file-text fs-1 text-success mb-3"></i>
                                 <h6>Judul Skripsi</h6>
                                 <small class="text-muted">Ajukan judul penelitian</small>
                             </div>
-                        </div>
+                        </a>
+                    </div>
                     </div>
                     <div class="col-md-4 mb-3">
                         <div class="card h-100 pengajuan-option" onclick="selectPengajuan('sidang')">
