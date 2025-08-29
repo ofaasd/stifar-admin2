@@ -141,6 +141,8 @@
                                         <span class="badge bg-success">Disetujui</span>
                                     @elseif ($dataJudul->status == 2 )
                                         <span class="badge bg-warning">Revisi</span>
+                                    @elseif ($dataJudul->status == 3 )
+                                        <span class="badge bg-danger">Ditolak</span>
                                     @else
                                         <span class="badge bg-secondary">Tidak Diketahui</span>
                                     @endif

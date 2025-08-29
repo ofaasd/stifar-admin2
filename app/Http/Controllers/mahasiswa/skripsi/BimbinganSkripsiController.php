@@ -74,7 +74,6 @@ class BimbinganSkripsiController extends Controller
             'metode' => 'required|string',
             'filePendukung.*' => 'nullable|file|max:2048|mimes:pdf,docx,doc,zip,rar,jpg,png',
         ]);
-    
         $idMaster = SkripsiHelper::getIdMasterSkripsi();
     
         try {

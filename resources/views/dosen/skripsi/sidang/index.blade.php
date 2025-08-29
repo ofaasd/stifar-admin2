@@ -174,7 +174,7 @@
 <!-- Modal Tambah -->
 <div class="modal fade" id="modalTambahGelombang" tabindex="-1">
     <div class="modal-dialog">
-        <form action="{{ route('sidang.store') }}" method="POST" class="modal-content">
+        <form class="modal-content">
             @csrf
             <div class="modal-header">
                 <h5 class="modal-title">Tambah Gelombang</h5>
@@ -199,75 +199,79 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form>
+                <form action="{{ route('sidang.store') }}" method="post">
+                    @csrf
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="gelombangSidang" class="form-label">Gelombang</label>
-                            <select class="form-select" id="gelombangSidang">
-                                <option selected>Gelombang 1</option>
-                                <option>Gelombang 2</option>
-                                <option>Gelombang 3</option>
+                            <select class="form-select" id="gelombangSidang" name="gelombang_id">
+                                <option value="1" selected>Gelombang 1</option>
+                                <option value="2">Gelombang 2</option>
+                                <option value="3">Gelombang 3</option>
                             </select>
                         </div>
                         <div class="col-md-6">
                             <label for="tanggalSidang" class="form-label">Tanggal Sidang</label>
-                            <input type="date" class="form-control" id="tanggalSidang" required>
+                            <input type="date" class="form-control" id="tanggalSidang" name="tanggal" required>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="waktuMulai" class="form-label">Waktu Mulai</label>
-                            <input type="time" class="form-control" id="waktuMulai" required>
+                            <input type="time" class="form-control" id="waktuMulai" name="waktu_mulai" required>
                         </div>
                         <div class="col-md-6">
                             <label for="waktuSelesai" class="form-label">Waktu Selesai</label>
-                            <input type="time" class="form-control" id="waktuSelesai" required>
+                            <input type="time" class="form-control" id="waktuSelesai" name="waktu_selesai" required>
                         </div>
                     </div>
                     <div class="mb-3">
                         <label for="ruanganSidang" class="form-label">Ruangan</label>
-                        <select class="form-select" id="ruanganSidang">
-                            <option selected>R.301</option>
-                            <option>R.302</option>
-                            <option>R.303</option>
-                            <option>R.304</option>
-                            <option>R.305</option>
+                        <select class="form-select" id="ruanganSidang" name="ruangan">
+                            <option value="R.301" selected>R.301</option>
+                            <option value="R.302">R.302</option>
+                            <option value="R.303">R.303</option>
+                            <option value="R.304">R.304</option>
+                            <option value="R.305">R.305</option>
                         </select>
                     </div>
                     <div class="mb-3">
                         <label for="mahasiswaSidang" class="form-label">Mahasiswa</label>
-                        <select class="form-select" id="mahasiswaSidang">
-                            <option selected>Pilih Mahasiswa</option>
-                            <option>Rina Wati (1903456) - Analisis Performa Algoritma Sorting</option>
-                            <option>Joko Susilo (1904567) - Implementasi IoT untuk Smart Home</option>
-                            <option>Anita Sari (1905678) - Pengembangan Game Edukasi untuk Anak</option>
+                        <select class="form-select" id="mahasiswaSidang" name="skripsi_id">
+                            <option value="" selected>Pilih Mahasiswa</option>
+                            <option value="1">Rina Wati (1903456) - Analisis Performa Algoritma Sorting</option>
+                            <option value="2">Joko Susilo (1904567) - Implementasi IoT untuk Smart Home</option>
+                            <option value="3">Anita Sari (1905678) - Pengembangan Game Edukasi untuk Anak</option>
                         </select>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="pembimbingSidang" class="form-label">Pembimbing</label>
-                            <select class="form-select" id="pembimbingSidang">
-                                <option selected>Dr. Budi Santoso, M.Kom</option>
-                                <option>Dr. Siti Aminah, M.T</option>
-                                <option>Dr. Ahmad Fauzi, M.Sc</option>
-                                <option>Dewi Lestari, M.Kom</option>
+                            <select class="form-select" id="pembimbingSidang" name="pembimbing">
+                                <option value="1" selected>Dr. Budi Santoso, M.Kom</option>
+                                <option value="2">Dr. Siti Aminah, M.T</option>
+                                <option value="3">Dr. Ahmad Fauzi, M.Sc</option>
+                                <option value="4">Dewi Lestari, M.Kom</option>
                             </select>
                         </div>
                         <div class="col-md-6">
                             <label for="pengujiSidang" class="form-label">Penguji</label>
-                            <select class="form-select" id="pengujiSidang" multiple>
-                                <option>Dr. Budi Santoso, M.Kom</option>
-                                <option>Dr. Siti Aminah, M.T</option>
-                                <option selected>Dr. Ahmad Fauzi, M.Sc</option>
-                                <option selected>Dewi Lestari, M.Kom</option>
+                            <select class="form-select" id="pengujiSidang" name="penguji[]" multiple>
+                                <option value="1">Dr. Budi Santoso, M.Kom</option>
+                                <option value="2">Dr. Siti Aminah, M.T</option>
+                                <option value="3" selected>Dr. Ahmad Fauzi, M.Sc</option>
+                                <option value="4" selected>Dewi Lestari, M.Kom</option>
                             </select>
                         </div>
                     </div>
+                    <input type="hidden" name="status" value="2">
+                
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-primary">Simpan</button>
+                
             </div>
         </div>
     </div>

@@ -12,7 +12,7 @@
     @endsection
 
 @section('breadcrumb-title')
-    <h3>{{ 'Daftar Dosen Pembimbing' }}</h3>
+    <h3>{{ 'Daftar Sidang' }}</h3>
 @endsection
 
 @section('breadcrumb-items')
