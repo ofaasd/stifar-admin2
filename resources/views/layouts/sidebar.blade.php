@@ -160,8 +160,8 @@
                             <li><a href="#">Komplain Nilai / Susulan <label class="badge badge-light-danger">!</label></a></li>
                         </ul>
                     </li>
-                     <li><a href="#">Semester Antara <label class="badge badge-light-danger">!</label></a></li>
-                     <li><a href="#">Remidial <label class="badge badge-light-danger">!</label></a></li>
+                     {{-- <li><a href="#">Semester Antara <label class="badge badge-light-danger">!</label></a></li> --}}
+                     {{-- <li><a href="#">Remidial <label class="badge badge-light-danger">!</label></a></li> --}}
                      <li><a href="{{Url::to('admin/akademik/khs')}}">KHS</a></li>
                      <li><a href="{{Url::to('admin/akademik/kuesioner')}}">Kuesioner Mahasiswa</a></li>
                      <li><a href="{{Url::to('admin/akademik/perwalian')}}">Perwalian</a></li>

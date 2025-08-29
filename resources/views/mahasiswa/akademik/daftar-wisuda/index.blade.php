@@ -68,7 +68,7 @@
                                                                         Mohon tunggu informasi selanjutnya dari panitia.<br>
                                                                 </div>
                                                         @else
-                                                                <div class="alert {{ $registered->buktiPembayaran ? 'alert-secondary' : '' }}" role="alert">
+                                                                <div class="alert {{ $registered->buktiPembayaran ? 'alert-success' : '' }}" role="alert">
                                                                         Selamat 🎉 <strong>{{ $mhs->nama }}</strong> Anda telah berhasil mengajukan pendaftaran wisuda.<br>
                                                                         <ul class="mb-2">
                                                                                 <li><strong>Nama Gelombang:</strong> {{ $registered->nama ?? '-' }}</li>
@@ -86,7 +86,7 @@
                                                                         </ul>
                                                                         @if ($registered->statusPembayaran === 0 || $registered->statusPembayaran === 1)
                                                                             <div class="alert" role="alert">
-                                                                                Bukti pembayaran telah diunggah. <a href="{{ asset('assets/upload/mahasiswa/wisuda/bukti-bayar/' . $registered->buktiPembayaran) }}" target="_blank">disini</a>
+                                                                                Bukti pembayaran telah diunggah pada {{ \Carbon\Carbon::parse($registered->tanggalPembayaran)->translatedFormat('d F Y H:i:s') }}. <a href="{{ asset('assets/upload/mahasiswa/wisuda/bukti-bayar/' . $registered->buktiPembayaran) }}" target="_blank">disini</a>
                                                                             </div>
                                                                         @else
                                                                                 Silahkan lanjutkan dengan mengunggah bukti pembayaran.<br>
@@ -110,6 +110,12 @@
                                                                                                 <label for="nominal" class="col-sm-3 col-form-label">Nominal</label>
                                                                                                 <div class="col-sm-9">
                                                                                                         <input type="number" class="form-control" id="nominal" name="nominal" placeholder="Nominal pembayaran" value="{{ $registered->tarif_wisuda }}" required>
+                                                                                                </div>
+                                                                                        </div>
+                                                                                        <div class="mb-3 row">
+                                                                                                <label for="tanggal" class="col-sm-3 col-form-label">Tanggal Bayar</label>
+                                                                                                <div class="col-sm-9">
+                                                                                                        <input type="date" class="form-control" id="tanggal" name="tanggal_bayar" placeholder="tanggal pembayaran" value="{{ $registered->tanggal_bayar }}" required>
                                                                                                 </div>
                                                                                         </div>
                                                                                         <div class="mb-3 row">
@@ -177,32 +183,50 @@
                                                                         <div class="row mb-2">
                                                                                 <div class="col">
                                                                                         <h5 class="mb-2">Judul Skripsi</h5>
-                                                                                        <input type="text" class="form-control" name="judul_skripsi" value="{{ $mhs->judul ?? '' }}" placeholder="Masukkan Judul Skripsi">
+                                                                                        <div class="input-group">
+                                                                                                <input type="text" class="form-control" name="judul_skripsi" id="judul_skripsi" value="{{ $mhs->judul ?? '' }}" placeholder="Masukkan Judul Skripsi" readonly>
+                                                                                                <button type="button" class="btn btn-outline-secondary" id="edit-judul-skripsi" onclick="$('#judul_skripsi').prop('readonly', false); $(this).prop('readonly', true);">Edit</button>
+                                                                                        </div>
                                                                                 </div>
                                                                                 <div class="col">
                                                                                         <h5 class="mb-2">Judul Skripsi Inggris</h5>
-                                                                                        <input type="text" class="form-control" name="judul_skripsi_eng" value="{{ $mhs->judulEng ?? '' }}" placeholder="Masukkan Judul Skripsi Inggris">
+                                                                                        <div class="input-group">
+                                                                                                <input type="text" class="form-control" name="judul_skripsi_eng" id="judul_skripsi_eng" value="{{ $mhs->judulEng ?? '' }}" placeholder="Masukkan Judul Skripsi Inggris" readonly>
+                                                                                                <button type="button" class="btn btn-outline-secondary" id="edit-judul-skripsi-eng" onclick="$('#judul_skripsi_eng').prop('readonly', false); $(this).prop('readonly', true);">Edit</button>
+                                                                                        </div>
                                                                                 </div>
                                                                         </div>
                                                                         <div class="row mb-2">
                                                                                 <div class="row mb-2">
                                                                                         <div class="col">
                                                                                                 <h5 class="mb-2">NIK</h5>
-                                                                                                <input type="text" class="form-control" name="no_ktp" value="{{ $mhs->noKtp ?? '' }}" placeholder="Masukkan NIK">
+                                                                                                <div class="input-group">
+                                                                                                        <input type="text" class="form-control" name="no_ktp" id="no_ktp" value="{{ $mhs->noKtp ?? '' }}" placeholder="Masukkan NIK" readonly>
+                                                                                                        <button type="button" class="btn btn-outline-secondary" id="edit-no-ktp" onclick="$('#no_ktp').prop('readonly', false); $(this).prop('readonly', true);">Edit</button>
+                                                                                                </div>
                                                                                         </div>
                                                                                         <div class="col">
                                                                                                 <h5 class="mb-2">Tempat Lahir</h5>
-                                                                                                <input type="text" class="form-control" name="tempat_lahir" value="{{ $mhs->tempatLahir ?? '' }}" placeholder="Masukkan tempat lahir">
+                                                                                                <div class="input-group">
+                                                                                                        <input type="text" class="form-control" name="tempat_lahir" id="tempat_lahir" value="{{ $mhs->tempatLahir ?? '' }}" placeholder="Masukkan tempat lahir" readonly>
+                                                                                                        <button type="button" class="btn btn-outline-secondary" id="edit-tempat-lahir" onclick="$('#tempat_lahir').prop('readonly', false); $(this).prop('readonly', true);">Edit</button>
+                                                                                                </div>
                                                                                         </div>
                                                                                 </div>
                                                                                 <div class="row mb-2">
                                                                                         <div class="col">
                                                                                                 <h5 class="mb-2">Nama Lengkap</h5>
-                                                                                                <input type="text" class="form-control" name="nama_lengkap" value="{{ $mhs->nama ?? '' }}" placeholder="Masukkan nama lengkap">
+                                                                                                <div class="input-group">
+                                                                                                        <input type="text" class="form-control" name="nama_lengkap" id="nama_lengkap" value="{{ $mhs->nama ?? '' }}" placeholder="Masukkan nama lengkap" readonly>
+                                                                                                        <button type="button" class="btn btn-outline-secondary" id="edit-nama-lengkap" onclick="$('#nama_lengkap').prop('readonly', false); $(this).prop('readonly', true);">Edit</button>
+                                                                                                </div>
                                                                                         </div>
                                                                                         <div class="col">
                                                                                                 <h5 class="mb-2">Tanggal Lahir</h5>
-                                                                                                <input type="date" class="form-control" name="tanggal_lahir" value="{{ $mhs->tanggalLahir ?? '' }}">
+                                                                                                <div class="input-group">
+                                                                                                        <input type="date" class="form-control" name="tanggal_lahir" id="tanggal_lahir" value="{{ $mhs->tanggalLahir ?? '' }}" readonly>
+                                                                                                        <button type="button" class="btn btn-outline-secondary" id="edit-tanggal-lahir" onclick="$('#tanggal_lahir').prop('readonly', false); $(this).prop('readonly', true);">Edit</button>
+                                                                                                </div>
                                                                                         </div>
                                                                                 </div>
                                                                         </div>
@@ -213,68 +237,75 @@
                                                                         <input type="hidden" value="true" name="update_herregistrasi">
                                                                 @endif
 
-                                                                <div class="row">
-                                                                        <p class="fw-bold"><span class="text-danger">*</span>Foto berformat jpg/jpeg dan maksimal berukuran 5mb </p>
-                                                                        <small class="text-end">Terakhir diupdate <span class="fst-italic">{{ isset($berkas) ? \Carbon\Carbon::parse($berkas->updated_at)->translatedFormat('d F Y H:i:s') : "data tidak ditemukan" }}</span></small>
-                                                                        <div class="col-md-6">
-                                                                                {{-- KTP --}}
-                                                                                <div class="mb-2">
-                                                                                        <div class="col-sm-12" id="input-ktp">
-                                                                                                <label for="ktp" class="mb-0">KTP</label>
-                                                                                                <div class="input-group">
-                                                                                                        <input type="file" id="ktp" name="ktp" class="form-control" aria-describedby="inputGroupPrepend">
-                                                                                                </div>
-                                                                                        </div>
-                                                                                        <hr>
-                                                                                </div>
-                                                                                {{-- KK --}}
-                                                                                <div class="mb-2">
-                                                                                        <div class="col-sm-12" id="input-kk">
-                                                                                                <label for="kk" class="mb-0">KK</label>
-                                                                                                <div class="input-group">
-                                                                                                        <input type="file" id="kk" name="kk" class="form-control" aria-describedby="inputGroupPrepend">
-                                                                                                </div>
-                                                                                        </div>
-                                                                                        <hr>
-                                                                                </div>
-                                                                                {{-- Akte --}}
-                                                                                <div class="mb-2">
-                                                                                        <div class="col-sm-12" id="input-akte">
-                                                                                                <label for="akte" class="mb-0">Akte</label>
-                                                                                                <div class="input-group">
-                                                                                                        <input type="file" id="akte" name="akte" class="form-control" aria-describedby="inputGroupPrepend">
-                                                                                                </div>
-                                                                                        </div>
-                                                                                        <hr>
-                                                                                </div>
-                                                                        </div>
-                                                                        <div class="col-md-6">
-                                                                                {{-- Ijazah Depan --}}
-                                                                                <div class="mb-2">
-                                                                                        <div class="view-ijazah">
-                                                                                                <label class="col-sm-12 col-form-label">Foto Ijazah :</label>
-                                                                                                <div class="col mb-3" id="input-ijazah-depan">
-                                                                                                        <label for="ijazah-depan" class="mb-0">Depan</label>
-                                                                                                        <div class="input-group" id="ijazah-depan">
-                                                                                                                <input type="file" name="ijazah_depan" class="form-control" aria-describedby="inputGroupPrepend">
-                                                                                                        </div>
-                                                                                                </div>
-                                                                                                <hr>
-                                                                                        </div>
-                                                                                        {{-- Ijazah Belakang --}}
-                                                                                        <div class="col-sm-12">
-                                                                                                <div class="col" id="input-ijazah-belakang">
-                                                                                                        <label for="ijazah-belakang" class="mb-0">Belakang</label>
-                                                                                                        <div class="input-group" id="ijazah-belakang">
-                                                                                                                <input type="file" name="ijazah_belakang" class="form-control" aria-describedby="inputGroupPrepend">
-                                                                                                        </div>
-                                                                                                </div>
-                                                                                        </div>
-                                                                                </div>
-                                                                        </div>
+                                                                <div class="mb-3 text-end">
+                                                                        <button type="button" class="btn btn-info" id="toggle-data-diri">
+                                                                                <i class="fa fa-id-card"></i> Upload Berkas Data Diri
+                                                                        </button>
                                                                 </div>
-                                                                <div class="card-footer mt-5">
-                                                                        <button class="btn btn-success" id="btn-submit" type="submit">Simpan</button>
+                                                                <div class="data-diri" style="display:none;">
+                                                                                <div class="row">
+                                                                                                <p class="fw-bold"><span class="text-danger">*</span>Foto berformat jpg/jpeg dan maksimal berukuran 5mb </p>
+                                                                                                <small class="text-end">Terakhir diupdate <span class="fst-italic">{{ isset($berkas) ? \Carbon\Carbon::parse($berkas->updated_at)->translatedFormat('d F Y H:i:s') : "data tidak ditemukan" }}</span></small>
+                                                                                                <div class="col-md-6">
+                                                                                                                {{-- KTP --}}
+                                                                                                                <div class="mb-2">
+                                                                                                                                <div class="col-sm-12" id="input-ktp">
+                                                                                                                                                <label for="ktp" class="mb-0">KTP</label>
+                                                                                                                                                <div class="input-group">
+                                                                                                                                                                <input type="file" id="ktp" name="ktp" class="form-control" aria-describedby="inputGroupPrepend">
+                                                                                                                                                </div>
+                                                                                                                                </div>
+                                                                                                                                <hr>
+                                                                                                                </div>
+                                                                                                                {{-- KK --}}
+                                                                                                                <div class="mb-2">
+                                                                                                                                <div class="col-sm-12" id="input-kk">
+                                                                                                                                                <label for="kk" class="mb-0">KK</label>
+                                                                                                                                                <div class="input-group">
+                                                                                                                                                                <input type="file" id="kk" name="kk" class="form-control" aria-describedby="inputGroupPrepend">
+                                                                                                                                                </div>
+                                                                                                                                </div>
+                                                                                                                                <hr>
+                                                                                                                </div>
+                                                                                                                {{-- Akte --}}
+                                                                                                                <div class="mb-2">
+                                                                                                                                <div class="col-sm-12" id="input-akte">
+                                                                                                                                                <label for="akte" class="mb-0">Akte</label>
+                                                                                                                                                <div class="input-group">
+                                                                                                                                                                <input type="file" id="akte" name="akte" class="form-control" aria-describedby="inputGroupPrepend">
+                                                                                                                                                </div>
+                                                                                                                                </div>
+                                                                                                                                <hr>
+                                                                                                                </div>
+                                                                                                </div>
+                                                                                                <div class="col-md-6">
+                                                                                                                {{-- Ijazah Depan --}}
+                                                                                                                <div class="mb-2">
+                                                                                                                                <div class="view-ijazah">
+                                                                                                                                                <label class="col-sm-12 col-form-label">Foto Ijazah :</label>
+                                                                                                                                                <div class="col mb-3" id="input-ijazah-depan">
+                                                                                                                                                                <label for="ijazah-depan" class="mb-0">Depan</label>
+                                                                                                                                                                <div class="input-group" id="ijazah-depan">
+                                                                                                                                                                                <input type="file" name="ijazah_depan" class="form-control" aria-describedby="inputGroupPrepend">
+                                                                                                                                                                </div>
+                                                                                                                                                </div>
+                                                                                                                                                <hr>
+                                                                                                                                </div>
+                                                                                                                                {{-- Ijazah Belakang --}}
+                                                                                                                                <div class="col-sm-12">
+                                                                                                                                                <div class="col" id="input-ijazah-belakang">
+                                                                                                                                                                <label for="ijazah-belakang" class="mb-0">Belakang</label>
+                                                                                                                                                                <div class="input-group" id="ijazah-belakang">
+                                                                                                                                                                                <input type="file" name="ijazah_belakang" class="form-control" aria-describedby="inputGroupPrepend">
+                                                                                                                                                                </div>
+                                                                                                                                                </div>
+                                                                                                                                </div>
+                                                                                                                </div>
+                                                                                                </div>
+                                                                                </div>
+                                                                                <div class="card-footer mt-5">
+                                                                                                <button class="btn btn-success" id="btn-submit" type="submit">Simpan</button>
+                                                                                </div>
                                                                 </div>
                                                         </form>
                                                 @endif
@@ -289,6 +320,10 @@
 @section('script')
 <script>
         $(document).ready(function() {
+                // data diri
+                $('#toggle-data-diri').on('click', function() {
+                        $('.data-diri').slideToggle();
+                });
                 // Submit form dengan konfirmasi
                 $('#form-daftar-wisuda').on('submit', function(e) {
                         e.preventDefault();

@@ -308,6 +308,17 @@
                                         <i class="fa fa-upload"></i>
                                     </button>
                                 `;
+                            }else{
+                                uploadBtn = `
+                                    <button class="btn btn-sm btn-success ms-2 upload-foto-yudisium" 
+                                        data-nim="${full.nim}" 
+                                        data-nama="${full.namaMahasiswa}" 
+                                        title="Update Foto Yudisium"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#uploadFotoYudisiumModal">
+                                        <i class="fa fa-pencil"></i>
+                                    </button>
+                                `;
                             }
                             return `
                                 <div class="d-flex align-items-center">
@@ -396,6 +407,17 @@
                 $('#nama-transkrip').text(nama);
             });
 
+            // preview foto
+            $('#foto-yudisium').on('change', function(e) {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(ev) {
+                        $('#preview-foto-yudisium').attr('src', ev.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
             //modal upload foto yudisium
             $(document).on('click', '.upload-foto-yudisium', function () {
                 const nim = $(this).data('nim');
