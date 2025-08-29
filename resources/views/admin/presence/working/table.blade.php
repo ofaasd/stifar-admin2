@@ -15,7 +15,7 @@
                 <td>{{$row->email}}</td>
                 <td>
                     <div class="btn-group">
-                        <a href="javascript:void(0)"class="btn btn-primary btn-sm btn-edit" data-id="{{$row->id}}" data-toggle="modal" data-target="#modal-add"><i class="fas fa-pencil-alt"></i></a>
+                        <a href="javascript:void(0)"class="btn btn-primary btn-sm btn-edit" data-bs-id="{{$row->id}}" data-bs-toggle="modal" data-bs-target="#modal-add"><i class="fas fa-pencil"></i></a>
                         <a href="javascript:void(0)"class="btn btn-danger btn-sm delete-record" data-id="{{$row->id}}"><i class="fas fa-trash"></i></a>
                     </div>
                 </td>
