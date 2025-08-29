@@ -12,14 +12,14 @@ use Illuminate\Http\Request;
 class PengajuanSkripsiController extends Controller
 {
     public function index(){
-       return view('mahasiswa.skripsi.pengajuan.skripsi.index',
-    compact('data','judul'));
+       return view('mahasiswa.skripsi.pengajuan.skripsi.index');
     }
 
     public function store(Request $request)
 {
     $request->validate([
         'judul'             => 'required|string|max:200',
+        'judulEng'             => 'required|string|max:200',
         'abstrak'           => 'required|string|max:1000',
         'latar_belakang'    => 'required|string|max:2000',
         'rumusan_masalah'   => 'required|string|max:1500',
@@ -33,6 +33,7 @@ class PengajuanSkripsiController extends Controller
         $pengajuan = PengajuanJudulSkripsi::create([
             'id_master'         => $idMaster,
             'judul'             => $request->judul,
+            'judul_eng'             => $request->judulEng,
             'abstrak'           => $request->abstrak,
             'latar_belakang'    => $request->latar_belakang,
             'rumusan_masalah'   => $request->rumusan_masalah,
