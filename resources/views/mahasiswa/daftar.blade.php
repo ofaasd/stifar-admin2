@@ -80,7 +80,7 @@
             }
         });
 
-        function refresh_mahasiswa(id){w
+        function refresh_mahasiswa(id){
             $(".tbl-mhs").html(`<div class="loader-box">
                             <div class="loader-2"></div>
                         </div>`);
