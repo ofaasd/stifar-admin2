@@ -4,7 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\admin\MkKurikulum;
 use App\Http\Controllers\dosen\KrmController;
+use App\Http\Controllers\dosen\PresenceController;
 use App\Http\Controllers\admin\RoleController;
+use App\Http\Controllers\admin\WorkingHourController;
 use App\Http\Controllers\admin\SesiController;
 use App\Http\Controllers\admin\NilaiController;
 use App\Http\Controllers\admin\ProdiController;
@@ -432,6 +434,8 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
     Route::get('/admin/keuangan/tagihan/publish/{id}', [TagihanController::class, 'publish']);
     Route::get('/admin/keuangan/tagihan/unpublish/{id}', [TagihanController::class, 'unpublish']);
 
+    Route::get('attendance/report', [PresenceController::class,'report'])->name('attendance_report');
+    Route::get('attendance/log', [PresenceController::class,'log'])->name('attendance_log');
     // Route::get('/admin/keuangan/buka_tutup_prodi', [BukaTutupController::class, 'index']);
 
 
@@ -497,6 +501,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
     Route::resource('admin/keuangan/tagihan', TagihanController::class)->name('index','keuangan');
     Route::resource('admin/keuangan/setting_keuangan', SettingKeuanganController::class)->name('index','setting_keuangan');
     Route::resource('admin/keuangan', KeuanganController::class)->name('index','keuangan');
+    Route::resource('working', WorkingHourController::class)->name('index','working_hour');
 
 
     // Route Aset
@@ -805,6 +810,7 @@ Route::group(['middleware' => ['auth', 'role:pegawai|super-admin']], function ()
     Route::resource('admin/kepegawaian/penghargaan', PegawaiPenghargaanController::class)->name('index','penghargaan');
     Route::resource('admin/kepegawaian/kompetensi', PegawaiKompetensiController::class)->name('index','kompetensi');
     Route::resource('admin/kepegawaian/kegiatan_luar', PegawaiKegiatanLuarController::class)->name('index','kegiatan_luar');
+    Route::resource('/dosen/attendance', PresenceController::class)->name('index','attendance');
 
     Route::get('/mahasiswa/detail/{nim}', [MahasiswaController::class, 'detail']);
 
