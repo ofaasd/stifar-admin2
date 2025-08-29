@@ -436,7 +436,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
 
     Route::get('attendance/report', [PresenceController::class,'report'])->name('attendance_report');
     Route::get('attendance/log', [PresenceController::class,'log'])->name('attendance_log');
-    Route::get('working/get_table', [WorkingHour::class,'get_table'])->name('get_table_working');
+    Route::get('working/get_table', [WorkingHourController::class,'get_table'])->name('get_table_working');
     // Route::get('/admin/keuangan/buka_tutup_prodi', [BukaTutupController::class, 'index']);
 
 
