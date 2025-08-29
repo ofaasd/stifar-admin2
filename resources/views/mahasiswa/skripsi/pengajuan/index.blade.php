@@ -214,11 +214,13 @@
                     </div>
                     <div class="col-md-4 mb-3">
                         <div class="card h-100 pengajuan-option" onclick="selectPengajuan('sidang')">
+                        <a href="{{ route('mhs.pengajuan.sidang.index') }}" class="card h-100 pengajuan-option">
                             <div class="card-body text-center">
                                 <i class="bi bi-calendar-check fs-1 text-warning mb-3"></i>
                                 <h6>Sidang</h6>
                                 <small class="text-muted">Ajukan sidang proposal/skripsi</small>
                             </div>
+                        </a>
                         </div>
                     </div>
                 </div>

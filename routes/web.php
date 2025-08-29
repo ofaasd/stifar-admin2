@@ -100,6 +100,7 @@ use App\Http\Controllers\dosen\skripsi\SidangController;
 use App\Http\Controllers\mahasiswa\skripsi\PengajuanController;
 use App\Http\Controllers\mahasiswa\skripsi\PengajuanPembimbingController;
 use App\Http\Controllers\mahasiswa\skripsi\PengajuanSkripsiController;
+use App\Http\Controllers\mahasiswa\skripsi\PengajuanSidangController;
 
 /*
 |--------------------------------------------------------------------------
@@ -437,6 +438,9 @@ Route::group(['middleware' => ['auth', 'role:mhs|super-admin']], function () {
     Route::group(['prefix' => 'mahasiswa/skripsi/pengajuan/judul', 'as' => 'mhs.pengajuan.judul.', 'controller' => PengajuanSkripsiController::class], function () {
         Route::get('/', 'index')->name('index');
         Route::post('/store', 'store')->name('store');
+    });
+    Route::group(['prefix' => 'mahasiswa/skripsi/pengajuan/sidang', 'as' => 'mhs.pengajuan.sidang.', 'controller' => PengajuanSidangController::class], function () {
+        Route::get('/', 'index')->name('index');
     });
     Route::group(['prefix' => 'mahasiswa/skripsi/pembimbing', 'as' => 'mhs.pembimbing.', 'controller' => PembimbingController1::class], function () {
         Route::get('/', 'index')->name('index');
