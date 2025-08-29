@@ -186,6 +186,7 @@ class TagihanController extends Controller
                         $total += $value;
                     }
                     $new_tagihan->total = $total;
+                    $new_tagihan->batas_waktu = $request->batas_waktu;
                     $new_tagihan->save();
 
                 }else{
@@ -194,6 +195,7 @@ class TagihanController extends Controller
                             'id_tahun' => $ta->id,
                             'angkatan' => $request->angkatan,
                             'id_prodi' => $request->id_prodi,
+                            'batas_waktu' => $request->batas_waktu,
                             'nim' => $row->nim,
                         ]
                     );
@@ -240,6 +242,7 @@ class TagihanController extends Controller
             }
             $new_tagihan->total = $total;
             $new_tagihan->is_publish = $request->is_publish;
+            $new_tagihan->batas_waktu = $request->batas_waktu;
             $new_tagihan->total_bayar = $request->total_bayar;
             if($total == $request->total_bayar){
                 $new_tagihan->status = 1;
@@ -257,6 +260,7 @@ class TagihanController extends Controller
                         [
                             'id_tahun' => $ta->id,
                             'angkatan' => $request->angkatan,
+                            'batas_waktu' => $request->batas_waktu,
                             'nim' => $request->nim,
                         ]
                     );

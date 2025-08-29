@@ -44,6 +44,7 @@ class TagihanKeuangan extends Model
         'angkatan',
 		'status',
 		'is_pubish',
+        'batas_waktu',
 		'id_prodi',
 		'nim'
 	];
