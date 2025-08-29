@@ -68,7 +68,7 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>15 Oktober 2023</td>
+                                    <td>{{ $dataDosbim->created_at->translatedFormat('d F Y') }}</td>
                                     <td>
                                         <strong>Pembimbing 1:</strong> {{ $dataDosbim->nama_pembimbing1 }}<br>
                                         <strong>Pembimbing 2:</strong> {{ $dataDosbim->nama_pembimbing2 }}
@@ -84,9 +84,9 @@
                                     </td>
                                     <td>
                                         @if ($dataDosbim->status == 0)
-                                            Menunggu persetujuan koordinator
+                                            Menunggu persetujuan dosen
                                         @elseif ($dataDosbim->status == 1 || $dataDosbim->status == 2)
-                                            Pengajuan disetujui koordinator
+                                            Pengajuan disetujui dosen
                                         @else
                                             Status tidak diketahui
                                         @endif
@@ -132,8 +132,8 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>22 Oktober 2023</td>
-                                    <td>Sistem Manajemen Inventory Berbasis Web dengan Teknologi Machine Learning</td>
+                                    <td>{{ $dataJudul->created_at->translatedFormat('d F Y') }}</td>
+                                    <td>{{ $dataJudul->judul }}</td>
                                     <td>
                                         @if ($dataJudul->status == 0)
                                         <span class="badge bg-primary">Menunggu</span>
@@ -141,6 +141,8 @@
                                         <span class="badge bg-success">Disetujui</span>
                                     @elseif ($dataJudul->status == 2 )
                                         <span class="badge bg-warning">Revisi</span>
+                                    @elseif ($dataJudul->status == 3 )
+                                        <span class="badge bg-danger">Ditolak</span>
                                     @else
                                         <span class="badge bg-secondary">Tidak Diketahui</span>
                                     @endif
@@ -193,7 +195,7 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-4 mb-3">
-                        <a href="" class="card h-100 pengajuan-option">
+                        <a href="{{ route('mhs.pengajuan.pembimbing.index') }}" class="card h-100 pengajuan-option">
                             <div class="card-body text-center">
                                 <i class="bi bi-person-plus fs-1 text-primary mb-3"></i>
                                 <h6>Dosen Pembimbing</h6>
@@ -203,20 +205,24 @@
                     </div>
                     <div class="col-md-4 mb-3">
                         <div class="card h-100 pengajuan-option" onclick="selectPengajuan('judul')">
+                        <a href="{{ route('mhs.pengajuan.judul.index') }}" class="card h-100 pengajuan-option">
                             <div class="card-body text-center">
                                 <i class="bi bi-file-text fs-1 text-success mb-3"></i>
                                 <h6>Judul Skripsi</h6>
                                 <small class="text-muted">Ajukan judul penelitian</small>
                             </div>
-                        </div>
+                        </a>
+                    </div>
                     </div>
                     <div class="col-md-4 mb-3">
                         <div class="card h-100 pengajuan-option" onclick="selectPengajuan('sidang')">
+                        <a href="{{ route('mhs.pengajuan.sidang.index') }}" class="card h-100 pengajuan-option">
                             <div class="card-body text-center">
                                 <i class="bi bi-calendar-check fs-1 text-warning mb-3"></i>
                                 <h6>Sidang</h6>
                                 <small class="text-muted">Ajukan sidang proposal/skripsi</small>
                             </div>
+                        </a>
                         </div>
                     </div>
                 </div>

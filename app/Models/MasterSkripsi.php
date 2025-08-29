@@ -11,4 +11,9 @@ class MasterSkripsi extends Model
 
     protected $table = 'master_skripsi';
     protected $fillable = ['id','nim','pembimbing_1','pembimbing_2','status'];
+
+    public function sidang()
+    {
+        return $this->hasMany(SidangSkripsi::class);
+    }
 }

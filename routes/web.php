@@ -139,6 +139,7 @@ use App\Http\Controllers\admin\akademik\yudisium\ArsipProsesYudisiumController;
 use App\Http\Controllers\mahasiswa\skripsi\SidangController as SidangMahasiswa;
 use App\Http\Controllers\admin\akademik\wisuda\AdminDaftarPendaftarWisudaController;
 use App\Http\Controllers\admin\admisi\StatistikController as AdmisiStatistikController;
+use App\Http\Controllers\mahasiswa\skripsi\PengajuanSidangController;
 
 /*
 |--------------------------------------------------------------------------
@@ -527,7 +528,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
         Route::get('/daftar/{id}', 'detail')->name('detail');
         Route::get('/mahasiswa/{id}', 'mahasiswa')->name('mahasiswa');
         Route::post('/modifysks', 'modifySKS')->name('daftar.sks');
-        Route::post('/tambahKoor', 'tambahKoor')->name('daftar.koordinator');
+        Route::get('/tambahKoor', 'tambahKoor')->name('daftar.koordinator');
         Route::get('/list-mahasiswa/{id}', 'ListMahasiswaByProd')->name('ListMahasiswaByProd');
         Route::get('/get-data/{nip}', 'getAllData')->name('getAllData');
     });
@@ -613,6 +614,9 @@ Route::group(['middleware' => ['auth', 'role:mhs|super-admin']], function () {
     Route::group(['prefix' => 'mahasiswa/skripsi/pengajuan/judul', 'as' => 'mhs.pengajuan.judul.', 'controller' => PengajuanSkripsiController::class], function () {
         Route::get('/', 'index')->name('index');
         Route::post('/store', 'store')->name('store');
+    });
+    Route::group(['prefix' => 'mahasiswa/skripsi/pengajuan/sidang', 'as' => 'mhs.pengajuan.sidang.', 'controller' => PengajuanSidangController::class], function () {
+        Route::get('/', 'index')->name('index');
     });
     Route::group(['prefix' => 'mahasiswa/skripsi/pembimbing', 'as' => 'mhs.pembimbing.', 'controller' => PembimbingController1::class], function () {
         Route::get('/', 'index')->name('index');

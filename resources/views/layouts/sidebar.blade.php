@@ -207,8 +207,8 @@
                             <span>Skripsi</span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
-                            <li><a href="{{ Route('admin.skripsi.manajemen.daftar.index') }}">Manajemen Skripsi </a></li>
-                            <li><a href="{{Route('pembimbing.index')}}">Input Dosbing </a></li>
+                            <li><a href="{{ Route('mhs.pengajuan.index') }}">Pengajuan Skripsi </a></li>
+                            <li><a href="{{Route('mhs.skripsi.bimbingan.index')}}">Bimbingan Skripsi </a></li>
                             <li><a href="{{ Route('sidang.index') }}">Jadwal Sidang </a></li>
                             <li><a href="#">Nilai <label class="badge badge-light-danger">!</label></a></li>
                         </ul>
