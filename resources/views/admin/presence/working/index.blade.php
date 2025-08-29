@@ -96,6 +96,14 @@
 @section('script')
     <script src="{{ asset('assets/js/datatable/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{asset('assets/js/sweet-alert/sweetalert.min.js')}}"></script>
+    <script src="{{asset('assets/js/datatable/datatable-extension/datatables-buttons/js/dataTables.buttons.min.js')}}"></script>
+    <script src="{{asset('assets/js/datatable/datatable-extension/datatables-buttons/js/buttons.bootstrap4.min.js')}}"></script>
+    <script src="{{asset('assets/js/datatable/datatable-extension/jszip/jszip.min.js')}}"></script>
+    <script src="{{asset('assets/js/datatable/datatable-extension/pdfmake/pdfmake.min.js')}}"></script>
+    <script src="{{asset('assets/js/datatable/datatable-extension/pdfmake/vfs_fonts.js')}}"></script>
+    <script src="{{asset('assets/js/datatable/datatable-extension/datatables-buttons/js/buttons.html5.min.js')}}"></script>
+    <script src="{{asset('assets/js/datatable/datatable-extension/datatables-buttons/js/buttons.print.min.js')}}"></script>
+    <script src="{{asset('assets/js/datatable/datatable-extension/datatables-buttons/js/buttons.colVis.min.js')}}"></script>
     <script>
         function refresh_table(){
             $("#my-table").html(`<div class="overlay"><i class="fas fa-2x fa-sync fa-spin"></i></div>`);
