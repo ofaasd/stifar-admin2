@@ -40,7 +40,7 @@
 
                                 <!-- Notes Section -->
                                 <div class="mb-0 flex-grow-1">
-                                    <div class="alert alert-warning mb-0" role="alert">
+                                    <div class="alert alert-warning mb-0 text-dark" role="alert">
                                         <strong>Catatan:</strong> Wisudawan yang telah bertanda <i class="bi bi-check-circle-fill text-success bg-white rounded-circle"></i> dapat dipindahkan ke data alumni melalui tombol di samping kiri.
                                     </div>
                                 </div>

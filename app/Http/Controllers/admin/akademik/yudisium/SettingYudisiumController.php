@@ -13,7 +13,7 @@ class SettingYudisiumController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public $indexed = ['', 'id', 'nama', 'periode'];
+    public $indexed = ['', 'id', 'nama', 'no_sk', 'periode'];
     public function index(Request $request)
     {
         if (empty($request->input('length'))) {
@@ -27,7 +27,8 @@ class SettingYudisiumController extends Controller
             $columns = [
                 1 => 'id',
                 2 => 'nama',
-                3 => 'periode',
+                3 => 'no_sk',
+                4 => 'periode',
             ];
 
             $search = [];
@@ -52,12 +53,14 @@ class SettingYudisiumController extends Controller
 
                 $gelombang = GelombangYudisium::where('periode', 'LIKE', "%{$search}%")
                     ->orWhere('nama', 'LIKE', "%{$search}%")
+                    ->orWhere('no_sk', 'LIKE', "%{$search}%")
                     ->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
                     ->get();
 
                 $totalFiltered = GelombangYudisium::where('periode', 'LIKE', "%{$search}%")
+                    ->orWhere('no_sk', 'LIKE', "%{$search}%")
                     ->orWhere('nama', 'LIKE', "%{$search}%")
                     ->count();
             }
@@ -78,6 +81,7 @@ class SettingYudisiumController extends Controller
                     $nestedData['fake_id'] = ++$ids;
                     $nestedData['periode'] = $row->periode;
                     $nestedData['nama'] = $teksNama;
+                    $nestedData['no_sk'] = $row->no_sk;
                     $data[] = $nestedData;
                 }
             }
@@ -117,6 +121,7 @@ class SettingYudisiumController extends Controller
         try {
             $request->validate([
                 'nama' => 'required',
+                'no_sk' => 'required',
                 'periode' => 'required',
             ]);
 
@@ -128,6 +133,7 @@ class SettingYudisiumController extends Controller
                     ['id' => $id],
                     [
                         'nama' => $request->nama,
+                        'no_sk' => $request->no_sk,
                         'periode' => $periode,
                     ]
                 );
@@ -139,6 +145,7 @@ class SettingYudisiumController extends Controller
                     ['id' => $id],
                     [
                         'nama' => $request->nama,
+                        'no_sk' => $request->no_sk,
                         'periode' => $periode,
                     ]
                 );

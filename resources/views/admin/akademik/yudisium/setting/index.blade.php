@@ -38,14 +38,20 @@
                                             <h5 class="modal-title" id="ModalLabel">Tambah {{$title}}</h5>
                                             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
-                                        <div class="modal-body d-flex flex-wrap gap-3">
-                                             <div class="mb-3 flex-fill">
-                                                <label for="nama" class="form-label">Nama</label>
-                                                <input type="text" name="nama" id="nama" class="form-control">
+                                        <div class="modal-body">
+                                            <div class="d-flex flex-wrap gap-3">
+                                                <div class="mb-3 flex-fill">
+                                                    <label for="nama" class="form-label">Nama</label>
+                                                    <input type="text" name="nama" id="nama" class="form-control">
+                                                </div>
+                                                <div class="mb-3 flex-fill">
+                                                    <label for="periode" class="form-label">Tahun Yudisium</label>
+                                                    <input type="text" name="periode" id="periode" class="form-control" value="{{ date('Y') }}">
+                                                </div>
                                             </div>
                                             <div class="mb-3 flex-fill">
-                                                <label for="periode" class="form-label">Tahun Yudisium</label>
-                                                <input type="text" name="periode" id="periode" class="form-control" value="{{ date('Y') }}">
+                                                <label for="no_sk" class="form-label">No SK</label>
+                                                <input type="text" name="no_sk" id="no_sk" class="form-control">
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -66,6 +72,7 @@
                                         <th></th>
                                         <th>ID</th>
                                         <th>Nama</th>
+                                        <th>No SK</th>
                                         <th>Periode</th>
                                         <th>Actions</th>
                                     </tr>

@@ -65,7 +65,8 @@ class DaftarWisudaController extends Controller
             'tb_daftar_wisudawan.status',
             'tb_daftar_wisudawan.nim',
             'tb_pembayaran_wisuda.status AS statusPembayaran',
-            'tb_pembayaran_wisuda.bukti AS buktiPembayaran'
+            'tb_pembayaran_wisuda.bukti AS buktiPembayaran',
+            'tb_pembayaran_wisuda.tanggal_bayar AS tanggalPembayaran'
         ])
         ->leftJoin('tb_gelombang_wisuda', 'tb_gelombang_wisuda.id', '=', 'tb_daftar_wisudawan.id_gelombang_wisuda')
         ->leftJoin('tb_pembayaran_wisuda', 'tb_daftar_wisudawan.nim', '=', 'tb_pembayaran_wisuda.nim')
@@ -275,6 +276,7 @@ class DaftarWisudaController extends Controller
                 'atas_nama' => 'required|string|max:255',
                 'bank' => 'required|string|max:255',
                 'nominal' => 'required|numeric|min:1000',
+                'tanggal_bayar' => 'required|date',
             ]);
 
             $mhs = DaftarWisudawan::where('nim', $request->nim)->first();
@@ -298,7 +300,7 @@ class DaftarWisudaController extends Controller
             TbPembayaranWisuda::create([
                 'nim' => $mhs->nim,
                 'nominal' => $request->nominal,
-                'tanggal_bayar' => now(),
+                'tanggal_bayar' => $request->tanggal_bayar,
                 'bukti' => $fileName,
                 'atas_nama' => $request->atas_nama,
                 'bank_pengirim' => $request->bank,
