@@ -55,13 +55,13 @@ class PengajuanPembimbingController extends Controller
 
 
             // Simpan pembimbing
-            $master = MasterSkripsi::create([
+            $master = MasterSkripsi::updateOrCreate(
+                ['nim',$nim],
+                [
                 'nim'           => $nim,
                 'pembimbing_1'  => $request->pembimbing1,
                 'pembimbing_2'  => $request->pembimbing2,
                 'status'        => 0,
-                'created_at'    => now(),
-                'updated_at'    => now(),
             ]);
     
             Log::info('Pembimbing skripsi berhasil disimpan', [

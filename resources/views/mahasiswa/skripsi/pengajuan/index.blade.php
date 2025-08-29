@@ -84,9 +84,9 @@
                                     </td>
                                     <td>
                                         @if ($dataDosbim->status == 0)
-                                            Menunggu persetujuan koordinator
+                                            Menunggu persetujuan dosen
                                         @elseif ($dataDosbim->status == 1 || $dataDosbim->status == 2)
-                                            Pengajuan disetujui koordinator
+                                            Pengajuan disetujui dosen
                                         @else
                                             Status tidak diketahui
                                         @endif

@@ -389,7 +389,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin']], function () {
         Route::get('/daftar/{id}', 'detail')->name('detail');
         Route::get('/mahasiswa/{id}', 'mahasiswa')->name('mahasiswa');
         Route::post('/modifysks', 'modifySKS')->name('daftar.sks');
-        Route::post('/tambahKoor', 'tambahKoor')->name('daftar.koordinator');
+        Route::get('/tambahKoor', 'tambahKoor')->name('daftar.koordinator');
         Route::get('/list-mahasiswa/{id}', 'ListMahasiswaByProd')->name('ListMahasiswaByProd');
         Route::get('/get-data/{nip}', 'getAllData')->name('getAllData');
     });
