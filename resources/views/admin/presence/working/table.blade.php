@@ -38,7 +38,8 @@ $(".btn-edit").click(function(){
     const url_table = "{!! url('working') !!}/" + id +'/edit';
     $.get(url_table, function (data){
         console.log(data);
-
+        $("#user_id").val(id);
+        console.log(id);
         Object.keys(data).forEach(key => {
             //console.log(key);
             if(data[key][0]){
