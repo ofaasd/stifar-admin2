@@ -11,7 +11,7 @@
 @endsection
 
 @section('breadcrumb-title')
-    <h3>{{$title2}}</h3>
+    <h3>Log Presensi</h3>
 @endsection
 
 @section('breadcrumb-items')

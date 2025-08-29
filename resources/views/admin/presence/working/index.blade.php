@@ -11,12 +11,12 @@
 @endsection
 
 @section('breadcrumb-title')
-    <h3>{{$title2}}</h3>
+    <h3>Jam Kerja Dosen</h3>
 @endsection
 
 @section('breadcrumb-items')
-    <li class="breadcrumb-item">Presence</li>
-    <li class="breadcrumb-item active">Report</li>
+    <li class="breadcrumb-item">Absensi</li>
+    <li class="breadcrumb-item active">Jam Kerja</li>
 @endsection
 @section('content')
 
