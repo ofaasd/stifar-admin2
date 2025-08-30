@@ -314,14 +314,22 @@
                                             <span id="judulCounter" class="char-counter">0/200</span>
                                         </div>
                                     </div>
-
-                                    <div class="judul-preview">
-                                        <h6 class="text-muted mb-2">Preview Judul:</h6>
-                                        <h5 id="judulPreview" class="text-success">Judul akan muncul di sini...</h5>
-                                    </div>
                                     <div class="mb-4">
                                         <label class="form-label">Judul Skripsi (English) <span class="text-danger">*</span></label>
                                         <textarea class="form-control" rows="3" placeholder="Masukkan judul skripsi..." id="judulSkripsieng"></textarea>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="form-label">Judul Skripsi 2<span class="text-danger">*</span></label>
+                                        <textarea class="form-control" rows="3" placeholder="Masukkan judul skripsi Anda..." id="judulSkripsi2"
+                                            maxlength="200"></textarea>
+                                        <div class="d-flex justify-content-between">
+                                            <small class="text-muted">Maksimal 200 karakter (sekitar 20 kata)</small>
+                                            <span id="judulCounter" class="char-counter">0/200</span>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="form-label">Judul Skripsi (English) <span class="text-danger">*</span></label>
+                                        <textarea class="form-control" rows="3" placeholder="Masukkan judul skripsi..." id="judulSkripsieng2"></textarea>
                                     </div>
 
                                     <div class="mb-4">
@@ -555,6 +563,8 @@
             @csrf
             <input type="hidden" name="judul">
             <input type="hidden" name="judulEng">
+            <input type="hidden" name="judul2">
+            <input type="hidden" name="judulEng2">
             <input type="hidden" name="abstrak">
             <input type="hidden" name="latar_belakang">
             <input type="hidden" name="rumusan_masalah">
@@ -666,25 +676,7 @@
             }
         }
 
-        // Judul preview
-        function updateJudulPreview() {
-            const judul = document.getElementById('judulSkripsi').value;
-            const preview = document.getElementById('judulPreview');
-            preview.textContent = judul || 'Judul akan muncul di sini...';
-        }
-
-
-   
-      
-       
-
-        // Suggestion functions
-        function useJudulSuggestion(element) {
-            const judul = element.querySelector('h6').textContent;
-            document.getElementById('judulSkripsi').value = judul;
-            updateJudulPreview();
-            countChars('judulSkripsi', 'judulCounter', 200);
-        }
+     
 
         // Confirmation update
         function updateConfirmation() {
@@ -704,6 +696,9 @@
         function submitPengajuan() {
             if (confirm('Apakah Anda yakin ingin submit pengajuan judul ini?')) {
                 document.querySelector('[name="judul"]').value = document.getElementById('judulSkripsi').value;
+                document.querySelector('[name="judulEng"]').value = document.getElementById('judulSkripsieng').value;
+                document.querySelector('[name="judul2"]').value = document.getElementById('judulSkripsi2').value;
+                document.querySelector('[name="judulEng2"]').value = document.getElementById('judulSkripsieng2').value;
                 document.querySelector('[name="abstrak"]').value = document.getElementById('abstrakSingkat').value;
                 document.querySelector('[name="latar_belakang"]').value = document.getElementById('latarBelakang').value;
                 document.querySelector('[name="rumusan_masalah"]').value = document.getElementById('rumusanMasalah').value;
@@ -711,8 +706,7 @@
                 document.querySelector('[name="metodologi"]').value = document.getElementById('metodologi').value;
                 document.querySelector('[name="jenis_penelitian"]').value = document.getElementById('jenisPenelitian')
                 .value;
-                document.querySelector('[name="judulEng"]').value = document.getElementById('judulSkripsieng')
-                .value;
+              
                 document.getElementById('formPengajuan').submit();
 
                 // Tombol loading
