@@ -261,7 +261,7 @@ class ProsesYudisiumController extends Controller
                     $nestedData['nimEnkripsi'] = $row->nimEnkripsi;
                     $nestedData['namaMahasiswa'] = $row->namaMahasiswa;
                     $nestedData['fotoYudisium'] = $row->fotoYudisium;
-                    $nestedData['tanggalPengesahan'] =  $row->tanggalPengesahan;
+                    $nestedData['tanggalPengesahan'] = $row->tanggalPengesahan ? \Carbon\Carbon::parse($row->tanggalPengesahan)->translatedFormat('d F Y') : null;
                     $data[] = $nestedData;
                 }
             }

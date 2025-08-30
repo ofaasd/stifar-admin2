@@ -278,30 +278,6 @@
                                                                                                                                 <hr>
                                                                                                                 </div>
                                                                                                 </div>
-                                                                                                <div class="col-md-6">
-                                                                                                                {{-- Ijazah Depan --}}
-                                                                                                                <div class="mb-2">
-                                                                                                                                <div class="view-ijazah">
-                                                                                                                                                <label class="col-sm-12 col-form-label">Foto Ijazah :</label>
-                                                                                                                                                <div class="col mb-3" id="input-ijazah-depan">
-                                                                                                                                                                <label for="ijazah-depan" class="mb-0">Depan</label>
-                                                                                                                                                                <div class="input-group" id="ijazah-depan">
-                                                                                                                                                                                <input type="file" name="ijazah_depan" class="form-control" aria-describedby="inputGroupPrepend">
-                                                                                                                                                                </div>
-                                                                                                                                                </div>
-                                                                                                                                                <hr>
-                                                                                                                                </div>
-                                                                                                                                {{-- Ijazah Belakang --}}
-                                                                                                                                <div class="col-sm-12">
-                                                                                                                                                <div class="col" id="input-ijazah-belakang">
-                                                                                                                                                                <label for="ijazah-belakang" class="mb-0">Belakang</label>
-                                                                                                                                                                <div class="input-group" id="ijazah-belakang">
-                                                                                                                                                                                <input type="file" name="ijazah_belakang" class="form-control" aria-describedby="inputGroupPrepend">
-                                                                                                                                                                </div>
-                                                                                                                                                </div>
-                                                                                                                                </div>
-                                                                                                                </div>
-                                                                                                </div>
                                                                                 </div>
                                                                                 <div class="card-footer mt-5">
                                                                                                 <button class="btn btn-success" id="btn-submit" type="submit">Simpan</button>
