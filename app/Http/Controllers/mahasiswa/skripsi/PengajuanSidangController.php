@@ -11,7 +11,7 @@ class PengajuanSidangController extends Controller
     public function index(){
         $gelombang = GelombangSidangSkripsi::with('tahunAjaran')->get();
         $sidang = '';
-        return view('mahasiswa.skripsi.sidang.index',
+        return view('mahasiswa.skripsi.pengajuan.sidang.index',
     compact('gelombang','sidang'));
     }
 }
