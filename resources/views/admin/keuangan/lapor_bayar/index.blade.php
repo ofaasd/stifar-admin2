@@ -16,7 +16,7 @@
 
 @section('breadcrumb-items')
     <li class="breadcrumb-item">Keuangan</li>
-    <li class="breadcrumb-item active">Jenis Keuangan</li>
+    <li class="breadcrumb-item active">Lapor Bayar</li>
 @endsection
 
 @section('content')
@@ -62,8 +62,11 @@
                                     <tr>
                                         <th></th>
                                         <th>No</th>
-                                        <th>Nama Jenis</th>
-                                        <th>Actions</th>
+                                        <th>NIM</th>
+                                        <th>Nama</th>
+                                        <th>Tanggal</th>
+                                        <th>Status</th>
+                                        <th>Bukti Bayar</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -119,28 +122,53 @@
                 {
                     searchable: false,
                     orderable: false,
+                    targets: 2,
+                    render: function render(data, type, full) {
+                        return `<span>${full['nim']} - ${full['atas_nama']}</span>`;
+                    }
+                },
+                {
+                    searchable: false,
+                    orderable: false,
+                    targets: 3,
+                    render: function render(data, type, full) {
+                        return `<span>${full['atas_nama']}</span>`;
+                    }
+                },
+                {
+                    searchable: false,
+                    orderable: false,
+                    targets: 4,
+                    render: function render(data, type, full) {
+                        return `<span>${full['tanggal_lapor']}</span>`;
+                    }
+                },
+                {
+                    searchable: false,
+                    orderable: false,
+                    targets: 5,
+                    render: function render(data, type, full) {
+                        return `<span>${full['status']}</span>`;
+                    }
+                },
+                {
+                    searchable: false,
+                    orderable: false,
+                    targets: 6,
+                    render: function render(data, type, full) {
+                        const url = "{{url('')}}"
+                        return `<span><a href='${url}/assets/bukti_pembayaran/${full['bukti_bayar']}'>Lihat Bukti</a></span>`;
+                    }
+                },
+                {
+                    searchable: false,
+                    orderable: false,
                     targets: 1,
                     render: function render(data, type, full) {
                         return `<span>${full['fake_id']}</span>`;
                     }
                 },
-                {
-                    targets: -1,
-                    title: 'Actions',
-                    searchable: false,
-                    orderable: false,
-                    render: function render(data, type, full) {
-                        return `
-                            <div class="d-inline-block text-nowrap">
-                                <button class="btn btn-sm btn-icon edit-record text-primary" data-id="${full['id']}" data-bs-toggle="modal" data-bs-target="#tambahModal">
-                                    <i class="fa fa-pencil"></i>
-                                </button>
-                                <button class="btn btn-sm btn-icon delete-record text-primary" data-id="${full['id']}">
-                                    <i class="fa fa-trash"></i>
-                                </button>
-                            </div>`;
-                    }
-                }
+
             ],
             order: [[2, 'desc']],
             dom:

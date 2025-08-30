@@ -71,6 +71,10 @@
                                                     @endforeach
                                                 </select>
                                             </div>
+                                            <div class="form-group">
+                                                <label for="batas_waktu">Batas Waktu</label>
+                                                <input type="date" name="batas_waktu" id="batas_waktu_generate" class="form-control">
+                                            </div>
                                         </div>
                                         <div class="modal-footer">
                                             <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
@@ -136,6 +140,10 @@
                                                 <label for="total_bayar" class="form-label">Total Bayar</label>
                                                 <input type="number" class="form-control" name="total_bayar" id="total_bayar" value="">
                                             </div>
+                                            <div class="form-group mb-3">
+                                                <label for="batas_waktu">Batas Waktu</label>
+                                                <input type="date" name="batas_waktu" id="batas_waktu" class="form-control">
+                                            </div>
                                             <div class="mb-3" id="field-nama">
                                                 <label for="status" class="form-label">Status</label>
                                                 <select name="status_bayar" id="status" class="form-control">
@@ -153,7 +161,7 @@
                                         </div>
                                         <div class="modal-footer">
                                             <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
-                                            <button class="btn btn-primary" id="btn-submit2" type="submit">Generate</button>
+                                            <button class="btn btn-primary" id="btn-submit2" type="submit">Simpan</button>
                                         </div>
                                     </form>
                                 </div>

@@ -319,6 +319,10 @@
                                         <h6 class="text-muted mb-2">Preview Judul:</h6>
                                         <h5 id="judulPreview" class="text-success">Judul akan muncul di sini...</h5>
                                     </div>
+                                    <div class="mb-4">
+                                        <label class="form-label">Judul Skripsi (English) <span class="text-danger">*</span></label>
+                                        <textarea class="form-control" rows="3" placeholder="Masukkan judul skripsi..." id="judulSkripsieng"></textarea>
+                                    </div>
 
                                     <div class="mb-4">
                                         <label class="form-label">Abstrak Singkat <span
@@ -550,6 +554,7 @@
         <form id="formPengajuan" method="POST" action="{{ route('mhs.pengajuan.judul.store') }}">
             @csrf
             <input type="hidden" name="judul">
+            <input type="hidden" name="judulEng">
             <input type="hidden" name="abstrak">
             <input type="hidden" name="latar_belakang">
             <input type="hidden" name="rumusan_masalah">
@@ -705,6 +710,8 @@
                 document.querySelector('[name="tujuan"]').value = document.getElementById('tujuanPenelitian').value;
                 document.querySelector('[name="metodologi"]').value = document.getElementById('metodologi').value;
                 document.querySelector('[name="jenis_penelitian"]').value = document.getElementById('jenisPenelitian')
+                .value;
+                document.querySelector('[name="judulEng"]').value = document.getElementById('judulSkripsieng')
                 .value;
                 document.getElementById('formPengajuan').submit();
 

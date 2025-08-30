@@ -69,14 +69,14 @@
                 </ul>
             </li>
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
-                <span><i class="fa fa-money"></i> Tagihan</span><label class="badge badge-light-danger">!</label></a>
+                <span><i class="fa fa-money"></i> Tagihan</span></a>
                 <ul class="sidebar-submenu">
-                    <li class="submenu-title"><a class="sidebar-link sidebar-title" href="#" >
-                        <span> Info Tagihan</span><label class="badge badge-light-danger">!</label></a>
+                    <li class="submenu-title"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/tagihan')}}" >
+                        <span> Info Tagihan</a>
                     </li>
 
-                    <li class="submenu-title"><a class="sidebar-link sidebar-title" href="#" >
-                        <span> Lapor Pembayaran</span><label class="badge badge-light-danger">!</label></a>
+                    <li class="submenu-title"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/lapor_bayar')}}" >
+                        <span> Lapor Pembayaran</a>
                     </li>
                 </ul>
             </li>
@@ -114,7 +114,7 @@
               <li><a href="#">Berita Acara</a></li>
             </ul>
         </li>
-          
+
           </ul>
         </div>
         <div class="right-arrow" id="right-arrow"><i data-feather="arrow-right"></i></div>

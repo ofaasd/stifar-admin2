@@ -207,8 +207,8 @@
                             <span>Skripsi</span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
-                            <li><a href="{{ Route('admin.skripsi.manajemen.daftar.index') }}">Manajemen Skripsi </a></li>
-                            <li><a href="{{Route('pembimbing.index')}}">Input Dosbing </a></li>
+                            <li><a href="{{ Route('mhs.pengajuan.index') }}">Pengajuan Skripsi </a></li>
+                            <li><a href="{{Route('mhs.skripsi.bimbingan.index')}}">Bimbingan Skripsi </a></li>
                             <li><a href="{{ Route('sidang.index') }}">Jadwal Sidang </a></li>
                             <li><a href="#">Nilai <label class="badge badge-light-danger">!</label></a></li>
                         </ul>
@@ -231,28 +231,11 @@
                 <ul class="sidebar-submenu">
                     <li><a href="{{URL::to('admin/kepegawaian/pegawai')}}">Data Pegawai</a></li>
                     {{-- <li><a href="#">Profil Pegawai</a></li> --}}
-                    <li><a href="#">Absensi <label class="badge badge-light-danger">!</label></a></li>
-                    <li><a href="{{URL::to('admin/kepegawaian/jamkerja')}}">Jam Kerja Dosen</a></li>
-                    <li><a href="#">Keterlambatan <label class="badge badge-light-danger">!</label></a></li>
+                    <li><a href="{{URL::to('attendance/report')}}">Absensi</a></li>
+                    <li><a href="{{URL::to('working')}}">Jam Kerja Dosen</a></li>
+                    {{-- <li><a href="#">Keterlambatan <label class="badge badge-light-danger">!</label></a></li> --}}
                     <li><a href="#">Statistik <label class="badge badge-light-danger">!</label></a></li>
-                    <li><a href="#">Struktur <label class="badge badge-light-danger">!</label></a></li>
-                    {{-- <li>
-                        <a class="submenu-title" href="#">
-                            <span>Riwayat</span>
-                        </a>
-                        <ul class="nav-sub-childmenu submenu-content">
-                            <li><a href="#">Mengajar</a></li>
-                            <li><a href="#">Penelitian</a></li>
-                            <li><a href="#">Pengabdian</a></li>
-                            <li><a href="#">karya Ilmiah</a></li>
-                            <li><a href="#">Organisasi</a></li>
-                            <li><a href="#">Repositori</a></li>
-                            <li><a href="#">Jabatan Struktural</a></li>
-                            <li><a href="#">Jabatan Fungsional</a></li>
-                            <li><a href="#">Pekerjaan</a></li>
-                            <li><a href="#">Pendidikan</a></li>
-                        </ul>
-                    </li> --}}
+                    
                     <li><a href="{{URL::to('admin/kepegawaian/surat_izin')}}">Surat Izin</a></li>
                 </ul>
             </li>
@@ -265,7 +248,7 @@
                     <li><a href="{{URL::to('admin/keuangan/jenis_keuangan')}}">Jenis Keuangan</a></li> {{-- Untuk setting pembayaran sks dalam bentuk paket --}}
                     <li><a href="{{URL::to('admin/keuangan/setting_keuangan')}}">Setting Keuangan</a></li> {{-- Untuk setting pembayaran sks dalam bentuk paket --}}
                     <li><a href="{{URL::to('admin/keuangan/tagihan')}}">Buat Tagihan </a></li> {{--Buat dan Publish Tagihan --}}
-                    <li><a href="#">Input Laporan Pembayaran <label class="badge badge-light-danger">!</label></a></li>
+                    <li><a href="{{URL::to('admin/keuangan/lapor_bayar')}}">Input Laporan Pembayaran</a></li>
                     <li><a href="#">Statistik <label class="badge badge-light-danger">!</label></a></li>
                     {{-- <li><a href="#">Cetak <label class="badge   badge-light-danger">!</label></a></li> --}}
                     {{-- <li><a href="#">Sync <label class="badge badge-light-danger">!</label></a></li> --}}

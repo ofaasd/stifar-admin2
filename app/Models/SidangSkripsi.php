@@ -18,7 +18,7 @@ class SidangSkripsi extends Model
 
     public function skripsi()
     {
-        return $this->belongsTo(Skripsi::class);
+        return $this->belongsTo(MasterSkripsi::class);
     }
 
     public function gelombang()

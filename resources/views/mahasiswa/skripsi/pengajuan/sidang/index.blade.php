@@ -12,12 +12,12 @@
     @endsection
 
 @section('breadcrumb-title')
-    <h3>{{ 'Daftar Sidang' }}</h3>
+    <h3>{{ 'Pengajuan Sidang Skripsi' }}</h3>
 @endsection
 
 @section('breadcrumb-items')
-    <li class="breadcrumb-item">Master Data</li>
-    <li class="breadcrumb-item active">{{ 'Daftar Dosen Pembimbing' }}</li>
+    <li class="breadcrumb-item">Pengajuan</li>
+    <li class="breadcrumb-item active">{{ 'Sidang' }}</li>
 @endsection
 
 @section('content')
