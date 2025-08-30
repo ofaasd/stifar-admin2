@@ -31,7 +31,7 @@
         <section class="section-1">
             <div class="header mb-2">
                 <div class="mt-4">
-                    <div class="report-title" style="font-size: 0.8rem;">Daftar Yudisum {{ $gelombang->nama }}</div>
+                    <div class="report-title" style="font-size: 0.8rem;">Daftar {{ $gelombang->nama }} {{ $gelombang->nama_prodi }}</div>
                 </div>
             </div>
             <div class="table-container">

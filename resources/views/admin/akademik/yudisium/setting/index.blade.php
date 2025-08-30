@@ -50,6 +50,15 @@
                                                 </div>
                                             </div>
                                             <div class="mb-3 flex-fill">
+                                                <label for="id_prodi" class="form-label">Prodi</label>
+                                                <select name="id_prodi" id="id_prodi" class="form-control">
+                                                    <option value="">-- Pilih Prodi --</option>
+                                                    @foreach($prodi as $item)
+                                                        <option value="{{ $item->id }}">{{ $item->nama_prodi }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="mb-3 flex-fill">
                                                 <label for="no_sk" class="form-label">No SK</label>
                                                 <input type="text" name="no_sk" id="no_sk" class="form-control">
                                             </div>
@@ -72,6 +81,7 @@
                                         <th></th>
                                         <th>ID</th>
                                         <th>Nama</th>
+                                        <th>Program Studi</th>
                                         <th>No SK</th>
                                         <th>Periode</th>
                                         <th>Actions</th>

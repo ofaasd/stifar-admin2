@@ -27,16 +27,22 @@ class CetakYudisiumController extends Controller
         'E' => 0
     ];
 
-    public $indexed = ['', 'id', 'nama', 'periode', 'jml_peserta'];
+    public $indexed = ['', 'id', 'nama', 'nama_prodi', 'periode', 'jml_peserta'];
     public function index(Request $request)
     {
         if (empty($request->input('length'))) {
             $title = "Cetak Yudisium";
             $title2 = "cetak";
-            $data = GelombangYudisium::all();
+            $gelombang = GelombangYudisium::select([
+                'gelombang_yudisium.*',
+                'program_studi.nama_prodi'
+            ])
+            ->leftJoin('program_studi', 'gelombang_yudisium.id_prodi', '=', 'program_studi.id')
+            ->orderBy('created_at', 'desc')
+            ->get();
             $indexed = $this->indexed;
 
-            return view('admin.akademik.yudisium.cetak.index', compact('title', 'title2', 'data','indexed'));
+            return view('admin.akademik.yudisium.cetak.index', compact('title', 'title2', 'gelombang','indexed'));
         }else{
             $columns = [
                 1 => 'id',
@@ -53,9 +59,8 @@ class CetakYudisiumController extends Controller
 
             $limit = $request->input('length');
             $start = $request->input('start');
-            $order = $columns[$request->input('order.0.column')];
-            $dir = $request->input('order.0.dir');
-
+            $order = 'gelombang_yudisium.created_at';
+            $dir = $request->input('order.0.dir') ?? 'desc';
 
             if (empty($request->input('search.value'))) {
                 $gelombang = GelombangYudisium::select([
@@ -64,7 +69,9 @@ class CetakYudisiumController extends Controller
                         'gelombang_yudisium.periode',
                         \DB::raw('(SELECT COUNT(*) FROM tb_yudisium WHERE tb_yudisium.id_gelombang_yudisium = gelombang_yudisium.id) as jmlPeserta'),
                         'gelombang_yudisium.tanggal_pengesahan AS tanggalPengesahan',
+                        'program_studi.nama_prodi'
                     ])
+                    ->leftJoin('program_studi', 'gelombang_yudisium.id_prodi', '=', 'program_studi.id')
                     ->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
@@ -81,10 +88,12 @@ class CetakYudisiumController extends Controller
                         'gelombang_yudisium.nama',
                         'gelombang_yudisium.periode',
                         \DB::raw('(SELECT COUNT(*) FROM tb_yudisium WHERE tb_yudisium.id_gelombang_yudisium = gelombang_yudisium.id) as jmlPeserta'),
-                        'gelombang_yudisium.tanggal_pengesahan AS tanggalPengesahan'
+                        'gelombang_yudisium.tanggal_pengesahan AS tanggalPengesahan',
+                        'program_studi.nama_prodi'
                     ])
-                    ->where('periode', 'LIKE', "%{$search}%")
-                    ->orWhere('nama', 'LIKE', "%{$search}%")
+                    ->leftJoin('program_studi', 'gelombang_yudisium.id_prodi', '=', 'program_studi.id')
+                    ->where('gelombang_yudisium.periode', 'LIKE', "%{$search}%")
+                    ->orWhere('gelombang_yudisium.nama', 'LIKE', "%{$search}%")
                     ->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
@@ -99,10 +108,12 @@ class CetakYudisiumController extends Controller
                         'gelombang_yudisium.nama',
                         'gelombang_yudisium.periode',
                         \DB::raw('(SELECT COUNT(*) FROM tb_yudisium WHERE tb_yudisium.id_gelombang_yudisium = gelombang_yudisium.id) as jmlPeserta'),
-                        'gelombang_yudisium.tanggal_pengesahan AS tanggalPengesahan'
-                    ])  
-                    ->where('periode', 'LIKE', "%{$search}%")
-                    ->orWhere('nama', 'LIKE', "%{$search}%")
+                        'gelombang_yudisium.tanggal_pengesahan AS tanggalPengesahan',
+                        'program_studi.nama_prodi'
+                    ])
+                    ->leftJoin('program_studi', 'gelombang_yudisium.id_prodi', '=', 'program_studi.id')
+                    ->where('gelombang_yudisium.periode', 'LIKE', "%{$search}%")
+                    ->orWhere('gelombang_yudisium.nama', 'LIKE', "%{$search}%")
                     ->count();
             }
 
@@ -119,6 +130,7 @@ class CetakYudisiumController extends Controller
                     $nestedData['fake_id'] = ++$ids;
                     $nestedData['periode'] = $row->periode;
                     $nestedData['nama'] = $row->nama;
+                    $nestedData['nama_prodi'] = $row->nama_prodi;
                     $nestedData['jml_peserta'] = $row->jmlPeserta;
                     $nestedData['idEnkripsi'] = $row->idEnkripsi;
                     $nestedData['tanggalPengesahan'] = $tanggalPengesahan;
@@ -151,7 +163,13 @@ class CetakYudisiumController extends Controller
         $idDekrip = Crypt::decryptString($idEnkripsi);
         $id = str_replace("stifar", "", $idDekrip);
 
-        $gelombang = GelombangYudisium::find($id);
+        $gelombang = GelombangYudisium::select([
+            'gelombang_yudisium.*',
+            'program_studi.nama_prodi'
+        ])
+        ->where('gelombang_yudisium.id', $id)
+        ->leftJoin('program_studi', 'gelombang_yudisium.id_prodi', '=', 'program_studi.id')
+        ->first();
         if (!$gelombang) {
             return redirect()->back()->with('error', 'Data not found');
         }
@@ -203,9 +221,9 @@ class CetakYudisiumController extends Controller
             $item->totalIps = $totalIps;
             $item->ipk = $totalSks > 0 ? number_format($totalIps / $totalSks, 2) : 0;
         }
-
+        $logo = public_path('/assets/images/logo/logo-icon.png');
         // Kirim data ke view dan render HTML
-        $html = view('admin.akademik.yudisium.cetak.view-cetak', compact('data', 'gelombang'))->render();
+        $html = view('admin.akademik.yudisium.cetak.view-cetak', compact('data', 'gelombang', 'logo'))->render();
 
         // Inisialisasi mPDF
         $mpdf = new \Mpdf\Mpdf([
