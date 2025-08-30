@@ -41,7 +41,7 @@
                                             <option value="">Tidak ada gelombang tersedia</option>
                                         @else
                                             <option value="">-- Pilih Gelombang --</option>
-                                            @foreach($gelombang as $row)
+                                            @foreach($gelombang->where('tanggal_pengesahan', '==', null) as $row)
                                                 <option value="{{ $row->id }}" data-ps="{{ $row->id_prodi }}">
                                                     {{ $row->periode }} | 
                                                     {{ $row->nama }} | 
@@ -108,7 +108,7 @@
                                     <label for="gelombang" class="form-label">Gelombang Yudisium</label>
                                     <select class="form-control" id="id_gelombang_yudisium" name="gelombang" required>
                                         <option value="">-- Pilih Gelombang --</option>
-                                        @foreach($gelombang as $row)
+                                        @foreach($gelombang->where('tanggal_pengesahan', '==', null) as $row)
                                             <option value="{{ $row->id }}">
                                                 {{ $row->periode }} | 
                                                 {{ $row->nama }}
