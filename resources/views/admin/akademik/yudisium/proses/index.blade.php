@@ -374,7 +374,7 @@
                                     '" data-nama="' + full['namaMahasiswa'] +
                                     '" data-bs-toggle="modal" data-original-title="Cetak Transkrip" data-bs-target="#cetakTranskripModal"><i class="fa fa-file-text"></i></button> | ' +
                                     '<button class="btn btn-sm btn-icon text-info cetak-ijazah-record" title="Cetak Ijazah" data-nim="' + full['nimEnkripsi'] +
-                                    '" data-nama="' + full['namaMahasiswa'] +
+                                    '" data-nama="' + full['namaMahasiswa'] + '" data-tanggal="' + full['tanggalDiberikan'] +
                                     '" data-bs-toggle="modal" data-original-title="Cetak Ijazah" data-bs-target="#cetakIjazahModal"><i class="fa fa-print"></i></button>' +
                                     '</div>';
                             }else{
@@ -384,7 +384,7 @@
                                     '" data-nama="' + full['namaMahasiswa'] +
                                     '" data-bs-toggle="modal" data-original-title="Cetak Transkrip" data-bs-target="#cetakTranskripModal"><i class="fa fa-file-text"></i></button> | ' +
                                     '<button class="btn btn-sm btn-icon text-info cetak-ijazah-record" title="Cetak Ijazah" data-nim="' + full['nimEnkripsi'] +
-                                    '" data-nama="' + full['namaMahasiswa'] +
+                                    '" data-nama="' + full['namaMahasiswa'] + '" data-tanggal="' + full['tanggalDiberikan'] +
                                     '" data-bs-toggle="modal" data-original-title="Cetak Ijazah" data-bs-target="#cetakIjazahModal"><i class="fa fa-print"></i></button> | ' +
                                     '<button class="btn btn-sm btn-icon edit-record text-primary" data-id="' + full['id'] +
                                     '" data-bs-toggle="modal" data-original-title="Edit" data-bs-target="#editModal"><i class="fa fa-pencil"></i></button>' +

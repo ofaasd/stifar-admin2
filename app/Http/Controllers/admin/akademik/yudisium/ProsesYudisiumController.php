@@ -6,8 +6,10 @@ use App\Models\Mahasiswa;
 use App\Models\TbYudisium;
 use App\Models\master_nilai;
 use Illuminate\Http\Request;
+use App\Models\DaftarWisudawan;
 use App\Models\GelombangYudisium;
 use App\Http\Controllers\Controller;
+use App\Models\TbGelombangWisuda;
 use Illuminate\Support\Facades\Crypt;
 
 class ProsesYudisiumController extends Controller
@@ -125,9 +127,12 @@ class ProsesYudisiumController extends Controller
                         'gelombang_yudisium.tanggal_pengesahan as tanggalPengesahan',
                         'mahasiswa.nama AS namaMahasiswa',
                         'mahasiswa.foto_yudisium AS fotoYudisium'
-                    ])
+                    ]) 
                     ->leftJoin('mahasiswa', 'tb_yudisium.nim', '=', 'mahasiswa.nim')
                     ->leftJoin('gelombang_yudisium', 'tb_yudisium.id_gelombang_yudisium', '=', 'gelombang_yudisium.id');
+
+            $daftarWisudawan = DaftarWisudawan::get();
+            $gelombangWisuda = TbGelombangWisuda::get();
 
             $filterGelombang = $request->input('filtergelombang') ?? null;
 
@@ -141,8 +146,10 @@ class ProsesYudisiumController extends Controller
                     ->limit($limit)
                     ->orderBy($order, $dir)
                     ->get()
-                    ->map(function ($item) {
+                    ->map(function ($item) use ($daftarWisudawan, $gelombangWisuda){
                         $item->nimEnkripsi = Crypt::encryptString($item->nim . "stifar");
+                        $tanggalPelaksanaan = $gelombangWisuda->where('id', $daftarWisudawan->where('nim', $item->nim)->where('status', 1)->first()->id_gelombang_wisuda)->first()->waktu_pelaksanaan ?? null;
+                        $item->tanggalDiberikan = $tanggalPelaksanaan ? \Carbon\Carbon::parse($tanggalPelaksanaan)->format('Y-m-d') : '-';
                         return $item;
                     });
 
@@ -261,6 +268,7 @@ class ProsesYudisiumController extends Controller
                     $nestedData['nimEnkripsi'] = $row->nimEnkripsi;
                     $nestedData['namaMahasiswa'] = $row->namaMahasiswa;
                     $nestedData['fotoYudisium'] = $row->fotoYudisium;
+                    $nestedData['tanggalDiberikan'] = $row->tanggalDiberikan;
                     $nestedData['tanggalPengesahan'] = $row->tanggalPengesahan ? \Carbon\Carbon::parse($row->tanggalPengesahan)->translatedFormat('d F Y') : null;
                     $data[] = $nestedData;
                 }

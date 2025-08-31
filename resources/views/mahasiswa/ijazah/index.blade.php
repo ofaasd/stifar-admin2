@@ -234,8 +234,8 @@
         </div>
         
         <div class="award-info bilingual">
-            <div>Diberikan di Semarang pada tanggal : {{ \Carbon\Carbon::parse(now())->translatedFormat('d F Y') ?? '-' }}</div>
-            <div class="english">Awarded in Semarang on {{ \Carbon\Carbon::parse(now())->format('F j') }}<sup>{{ date('S', strtotime(now())) }}</sup>, {{ \Carbon\Carbon::parse(now())->format('Y') ?? '-' }}</div>
+            <div>Diberikan di Semarang pada tanggal : {{ \Carbon\Carbon::parse($data->tanggalDiberikan)->translatedFormat('d F Y') ?? '-' }}</div>
+            <div class="english">Awarded in Semarang on {{ \Carbon\Carbon::parse($data->tanggalDiberikan)->format('F j') }}<sup>{{ date('S', strtotime($data->tanggalDiberikan)) }}</sup>, {{ \Carbon\Carbon::parse($data->tanggalDiberikan)->format('Y') ?? '-' }}</div>
         </div>
         
         <table style="width:100%; border-collapse:collapse;">

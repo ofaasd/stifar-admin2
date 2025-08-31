@@ -34,7 +34,7 @@
       <td>{{ "Alumni" }}</td>
       <td class="d-flex gap-1">
           <!-- Button to open modal -->
-          <button type="button" class="btn btn-success btn-xs cetak-ijazah-record" title="Cetak Ijazah" data-bs-toggle="modal" data-bs-target="#cetakIjazahModal" data-nama="{{ $row['nama'] }}" data-nim="{{ $row['nimEnkripsi'] }}">
+          <button type="button" class="btn btn-success btn-xs cetak-ijazah-record" title="Cetak Ijazah" data-bs-toggle="modal" data-bs-target="#cetakIjazahModal" data-nama="{{ $row['nama'] }}" data-nim="{{ $row['nimEnkripsi'] }}" data-tanggal="{{ $row['tanggalDiberikan'] }}">
             <i class="fa fa-print"></i>
           </button>
       </td>

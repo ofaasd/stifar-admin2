@@ -8,8 +8,10 @@ use App\Models\Alumni;
 use App\Models\Mahasiswa;
 use App\Models\TbFlagging;
 use Illuminate\Http\Request;
+use App\Models\DaftarWisudawan;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\JabatanStruktural;
+use App\Models\TbGelombangWisuda;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Crypt;
 
@@ -137,14 +139,19 @@ class AlumniController extends Controller
         $isAlumni = true;
         $isPrintIjazah = true;
 
+        $daftarWisudawan = DaftarWisudawan::get();
+        $gelombangWisuda = TbGelombangWisuda::get();
+
         $query = Alumni::select([
             'tb_alumni.*',
             'tb_flagging.count AS tercetak'
         ])
         ->leftJoin('tb_flagging', 'tb_alumni.nim', '=', 'tb_flagging.nim')
         ->get()
-        ->map(function ($item) {
+        ->map(function ($item) use ($daftarWisudawan, $gelombangWisuda) {
             $item->nimEnkripsi = Crypt::encryptString($item->nim . "stifar");
+            $tanggalPelaksanaan = $gelombangWisuda->where('id', $daftarWisudawan->where('nim', $item->nim)->where('status', 1)->first()->id_gelombang_wisuda)->first()->waktu_pelaksanaan ?? null;
+            $item->tanggalDiberikan = $tanggalPelaksanaan ? \Carbon\Carbon::parse($tanggalPelaksanaan)->format('Y-m-d') : '-';
             return $item;
         });
 
@@ -334,6 +341,8 @@ class AlumniController extends Controller
 
         $mahasiswa->nppKetua = $jabatanStruktural->npp ?? '-';
         $mahasiswa->namaKetua = $jabatanStruktural->nama_lengkap ?? '-';
+
+        $mahasiswa->tanggalDiberikan = $request->tanggal_diberikan ?? '-';
 
         $cekDuplikate = TbFlagging::where('nim', $nim)->where('jenis', 1)->first();
         if (!$cekDuplikate) {

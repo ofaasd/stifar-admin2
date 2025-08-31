@@ -229,14 +229,11 @@
     <table class="info-table">
         <tbody>
             <tr>
-                <td>Nomor Surat Keputusan Mendiknas Republik Indonesia</td>
+                <td>Nomor Surat Keputusan Mendiknas Republik Indonesia<br>
+                    <span class="english">The Minister of National Education of the Republic of Indonesia Number</span>
+                </td>
                 <td>:</td>
                 <td>{{ $nomorSk }}</td>
-            </tr>
-            <tr>
-                <td class="english">The Minister of National Education of the Republic of Indonesia Number</td>
-                <td></td>
-                <td></td>
             </tr>
             <tr>
                 <td>Program Studi / <span class="english">Study Program</span></td>
