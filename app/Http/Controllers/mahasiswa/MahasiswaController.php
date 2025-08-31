@@ -287,6 +287,7 @@ class MahasiswaController extends Controller
                     'id_dsn_wali' => $request->id_dsn_wali,
                     'user_id'=>$user_id,
                     'status' => 1,
+                    'no_pisn' => $request->no_pisn ?? null,
                 ]
             );
             $data = [
@@ -329,6 +330,7 @@ class MahasiswaController extends Controller
                     'hp' => $request->hp,
                     'id_dsn_wali' => $request->id_dsn_wali,
                     'status' => $request->status,
+                    'no_pisn' => $request->no_pisn ?? null,
                 ]
             );
             return response()->json('updated');
