@@ -166,8 +166,6 @@ class AdminDaftarWisudawanController extends Controller
                     $nestedData['kk'] = $row->kk;
                     $nestedData['ktp'] = $row->ktp;
                     $nestedData['akte'] = $row->akte;
-                    $nestedData['ijazah_depan'] = $row->ijazahDepan;
-                    $nestedData['ijazah_belakang'] = $row->ijazahBelakang;
                     $nestedData['status_daftar'] = $row->statusDaftar;
                     $nestedData['status_pembayaran'] = $rowStatusPembayaran;
                     $data[] = $nestedData;

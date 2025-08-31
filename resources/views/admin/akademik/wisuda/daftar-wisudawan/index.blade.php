@@ -153,8 +153,6 @@
                                 full.kk ? `<a href="${fileBase}/kk/${full.kk}" target="_blank" class="btn btn-sm btn-outline-primary mb-1" title="KK"><i class="fa fa-id-card"></i></a>` : '',
                                 full.ktp ? `<a href="${fileBase}/ktp/${full.ktp}" target="_blank" class="btn btn-sm btn-outline-primary mb-1" title="KTP"><i class="fa fa-address-card"></i></a>` : '',
                                 full.akte ? `<a href="${fileBase}/akte/${full.akte}" target="_blank" class="btn btn-sm btn-outline-primary mb-1" title="Akte"><i class="fa fa-address-book-o"></i></a>` : '',
-                                full.ijazah_depan ? `<a href="${fileBase}/ijazah_depan/${full.ijazah_depan}" target="_blank" class="btn btn-sm btn-outline-primary mb-1" title="Ijazah Depan"><i class="fa fa-file"></i></a>` : '',
-                                full.ijazah_belakang ? `<a href="${fileBase}/ijazah_belakang/${full.ijazah_belakang}" target="_blank" class="btn btn-sm btn-outline-primary mb-1" title="Ijazah Belakang"><i class="fa fa-file"></i></a>` : ''
                             ].filter(Boolean).join(' ');
                             return links ? links : '-';
                         }

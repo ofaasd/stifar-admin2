@@ -28,6 +28,15 @@
                 <div class="card">
                     <div class="card-header pb-0 card-no-border">
                         <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal">+ {{$title}}</button>
+                        <form id="form_filter_gelombang" class="d-inline-block me-3">
+                            <label for="filter_gelombang" class="form-label">Filter Gelombang</label>
+                            <select name="filter_gelombang" id="filter_gelombang" class="form-control">
+                                <option value="">-- Pilih Gelombang --</option>
+                                @foreach($gelombang as $row)
+                                    <option value="{{ $row->id }}">{{ $row->nama }}</option>
+                                @endforeach
+                            </select>
+                        </form>
                         <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
                             <div class="modal-dialog modal-xl" role="document">
                                 <div class="modal-content">
@@ -131,6 +140,9 @@
                 serverSide: true,
                 ajax: {
                     url: baseUrl.concat(page),
+                    data: function (d) {
+                        d.filtergelombang = $('#filter_gelombang').val();
+                    }
                 },
                 columns: my_data,
                 columnDefs: [
@@ -235,6 +247,11 @@
                     search: '',
                     searchPlaceholder: 'Search..'
                 },
+            });
+
+            //Filter Gelombang Wisuda
+            $(document).on('change', '#filter_gelombang', function () {
+                dt.ajax.reload();
             });
             
             $('#tambahModal').on('hidden.bs.modal', function () {
