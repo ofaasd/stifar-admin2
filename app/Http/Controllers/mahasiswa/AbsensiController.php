@@ -97,7 +97,7 @@ class AbsensiController extends Controller
                     $keterangan[$row->id] = "<div class='btn btn-success btn-sm'>Tepat Waktu</div>";
                 }
             }
-            $type_mhs[$row->id] = $model_absen->type;
+            $type_mhs[$row->id] = $model_absen->type ?? '';
         }
         $status_kehadiran = ['Tidak Hadir','Hadir','Sakit','Izin'];
         $no = 1;
