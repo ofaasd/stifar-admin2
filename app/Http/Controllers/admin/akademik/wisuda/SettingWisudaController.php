@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\admin\akademik\wisuda;
 
-use App\Http\Controllers\Controller;
-use App\Models\TbGelombangWisuda;
+use App\Models\Prodi;
 use Illuminate\Http\Request;
+use App\Models\TbGelombangWisuda;
+use App\Http\Controllers\Controller;
 
 class SettingWisudaController extends Controller
 {
@@ -38,8 +39,8 @@ class SettingWisudaController extends Controller
 
             $limit = $request->input('length');
             $start = $request->input('start');
-            $order = $columns[$request->input('order.0.column')];
-            $dir = $request->input('order.0.dir');
+            $order = 'created_at';
+            $dir = $request->input('order.0.dir') ?? 'desc';
 
             if (empty($request->input('search.value'))) {
                 $gelombang = TbGelombangWisuda::offset($start)

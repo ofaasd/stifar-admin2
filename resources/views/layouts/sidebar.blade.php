@@ -231,28 +231,11 @@
                 <ul class="sidebar-submenu">
                     <li><a href="{{URL::to('admin/kepegawaian/pegawai')}}">Data Pegawai</a></li>
                     {{-- <li><a href="#">Profil Pegawai</a></li> --}}
-                    <li><a href="#">Absensi <label class="badge badge-light-danger">!</label></a></li>
-                    <li><a href="{{URL::to('admin/kepegawaian/jamkerja')}}">Jam Kerja Dosen</a></li>
-                    <li><a href="#">Keterlambatan <label class="badge badge-light-danger">!</label></a></li>
+                    <li><a href="{{URL::to('attendance/report')}}">Absensi</a></li>
+                    <li><a href="{{URL::to('working')}}">Jam Kerja Dosen</a></li>
+                    {{-- <li><a href="#">Keterlambatan <label class="badge badge-light-danger">!</label></a></li> --}}
                     <li><a href="#">Statistik <label class="badge badge-light-danger">!</label></a></li>
-                    <li><a href="#">Struktur <label class="badge badge-light-danger">!</label></a></li>
-                    {{-- <li>
-                        <a class="submenu-title" href="#">
-                            <span>Riwayat</span>
-                        </a>
-                        <ul class="nav-sub-childmenu submenu-content">
-                            <li><a href="#">Mengajar</a></li>
-                            <li><a href="#">Penelitian</a></li>
-                            <li><a href="#">Pengabdian</a></li>
-                            <li><a href="#">karya Ilmiah</a></li>
-                            <li><a href="#">Organisasi</a></li>
-                            <li><a href="#">Repositori</a></li>
-                            <li><a href="#">Jabatan Struktural</a></li>
-                            <li><a href="#">Jabatan Fungsional</a></li>
-                            <li><a href="#">Pekerjaan</a></li>
-                            <li><a href="#">Pendidikan</a></li>
-                        </ul>
-                    </li> --}}
+                    
                     <li><a href="{{URL::to('admin/kepegawaian/surat_izin')}}">Surat Izin</a></li>
                 </ul>
             </li>

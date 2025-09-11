@@ -6,8 +6,10 @@ use App\Models\Mahasiswa;
 use App\Models\TbYudisium;
 use App\Models\master_nilai;
 use Illuminate\Http\Request;
+use App\Models\DaftarWisudawan;
 use App\Models\GelombangYudisium;
 use App\Http\Controllers\Controller;
+use App\Models\TbGelombangWisuda;
 use Illuminate\Support\Facades\Crypt;
 
 class ProsesYudisiumController extends Controller
@@ -48,6 +50,7 @@ class ProsesYudisiumController extends Controller
                     'mahasiswa.nama',
                     'mahasiswa.nim',
                     'mahasiswa.foto_mhs',
+                    'mahasiswa.id_program_studi',
                 ])
                 ->whereIn('mahasiswa.nim', $nimMatkulSkripsi)
                 ->whereNotIn('mahasiswa.nim', $nimSudahTerdaftarYudisium)
@@ -88,7 +91,13 @@ class ProsesYudisiumController extends Controller
                 $item->ipk = $totalSks > 0 ? number_format($totalIps / $totalSks, 2) : 0;
             }
 
-            $gelombang = GelombangYudisium::all();
+            $gelombang = GelombangYudisium::select([
+                'gelombang_yudisium.*',
+                'program_studi.nama_prodi'
+            ])
+            ->leftJoin('program_studi', 'gelombang_yudisium.id_prodi', '=', 'program_studi.id')
+            ->orderBy('created_at', 'desc')
+            ->get();
 
             return view('admin.akademik.yudisium.proses.index', compact('title', 'title2', 'data','indexed', 'mhs', 'gelombang'));
         }else{
@@ -108,8 +117,8 @@ class ProsesYudisiumController extends Controller
 
             $limit = $request->input('length');
             $start = $request->input('start');
-            $order = $columns[$request->input('order.0.column')];
-            $dir = $request->input('order.0.dir');
+            $order = 'tb_yudisium.created_at';
+            $dir = $request->input('order.0.dir') ?? 'desc';
 
             $query = TbYudisium::select([
                         'tb_yudisium.*',
@@ -118,18 +127,29 @@ class ProsesYudisiumController extends Controller
                         'gelombang_yudisium.tanggal_pengesahan as tanggalPengesahan',
                         'mahasiswa.nama AS namaMahasiswa',
                         'mahasiswa.foto_yudisium AS fotoYudisium'
-                    ])
+                    ]) 
                     ->leftJoin('mahasiswa', 'tb_yudisium.nim', '=', 'mahasiswa.nim')
                     ->leftJoin('gelombang_yudisium', 'tb_yudisium.id_gelombang_yudisium', '=', 'gelombang_yudisium.id');
 
-            if (empty($request->input('search.value'))) {
+            $daftarWisudawan = DaftarWisudawan::get();
+            $gelombangWisuda = TbGelombangWisuda::get();
+
+            $filterGelombang = $request->input('filtergelombang') ?? null;
+
+            if (empty($request->input('search.value')) || !empty($filterGelombang)) {
+                if ($filterGelombang != '') {
+                    $query->where('tb_yudisium.id_gelombang_yudisium', $filterGelombang);
+                }
+
                 $proses = $query
                     ->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
                     ->get()
-                    ->map(function ($item) {
+                    ->map(function ($item) use ($daftarWisudawan, $gelombangWisuda){
                         $item->nimEnkripsi = Crypt::encryptString($item->nim . "stifar");
+                        $tanggalPelaksanaan = $gelombangWisuda->where('id', $daftarWisudawan->where('nim', $item->nim)->where('status', 1)->first()->id_gelombang_wisuda)->first()->waktu_pelaksanaan ?? null;
+                        $item->tanggalDiberikan = $tanggalPelaksanaan ? \Carbon\Carbon::parse($tanggalPelaksanaan)->format('Y-m-d') : '-';
                         return $item;
                     });
 
@@ -173,6 +193,7 @@ class ProsesYudisiumController extends Controller
 
                 $proses = $query
                     ->where('tb_yudisium.nim', 'LIKE', "%{$search}%")
+                    ->orWhere('tb_yudisium.id_gelombang_yudisium', $filterGelombang)
                     ->orWhere('gelombang_yudisium.periode', 'LIKE', "%{$search}%")
                     ->offset($start)
                     ->limit($limit)
@@ -220,6 +241,7 @@ class ProsesYudisiumController extends Controller
 
                 $totalFiltered = $query
                     ->where('tb_yudisium.nim', 'LIKE', "%{$search}%")
+                    ->orWhere('tb_yudisium.id_gelombang_yudisium', $filterGelombang)
                     ->orWhere('gelombang_yudisium.periode', 'LIKE', "%{$search}%")
                     ->count();
             }
@@ -246,7 +268,8 @@ class ProsesYudisiumController extends Controller
                     $nestedData['nimEnkripsi'] = $row->nimEnkripsi;
                     $nestedData['namaMahasiswa'] = $row->namaMahasiswa;
                     $nestedData['fotoYudisium'] = $row->fotoYudisium;
-                    $nestedData['tanggalPengesahan'] =  null;
+                    $nestedData['tanggalDiberikan'] = $row->tanggalDiberikan;
+                    $nestedData['tanggalPengesahan'] = $row->tanggalPengesahan ? \Carbon\Carbon::parse($row->tanggalPengesahan)->translatedFormat('d F Y') : null;
                     $data[] = $nestedData;
                 }
             }

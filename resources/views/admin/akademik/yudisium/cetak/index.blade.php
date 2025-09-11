@@ -61,6 +61,7 @@
                                         <th></th>
                                         <th>ID</th>
                                         <th>Nama</th>
+                                        <th>Program Studi</th>
                                         <th>Periode</th>
                                         <th>Jumlah Peserta</th>
                                         <th>Actions</th>
@@ -169,6 +170,7 @@
                     searchPlaceholder: 'Search..'
                 },
             });
+
             $('#tambahModal').on('hidden.bs.modal', function () {
                 $('#formAdd').find('input, textarea, select').val('');
                 $('#formAdd').trigger("reset");

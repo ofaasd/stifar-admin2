@@ -36,12 +36,9 @@
                                                         <div class="profile-title card-header mb-3">
                                                                 <div class="media align-items-center">
                                                                         <div class="photo-profile position-relative d-inline-block" style="width:90px; height:120px;">
-                                                                                <img 
-                                                                                        class="rounded" 
-                                                                                        alt="Foto Mahasiswa"
-                                                                                        src="{{ !empty($mhs->fotoMhs) ? asset('assets/images/mahasiswa/foto-yudisium/' . $mhs->fotoMhs) : asset('assets/images/user/7.jpg') }}"
-                                                                                        style="width:90px; height:120px; object-fit:cover;"
-                                                                                >
+                                                                                <img class="rounded" alt="Foto Mahasiswa"
+                                                                                        src="{{ !empty($mhs->fotoMhs) ? asset('assets/images/mahasiswa/foto-yudisium/' . $mhs->fotoMhs) : asset('assets/images/mahasiswa/ijazah/pas-foto-3x4.png') }}"
+                                                                                        style="width:90px; height:120px; object-fit:contain;">
                                                                         </div>
                                                                         <div class="media-body ms-3">
                                                                                 <h5 class="mb-1">{{ $mhs->nama }}</h5>
@@ -55,7 +52,7 @@
                                                 </div>
 
                                                 @if (isset($registered) && $registered)
-                                                         @if ($registered->status == 1)
+                                                        @if ($registered->status == 1)
                                                                 <div class="alert alert-success" role="alert">
                                                                         Selamat 🎉 <strong>{{ $mhs->nama }}</strong> Anda telah berhasil mendaftar wisuda.<br>
                                                                         <ul class="mb-2">
@@ -85,12 +82,12 @@
                                                                                 </li>
                                                                         </ul>
                                                                         @if ($registered->statusPembayaran === 0 || $registered->statusPembayaran === 1)
-                                                                            <div class="alert" role="alert">
-                                                                                Bukti pembayaran telah diunggah pada {{ \Carbon\Carbon::parse($registered->tanggalPembayaran)->translatedFormat('d F Y H:i:s') }}. <a href="{{ asset('assets/upload/mahasiswa/wisuda/bukti-bayar/' . $registered->buktiPembayaran) }}" target="_blank">disini</a>
-                                                                            </div>
+                                                                                <div class="alert" role="alert">
+                                                                                        Bukti pembayaran telah diunggah pada {{ \Carbon\Carbon::parse($registered->tanggalPembayaran)->translatedFormat('d F Y') }}. 
+                                                                                        <a href="{{ asset('assets/upload/mahasiswa/wisuda/bukti-bayar/' . $registered->buktiPembayaran) }}" target="_blank">disini</a>
+                                                                                </div>
                                                                         @else
                                                                                 Silahkan lanjutkan dengan mengunggah bukti pembayaran.<br>
-
                                                                                 <form id="form-bukti-bayar" method="POST" enctype="multipart/form-data" class="p-3 rounded">
                                                                                         @csrf
                                                                                         <input type="hidden" name="nim" value="{{ $registered->nim }}">
@@ -243,69 +240,45 @@
                                                                         </button>
                                                                 </div>
                                                                 <div class="data-diri" style="display:none;">
-                                                                                <div class="row">
-                                                                                                <p class="fw-bold"><span class="text-danger">*</span>Foto berformat jpg/jpeg dan maksimal berukuran 5mb </p>
-                                                                                                <small class="text-end">Terakhir diupdate <span class="fst-italic">{{ isset($berkas) ? \Carbon\Carbon::parse($berkas->updated_at)->translatedFormat('d F Y H:i:s') : "data tidak ditemukan" }}</span></small>
-                                                                                                <div class="col-md-6">
-                                                                                                                {{-- KTP --}}
-                                                                                                                <div class="mb-2">
-                                                                                                                                <div class="col-sm-12" id="input-ktp">
-                                                                                                                                                <label for="ktp" class="mb-0">KTP</label>
-                                                                                                                                                <div class="input-group">
-                                                                                                                                                                <input type="file" id="ktp" name="ktp" class="form-control" aria-describedby="inputGroupPrepend">
-                                                                                                                                                </div>
-                                                                                                                                </div>
-                                                                                                                                <hr>
-                                                                                                                </div>
-                                                                                                                {{-- KK --}}
-                                                                                                                <div class="mb-2">
-                                                                                                                                <div class="col-sm-12" id="input-kk">
-                                                                                                                                                <label for="kk" class="mb-0">KK</label>
-                                                                                                                                                <div class="input-group">
-                                                                                                                                                                <input type="file" id="kk" name="kk" class="form-control" aria-describedby="inputGroupPrepend">
-                                                                                                                                                </div>
-                                                                                                                                </div>
-                                                                                                                                <hr>
-                                                                                                                </div>
-                                                                                                                {{-- Akte --}}
-                                                                                                                <div class="mb-2">
-                                                                                                                                <div class="col-sm-12" id="input-akte">
-                                                                                                                                                <label for="akte" class="mb-0">Akte</label>
-                                                                                                                                                <div class="input-group">
-                                                                                                                                                                <input type="file" id="akte" name="akte" class="form-control" aria-describedby="inputGroupPrepend">
-                                                                                                                                                </div>
-                                                                                                                                </div>
-                                                                                                                                <hr>
-                                                                                                                </div>
+                                                                        <div class="row">
+                                                                                <p class="fw-bold"><span class="text-danger">*</span>Foto berformat jpg/jpeg dan maksimal berukuran 5mb </p>
+                                                                                <small class="text-end">Terakhir diupdate <span class="fst-italic">{{ isset($berkas) ? \Carbon\Carbon::parse($berkas->updated_at)->translatedFormat('d F Y H:i:s') : "data tidak ditemukan" }}</span></small>
+                                                                                <div class="col-md-6">
+                                                                                        {{-- KTP --}}
+                                                                                        <div class="mb-2">
+                                                                                                <div class="col-sm-12" id="input-ktp">
+                                                                                                        <label for="ktp" class="mb-0">KTP</label>
+                                                                                                        <div class="input-group">
+                                                                                                                <input type="file" id="ktp" name="ktp" class="form-control" aria-describedby="inputGroupPrepend">
+                                                                                                        </div>
                                                                                                 </div>
-                                                                                                <div class="col-md-6">
-                                                                                                                {{-- Ijazah Depan --}}
-                                                                                                                <div class="mb-2">
-                                                                                                                                <div class="view-ijazah">
-                                                                                                                                                <label class="col-sm-12 col-form-label">Foto Ijazah :</label>
-                                                                                                                                                <div class="col mb-3" id="input-ijazah-depan">
-                                                                                                                                                                <label for="ijazah-depan" class="mb-0">Depan</label>
-                                                                                                                                                                <div class="input-group" id="ijazah-depan">
-                                                                                                                                                                                <input type="file" name="ijazah_depan" class="form-control" aria-describedby="inputGroupPrepend">
-                                                                                                                                                                </div>
-                                                                                                                                                </div>
-                                                                                                                                                <hr>
-                                                                                                                                </div>
-                                                                                                                                {{-- Ijazah Belakang --}}
-                                                                                                                                <div class="col-sm-12">
-                                                                                                                                                <div class="col" id="input-ijazah-belakang">
-                                                                                                                                                                <label for="ijazah-belakang" class="mb-0">Belakang</label>
-                                                                                                                                                                <div class="input-group" id="ijazah-belakang">
-                                                                                                                                                                                <input type="file" name="ijazah_belakang" class="form-control" aria-describedby="inputGroupPrepend">
-                                                                                                                                                                </div>
-                                                                                                                                                </div>
-                                                                                                                                </div>
-                                                                                                                </div>
+                                                                                                <hr>
+                                                                                        </div>
+                                                                                        {{-- KK --}}
+                                                                                        <div class="mb-2">
+                                                                                                <div class="col-sm-12" id="input-kk">
+                                                                                                        <label for="kk" class="mb-0">KK</label>
+                                                                                                        <div class="input-group">
+                                                                                                                <input type="file" id="kk" name="kk" class="form-control" aria-describedby="inputGroupPrepend">
+                                                                                                        </div>
                                                                                                 </div>
+                                                                                                <hr>
+                                                                                        </div>
+                                                                                        {{-- Akte --}}
+                                                                                        <div class="mb-2">
+                                                                                                <div class="col-sm-12" id="input-akte">
+                                                                                                        <label for="akte" class="mb-0">Akte</label>
+                                                                                                        <div class="input-group">
+                                                                                                                <input type="file" id="akte" name="akte" class="form-control" aria-describedby="inputGroupPrepend">
+                                                                                                        </div>
+                                                                                                </div>
+                                                                                                <hr>
+                                                                                        </div>
                                                                                 </div>
-                                                                                <div class="card-footer mt-5">
-                                                                                                <button class="btn btn-success" id="btn-submit" type="submit">Simpan</button>
-                                                                                </div>
+                                                                        </div>
+                                                                        <div class="card-footer mt-5">
+                                                                                <button class="btn btn-success" id="btn-submit" type="submit">Simpan</button>
+                                                                        </div>
                                                                 </div>
                                                         </form>
                                                 @endif
@@ -319,133 +292,122 @@
 
 @section('script')
 <script>
-        $(document).ready(function() {
-                // data diri
-                $('#toggle-data-diri').on('click', function() {
-                        $('.data-diri').slideToggle();
-                });
-                // Submit form dengan konfirmasi
-                $('#form-daftar-wisuda').on('submit', function(e) {
-                        e.preventDefault();
-                        Swal.fire({
-                                title: 'Konfirmasi',
-                                text: 'Apakah Anda yakin ingin menyimpan data?',
-                                icon: 'question',
-                                showCancelButton: true,
-                                confirmButtonText: 'Ya, Simpan',
-                                cancelButtonText: 'Batal'
-                        }).then((result) => {
-                                if (result.isConfirmed) {
-                                        $('#btn-submit').prop('disabled', true);
-                                        $('#btn-submit').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Please Wait...');
-                                        
-                                        var formData = new FormData(this);
+$(document).ready(function() {
+        // data diri
+        $('#toggle-data-diri').on('click', function() {
+                $('.data-diri').slideToggle();
+        });
 
-                                        // Uncomment AJAX for actual use
-                                        $.ajax({
-                                            url: '{{ route('mhs.akademik.daftar-wisuda.store') }}',
-                                            type: 'POST',
-                                            data: formData,
-                                            contentType: false,
-                                            processData: false,
-                                            success: function(response) {
+        // Submit form dengan konfirmasi
+        $('#form-daftar-wisuda').on('submit', function(e) {
+                e.preventDefault();
+                Swal.fire({
+                        title: 'Konfirmasi',
+                        text: 'Apakah Anda yakin ingin menyimpan data?',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonText: 'Ya, Simpan',
+                        cancelButtonText: 'Batal'
+                }).then((result) => {
+                        if (result.isConfirmed) {
+                                $('#btn-submit').prop('disabled', true);
+                                $('#btn-submit').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Please Wait...');
+                                var formData = new FormData(this);
+                                $.ajax({
+                                        url: '{{ route('mhs.akademik.daftar-wisuda.store') }}',
+                                        type: 'POST',
+                                        data: formData,
+                                        contentType: false,
+                                        processData: false,
+                                        success: function(response) {
                                                 $('#btn-submit').prop('disabled', false);
                                                 $('#btn-submit').html('Simpan');
                                                 Swal.fire({
-                                                    icon: 'success',
-                                                    title: 'Berkas berhasil disimpan',
-                                                    text: response.message,
-                                                    timer: 1500
+                                                        icon: 'success',
+                                                        title: 'Berkas berhasil disimpan',
+                                                        text: response.message,
+                                                        timer: 1500
                                                 }).then(() => {
-                                                    location.reload();
+                                                        location.reload();
                                                 });
-                                            },
-                                            error: function(xhr) {
-                                                // console.log('====================================');
-                                                // console.log(xhr);
-                                                // console.log('====================================');
+                                        },
+                                        error: function(xhr) {
                                                 $('#btn-submit').prop('disabled', false);
                                                 $('#btn-submit').html('Simpan');
                                                 Swal.fire({
-                                                    icon: 'error',
-                                                    title: 'error',
-                                                    text: xhr.responseJSON.message,
+                                                        icon: 'error',
+                                                        title: 'error',
+                                                        text: xhr.responseJSON.message,
                                                 });
-                                            }
-                                        });
-                                }
-                        });
-                });
-
-                $('#gelombang_id').on('change', function() {
-                        var selected = $(this).find('option:selected');
-                        if(selected.val()) {
-                                $('#gelombang-detail').show();
-                                $('#detail-nama').text(selected.text());
-                                $('#detail-tempat').text(selected.data('tempat'));
-                                $('#detail-waktu').text(selected.data('waktu'));
-                                $('#detail-daftar').text(selected.data('daftar'));
-                                $('#detail-pemberkasan').text(selected.data('pemberkasan'));
-                                $('#detail-gladi').text(selected.data('gladi'));
-                                $('#detail-biaya').text(selected.data('biaya'));
-                                $('#detail-peserta').text(selected.data('peserta'));
-                        } else {
-                                $('#gelombang-detail').hide();
+                                        }
+                                });
                         }
                 });
+        });
 
-                $('#form-bukti-bayar').on('submit', function(e) {
-                        e.preventDefault();
-                        Swal.fire({
-                                title: 'Konfirmasi',
-                                text: 'Apakah Anda yakin ingin mengupload bukti bayar?',
-                                icon: 'question',
-                                showCancelButton: true,
-                                confirmButtonText: 'Ya, Upload',
-                                cancelButtonText: 'Batal'
-                        }).then((result) => {
-                                if (result.isConfirmed) {
-                                        $('#btn-submit').prop('disabled', true);
-                                        $('#btn-submit').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Please Wait...');
-                                        
-                                        var formData = new FormData(this);
+        $('#gelombang_id').on('change', function() {
+                var selected = $(this).find('option:selected');
+                if(selected.val()) {
+                        $('#gelombang-detail').show();
+                        $('#detail-nama').text(selected.text());
+                        $('#detail-tempat').text(selected.data('tempat'));
+                        $('#detail-waktu').text(selected.data('waktu'));
+                        $('#detail-daftar').text(selected.data('daftar'));
+                        $('#detail-pemberkasan').text(selected.data('pemberkasan'));
+                        $('#detail-gladi').text(selected.data('gladi'));
+                        $('#detail-biaya').text(selected.data('biaya'));
+                        $('#detail-peserta').text(selected.data('peserta'));
+                } else {
+                        $('#gelombang-detail').hide();
+                }
+        });
 
-                                        // Uncomment AJAX for actual use
-                                        $.ajax({
-                                            url: '{{ route('mhs.akademik.daftar-wisuda.upload-bukti-bayar') }}',
-                                            type: 'POST',
-                                            data: formData,
-                                            contentType: false,
-                                            processData: false,
-                                            success: function(response) {
+        $('#form-bukti-bayar').on('submit', function(e) {
+                e.preventDefault();
+                Swal.fire({
+                        title: 'Konfirmasi',
+                        text: 'Apakah Anda yakin ingin mengupload bukti bayar?',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonText: 'Ya, Upload',
+                        cancelButtonText: 'Batal'
+                }).then((result) => {
+                        if (result.isConfirmed) {
+                                $('#btn-submit').prop('disabled', true);
+                                $('#btn-submit').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Please Wait...');
+                                var formData = new FormData(this);
+                                $.ajax({
+                                        url: '{{ route('mhs.akademik.daftar-wisuda.upload-bukti-bayar') }}',
+                                        type: 'POST',
+                                        data: formData,
+                                        contentType: false,
+                                        processData: false,
+                                        success: function(response) {
                                                 $('#btn-submit').prop('disabled', false);
                                                 $('#btn-submit').html('Simpan');
                                                 Swal.fire({
-                                                    icon: 'success',
-                                                    title: 'Upload bukti bayar berhasil.',
-                                                    text: response.message,
-                                                    timer: 1500
+                                                        icon: 'success',
+                                                        title: 'Upload bukti bayar berhasil.',
+                                                        text: response.message,
+                                                        timer: 1500
                                                 }).then(() => {
-                                                    location.reload();
+                                                        location.reload();
                                                 });
-                                            },
-                                            error: function(xhr) {
-                                                // console.log('====================================');
-                                                // console.log(xhr);
-                                                // console.log('====================================');
+                                        },
+                                        error: function(xhr) {
                                                 $('#btn-submit').prop('disabled', false);
                                                 $('#btn-submit').html('Simpan');
                                                 Swal.fire({
-                                                    icon: 'error',
-                                                    title: 'error.',
-                                                    text: xhr.responseJSON.message,
+                                                        icon: 'error',
+                                                        title: 'error.',
+                                                        text: xhr.responseJSON.message,
                                                 });
-                                            }
-                                        });
-                                }
-                        });
+                                        }
+                                });
+                        }
                 });
         });
+});
 </script>
 <script src="{{ asset('assets/js/datatable/datatables/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('assets/js/sweet-alert/sweetalert.min.js') }}"></script>

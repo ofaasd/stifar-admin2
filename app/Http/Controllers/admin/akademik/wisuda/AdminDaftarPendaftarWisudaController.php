@@ -46,52 +46,58 @@ class AdminDaftarPendaftarWisudaController extends Controller
 
             $limit = $request->input('length');
             $start = $request->input('start');
-            $order = $columns[$request->input('order.0.column')];
-            $dir = $request->input('order.0.dir');
+            $order = 'tb_daftar_wisudawan.created_at';
+            $dir = $request->input('order.0.dir') ?? 'desc';
 
             $query = DaftarWisudawan::select([
-                        'tb_daftar_wisudawan.id',
-                        'mahasiswa.nim',
-                        'mahasiswa.nama',
-                        'mahasiswa.foto_yudisium AS fotoMhs',
-                        'tb_daftar_wisudawan.status AS statusDaftar',
-                        'tb_gelombang_wisuda.nama AS gelombangWisuda',
-                        'gelombang_yudisium.nama AS gelombangYudisium',
-                        'tb_pembayaran_wisuda.status AS statusPembayaran',
-                        'tb_pembayaran_wisuda.bukti AS buktiPembayaran'
-                    ])
-                    ->where('tb_daftar_wisudawan.status', '=', 0)
-                    ->leftJoin('mahasiswa', 'tb_daftar_wisudawan.nim', '=', 'mahasiswa.nim')
-                    ->leftJoin('tb_yudisium', 'mahasiswa.nim', '=', 'tb_yudisium.nim')
-                    ->leftJoin('gelombang_yudisium', 'tb_yudisium.id_gelombang_yudisium', '=', 'gelombang_yudisium.id')
-                    ->leftJoin('tb_gelombang_wisuda', 'tb_daftar_wisudawan.id_gelombang_wisuda', '=', 'tb_gelombang_wisuda.id')
-                    ->leftJoin('tb_pembayaran_wisuda', 'tb_daftar_wisudawan.nim', '=', 'tb_pembayaran_wisuda.nim');
+                'tb_daftar_wisudawan.id',
+                'tb_daftar_wisudawan.created_at',
+                'tb_daftar_wisudawan.id_gelombang_wisuda',
+                'mahasiswa.nim',
+                'mahasiswa.nama',
+                'mahasiswa.foto_yudisium AS fotoMhs',
+                'tb_daftar_wisudawan.status AS statusDaftar',
+                'tb_gelombang_wisuda.nama AS gelombangWisuda',
+                'gelombang_yudisium.nama AS gelombangYudisium',
+                'tb_pembayaran_wisuda.status AS statusPembayaran',
+                'tb_pembayaran_wisuda.bukti AS buktiPembayaran'
+            ])
+            ->where('tb_daftar_wisudawan.status', '=', 0)
+            ->leftJoin('mahasiswa', 'tb_daftar_wisudawan.nim', '=', 'mahasiswa.nim')
+            ->leftJoin('tb_yudisium', 'mahasiswa.nim', '=', 'tb_yudisium.nim')
+            ->leftJoin('gelombang_yudisium', 'tb_yudisium.id_gelombang_yudisium', '=', 'gelombang_yudisium.id')
+            ->leftJoin('tb_gelombang_wisuda', 'tb_daftar_wisudawan.id_gelombang_wisuda', '=', 'tb_gelombang_wisuda.id')
+            ->leftJoin('tb_pembayaran_wisuda', 'tb_daftar_wisudawan.nim', '=', 'tb_pembayaran_wisuda.nim');
 
+            $filterGelombang = $request->input('filtergelombang') ?? null;
 
-            if (empty($request->input('search.value'))) {
-                    $pendaftar = $query->offset($start)
-                    ->limit($limit)
-                    ->orderBy($order, $dir)
-                    ->get();
+            if (empty($request->input('search.value'))  || !empty($filterGelombang)) {
+                if ($filterGelombang != '') {
+                    $query->where('tb_daftar_wisudawan.id_gelombang_wisuda', $filterGelombang);
+                }
 
-                    $pendaftar->each(function ($mahasiswa) {
-                        $berkas = MahasiswaBerkasPendukung::where("nim", $mahasiswa->nim)->latest()->first();
-                        $mahasiswa->kk = $berkas->kk ?? null;
-                        $mahasiswa->ktp = $berkas->ktp ?? null;
-                        $mahasiswa->akte = $berkas->akte ?? null;
-                        $mahasiswa->ijazahDepan = $berkas->ijazah_depan ?? null;
-                        $mahasiswa->ijazahBelakang = $berkas->ijazah_belakang ?? null;
+                $pendaftar = $query->offset($start)
+                ->limit($limit)
+                ->orderBy($order, $dir)
+                ->get();
 
-                        // Cek status pembayaran
-                        if ($mahasiswa->statusPembayaran === null) {
-                            $mahasiswa->statusPembayaran = 'Belum upload bukti';
-                        } elseif ($mahasiswa->statusPembayaran == 0) {
-                            $mahasiswa->statusPembayaran = 'Belum diverifikasi';
-                        }else{
-                            $mahasiswa->statusPembayaran = 'Sudah diverifikasi';
-                        }
-                    });
+                $pendaftar->each(function ($mahasiswa) {
+                    $berkas = MahasiswaBerkasPendukung::where("nim", $mahasiswa->nim)->latest()->first();
+                    $mahasiswa->kk = $berkas->kk ?? null;
+                    $mahasiswa->ktp = $berkas->ktp ?? null;
+                    $mahasiswa->akte = $berkas->akte ?? null;
+                    $mahasiswa->ijazahDepan = $berkas->ijazah_depan ?? null;
+                    $mahasiswa->ijazahBelakang = $berkas->ijazah_belakang ?? null;
 
+                    // Cek status pembayaran
+                    if ($mahasiswa->statusPembayaran === null) {
+                        $mahasiswa->statusPembayaran = 'Belum upload bukti';
+                    } elseif ($mahasiswa->statusPembayaran == 0) {
+                        $mahasiswa->statusPembayaran = 'Belum diverifikasi';
+                    }else{
+                        $mahasiswa->statusPembayaran = 'Sudah diverifikasi';
+                    }
+                });
             } else {
                 $search = $request->input('search.value');
 

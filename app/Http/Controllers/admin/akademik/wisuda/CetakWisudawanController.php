@@ -58,20 +58,21 @@ class CetakWisudawanController extends Controller
 
             $limit = $request->input('length');
             $start = $request->input('start');
-            $order = $columns[$request->input('order.0.column')];
-            $dir = $request->input('order.0.dir');
+            $order = 'created_at';
+            $dir = $request->input('order.0.dir') ?? 'desc';
 
             $query = TbGelombangWisuda::select([
-                        'id',
-                        'periode',
-                        'nama',
-                        'tempat',
-                        'waktu_pelaksanaan',
-                        'mulai_pendaftaran',
-                        'selesai_pendaftaran',
-                        'tanggal_pemberkasan',
-                        'tanggal_gladi',
-                        'tarif_wisuda',
+                'id',
+                'periode',
+                'nama',
+                'tempat',
+                'waktu_pelaksanaan',
+                'mulai_pendaftaran',
+                'selesai_pendaftaran',
+                'tanggal_pemberkasan',
+                'tanggal_gladi',
+                'tarif_wisuda',
+                'created_at',
             ]);
 
 
@@ -274,8 +275,10 @@ class CetakWisudawanController extends Controller
             return response()->json(['message' => 'No data found for this gelombang'], 404);
         }
 
+        $logo = public_path('/assets/images/logo/logo-icon.png');
+
         // Kirim data ke view dan render HTML
-        $html = view('admin.akademik.wisuda.cetak.view-cetak', compact('data', 'gelombang'))->render();
+        $html = view('admin.akademik.wisuda.cetak.view-cetak', compact('data', 'gelombang', 'logo'))->render();
 
         // Inisialisasi mPDF
         $mpdf = new \Mpdf\Mpdf([

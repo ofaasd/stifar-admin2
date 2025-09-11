@@ -77,6 +77,24 @@
                   <div class="form-footer">
                       <div class="row">
                           <div class="col-md-12 mb-4">
+                              <div class="modal fade" id="isi-no-pisn" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                  <div class="modal-dialog" role="document">
+                                      <form action="javascript:void(0)" id="userForm">
+                                          <div class="modal-content">
+                                              <div class="modal-header">
+                                                  <h5 class="modal-title" id="exampleModalLabel">Isi No PISN</h5>
+                                                  <button class="btn-close" type="button" data-bs-dismiss="modal"
+                                                      aria-label="Close"></button>
+                                              </div>
+                                              <div class="modal-body">
+                                                <p>Silakan isi nomor PISN Anda pada form untuk melengkapi data yudisium.</p>
+                                              </div>
+                                          </div>
+                                      </form>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="col-md-12 mb-4">
                               <a href="#" class="btn btn-primary btn-block" data-bs-toggle="modal" data-original-title="test" data-bs-target="#ubahPasswordModal"><i class="fa fa-key"></i> Ubah Password</a>
                               @include('mahasiswa._form_ubah_password_user')
                           </div>
@@ -120,6 +138,13 @@
     <script>
         $(window).on('load', function() {
             $('#ubahPasswordModal').modal('show');
+        });
+    </script>
+    @endif
+    @if($mahasiswa->is_yudisium == 1 && empty($mahasiswa->no_pisn))
+    <script>
+        $(window).on('load', function() {
+            $('#isi-no-pisn').modal('show');
         });
     </script>
     @endif

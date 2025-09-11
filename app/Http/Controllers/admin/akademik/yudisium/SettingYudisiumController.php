@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers\admin\akademik\yudisium;
 
-use App\Http\Controllers\Controller;
-use App\Models\GelombangYudisium;
 use Carbon\Carbon;
+use App\Models\Prodi;
 use Illuminate\Http\Request;
+use App\Models\GelombangYudisium;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 
 class SettingYudisiumController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public $indexed = ['', 'id', 'nama', 'no_sk', 'periode'];
+    public $indexed = ['', 'id', 'nama', 'prodi', 'no_sk', 'periode'];
     public function index(Request $request)
     {
         if (empty($request->input('length'))) {
@@ -21,14 +22,16 @@ class SettingYudisiumController extends Controller
             $title2 = "setting";
             $data = GelombangYudisium::all();
             $indexed = $this->indexed;
-
-            return view('admin.akademik.yudisium.setting.index', compact('title', 'title2', 'data','indexed'));
+            $prodi = Prodi::all();
+            
+            return view('admin.akademik.yudisium.setting.index', compact('title', 'title2', 'data','indexed','prodi'));
         }else{
             $columns = [
                 1 => 'id',
                 2 => 'nama',
-                3 => 'no_sk',
-                4 => 'periode',
+                3 => 'prodi',
+                4 => 'no_sk',
+                5 => 'periode',
             ];
 
             $search = [];
@@ -41,27 +44,37 @@ class SettingYudisiumController extends Controller
             $start = $request->input('start');
             $order = $columns[$request->input('order.0.column')];
             $dir = $request->input('order.0.dir');
-
+            $query = GelombangYudisium::select([
+                'gelombang_yudisium.id', 
+                'gelombang_yudisium.nama', 
+                'gelombang_yudisium.no_sk', 
+                'gelombang_yudisium.periode', 
+                'gelombang_yudisium.tanggal_pengesahan',
+                'program_studi.nama_prodi'
+            ])
+            ->leftJoin('program_studi', 'gelombang_yudisium.id_prodi', '=', 'program_studi.id');
 
             if (empty($request->input('search.value'))) {
-                $gelombang = GelombangYudisium::offset($start)
+                $gelombang = $query->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
                     ->get();
             } else {
                 $search = $request->input('search.value');
 
-                $gelombang = GelombangYudisium::where('periode', 'LIKE', "%{$search}%")
-                    ->orWhere('nama', 'LIKE', "%{$search}%")
-                    ->orWhere('no_sk', 'LIKE', "%{$search}%")
+                $gelombang = $query->where('gelombang_yudisium.periode', 'LIKE', "%{$search}%")
+                    ->orWhere('gelombang_yudisium.nama', 'LIKE', "%{$search}%")
+                    ->orWhere('gelombang_yudisium.no_sk', 'LIKE', "%{$search}%")
+                    ->orWhere('program_studi.nama_prodi', 'LIKE', "%{$search}%")
                     ->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
                     ->get();
 
-                $totalFiltered = GelombangYudisium::where('periode', 'LIKE', "%{$search}%")
-                    ->orWhere('no_sk', 'LIKE', "%{$search}%")
-                    ->orWhere('nama', 'LIKE', "%{$search}%")
+                $totalFiltered = $query->where('gelombang_yudisium.periode', 'LIKE', "%{$search}%")
+                    ->orWhere('gelombang_yudisium.no_sk', 'LIKE', "%{$search}%")
+                    ->orWhere('gelombang_yudisium.nama', 'LIKE', "%{$search}%")
+                    ->orWhere('program_studi.nama_prodi', 'LIKE', "%{$search}%")
                     ->count();
             }
 
@@ -82,6 +95,7 @@ class SettingYudisiumController extends Controller
                     $nestedData['periode'] = $row->periode;
                     $nestedData['nama'] = $teksNama;
                     $nestedData['no_sk'] = $row->no_sk;
+                    $nestedData['prodi'] = $row->nama_prodi;
                     $data[] = $nestedData;
                 }
             }
@@ -122,6 +136,7 @@ class SettingYudisiumController extends Controller
             $request->validate([
                 'nama' => 'required',
                 'no_sk' => 'required',
+                'id_prodi' => 'required',
                 'periode' => 'required',
             ]);
 
@@ -134,6 +149,7 @@ class SettingYudisiumController extends Controller
                     [
                         'nama' => $request->nama,
                         'no_sk' => $request->no_sk,
+                        'id_prodi' => $request->id_prodi,
                         'periode' => $periode,
                     ]
                 );
@@ -146,6 +162,7 @@ class SettingYudisiumController extends Controller
                     [
                         'nama' => $request->nama,
                         'no_sk' => $request->no_sk,
+                        'id_prodi' => $request->id_prodi,
                         'periode' => $periode,
                     ]
                 );

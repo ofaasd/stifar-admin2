@@ -106,16 +106,12 @@ class DaftarWisudaController extends Controller
             'ktp' => 'required|file|mimes:jpg,jpeg|max:5012',
             'kk' => 'required|file|mimes:jpg,jpeg|max:5012',
             'akte' => 'required|file|mimes:jpg,jpeg|max:5012',
-            'ijazah_depan' => 'required|file|mimes:jpg,jpeg|max:5012',
-            'ijazah_belakang' => 'required|file|mimes:jpg,jpeg|max:5012',
         ]);
 
         $fields = [
             'kk' => 'kk',
             'ktp' => 'ktp',
             'akte' => 'akte',
-            'ijazah_depan' => 'ijazah_depan',
-            'ijazah_belakang' => 'ijazah_belakang',
         ];
 
         // cek mahasiswa

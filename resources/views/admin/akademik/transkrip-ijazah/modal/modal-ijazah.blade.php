@@ -21,6 +21,10 @@
               <label for="akreditasi2Eng" class="form-label">Akreditasi LAM-PTKes Inggris</label>
               <input type="text" class="form-control" id="akreditasi2Eng" name="akreditasi2Eng" value=" accredited with grade 'very good' SK LAM-PTKes 0815/LAM-PTKes/Akr/Sar/IX/2022" required>
           </div>
+          <div class="mb-3">
+              <label for="tanggal_diberikan" class="form-label">Tanggal Diberikan</label>
+              <input type="date" class="form-control" id="tanggal_diberikan" name="tanggal_diberikan" required>
+          </div>
           </div>
           <div class="modal-footer">
               <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
@@ -42,8 +46,11 @@
       $(document).on('click', '.cetak-ijazah-record', function () {
           const nim = $(this).data('nim');
           const nama = $(this).data('nama');
+          const tanggal = $(this).data('tanggal');
+          
           $('#nim-ijazah-cetak').val(nim);
           $('#nama-ijazah-cetak').text(nama);
+          $('#tanggal_diberikan').val(tanggal);
       });
 
       $('#formCetakIjazah').on('submit', function(e) {

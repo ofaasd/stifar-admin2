@@ -41,10 +41,11 @@
                                             <option value="">Tidak ada gelombang tersedia</option>
                                         @else
                                             <option value="">-- Pilih Gelombang --</option>
-                                            @foreach($gelombang as $row)
-                                                <option value="{{ $row->id }}">
+                                            @foreach($gelombang->where('tanggal_pengesahan', '==', null) as $row)
+                                                <option value="{{ $row->id }}" data-ps="{{ $row->id_prodi }}">
                                                     {{ $row->periode }} | 
-                                                    {{ $row->nama }}
+                                                    {{ $row->nama }} | 
+                                                    {{ $row->nama_prodi }}
                                                 </option>
                                             @endforeach
                                         @endif
@@ -58,6 +59,7 @@
                                                 <option value="{{ $row->nim }}"
                                                     title="{{ $row->nim }} | {{ $row->nama }} | sks: {{ $row->totalSks }} | ipk: {{ $row->ipk }}"
                                                     data-foto="{{ $row->foto_mhs ? asset('assets/images/mahasiswa/' . $row->foto_mhs) : asset('assets/images/user/1.jpg') }}"
+                                                    data-ps="{{ $row->id_program_studi }}"
                                                     class="px-3 py-2">
                                                     {{ $row->nim }} | {{ $row->nama }} | sks: {{ $row->totalSks }} | ipk: {{ $row->ipk }}
                                                 </option>
@@ -106,7 +108,7 @@
                                     <label for="gelombang" class="form-label">Gelombang Yudisium</label>
                                     <select class="form-control" id="id_gelombang_yudisium" name="gelombang" required>
                                         <option value="">-- Pilih Gelombang --</option>
-                                        @foreach($gelombang as $row)
+                                        @foreach($gelombang->where('tanggal_pengesahan', '==', null) as $row)
                                             <option value="{{ $row->id }}">
                                                 {{ $row->periode }} | 
                                                 {{ $row->nama }}
@@ -172,9 +174,20 @@
 
                     @if (empty($isArsip))
                         <div class="card-header pb-0 card-no-border d-flex align-items-center justify-content-between">
-                            <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal">
-                                + {{$title}}
-                            </button>
+                            <div class="gap-3">
+                                <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal">
+                                    + {{$title}}
+                                </button>
+                                <form id="form_filter_gelombang" class="d-inline-block me-3">
+                                    <label for="filter_gelombang" class="form-label">Filter Gelombang</label>
+                                    <select name="filter_gelombang" id="filter_gelombang" class="form-control">
+                                        <option value="">-- Pilih Gelombang --</option>
+                                        @foreach($gelombang as $row)
+                                            <option value="{{ $row->id }}">{{ $row->nama }} | {{ $row->nama_prodi }}</option>
+                                        @endforeach
+                                    </select>
+                                </form>
+                            </div>
                             <a href="{{ url('/admin/akademik/yudisium/proses-arsip') }}" class="btn btn-outline-info" title="Arsip Yudisium">
                                 <i class="fa fa-archive"></i> Arsip
                             </a>
@@ -264,6 +277,9 @@
                 serverSide: true,
                 ajax: {
                     url: baseUrl.concat(page),
+                    data: function (d) {
+                        d.filtergelombang = $('#filter_gelombang').val();
+                    }
                 },
                 columns: my_data,
                 columnDefs: [
@@ -333,6 +349,18 @@
                         }
                     },
                     {
+                        searchable: false,
+                        orderable: false,
+                        sortable: false,
+                        targets: 3,
+                    },
+                    {
+                        searchable: false,
+                        orderable: false,
+                        sortable: false,
+                        targets: 4,
+                    },
+                    {
                         // Actions
                         targets: -1,
                         title: 'Actions',
@@ -340,7 +368,15 @@
                         orderable: false,
                         render: function render(data, type, full, meta) {
                             if (full['tanggalPengesahan']) {
-                                return "Disahkan pada tanggal " + full['tanggalPengesahan'];
+                                return "Disahkan pada tanggal " + full['tanggalPengesahan'] +
+                                    '<div class="d-inline-block text-nowrap ms-2">' +
+                                    '<button class="btn btn-sm btn-icon cetak-transkrip-record text-info" title="Cetak Transkrip Nilai" data-nim="' + full['nimEnkripsi'] +
+                                    '" data-nama="' + full['namaMahasiswa'] +
+                                    '" data-bs-toggle="modal" data-original-title="Cetak Transkrip" data-bs-target="#cetakTranskripModal"><i class="fa fa-file-text"></i></button> | ' +
+                                    '<button class="btn btn-sm btn-icon text-info cetak-ijazah-record" title="Cetak Ijazah" data-nim="' + full['nimEnkripsi'] +
+                                    '" data-nama="' + full['namaMahasiswa'] + '" data-tanggal="' + full['tanggalDiberikan'] +
+                                    '" data-bs-toggle="modal" data-original-title="Cetak Ijazah" data-bs-target="#cetakIjazahModal"><i class="fa fa-print"></i></button>' +
+                                    '</div>';
                             }else{
                                 return (
                                     '<div class="d-inline-block text-nowrap">' +
@@ -348,7 +384,7 @@
                                     '" data-nama="' + full['namaMahasiswa'] +
                                     '" data-bs-toggle="modal" data-original-title="Cetak Transkrip" data-bs-target="#cetakTranskripModal"><i class="fa fa-file-text"></i></button> | ' +
                                     '<button class="btn btn-sm btn-icon text-info cetak-ijazah-record" title="Cetak Ijazah" data-nim="' + full['nimEnkripsi'] +
-                                    '" data-nama="' + full['namaMahasiswa'] +
+                                    '" data-nama="' + full['namaMahasiswa'] + '" data-tanggal="' + full['tanggalDiberikan'] +
                                     '" data-bs-toggle="modal" data-original-title="Cetak Ijazah" data-bs-target="#cetakIjazahModal"><i class="fa fa-print"></i></button> | ' +
                                     '<button class="btn btn-sm btn-icon edit-record text-primary" data-id="' + full['id'] +
                                     '" data-bs-toggle="modal" data-original-title="Edit" data-bs-target="#editModal"><i class="fa fa-pencil"></i></button>' +
@@ -376,12 +412,33 @@
                     searchPlaceholder: 'Search..'
                 },
             });
+
+            //Filter Gelombang Wisuda
+            $(document).on('change', '#filter_gelombang', function () {
+                dt.ajax.reload();
+            });
+
+            // Filter Mahasiswa Setting Yudisium
+            $('#gelombang').on('change', function() {
+                var selectedPs = $(this).find(':selected').data('ps');
+                $('#mhs-available option').each(function() {
+                    var optionPs = String($(this).data('ps'));
+                    var selectedPsStr = String(selectedPs);
+                    if (!selectedPsStr || optionPs === selectedPsStr) {
+                        $(this).prop('hidden', false);
+                    } else {
+                        $(this).prop('hidden', true);
+                    }
+                });
+            });
+
             $('#tambahModal').on('hidden.bs.modal', function () {
                 $('#formAdd').find('input, textarea, select').val('');
                 $('#formAdd').trigger("reset");
                 $('#id').val('');
                 $('#mhs-selected').empty();
             });
+
             //Edit Record
             $(document).on('click', '.edit-record', function () {
                 const id = $(this).data('id');
