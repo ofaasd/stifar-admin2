@@ -18,6 +18,9 @@
             <li class="sidebar-list"><a href="{{URL::to('pegawai')}}" class="sidebar-link sidebar-title" >
                 <span><i class="fa fa-users"></i> Profile Pegawai</span></a>
             </li>
+            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{URL::to('dosen/attendance')}}" >
+                <span><i class="fa fa-bookmark"></i> Absensi Dosen</span></a>
+            </li>
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" >
                 <span><i class="fa fa-bar-chart"></i> Akademik</span></a>
                 <ul class="sidebar-submenu">
@@ -67,9 +70,10 @@
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{route('Perwalian')}}" >
                 <span><i class="fa fa-bookmark"></i> Perwalian</span></a>
             </li>
-            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
+            
+            {{-- <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
                 <span><i class="fa fa-bookmark"></i> Kuesioner Kepuasan Dosen</span></a> <label class="badge badge-light-danger">!</label>
-            </li>
+            </li> --}}
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{URL::to('dsn/skripsi/pengajuan')}}" >
                 <span><i class="fa fa-users"></i> Pengajuan Mahasiswa</span></a>
             </li>
