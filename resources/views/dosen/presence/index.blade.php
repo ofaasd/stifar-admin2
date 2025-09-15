@@ -191,7 +191,7 @@
             const long = $("#long").val();
             if(lat && long){
 
-                const url = ''.concat(baseUrl).concat('/attendance');
+                const url = ''.concat(baseUrl).concat('/dosen/attendance');
                 // alert(url);
                 $.ajax({
                     data: $('#addNew{{$title}}Form').serialize(),
@@ -200,7 +200,7 @@
                     success: function success(status) {
                         // sweetalert
                         //$("#overlay-place").html('<div class="alert alert-success">Data Saved !</div>');
-                        Swal.fire({
+                        swal({
                         icon: 'success',
                         title: 'Successfully '.concat(status.nama, ' Updated !'),
                         text: ''.concat('Absensi ', ' ').concat(' Updated Successfully.'),
@@ -212,7 +212,7 @@
                     },
                     error: function error(err) {
                         $("#overlay-place").html('');
-                        Swal.fire({
+                        swal({
                         title: 'Data Not Saved',
                         text: ' Please take a picture first',
                         icon: 'error',
@@ -223,7 +223,7 @@
                     }
                 });
             }else{
-                Swal.fire({
+                swal({
                     title: 'Longitude and Latitude not found',
                     text: ' Please allow location from your browser. Or Take Picture First',
                     icon: 'error',

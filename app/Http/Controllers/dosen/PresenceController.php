@@ -56,10 +56,10 @@ class PresenceController extends Controller
         $role = $role[0];
         $get_day = date('w');
         $curr_day = $get_day+1;
-        $working = WorkingHour::where('user_id',Auth::user()->id)->where('days',$curr_day)->first();
+        $working = WorkingHour::where('user_id',Auth::user()->id)->where('day',$curr_day)->first();
         $get_hour = strtotime(date("H:i:s"));
         //$get_hour = strtotime("16:12:10");
-        if($working->working_start != 0 && $working->working_end != 0){
+        if(!empty($working->working_start) && $working->working_start != 0 && $working->working_end != 0){
 
             // echo date("H:i:s",$working->working_start) . "<br/>";
             // echo date("H:i:s") . "<br/>";
