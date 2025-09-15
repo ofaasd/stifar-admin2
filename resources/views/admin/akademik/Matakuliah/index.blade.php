@@ -167,7 +167,10 @@
                                                             </a>
                                                         </div>
 
-                                                        <div class="modal fade" id="editMK{{ $mk['kode_matkul'] }}" aria-labelledby="editMK{{ $mk['kode_matkul'] }}" aria-hidden="true">
+                                                        
+                                                    </td>
+                                                </tr>
+                                                <div class="modal fade" id="editMK{{ $mk['kode_matkul'] }}" aria-labelledby="editMK{{ $mk['kode_matkul'] }}" aria-hidden="true">
                                                             <div class="modal-dialog" role="document">
                                                                 <div class="modal-content">
                                                                     <div class="modal-body">
@@ -278,8 +281,6 @@
                                                                 });
                                                             })
                                                         </script>
-                                                    </td>
-                                                </tr>
                                             @endforeach
                                         </tbody>
                                     </table>

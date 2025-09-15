@@ -15,17 +15,8 @@
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{ URL::to('dsn/dashboard')}}" >
                 <span><i class="fa fa-home"></i> Dashboard</span></a>
             </li>
-            <li class="sidebar-list"><a class="sidebar-link sidebar-title" >
+            <li class="sidebar-list"><a href="{{URL::to('pegawai')}}" class="sidebar-link sidebar-title" >
                 <span><i class="fa fa-users"></i> Profile Pegawai</span></a>
-                <ul class="sidebar-submenu">
-                    <li>
-                        <a href="{{URL::to('pegawai')}}" class="submenu-title">Data Diri</a>
-                    </li>
-                    <li>
-                        <a class="submenu-title" href="{{URL::to('riwayat')}}" >
-                             Riwayat Pegawai</a>
-                    </li>
-                </ul>
             </li>
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" >
                 <span><i class="fa fa-bar-chart"></i> Akademik</span></a>
@@ -48,11 +39,6 @@
                     <li>
                         <a class="submenu-title" href="{{URL::to('dosen/input_nilai')}}" >
                              Input Nilai
-                        </a>
-                    </li>
-                    <li>
-                        <a class="submenu-title" href="#" >
-                             Daftar Nilai <label class="badge badge-light-danger">!</label>
                         </a>
                     </li>
                 </ul>
