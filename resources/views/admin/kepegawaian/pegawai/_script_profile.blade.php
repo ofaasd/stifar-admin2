@@ -11,8 +11,8 @@
             success:function(status){
                 swal({
                     icon: 'success',
-                    title: 'Successfully '.concat(status, '!'),
-                    text: ''.concat(status, ' Successfully.'),
+                    title: 'Successfully '.concat('Saved', '!'),
+                    text: ''.concat('Data Berhasil Tersimpan.'),
                     customClass: {
                         confirmButton: 'btn btn-success'
                     }
@@ -23,7 +23,7 @@
             error: function error(err) {
                 //offCanvasForm.offcanvas('hide');
                 swal({
-                title: 'Duplicate Entry!',
+                title: 'Error !',
                 text: 'Data Not Saved !',
                 icon: 'error',
                 customClass: {

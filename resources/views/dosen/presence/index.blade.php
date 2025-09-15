@@ -15,7 +15,7 @@
 @endsection
 
 @section('breadcrumb-items')
-    <li class="breadcrumb-item">Mahasiswa</li>
+    <li class="breadcrumb-item">Dosen</li>
     <li class="breadcrumb-item active">{{$title}}</li>
 @endsection
 
@@ -168,6 +168,7 @@
 @section('script')
     <script src="{{ asset('assets/js/datatable/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{asset('assets/js/sweet-alert/sweetalert.min.js')}}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.25/webcam.min.js"></script>
     <script>
     document.addEventListener("DOMContentLoaded", function(event) {
       const baseUrl = '{!! url("") !!}';
