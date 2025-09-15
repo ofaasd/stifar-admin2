@@ -78,9 +78,9 @@ class PmbPesertaController extends Controller
 
             $limit = $request->input('length');
             $start = $request->input('start');
-            $order = $columns[$request->input('order.0.column')];
-            $dir = $request->input('order.0.dir');
-
+            
+            $order = 'id';
+            $dir = 'desc';
 
             if (empty($request->input('search.value'))) {
                 $peserta = PmbPesertaOnline::where('gelombang',$id_gelombang)
@@ -89,6 +89,8 @@ class PmbPesertaController extends Controller
                     ->orderBy($order, $dir)
                     ->get();
             } else {
+                $order = $columns[$request->input('order.0.column')];
+                $dir = $request->input('order.0.dir');
                 $search = $request->input('search.value');
 
                 $peserta = PmbPesertaOnline::where('gelombang',$id_gelombang)

@@ -73,9 +73,8 @@
                                         <th>Nama.</th>
                                         <th>No. Pendaftaran</th>
                                         <th>Gelombang</th>
-                                        <th>Pilihan1</th>
-                                        <th>Pilihan2</th>
-                                        <th>TTL</th>
+                                        <th>Pilihan</th>
+                                        <th>Tgl Registrasi</th>
                                         <th>Verifikasi</th>
                                         <th>No. VA</th>
                                         <th>Status</th>
@@ -234,7 +233,15 @@
                     {
                         searchable: false,
                         orderable: false,
-                        targets: 8,
+                        targets: 5,
+                        render: function render(data, type, full, meta) {
+                            return '<span>'.concat(full.pilihan1).concat(' | ', full.pilihan2).concat('</span>');
+                        }
+                    },
+                    {
+                        searchable: false,
+                        orderable: false,
+                        targets: 7,
                         render: function render(data, type, full, meta) {
                             if(full['is_verifikasi'] == "0"){
                                 return '<div class="col-md-12 text-center"><span class="text-center"><i class="fa fa-minus-circle fa-lg"></i></span></div>';
@@ -246,15 +253,17 @@
                             //return '<span>asdasdasd</span>';
                         }
                     },
+                    
                     {
                     searchable: false,
                     orderable: false,
-                    targets: 10,
+                    targets: 9,
                     render: function render(data, type, full, meta) {
                         return '<span>'.concat((full.is_bayar)?"<button class='btn btn-success btn-xs' style='font-size:9pt; margin:2px 0;'>Sudah Bayar</button>":"<button class='btn btn-danger btn-xs' style='font-size:9pt;  margin:2px 0;' title='Belum bayar registrasi uang masuk'>Belum Bayar</button>")
                         .concat((full.is_lolos)?"<button class='btn btn-success btn-xs' style='font-size:9pt'>Sudah Lolos</button>":"<button class='btn btn-danger btn-xs' style='font-size:9pt'>Belum Lolos</button>").concat('</span>');
                     }
                     },
+                   
                     {
                         searchable: false,
                         orderable: false,
@@ -287,7 +296,7 @@
                     }
                     }
                 ],
-                order: [[2, 'desc']],
+                order: [[1, 'desc']],
                 dom:
                     '<"row mx-2"' +
                     '<"col-md-2"<"me-3"l>>' +

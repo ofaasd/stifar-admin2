@@ -221,7 +221,7 @@
                     }
                     }
                 ],
-                order: [[2, 'desc']],
+                order: [[1, 'desc']],
                 dom:
                     '<"row mx-2"' +
                     '<"col-md-2"<"me-3"l>>' +

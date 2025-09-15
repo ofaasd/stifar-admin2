@@ -13,6 +13,7 @@
     </thead>
     <tbody>
         @foreach($data as $row)
+        <tr>
         <td>{{$row['fake_id']}}</td>
         <td>{{$row['nama']}}</td>
         <td>{{$row['nopen']}}</td>
@@ -20,6 +21,7 @@
         <td>{{$row['ntambahan']}}</td>
         <td>{{($row['nakhir']+$row['ntambahan'])}}</td>
         <td><a href="#" title="add nilai tambahan" id="add_nilai" class="btn btn-primary btn-xs" data-id="{{$row['id']}}" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal"><i class="fa fa-plus"></i></a> <a href="{{URL::to('admin/admisi/nilai_tambahan/' . $row['id'])}}" title="Lihat Nilai Tambahan" class="btn btn-success btn-xs"><i class="fa fa-eye"></i></a></td>
+        </tr>
         @endforeach
     </tbody>
 </table>

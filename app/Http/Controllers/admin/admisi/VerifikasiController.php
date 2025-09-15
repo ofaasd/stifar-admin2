@@ -20,7 +20,7 @@ use App\helpers;
 class VerifikasiController extends Controller
 {
     //
-    public $indexed = ['', 'id','nama' , 'nopen', 'gelombang', 'pilihan1','pilihan2','ttl','is_verifikasi', 'no_va','status'];
+    public $indexed = ['', 'id','nama' , 'nopen', 'gelombang', 'pilihan1','ttl','is_verifikasi', 'no_va','status'];
     public $indexed2 = ['', 'id','nama' , 'nopen', 'gelombang', 'pilihan1','pilihan2','ttl','bukti_bayar','is_bayar'];
     public function index(Request $request,$id_gelombang=0)
     {
@@ -67,11 +67,10 @@ class VerifikasiController extends Controller
                 3 => 'nopen',
                 4 => 'gelombang',
                 5 => 'pilihan1',
-                6 => 'pilihan2',
-                7 => 'is_verifikasi',
-                8 => 'ttl',
-                9=>'no_va',
-                10=>'status'
+                6 => 'is_verifikasi',
+                7 => 'ttl',
+                8 => 'no_va',
+                9 => 'status'
             ];
 
             $search = [];
@@ -128,6 +127,12 @@ class VerifikasiController extends Controller
                 $ids = $start;
 
                 foreach ($peserta as $row) {
+                    $bank = BankDataVa::where('no_va','like','%' . $row->nopen . '%');
+                    $no_va = '';
+                    if($bank->count() > 0){
+                        $no_va = $bank->first()->no_va;
+                    }
+                    $nestedData['no_va'] = $no_va;
                     $nestedData['id'] = $row->id;
                     $nestedData['fake_id'] = ++$ids;
                     $nestedData['nama'] = $row->nama;
@@ -139,7 +144,7 @@ class VerifikasiController extends Controller
                     $nestedData['is_lolos'] = $row->is_lolos;
                     $nestedData['pilihan1'] = $prod[$row->pilihan1] ?? '';
                     $nestedData['pilihan2'] = $prod[$row->pilihan2] ?? '';
-                    $nestedData['ttl'] = $row->tempat_lahir . ", " . date('d-m-Y', strtotime($row->tanggal_lahir));
+                    $nestedData['ttl'] = date('d-m-Y', strtotime($row->admin_input_date));
                     $data[] = $nestedData;
                 }
             }
