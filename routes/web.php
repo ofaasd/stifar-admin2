@@ -816,6 +816,8 @@ Route::group(['middleware' => ['auth', 'role:pegawai|super-admin']], function ()
     Route::get('/mahasiswa/detail/{nim}', [MahasiswaController::class, 'detail']);
 
     Route::get('dosen/setting-pertemuan', [KrmController::class, 'settingPertemuan']);
+    
+    
     Route::post('/jadwal/get-pertemuan', [JadwalController::class, 'getPertemuan']);
     Route::post('/jadwal/tambah-pertemuan2', [JadwalController::class, 'tambahPertemuan2']);
 
@@ -828,6 +830,10 @@ Route::group(['middleware' => ['auth', 'role:pegawai|super-admin']], function ()
 Route::group(['middleware' => ['auth', 'role:mhs|pegawai|super-admin']], function () {
     Route::post('admin/admisi/peserta/daftar_kota', [PmbPesertaController::class, 'daftar_kota'])->name('daftar_kota_pegawai');
 });
+Route::group(['middleware' => ['auth', 'role:mhs|pegawai|super-admin']], function () {
+    Route::get('dosen/cetak_absensi/{id}', [KrmController::class, 'cetakPertemuan']);
+});
+
 Route::group(['middleware' => ['auth', 'role:admin-prodi|pegawai|super-admin']], function () {
     Route::get('dosen/nilai/{id}/input', [KrmController::class, 'daftarMhsNilai']);
 });

@@ -155,9 +155,6 @@
                         <ul class="nav-sub-childmenu submenu-content">
                             <li><a href="{{Url::to('admin/akademik/pengaturan-ujian')}}">Pengaturan</a></li>{{--  Ada menu untuk toggle ujian sedang dibuka atau ditutup--}}
                             <li><a href="{{Url::to('admin/akademik/nilai')}}">Input Nilai</a></li>
-                            {{-- <li><a href="#">Posting Nilai <label class="badge badge-light-danger">!</label></a></li> --}}
-                            {{-- <li><a href="#">Input Nilai Konversi <label class="badge badge-light-danger">!</label></a></li> --}}
-                            <li><a href="#">Komplain Nilai / Susulan <label class="badge badge-light-danger">!</label></a></li>
                         </ul>
                     </li>
                      {{-- <li><a href="#">Semester Antara <label class="badge badge-light-danger">!</label></a></li> --}}
@@ -190,7 +187,7 @@
                         </ul>
                     </li>
                     {{-- <li><a href="{{URL::to('admin/alumni')}}">Alumni</a></li> --}}
-                     <li><a href="#">Persuratan <label class="badge badge-light-danger">!</label></a></li>
+                     {{-- <li><a href="#">Persuratan <label class="badge badge-light-danger">!</label></a></li> --}}
                      <li>
                         <a class="submenu-title" href="#">
                             <span>Transkrip / Ijazah</span>

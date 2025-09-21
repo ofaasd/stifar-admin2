@@ -1,6 +1,7 @@
 
 <form id="form_set_pertemuan" action="javascript:void(0)" method="POST">
 <div id="tablePertemuan">
+    <a href="{{URL::to('dosen/cetak_absensi/' . $jadwal->id)}}" class="btn btn-primary" target="_blank">Cetak Absensi</a>
     <input type="hidden" name="id_jadwal" value="{{$jadwal->id}}">
     <table class="table">
         <thead>
