@@ -26,7 +26,7 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header pb-0 card-no-border">
-                        {{-- <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal">+ {{$title}}</button> --}}
+                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal">+ {{$title}}</button>
                         <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
@@ -39,22 +39,30 @@
                                         </div>
                                         <div class="modal-body">
                                             <div class="mb-3">
-                                                <label for="nama_ruang" class="form-label">Nama Ruang</label>
-                                                <input type="text" name="nama_ruang" id="nama_ruang" class="form-control">
+                                                <label for="kodeGedung " class="form-label">Kode Gedung</label>
+                                                <select class="form-select" aria-label="Default select example" id="kode_gedung" name="kodeGedung">
+                                                    @foreach ($asetGedung as $row)
+                                                    <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="nama_ruang" class="form-label">Nama</label>
+                                                <input type="text" name="namaRuang" id="nama_ruang" class="form-control">
                                             </div>
                                             <div class="mb-3">
                                                 <label for="lantai" class="form-label">Lantai</label>
                                                 <select class="form-select" aria-label="Default select example" id="lantai_id" name="lantai">
-                                                    @foreach ($lantais as $row)
+                                                    @foreach ($asetLantai as $row)
                                                     <option value="{{ $row->id }}">{{ $row->lantai }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
                                             <div class="mb-3">
                                                 <label for="jenis_ruang " class="form-label">Jenis Ruang</label>
-                                                <select class="form-select" aria-label="Default select example" id="jenis_id" name="jenis_ruang">
-                                                    @foreach ($jenisRuangs as $row)
-                                                    <option value="{{ $row->id }}">{{ $row->nama }}</option>
+                                                <select class="form-select" aria-label="Default select example" id="kode_jenis" name="kodeJenis">
+                                                    @foreach ($asetJenisRuang as $row)
+                                                    <option value="{{ $row->kode }}">{{ $row->nama }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -63,13 +71,13 @@
                                                 <input type="text" name="kapasitas" id="kapasitas" class="form-control">
                                             </div>
                                             <div class="mb-3">
-                                                <label for="luas" class="form-label">Luas Ruangan</label>
+                                                <label for="luas" class="form-label">Luas</label>
                                                 <input type="text" name="luas" id="luas" class="form-control">
                                             </div>
                                         </div>
                                         <div class="modal-footer">
                                             <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
-                                            <button class="btn btn-primary" type="submit">Simpan</button>
+                                            <button class="btn btn-primary" type="submit" id="btn-submit">Simpan</button>
                                         </div>
                                     </form>
                                 </div>
@@ -84,11 +92,12 @@
                                     <tr>
                                         <th></th>
                                         <th>ID</th>
-                                        <th>Nama Ruang</th>
-                                        <th>Lantai</th>
+                                        <th>Kode Gedung</th>
                                         <th>Jenis Ruang</th>
+                                        <th>Nama</th>
+                                        <th>Lantai</th>
                                         <th>Kapasitas</th>
-                                        <th>Luas Ruang</th>
+                                        <th>Luas</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -155,23 +164,29 @@
                     }
                     },
                     {
+                        targets: 4, // indeks kolom ke-4 (Nama), sesuaikan jika posisinya berbeda
+                        render: function (data, type, full, meta) {
+                            return '<a href="' + baseUrl.concat(page) + '/' + full['idEnkripsi'] + '">' + data + '</a>';
+                        }
+                    },
+                    {
                     // Actions
                     targets: -1,
                     title: 'Actions',
                     searchable: false,
                     orderable: false,
                     render: function render(data, type, full, meta) {
-                        return (
-                        '<div class="d-inline-block text-nowrap">' +
-                        '<button class="btn btn-sm btn-icon edit-record text-primary" data-id="'
-                            .concat(full['id'], '" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal"')
-                            .concat(title, '"><i class="fa fa-pencil"></i></button>') +
-                        '<button class="btn btn-sm btn-icon delete-record text-primary" data-id="'.concat(
-                            full['id'],
-                            '"><i class="fa fa-trash"></i></button>'
-                        )
-                        );
-                    }
+                            return (
+                            '<div class="d-inline-block text-nowrap">' +
+                            '<button class="btn btn-sm btn-icon edit-record text-primary" data-id="'
+                                .concat(full['id'], '" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal"')
+                                .concat(title, '"><i class="fa fa-pencil"></i></button>') +
+                            '<button class="btn btn-sm btn-icon delete-record text-primary" data-id="'.concat(
+                                full['id'],
+                                '"><i class="fa fa-trash"></i></button>'
+                            )
+                            );
+                        }
                     }
                 ],
                 order: [[2, 'desc']],
@@ -190,6 +205,7 @@
                     searchPlaceholder: 'Search..'
                 },
             });
+
             $('#tambahModal').on('hidden.bs.modal', function () {
                 $('#id').val('');
                 $('#formAdd').trigger("reset");
@@ -214,6 +230,9 @@
             //save record
             $('#formAdd').on('submit',function(e){
                 e.preventDefault();
+                var btnSubmit = $('#btn-submit');
+                btnSubmit.prop('disabled', true); 
+                btnSubmit.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Please Wait...');
                 $.ajax({
                     data: $('#formAdd').serialize(),
                     url: ''.concat(baseUrl).concat(page),
@@ -231,9 +250,14 @@
                             confirmButton: 'btn btn-success'
                         }
                         });
+                        btnSubmit.prop('disabled', false);
+                        btnSubmit.text('Simpan');
                     },
                     error: function error(err) {
-                        offCanvasForm.offcanvas('hide');
+                        // offCanvasForm.offcanvas('hide');
+                        console.log('====================================');
+                        console.log(err);
+                        console.log('====================================');
                         swal({
                         title: 'Duplicate Entry!',
                         text: title + ' Not Saved !',
@@ -242,6 +266,8 @@
                             confirmButton: 'btn btn-success'
                         }
                         });
+                        btnSubmit.prop('disabled', false);
+                        btnSubmit.text('Simpan');
                     }
                 });
             });

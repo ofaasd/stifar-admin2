@@ -15,17 +15,11 @@
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{ URL::to('dsn/dashboard')}}" >
                 <span><i class="fa fa-home"></i> Dashboard</span></a>
             </li>
-            <li class="sidebar-list"><a class="sidebar-link sidebar-title" >
+            <li class="sidebar-list"><a href="{{URL::to('pegawai')}}" class="sidebar-link sidebar-title" >
                 <span><i class="fa fa-users"></i> Profile Pegawai</span></a>
-                <ul class="sidebar-submenu">
-                    <li>
-                        <a href="{{URL::to('pegawai')}}" class="submenu-title">Data Diri</a>
-                    </li>
-                    <li>
-                        <a class="submenu-title" href="{{URL::to('riwayat')}}" >
-                             Riwayat Pegawai</a>
-                    </li>
-                </ul>
+            </li>
+            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{URL::to('dosen/attendance')}}" >
+                <span><i class="fa fa-bookmark"></i> Absensi Dosen</span></a>
             </li>
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" >
                 <span><i class="fa fa-bar-chart"></i> Akademik</span></a>
@@ -36,16 +30,27 @@
                         </a>
                     </li>
                     <li>
-                        <a class="submenu-title" href="{{URL::to('dosen/input_nilai')}}" >
-                             Input Nilai 
+                        <a class="submenu-title" href="{{URL::to('dosen/krm_riwayat')}}" >
+                            Riwayat KRM
                         </a>
                     </li>
                     <li>
-                        <a class="submenu-title" href="#" >
-                             Daftar Nilai <label class="badge badge-light-danger">!</label>
+                        <a class="submenu-title" href="{{URL::to('dosen/setting-pertemuan')}}" >
+                            Setting Pertemuan
+                        </a>
+                    </li>
+                    <li>
+                        <a class="submenu-title" href="{{URL::to('dosen/input_nilai')}}" >
+                             Input Nilai
                         </a>
                     </li>
                 </ul>
+            </li>
+            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{URL::to('dosen/berkas')}}" >
+                <span><i class="fa fa-file"></i> Berkas</span></a>
+            </li>
+            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{URL::to('riwayat')}}" >
+                <span><i class="fa fa-users"></i> Riwayat Pegawai</span></a>
             </li>
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" >
                 <span><i class="fa fa-book"></i> Bimbingan</span></a>
@@ -65,9 +70,10 @@
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{route('Perwalian')}}" >
                 <span><i class="fa fa-bookmark"></i> Perwalian</span></a>
             </li>
-            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
+            
+            {{-- <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
                 <span><i class="fa fa-bookmark"></i> Kuesioner Kepuasan Dosen</span></a> <label class="badge badge-light-danger">!</label>
-            </li>
+            </li> --}}
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{URL::to('dsn/skripsi/pengajuan')}}" >
                 <span><i class="fa fa-users"></i> Pengajuan Mahasiswa</span></a>
             </li>

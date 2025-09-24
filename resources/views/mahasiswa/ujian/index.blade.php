@@ -82,7 +82,7 @@
                             @endif
 
                             @if($permission->uas == 0 )
-                                <div class="alert alert-danger">Anda belum diizinkan untuk melihat dan mencetak kartu ujian UTS harap menghubungi admin sistem / BAAK</div>
+                                <div class="alert alert-danger">Anda belum diizinkan untuk melihat dan mencetak kartu ujian UAS harap menghubungi admin sistem / BAAK</div>
                             @else
                             <div class="mt-4">
                                 <h3>Jadwal Ujian UAS : </h3>

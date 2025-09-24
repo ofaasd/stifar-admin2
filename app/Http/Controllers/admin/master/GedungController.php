@@ -16,8 +16,8 @@ class GedungController extends Controller
     {
         $masterGedung = MasterGedung::all();
         if (empty($request->input('length'))) {
-            $title = "aset-gedung";
-            $title2 = "Gedung";
+            $title = "gedung";
+            $title2 = "Master Gedung";
             $indexed = $this->indexed;
             return view('admin.master.gedung.index', compact('title', 'title2', 'masterGedung', 'indexed'));
         } else {
@@ -44,7 +44,7 @@ class GedungController extends Controller
                 $search = $request->input('search.value');
 
                 $gedung = MasterGedung::where('id', 'LIKE', "%{$search}%")
-                    ->orWhere('kode_gedung', 'LIKE', "%{$search}%")
+                    ->orWhere('kode', 'LIKE', "%{$search}%")
                     ->orWhere('nama', 'LIKE', "%{$search}%")
                     ->offset($start)
                     ->limit($limit)
@@ -52,7 +52,7 @@ class GedungController extends Controller
                     ->get();
 
                 $totalFiltered = MasterGedung::where('id', 'LIKE', "%{$search}%")
-                    ->orWhere('kode_gedung', 'LIKE', "%{$search}%")
+                    ->orWhere('kode', 'LIKE', "%{$search}%")
                     ->orWhere('nama', 'LIKE', "%{$search}%")
                     ->count();
             }
@@ -63,7 +63,7 @@ class GedungController extends Controller
                     $nestedData = [];
                     $nestedData['fake_id'] = $start + $index + 1;
                     $nestedData['id'] = $row->id;
-                    $nestedData['kode'] = $row->kode_gedung;
+                    $nestedData['kode'] = $row->kode;
                     $nestedData['nama'] = $row->nama;
                     $data[] = $nestedData;
                 }
@@ -104,7 +104,7 @@ class GedungController extends Controller
             $save = MasterGedung::updateOrCreate(
                 ['id' => $id],
                 [
-                    'kode_gedung' => $validatedData['kode'],
+                    'kode' => $validatedData['kode'],
                     'nama' => $validatedData['nama'],
                 ]
             );

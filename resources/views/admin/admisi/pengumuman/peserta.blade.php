@@ -76,6 +76,21 @@
                                                 <input type="text" name="nopen" id="nopen" class="form-control" readonly>
                                             </div>
                                             <div class="mb-3">
+                                                <label for="pilihan1" class="form-label">Pilihan1</label>
+                                                <input type="text" id="pilihan1" class="form-control" readonly>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="pilihan2" class="form-label">Pilihan2</label>
+                                                <input type="text" name="pilihan2" id="pilihan2" class="form-control" readonly>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="pilihan2" class="form-label">Prodi Diterima</label>
+                                                <select name="final_prodi" class="form-control" id="final_prodi">
+                                                    <option value="1">Pilihan 1</option>
+                                                    <option value="2">Pilihan 2</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
                                                 <label for="is_lolos" class="form-label">Status Diterima</label>
                                                 <select name="is_lolos" id="is_lolos" class="form-control">
                                                     <option value="0">Tidak Diterima</option>
@@ -233,11 +248,38 @@
 
                 // get data
                 $.get(''.concat(baseUrl).concat('/admin/admisi/pengumuman/').concat(id, '/edit_peserta'), function (data) {
-                Object.keys(data).forEach(key => {
+
+                Object.keys(data[0]).forEach(key => {
                     //console.log(key);
-                    $('#' + key)
-                        .val(data[key])
-                        .trigger('change');
+
+                    if(key == 'pilihan1'){
+                        // First, add the new option to the select element.
+                        $("#final_prodi").html('<option value="'+ data[1]['id'] + '" selected>' + data[1]['nama_prodi'] + '</option>');
+                        $('#' + key)
+                            .val(data[1]['nama_prodi'])
+                            .trigger('change');
+
+                    }else if(key == 'pilihan2'){
+                        if(data[0][key] !== null){
+
+                            $("#final_prodi").append('<option value="'+ data[2]['id'] + '">' + data[2]['nama_prodi'] + '</option>"')
+                            $('#' + key)
+                                .val(data[2]['nama_prodi'])
+                                .trigger('change');
+                        }
+
+                    }else if(key == 'final_prodi'){
+                        if(data[0][key] !== null){
+                            $('#' + key)
+                                .val(data[0][key])
+                                .trigger('change');
+                        }
+                    }else{
+                         $('#' + key)
+                            .val(data[0][key])
+                            .trigger('change');
+                    }
+
                 });
                 });
             });

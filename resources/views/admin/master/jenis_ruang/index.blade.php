@@ -40,9 +40,13 @@
                                             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
+                                            <div class="mb-3" id="field-kode">
+                                                <label for="kode" class="form-label">Kode</label>
+                                                <input type="text" class="form-control" name="kode" id="kode" placeholder="LB">
+                                            </div>
                                             <div class="mb-3" id="field-nama">
-                                                <label for="nama" class="form-label">Nama Jenis Ruang</label>
-                                                <input type="text" class="form-control" name="nama" id="nama">
+                                                <label for="nama" class="form-label">Nama</label>
+                                                <input type="text" class="form-control" name="nama" id="nama" placeholder="Laboratorium">
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -62,7 +66,8 @@
                                     <tr>
                                         <th></th>
                                         <th>No</th>
-                                        <th>Nama Jenis Ruang</th>
+                                        <th>Kode</th>
+                                        <th>Nama</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -87,6 +92,7 @@
         $(function () {
             const baseUrl = {!! json_encode(url('/')) !!};
             const title = "{{strtolower($title)}}";
+            const title2 = "{{ $title2 }}";
             const page = '/'.concat("admin/masterdata/aset/").concat(title);
             var my_column = $('#my_column').val();
             const pecah = my_column.split('\n');
@@ -169,7 +175,7 @@
             });
             //Edit Record
             $(document).on('click', '#add-record', function () {
-                $('#ModalLabel').html('Tambah ' + title);
+                $('#ModalLabel').html('Tambah ' + title2);
                 $("#id").val('');
                 $('#formAdd').trigger("reset");
             });
@@ -177,7 +183,9 @@
                 const id = $(this).data('id');
 
                 // changing the title of offcanvas
-                $('#ModalLabel').html('Edit ' + title);
+                $('#ModalLabel').html('Edit ' + title2);
+                
+                $('#formAdd').trigger("reset");
 
                 // get data
                 $.get(''.concat(baseUrl).concat(page, '/').concat(id, '/edit'), function (data) {
@@ -194,7 +202,9 @@
             $('#formAdd').on('submit',function(e){
                 e.preventDefault();
                 var btnSubmit = $('#btn-submit');
-                btnSubmit.prop('disabled', true); 
+                btnSubmit.prop('disabled', true);
+                btnSubmit.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Please Wait...');
+
                 const myFormData = new FormData(document.getElementById('formAdd'));
                 const offCanvasForm = $('#formAdd');
                 $.ajax({
@@ -216,6 +226,7 @@
                         }
                         });
                         btnSubmit.prop('disabled', false);
+                        btnSubmit.text('Simpan');
                     },
                     error: function error(err) {
                         offCanvasForm.offcanvas('hide');
@@ -228,6 +239,7 @@
                             }
                         });
                         btnSubmit.prop('disabled', false);
+                        btnSubmit.text('Simpan');
                     }
                 });
             });
@@ -264,7 +276,7 @@
                         dt.draw();
                     },
                     error: function error(_error) {
-                        console.log(_error);
+                        // console.log(_error);
                     }
                     });
 

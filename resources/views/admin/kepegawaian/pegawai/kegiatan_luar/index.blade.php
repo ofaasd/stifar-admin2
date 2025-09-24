@@ -26,12 +26,12 @@
                                 <label for="durasi" class="form-label">Durasi</label>
                                 <input type="text" name="durasi" id="durasi_kegiatan_luar" class="form-control" placeholder="Cth : 5 Jam">
                             </div>
-                            
+
                             <div class="mb-3">
                                 <label for="tanggal" class="form-label">Tanggal</label>
                                 <input type="date" name="tanggal" id="tanggal_kegiatan_luar" class="form-control" placeholder="">
                             </div>
-                            
+
                             <div class="mb-3">
                                 <label for="surat_tugas" class="form-label">Surat Tugas</label>
                                 <input type="file" name="surat_tugas" id="surat_tugas_kegiatan_luar" class="form-control" placeholder="">
@@ -49,6 +49,7 @@
                             <div class="mb-3">
                                 <label for="dokumen_pendukung" class="form-label">Dokumen Pendukung</label>
                                 <input type="file" name="dokumen_pendukung" id="dokumen_pendukung_kegiatan_luar" class="form-control" placeholder="">
+                                <div class="alert alert-warning">Max File upload 10 MB</div>
                                 <div id="dokumen_pendukung_exist_kegiatan_luar">
 
                                 </div>

@@ -34,6 +34,7 @@ class MahasiswaBerkasPendukung extends Model
 
 	protected $fillable = [
 		'nim',
+		'id_ta',
 		'kk',
 		'ktp',
 		'akte',

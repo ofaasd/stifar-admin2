@@ -70,10 +70,46 @@
                                                 <label for="no_sk_pendirian" class="form-label">No SK Pendirian (SK Akreditasi)</label>
                                                 <input type="text" name="no_sk_pendirian" id="no_sk_pendirian" class="form-control">
                                             </div>
+                                            <div class="media mb-3">
+                                                <label class="col-form-label m-r-10">KRS</label>
+                                                <div class="media-body text-start icon-state">
+                                                    <label class="switch">
+                                                    <input type="checkbox" checked="" name="is_krs" id="is_krs"><span class="switch-state"></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="jml_sks" class="form-label">Syarat Jumlah Lulus SKS</label>
+                                                <input type="number" name="jml_sks" id="jml_sks" class="form-control">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Maksimal jumlah nilai C / D / E</label>
+                                                <div class="input-group">
+                                                    <input type="number" name="max_c" id="max_c" class="form-control" placeholder="Max C">
+                                                    <input type="number" name="max_d" id="max_d" class="form-control" placeholder="Max D">
+                                                    <input type="number" name="max_e" id="max_e" class="form-control" placeholder="Max E">
+                                                </div>
+                                            </div>
+                                            {{-- <div class="media mb-3">
+                                                <label class="col-form-label m-r-10">UTS</label>
+                                                <div class="media-body text-end icon-state">
+                                                    <label class="switch">
+                                                    <input type="checkbox" checked=""><span class="switch-state"></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="media mb-3">
+                                                <label class="col-form-label m-r-10">UAS</label>
+                                                <div class="media-body text-end icon-state">
+                                                    <label class="switch">
+                                                    <input type="checkbox" checked=""><span class="switch-state"></span>
+                                                    </label>
+                                                </div>
+                                            </div> --}}
                                         </div>
                                         <div class="modal-footer">
                                             <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
-                                            <button class="btn btn-primary" type="submit">Simpan</button>
+                                            <button class="btn btn-primary" id="btn-submit" type="submit">Simpan</button>
                                         </div>
                                     </form>
                                 </div>
@@ -209,17 +245,33 @@
                 $.get(''.concat(baseUrl).concat(page, '/').concat(id, '/edit'), function (data) {
                 Object.keys(data).forEach(key => {
                     //console.log(key);
-                    $('#' + key)
-                        .val(data[key])
-                        .trigger('change');
+                    if(key == 'is_krs'){
+                        if(data[key] == 1){
+                            $("#is_krs").prop("checked",true)
+                        }else{
+                            $("#is_krs").prop("checked",false)
+                        }
+                    }else{
+                        $('#' + key)
+                            .val(data[key])
+                            .trigger('change');
+                    }
                 });
                 });
             });
             //save record
             $('#formAdd').on('submit',function(e){
                 e.preventDefault();
+                values = jQuery("#formAdd").serializeArray();
+
+                values = values.concat(
+                jQuery('#formAdd input[type=checkbox]:not(:checked)').map(
+                    function() {
+                        return {"name": this.name, "value": "off"}
+                    }).get()
+                );
                 $.ajax({
-                    data: $('#formAdd').serialize(),
+                    data: values,
                     url: ''.concat(baseUrl).concat(page),
                     type: 'POST',
                     success: function success(status) {

@@ -123,6 +123,7 @@ class ProdiController extends Controller
     {
         //
         $id = $request->id;
+        $krs = $request->input('is_krs');
 
         if ($id) {
             // update the value
@@ -135,7 +136,12 @@ class ProdiController extends Controller
                     'jenjang' => $request->jenjang,
                     'nama_prodi' => $request->nama_prodi,
                     'tgl_pendirian' => $request->tgl_pendirian,
-                    'no_sk_pendirian' => $request->no_sk_pendirian
+                    'no_sk_pendirian' => $request->no_sk_pendirian,
+                    'jml_sks' => $request->jml_sks,
+                    'max_c' => $request->max_c,
+                    'max_d' => $request->max_d,
+                    'max_e' => $request->max_e,
+                    'is_krs' => ($krs == "on") ? 1 : 0,
                 ]
             );
 
@@ -154,7 +160,12 @@ class ProdiController extends Controller
                     'jenjang' => $request->jenjang,
                     'nama_prodi' => $request->nama_prodi,
                     'tgl_pendirian' => $request->tgl_pendirian,
-                    'no_sk_pendirian' => $request->no_sk_pendirian
+                    'no_sk_pendirian' => $request->no_sk_pendirian,
+                    'jml_sks' => $request->jml_sks,
+                    'max_c' => $request->max_c,
+                    'max_d' => $request->max_d,
+                    'max_e' => $request->max_e,
+                    'is_krs' => ($krs == "on") ? 1 : 0,
                 ]
             );
             if ($prodi) {

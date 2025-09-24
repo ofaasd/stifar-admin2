@@ -24,6 +24,10 @@
         <div class="row">
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
+                <div class="alert alert-primary inverse alert-dismissible fade show" role="alert"><i class="icon-help-alt"></i>
+                    <p>Halaman ini digunakan untuk melihat apakah calon mahasiswa baru sudah melakukan pembayaran registrasi awal, jika sudah icon bukti bayar akan berubah menjadi icon centang, jika belum maka akan muncul icon merah. user dapat melakukan pengecekan bukti bayar dan memvalidasi status pembayaran calon mahasiswa baru</p>
+                    <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close" data-bs-original-title="" title=""></button>
+                </div>
                 <div class="card">
                     <div class="card-header pb-0">
                         <div class="row">
@@ -217,7 +221,7 @@
                     }
                     }
                 ],
-                order: [[2, 'desc']],
+                order: [[1, 'desc']],
                 dom:
                     '<"row mx-2"' +
                     '<"col-md-2"<"me-3"l>>' +

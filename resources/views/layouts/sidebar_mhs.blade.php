@@ -22,7 +22,7 @@
                         <a href="{{URL::to('mhs/profile')}}" class="submenu-title">Data diri</a>
                     </li>
                     <li>
-                        <a class="submenu-title" href="{{URL::to('mhs/heregistrasi')}}" >
+                        <a class="submenu-title" href="{{URL::to('mhs/berkas')}}" >
                              <span>Heregistrasi (Data Pendukung)</span>
                         </a>
                     </li>
@@ -34,14 +34,20 @@
                     <li class="submenu-title"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/input_krs')}}" >
                         <span> Input KRS</span></a>
                     </li>
+                    <li class="submenu-title"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/riwayat_krs')}}" >
+                        <span> Riwayat KRS</span></a>
+                    </li>
                     <li class="submenu-title"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/ujian')}}" >
                         <span> Ujian</span></a>
                     </li>
                     <li class="submenu-title"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/khs')}}" >
                         <span> KHS</span></a>
                     </li>
-                    <li class="submenu-title"><a class="sidebar-link sidebar-title" href="#" >
-                        <span> Daftar Nilai</span><label class="badge badge-light-danger">!</label></a>
+                    <li class="submenu-title"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/khs_riwayat')}}" >
+                        <span>Riwayat KHS</span></a>
+                    </li>
+                    <li class="submenu-title"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/daftar_nilai')}}" >
+                        <span> Daftar Nilai</span></a>
                     </li>
                     <li>
                         <a class="submenu-title" href="#">
@@ -55,21 +61,29 @@
                             <li><a href="#">Nilai <label class="badge badge-light-danger">!</label></a></li>
                         </ul>
                     </li>
+                    @if(session()->has('isYudisium') && session()->get('isYudisium') == 1)
+                        <li class="submenu-title"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/akademik/daftar-wisuda')}}" >
+                            <span> Daftar Wisuda</span></a>
+                        </li>
+                    @endif
                 </ul>
             </li>
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
-                <span><i class="fa fa-money"></i> Tagihan</span><label class="badge badge-light-danger">!</label></a>
+                <span><i class="fa fa-money"></i> Tagihan</span></a>
                 <ul class="sidebar-submenu">
-                    <li class="submenu-title"><a class="sidebar-link sidebar-title" href="#" >
-                        <span> Info Tagihan</span><label class="badge badge-light-danger">!</label></a>
+                    <li class="submenu-title"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/tagihan')}}" >
+                        <span> Info Tagihan</a>
                     </li>
 
-                    <li class="submenu-title"><a class="sidebar-link sidebar-title" href="#" >
-                        <span> Lapor Pembayaran</span><label class="badge badge-light-danger">!</label></a>
+                    <li class="submenu-title"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/lapor_bayar')}}" >
+                        <span> Lapor Pembayaran</a>
                     </li>
                 </ul>
             </li>
-            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
+             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{ url('mhs/absensi')}}" >
+                <span><i class="fa fa-clock-o"></i>  Presensi</span></a>
+            </li>
+            {{-- <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
                 <span><i class="fa fa-clock-o"></i> Presensi</span><label class="badge badge-light-danger">!</label></a>
                 <ul class="sidebar-submenu">
                     <li class="submenu-title"><a class="sidebar-link sidebar-title" href="#" >
@@ -80,7 +94,7 @@
                         <span> Riwayat Presensi</span><label class="badge badge-light-danger">!</label></a>
                     </li>
                 </ul>
-            </li>
+            </li> --}}
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
                 <span><i class="fa fa-book"></i> Bimbingan</span><label class="badge badge-light-danger">!</label></a>
             </li>
@@ -100,7 +114,7 @@
               <li><a href="#">Berita Acara</a></li>
             </ul>
         </li>
-          
+
           </ul>
         </div>
         <div class="right-arrow" id="right-arrow"><i data-feather="arrow-right"></i></div>

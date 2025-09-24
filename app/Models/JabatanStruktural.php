@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class JabatanStruktural
- * 
+ *
  * @property int $id
  * @property int $unit_kerja_id
  * @property string $bagian
@@ -33,6 +33,8 @@ class JabatanStruktural extends Model
 		'unit_kerja_id',
 		'bagian',
 		'jabatan',
+        'parent',
+        'id_pegawai',
 		'prodi_id'
 	];
 }

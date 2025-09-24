@@ -40,8 +40,8 @@
                       <div class="media">
                         <div class="photo-profile position-relative d-inline-block">
                             <img class="img-70 rounded-circle" alt="Foto Mahasiswa"
-                                src="{{ (!empty($mahasiswa->foto_mhs)) ? asset('assets/images/mahasiswa/' . $mahasiswa->foto_mhs) : asset('assets/images/user/7.jpg') }}">
-                                <a href="#" class="position-absolute top-50 start-50 translate-middle bg-dark bg-opacity-5 text-white p-2 rounded-circle d-none hover-edit-foto" data-bs-toggle="modal" data-original-title="test" data-bs-target="#ubahFotoModal">
+                                src="{{ (!empty($mahasiswa->fotoMahasiswa)) ? asset('assets/images/mahasiswa/' . $mahasiswa->fotoMahasiswa) : asset('assets/images/user/7.jpg') }}">
+                                <a href="#" class="position-absolute top-50 start-50 translate-middle bg-dark bg-opacity-3 text-white p-2 rounded-circle d-none hover-edit-foto" data-bs-toggle="modal" data-original-title="test" data-bs-target="#ubahFotoModal">
                                   ubah foto
                               </a>
                         </div>
@@ -93,6 +93,7 @@
                     <div class="d-inline mb-2">
                       <a href="#"><span class="badge badge-{{ empty($mahasiswa->foto_kk) ? 'danger' : 'success'}}">KK <i class="fa fa-{{ empty($mahasiswa->foto_kk) ? 'times' : 'check'}}"></i></span></a>
                       <a href="#"><span class="badge badge-{{ empty($mahasiswa->foto_ktp) ? 'danger' : 'success'}}">KTP <i class="fa fa-{{ empty($mahasiswa->foto_ktp) ? 'times' : 'check'}}"></i></span></a>
+                      <a href="#"><span class="badge badge-{{ empty($mahasiswa->foto_akte) ? 'danger' : 'success'}}">Akte <i class="fa fa-{{ empty($mahasiswa->foto_akte) ? 'times' : 'check'}}"></i></span></a>
                       <span class="badge text-dark shadow-sm">Ijazah : <a href="#" class="text-dark">Depan <i class="fa fa-{{ empty($mahasiswa->ijazah_depan) ? 'times text-danger' : 'check text-success'}}"></i></a>, <a href="#" class="text-dark">Belakang <i class="fa fa-{{ empty($mahasiswa->ijazah_belakang) ? 'times text-danger' : 'check text-success'}}"></i></a></span>
                     </div>
                   </div>

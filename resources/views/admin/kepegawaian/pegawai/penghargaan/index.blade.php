@@ -22,20 +22,21 @@
                                 <label for="penyelenggara" class="form-label">Penyelenggara</label>
                                 <input type="text" name="penyelenggara" id="penyelenggara_penghargaan" class="form-control" placeholder="cth : DIKTI | Yayasan Farmasi">
                             </div>
-                            
+
                             <div class="mb-3">
                                 <label for="tanggal" class="form-label">Tanggal</label>
                                 <input type="date" name="tanggal" id="tanggal_penghargaan" class="form-control" placeholder="">
                             </div>
-                            
+
                             <div class="mb-3">
                                 <label for="file" class="form-label">File Pendukung</label>
                                 <input type="file" name="file" id="file_penghargaan" class="form-control" placeholder="">
+                                <div class="alert alert-warning">Max File upload 10 MB</div>
                                 <div id="dokumen_exist_penghargaan">
 
                                 </div>
                             </div>
-                            
+
                         </div>
                         <div class="modal-footer">
                             <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>

@@ -12,6 +12,8 @@ class Pertemuan extends Model
         'capaian',
         'no_pertemuan',
         'tgl_pertemuan',
-        'id_dsn'
+        'id_dsn',
+        'buka_kehadiran',
+        'tgl_expired',
     ];
 }

@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers\admin\berkas;
 
+use App\Models\Mahasiswa;
+use App\Models\TahunAjaran;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Crypt;
+use App\Models\BerkasPendukungMahasiswa;
+use App\Models\MahasiswaBerkasPendukung;
 
 class BerkasMahasiswaController extends Controller
 {
@@ -12,7 +17,26 @@ class BerkasMahasiswaController extends Controller
      */
     public function index()
     {
-        return view('admin.berkas.mahasiswa.index');
+        $title = "Berkas Mahasiswa";
+        $ta = TahunAjaran::where("status", "Aktif")->first();
+
+        $berkas = BerkasPendukungMahasiswa::where('id_ta', $ta->id)->get()->keyBy('nim');
+        $mhs = Mahasiswa::select('mahasiswa.*', 'mahasiswa.nim as nimMahasiswa')->get()->map(function ($item) use ($berkas) {
+            $item->nimMahasiswa = $item->nim;
+            $item->nimEnkripsi = Crypt::encryptString($item->nim . "stifar");
+
+            $berkasItem = $berkas[$item->nim] ?? null;
+            $item->kk = $berkasItem->kk ?? null;
+            $item->ktp = $berkasItem->ktp ?? null;
+            $item->akte = $berkasItem->akte ?? null;
+            $item->ijazah_depan = $berkasItem->ijazah_depan ?? null;
+            $item->ijazah_belakang = $berkasItem->ijazah_belakang ?? null;
+
+            return $item;
+        });
+
+        $fake_id = 0;
+        return view('admin.berkas.mahasiswa.index', compact('title', 'mhs', 'fake_id', 'berkas'));
     }
 
     /**
@@ -28,15 +52,126 @@ class BerkasMahasiswaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $fields = [
+            'foto_ktp' => 'ktp',
+            'foto_kk' => 'kk',
+            'foto_akte' => 'akte',
+            'foto_ijazah_depan' => 'ijazah_depan',
+            'foto_ijazah_belakang' => 'ijazah_belakang',
+        ];
+
+        $validatedData = $request->validate(array_fill_keys(array_keys($fields), 'mimes:jpg,jpeg|max:5012'));
+
+        $ta = TahunAjaran::where("status", "Aktif")->first();
+
+        // Cek apakah request ingin update_herregistrasi
+        if ($request->has('update_herregistrasi') && $request->update_herregistrasi) 
+        {
+            // Ambil TA sebelumnya
+            $taSebelumnya = TahunAjaran::where("created_at", '<', $ta->created_at)
+                ->orderBy('created_at', 'desc')
+                ->first();
+
+            // Ambil berkas lama
+            $berkasLama = MahasiswaBerkasPendukung::where("nim", $request->nim)
+                ->where("id_ta", $taSebelumnya?->id) // safe navigation in case $taSebelumnya null
+                ->first();
+
+            // Siapkan data baru dengan isian dari request, jika tidak ada ambil dari lama
+            $dataBerkas = ['nim' => $request->nim, 'id_ta' => $ta->id];
+
+            foreach ($fields as $fileInput => $dbField) {
+                if ($request->hasFile($fileInput)) {
+                    $file = $request->file($fileInput);
+                    $fileName = date('YmdHi') . $request->nim . $file->getClientOriginalName();
+                    $fileName = str_replace(' ', '-', $fileName);
+
+                    $tujuan_upload = 'assets/file/berkas/mahasiswa/' . $dbField;
+
+                    if (!file_exists($tujuan_upload)) {
+                        mkdir($tujuan_upload, 0777, true);
+                    }
+
+                    $file->move($tujuan_upload, $fileName);
+
+                    $dataBerkas[$dbField] = $fileName;
+                } else {
+                    // Ambil dari berkas lama jika tidak dikirim
+                    if ($berkasLama) {
+                        $dataBerkas[$dbField] = $berkasLama->$dbField;
+                    }
+                }
+            }
+
+            // Simpan sebagai baris baru
+            MahasiswaBerkasPendukung::create($dataBerkas);
+
+        } else {
+            // Jika tidak herregistrasi → update data jika sudah ada
+            $berkas = MahasiswaBerkasPendukung::firstOrCreate(
+                [
+                    'nim' => $request->nim,
+                    'id_ta' => $ta->id
+                ],
+                [
+                    'nim' => $request->nim
+                ]
+            );
+
+            foreach ($fields as $fileInput => $dbField) {
+                if ($request->hasFile($fileInput)) {
+                    $file = $request->file($fileInput);
+                    $fileName = date('YmdHi') . $request->nim . $file->getClientOriginalName();
+                    $fileName = str_replace(' ', '-', $fileName);
+
+                    $tujuan_upload = 'assets/file/berkas/mahasiswa/' . $dbField;
+
+                    if (!file_exists($tujuan_upload)) {
+                        mkdir($tujuan_upload, 0777, true);
+                    }
+
+                    $file->move($tujuan_upload, $fileName);
+
+                    $berkas->update([$dbField => $fileName]);
+                }
+            }
+        }
+
+        return response()->json(['message' => 'Berhasil Menyimpan Berkas']);
     }
+
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $nimEnkrip)
     {
-        //
+        $nimDekrip = Crypt::decryptString($nimEnkrip);
+        $nim = str_replace("stifar", "", $nimDekrip);
+
+        $mhs = Mahasiswa::select('mahasiswa.*', 'mahasiswa.nim as nimMahasiswa', 'mahasiswa_berkas_pendukung.*', 'mahasiswa_berkas_pendukung.updated_at AS timeStampBerkas')
+        ->leftJoin('mahasiswa_berkas_pendukung', 'mahasiswa_berkas_pendukung.nim', '=', 'mahasiswa.nim')
+        ->where('mahasiswa.nim', $nim)
+        ->first();
+
+        $berkas = BerkasPendukungMahasiswa::where("nim", $nim)->latest()->first();
+
+        $title = 'Berkas ' . $mhs->nama;
+
+        $data = [
+            'mahasiswa' => $mhs,
+            'berkas' => $berkas,
+            'title' => $title,
+        ];
+
+        $ta = TahunAjaran::where("status", "Aktif")->first();
+        if($berkas){
+            if($berkas->id_ta != $ta->id){
+                $data['updateHerregistrasi'] = true;
+            }
+        }
+
+        return view('admin.berkas.mahasiswa.show', $data);
     }
 
     /**
@@ -44,7 +179,7 @@ class BerkasMahasiswaController extends Controller
      */
     public function edit(string $id)
     {
-        //
+
     }
 
     /**

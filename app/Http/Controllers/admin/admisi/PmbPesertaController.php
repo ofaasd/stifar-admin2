@@ -21,20 +21,20 @@ class PmbPesertaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public $indexed = ['', 'id','nama' , 'nopen', 'gelombang', 'pilihan1','pilihan2','ttl','admin_input_date'];
+    public $indexed = ['', 'id','nama' , 'nopen', 'gelombang', 'pilihan1','pilihan2','ttl','admin_input_date','status'];
     public function index(Request $request,$id_gelombang=0)
     {
         //
 
-        $ta_min = PmbGelombang::selectRaw('min(ta_awal) as ta_min')->limit(1)->first()->ta_min;
+        $ta_min = PmbGelombang::selectRaw('max(ta_awal) as ta_min')->limit(1)->first()->ta_min;
         $curr_ta = $ta_min;
         if($id_gelombang == 0){
-            $curr_gelombang = PmbGelombang::where('ta_awal',$ta_min)->limit(1)->first();
+            $curr_gelombang = PmbGelombang::where('ta_awal',$ta_min)->orderBy('id','desc')->limit(1)->first();
             $id_gelombang = $curr_gelombang->id;
-            $gelombang = PmbGelombang::where('ta_awal',$ta_min)->get();
+            $gelombang = PmbGelombang::where('ta_awal',$ta_min)->orderBy('id','desc')->get();
         }else{
             $curr_ta = PmbGelombang::where('id',$id_gelombang)->first()->ta_awal;
-            $gelombang = PmbGelombang::where('ta_awal',$curr_ta)->get();
+            $gelombang = PmbGelombang::where('ta_awal',$curr_ta)->orderBy('id','desc')->get();
             $request->session()->put('gelombang', $id_gelombang);
         }
 
@@ -67,6 +67,7 @@ class PmbPesertaController extends Controller
                 6 => 'pilihan2',
                 7 => 'ttl',
                 8 => 'admin_input_date',
+                9 => 'status',
             ];
 
             $search = [];
@@ -77,9 +78,9 @@ class PmbPesertaController extends Controller
 
             $limit = $request->input('length');
             $start = $request->input('start');
-            $order = $columns[$request->input('order.0.column')];
-            $dir = $request->input('order.0.dir');
-
+            
+            $order = 'id';
+            $dir = 'desc';
 
             if (empty($request->input('search.value'))) {
                 $peserta = PmbPesertaOnline::where('gelombang',$id_gelombang)
@@ -88,6 +89,8 @@ class PmbPesertaController extends Controller
                     ->orderBy($order, $dir)
                     ->get();
             } else {
+                $order = $columns[$request->input('order.0.column')];
+                $dir = $request->input('order.0.dir');
                 $search = $request->input('search.value');
 
                 $peserta = PmbPesertaOnline::where('gelombang',$id_gelombang)
@@ -124,6 +127,8 @@ class PmbPesertaController extends Controller
                     $nestedData['fake_id'] = ++$ids;
                     $nestedData['nama'] = $row->nama;
                     $nestedData['nopen'] = $row->nopen;
+                    $nestedData['is_bayar'] = $row->is_bayar;
+                    $nestedData['is_lolos'] = $row->is_lolos;
                     $nestedData['gelombang'] = $gel[$row->gelombang];
                     $nestedData['pilihan1'] = $prod[$row->pilihan1] ?? '';
                     $nestedData['pilihan2'] = $prod[$row->pilihan2] ?? '';
@@ -291,7 +296,7 @@ class PmbPesertaController extends Controller
         $kecamatan = [];
         if($peserta->kecamatan != 0 && !empty($peserta->kecamatan)){
             $kecamatan = Wilayah::where('id_induk_wilayah', $peserta->kotakab)->get();
-        }
+        }    
         return view('admin.admisi.peserta.edit', compact('title','wilayah','peserta','kota','kecamatan','id','action'));
     }
 

@@ -54,9 +54,17 @@
           @php
             if(Auth::user()->roles->pluck('name')[0] == 'pegawai'){
                 $pegawai = DB::table('pegawai_biodata')->where('user_id',Auth::user()->id)->first();
+            }else{
+                $mhs = DB::table('mahasiswa')->where('user_id',Auth::user()->id)->first();
             }
           @endphp
-          <div class="media profile-media"><img class="b-r-10 img-30" src="{{ (!empty($pegawai->foto))?asset('assets/images/pegawai/' . $pegawai->foto):asset('assets/images/dashboard/profile.png') }}" alt="">
+          <div class="media profile-media"><img class="b-r-10 img-30" 
+            @if (Auth::user()->roles->pluck('name')[0] == 'pegawai')
+              src="{{ (!empty($pegawai->foto))?asset('assets/images/pegawai/' . $pegawai->foto):asset('assets/images/dashboard/profile.png') }}" 
+            @else
+              src="{{ (!empty($mhs->foto_mhs))?asset('assets/images/mahasiswa/' . $mhs->foto_mhs):asset('assets/images/user/7.jpg') }}" 
+            @endif
+            alt="">
             @php
               $id = Auth::user()->id;
               $pegawai = \App\Models\PegawaiBiodatum::where('user_id',$id)->first();

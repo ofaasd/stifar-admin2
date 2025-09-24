@@ -6,14 +6,14 @@
 
         const form = $(this).serialize();
         $.ajax({
-            url:'{{URL::to('mahasiswa')}}',
+            url:'{{URL::to('mahasiswa_new')}}',
             method:'POST',
             data:form,
             success:function(data){
                 swal({
                     icon: 'success',
-                    title: 'Successfully '.concat(data.status, '!'),
-                    text: ''.concat(data.status, ' Successfully.'),
+                    title: 'Successfully '.concat(' Saved', '!'),
+                    text: ''.concat('Data Berhasil Tersimpan'),
                     customClass: {
                         confirmButton: 'btn btn-success'
                     }
@@ -21,12 +21,14 @@
                     //window.location = "{{URL::to('/mahasiswa/')}}" + '/' + data.id + '/edit';
                     $(".update-btn").prop('disabled', false);
                     $(".update-btn").html('Simpan');
+                    // window.location = "{{URL::to('mahasiswa')}}";
+                    //window.location.reload();
                 });
             },
             error: function error(err) {
                 //offCanvasForm.offcanvas('hide');
                 swal({
-                title: 'Duplicate Entry!',
+                title: 'Error !',
                 text: 'Data Not Saved !',
                 icon: 'error',
                 customClass: {

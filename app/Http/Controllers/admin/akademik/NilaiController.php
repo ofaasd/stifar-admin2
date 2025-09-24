@@ -15,6 +15,8 @@ use App\Models\MasterRuang;
 use App\Models\Sesi;
 use App\Models\Krs;
 use App\Models\Mahasiswa;
+use App\Models\PegawaiBiodatum;
+use Auth;
 use App\Models\master_nilai as MasterNilai;
 use Illuminate\Support\Facades\DB;
 
@@ -50,17 +52,47 @@ class NilaiController extends Controller
                     ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
                     ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
                     ->whereIn('id_mk', $list_mk)
+                    ->where('jadwals.id_tahun',$id_tahun)
                     ->get();
 
         }else{
-            $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul', 'pegawai_biodata.nama_lengkap as nama_dosen')
+            if(Auth::user()->hasRole('admin-prodi')){
+                $pegawai = PegawaiBiodatum::where('user_id',Auth::user()->id)->first();
+                $prodi = Prodi::find($pegawai->id_progdi);
+                $kurikulum = Kurikulum::where('progdi',$prodi->kode_prodi)->get();
+                $list_mk = [];
+                if($kurikulum){
+                foreach($kurikulum as $row){
+                        $mk_kurikulum = MatakuliahKurikulum::select('mata_kuliahs.*')->join('mata_kuliahs','mata_kuliahs.id','=','matakuliah_kurikulums.id_mk')->where('mata_kuliahs.status','Aktif')->where('id_kurikulum',$row->id)->get();
+                        foreach($mk_kurikulum as $mkkurikulum){
+                            $list_mk[] = $mkkurikulum->id;
+                        }
+                    }
+                }
+
+
+               $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul', 'pegawai_biodata.nama_lengkap as nama_dosen')
                     ->leftJoin('pengajars', 'pengajars.id_jadwal', '=', 'jadwals.id')
                     ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'pengajars.id_dsn')
                     ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
                     ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
                     ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
                     ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
+                    ->whereIn('id_mk', $list_mk)
+                    ->where('jadwals.id_tahun',$id_tahun)
                     ->get();
+                
+            }else{
+                $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul', 'pegawai_biodata.nama_lengkap as nama_dosen')
+                        ->leftJoin('pengajars', 'pengajars.id_jadwal', '=', 'jadwals.id')
+                        ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'pengajars.id_dsn')
+                        ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
+                        ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
+                        ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
+                        ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
+                        ->where('jadwals.id_tahun',$id_tahun)
+                        ->get();
+            }
         }
         $nilaiPublish = [];
         $nilaiValidasi = [];

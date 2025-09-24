@@ -11,5 +11,5 @@ class MasterGedung extends Model
     use HasFactory, SoftDeletes;
 
     protected $table = 'master_gedung';
-    protected $fillable = ['nama', 'kode_gedung'];
+    protected $fillable = ['nama', 'kode'];
 }

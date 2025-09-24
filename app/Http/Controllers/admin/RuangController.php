@@ -3,34 +3,54 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\JenisRuang;
+use App\Models\AsetGedungBangunan;
+use App\Models\MasterJenisRuang;
 use App\Models\Lantai;
 use Illuminate\Http\Request;
 use App\Models\MasterRuang;
+use Illuminate\Support\Facades\Crypt;
 
 class RuangController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public $indexed = ['', 'id', 'nama_ruang', 'nama_lantai', 'jenis_ruang', 'kapasitas', 'luas'];
+    public $indexed = ['', 'id', 'kodeGedung', 'kodeJenis', 'nama_ruang', 'kapasitas', 'lantai' , 'luas'];
     public function index(Request $request)
     {
-        //
+        $ruang = MasterRuang::select(
+            'master_ruang.*',
+            'master_ruang.id AS idRuang',
+            'master_lantai.lantai as lantai',
+            'master_jenis_ruang.kode as kodeJenis',
+            'aset_gedung_bangunan.kode AS kodeGedung'
+        )
+        ->leftJoin('master_lantai', 'master_lantai.id', '=', 'master_ruang.lantai_id')
+        ->leftJoin('master_jenis_ruang', 'master_jenis_ruang.kode', '=', 'master_ruang.kode_jenis')
+        ->leftJoin('aset_gedung_bangunan', 'aset_gedung_bangunan.kode', '=', 'master_ruang.kode_gedung')
+        ->get()
+        ->map(function ($item) {
+            $item->idEnkripsi = Crypt::encryptString($item->idRuang . "stifar");
+            return $item;
+        });
+
+
         if (empty($request->input('length'))) {
             $title = "Ruang";
             $indexed = $this->indexed;
-            $lantais = Lantai::all();
-            $jenisRuangs = JenisRuang::all();
-            return view('admin.master.ruang.index', compact('title','indexed', 'jenisRuangs', 'lantais'));
+            $asetGedung = AsetGedungBangunan::all();
+            $asetJenisRuang = MasterJenisRuang::all();
+            $asetLantai = Lantai::all();
+            return view('admin.master.ruang.index', compact('title','indexed', 'asetGedung', 'asetJenisRuang', 'asetLantai'));
         }else{
             $columns = [
                 1 => 'id',
-                2 => 'nama_ruang',
-                3 => 'nama_lantai',
-                4 => 'jenis_ruang',
+                2 => 'kodeGedung',
+                3 => 'kodeJenis',
+                4 => 'nama_ruang',
                 5 => 'kapasitas',
-                6 => 'luas',
+                6 => 'lantai',
+                7 => 'luas',
             ];
 
             $search = [];
@@ -46,34 +66,55 @@ class RuangController extends Controller
 
 
             if (empty($request->input('search.value'))) {
-                $ruang = MasterRuang::select('master_ruang.*', 'master_lantai.lantai as nama_lantai', 'master_jenis_ruang.nama as jenis_ruang')
+                $ruang = MasterRuang::select(
+                    'master_ruang.*',
+                    'master_ruang.id AS idRuang',
+                    'master_lantai.lantai as lantai',
+                    'master_jenis_ruang.kode as kodeJenis',
+                    'aset_gedung_bangunan.kode AS kodeGedung'
+                )
                 ->leftJoin('master_lantai', 'master_lantai.id', '=', 'master_ruang.lantai_id')
-                ->leftJoin('master_jenis_ruang', 'master_jenis_ruang.id', '=', 'master_ruang.jenis_id')
-                ->offset($start)
-                ->limit($limit)
-                ->orderBy($order, $dir)
-                ->get();
+                ->leftJoin('master_jenis_ruang', 'master_jenis_ruang.kode', '=', 'master_ruang.kode_jenis')
+                ->leftJoin('aset_gedung_bangunan', 'aset_gedung_bangunan.kode', '=', 'master_ruang.kode_gedung')
+                ->get()
+                ->map(function ($item) {
+                    $item->idEnkripsi = Crypt::encryptString($item->idRuang . "stifar");
+                    return $item;
+                });
             } else {
                 $search = $request->input('search.value');
 
-                $ruang = MasterRuang::where('id', 'LIKE', "%{$search}%")
+                $ruang = MasterRuang::select('master_ruang.*', 'master_ruang.id AS idRuang', 'master_lantai.lantai as lantai', 'master_jenis_ruang.kode as kodeJenis', 'aset_gedung_bangunan.kode AS kodeGedung')
+                    ->leftJoin('master_lantai', 'master_lantai.id', '=', 'master_ruang.lantai_id')
+                    ->leftJoin('master_jenis_ruang', 'master_jenis_ruang.kode', '=', 'master_ruang.kode_jenis')
+                    ->leftJoin('aset_gedung_bangunan', 'aset_gedung_bangunan.kode', '=', 'master_ruang.kode_gedung')
+                    ->where('id', 'LIKE', "%{$search}%")
+                    ->orWhere('kodeGedung', 'LIKE', "%{$search}%")
                     ->orWhere('nama_ruang', 'LIKE', "%{$search}%")
+                    ->orWhere('kodeJenis', 'LIKE', "%{$search}%")
                     ->orWhere('kapasitas', 'LIKE', "%{$search}%")
-                    ->orWhere('nama_lantai', 'LIKE', "%{$search}%")
-                    ->orWhere('jenis_ruang', 'LIKE', "%{$search}%")
+                    ->orWhere('lantai', 'LIKE', "%{$search}%")
                     ->orWhere('luas', 'LIKE', "%{$search}%")
                     ->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
-                    ->get();
+                    ->get()->map(function ($item) {
+                        $item->idEnkripsi = Crypt::encryptString($item->idRuang . "stifar");
+                        return $item;
+                    });
 
-                $totalFiltered = MasterRuang::where('id', 'LIKE', "%{$search}%")
-                ->orWhere('nama_ruang', 'LIKE', "%{$search}%")
-                ->orWhere('kapasitas', 'LIKE', "%{$search}%")
-                ->orWhere('nama_lantai', 'LIKE', "%{$search}%")
-                ->orWhere('jenis_ruang', 'LIKE', "%{$search}%")
-                ->orWhere('luas', 'LIKE', "%{$search}%")
-                ->count();
+                $ruang = MasterRuang::select('master_ruang.*', 'master_ruang.id AS idRuang', 'master_lantai.lantai as lantai', 'master_jenis_ruang.kode as kodeJenis', 'aset_gedung_bangunan.kode AS kodeGedung')
+                    ->leftJoin('master_lantai', 'master_lantai.id', '=', 'master_ruang.lantai_id')
+                    ->leftJoin('master_jenis_ruang', 'master_jenis_ruang.kode', '=', 'master_ruang.kode_jenis')
+                    ->leftJoin('aset_gedung_bangunan', 'aset_gedung_bangunan.kode', '=', 'master_ruang.kode_gedung')
+                    ->where('id', 'LIKE', "%{$search}%")
+                    ->orWhere('kodeGedung', 'LIKE', "%{$search}%")
+                    ->orWhere('nama_ruang', 'LIKE', "%{$search}%")
+                    ->orWhere('kodeJenis', 'LIKE', "%{$search}%")
+                    ->orWhere('kapasitas', 'LIKE', "%{$search}%")
+                    ->orWhere('lantai', 'LIKE', "%{$search}%")
+                    ->orWhere('luas', 'LIKE', "%{$search}%")
+                    ->count();
             }
 
             $data = [];
@@ -85,9 +126,11 @@ class RuangController extends Controller
                 foreach ($ruang as $row) {
                     $nestedData['id'] = $row->id;
                     $nestedData['fake_id'] = ++$ids;
+                    $nestedData['idEnkripsi'] = $row->idEnkripsi;
+                    $nestedData['kodeGedung'] = $row->kodeGedung;
+                    $nestedData['kodeJenis'] = $row->kodeJenis;
                     $nestedData['nama_ruang'] = $row->nama_ruang;
-                    $nestedData['nama_lantai'] = $row->nama_lantai;
-                    $nestedData['jenis_ruang'] = $row->jenis_ruang;
+                    $nestedData['lantai'] = $row->lantai;
                     $nestedData['kapasitas'] = $row->kapasitas;
                     $nestedData['luas'] = $row->luas;
                     $data[] = $nestedData;
@@ -132,10 +175,11 @@ class RuangController extends Controller
             $ruang = MasterRuang::updateOrCreate(
                 ['id' => $id],
                 [
-                    'nama_ruang' => $request->nama_ruang, 
+                    'kode_gedung' => $request->kodeGedung, 
+                    'nama_ruang' => $request->namaRuang, 
                     'kapasitas' => $request->kapasitas, 
                     'lantai_id' => $request->lantai, 
-                    'jenis_id' => $request->jenis_ruang, 
+                    'kode_jenis' => $request->kodeJenis, 
                     'luas' => $request->luas, 
                     'log_date'=>date('Y-m-d H:i:s')
                 ]
@@ -150,10 +194,11 @@ class RuangController extends Controller
             $ruang = MasterRuang::updateOrCreate(
                 ['id' => $id],
                 [
-                    'nama_ruang' => $request->nama_ruang, 
+                    'kode_gedung' => $request->kodeGedung, 
+                    'nama_ruang' => $request->namaRuang, 
                     'kapasitas' => $request->kapasitas, 
                     'lantai_id' => $request->lantai, 
-                    'jenis_id' => $request->jenis_ruang, 
+                    'kode_jenis' => $request->kodeJenis, 
                     'luas' => $request->luas, 
                     'log_date'=>date('Y-m-d H:i:s')
                 ]
@@ -170,9 +215,15 @@ class RuangController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $idEnkripsi)
     {
-        //
+        $idDekrip = Crypt::decryptString($idEnkripsi);
+        $id = str_replace("stifar", "", $idDekrip);
+
+        $data = MasterRuang::where(['id' => $id])->first();
+        // $dataBarang = Barang::where(['kode_ruang'   => $data->kode])->get();
+
+        return view('admin.master.ruang.show', $data);
     }
 
     /**
@@ -180,7 +231,6 @@ class RuangController extends Controller
      */
     public function edit(string $id)
     {
-        //
         $where = ['id' => $id];
 
         $ruang = MasterRuang::where($where)->first();

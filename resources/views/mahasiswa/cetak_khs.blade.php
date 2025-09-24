@@ -10,7 +10,7 @@
             font-family: Arial, Helvetica, sans-serif;
             border-collapse: collapse;
             font-size:10pt;
-            
+
         }
 
         .customers td,
@@ -44,12 +44,16 @@
             </td>
             <td width="90%" style="padding-left: 30px;">
                 <center>
-                    <b>SEKOLAH TINGGI ILMU FARMASI YAYASAN PHARMASI SEMARANG</b>
-                    <br><b>HASIL STUDI SEMESTER</b>
+                    <b>SEKOLAH TINGGI ILMU FARMASI SEMARANG</b>
+                    <br>Alamat : Jl. Letnan Jendral Sarwo Edie Wibowo Km. 1, Plamongan Sari, Kec. Pedurungan, Kota Semarang
+                    <br>Email : admin@sistifar.id
+                    <br>Website : https://stifar.ac.id
                 </center>
             </td>
         </tr>
     </table>
+    <hr>
+    <center><b>KARTU HASIL STUDI</b></center>
     <br>
     <table width="100%">
         <tr>
@@ -131,6 +135,29 @@
     </table>
     <hr>
     <br>
+    <center>PERSETUJUAN KARTU STUDI</center>
+    <table width="100%">
+        <tr>
+            <td></td>
+            <td></td>
+            <td>Semarang, {{ date("d M Y") }}</td>
+        </tr>
+        <tr>
+            <td><center>Dosen Wali</center></td>
+            <td><center></center></td>
+            <td><center>Kepala Tata Usaha</center></td>
+        </tr>
+        <tr>
+            <td><center><br><br><br></center></td>
+            <td><center></center></td>
+            <td><center></center></td>
+        </tr>
+        <tr>
+            <td><center>{{ $mhs->dsn_wali }}</center></td>
+            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td><center>....</center></td>
+        </tr>
+    </table>
 </body>
 
 </html>

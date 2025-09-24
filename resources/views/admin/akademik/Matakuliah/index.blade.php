@@ -8,6 +8,7 @@
 @section('style')
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/vendors/datatables.css') }}">
 <link rel="stylesheet" type="text/css" href="{{asset('assets/css/vendors/sweetalert2.css')}}">
+<link rel="stylesheet" type="text/css" href="{{asset('assets/css/vendors/select2.css')}}">
 @endsection
 
 @section('breadcrumb-title')
@@ -37,7 +38,7 @@
                             <div class="tab-pane fade active show" id="masterMK" role="tabpanel" aria-labelledby="masterMK-tab">
                                 <div class="mt-4">
                                     <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahMK"><i class="fa fa-plus"></i> Tambah Matakuliah</button>
-                                    <div class="modal fade" id="tambahMK" tabindex="-1" aria-labelledby="tambahMK" aria-hidden="true">
+                                    <div class="modal fade" id="tambahMK" aria-labelledby="tambahMK" aria-hidden="true">
                                         <div class="modal-dialog" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-body">
@@ -55,6 +56,15 @@
                                                         <div class="form-group mt-2">
                                                             <label for="nama_inggris">Nama Inggris :</label>
                                                             <input type="text" class="form-control" name="nama_inggris" id="nama_inggris" placeholder="Nama Inggris" required=""/>
+                                                        </div>
+                                                        <div class="form-group mt-2">
+                                                            <label for="prasyarat1">Matakuliah Prasayarat 1 :</label>
+                                                            <select class="form-control" name="prasyarat1" id="prasyarat1_c">
+                                                                <option value=0>--Input Matkul Prasyarat--</option>
+                                                                @foreach($mk as $row)
+                                                                <option value="{{$row->id}}">{{$row->kode_matkul}} - {{$row->nama_matkul}}</option>
+                                                                @endforeach
+                                                            </select>
                                                         </div>
                                                         {{-- <div class="form-group mt-2">
                                                             <label for="kelompok">Nama Kelompok :</label>
@@ -78,6 +88,7 @@
                                                             <label for="nama_inggris">Semester :</label>
                                                             <input type="number" class="form-control" name="semester" id="semester"/>
                                                         </div>
+
                                                         <div class="form-group mt-2">
                                                             <label for="nama_inggris">Jumlah SKS (Kredit) :</label>
                                                             <div class="row">
@@ -129,11 +140,13 @@
                                                 <th>Nama Inggris</th>
                                                 {{-- <th>Kelompok</th>
                                                 <th>Rumpun</th> --}}
+                                                <th>Prasyarat</th>
                                                 <th>Status</th>
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            @php $mks = $mk @endphp
                                             @foreach($mk as $mk)
                                                 <tr>
                                                     <td>{{ $no++ }}</td>
@@ -142,7 +155,8 @@
                                                     <td>{{ $mk['nama_matkul_eng'] }}</td>
                                                     {{-- <td>{{ $mk['nama_kelompok'] }}</td>
                                                     <td>{{ $mk['nama_rumpun'] }}</td> --}}
-                                                    <td>{{ $mk['status'] . $mk['id'] }}</td>
+                                                    <td>{{ $list_kode_mk[$mk['prasyarat1']]   ?? "-"}} - {{ $list_mk[$mk['prasyarat1']]   ?? "-"}}</td>
+                                                    <td>{{ $mk['status']}}</td>
                                                     <td>
                                                         <div class="btn-group">
                                                             <a href="#" class="btn btn-warning btn-sm btn-icon edit-record" data-bs-toggle="modal" data-original-title="test" data-bs-target="#editMK{{ $mk['kode_matkul'] }}">
@@ -153,7 +167,10 @@
                                                             </a>
                                                         </div>
 
-                                                        <div class="modal fade" id="editMK{{ $mk['kode_matkul'] }}" tabindex="-1" aria-labelledby="editMK{{ $mk['kode_matkul'] }}" aria-hidden="true">
+                                                        
+                                                    </td>
+                                                </tr>
+                                                <div class="modal fade" id="editMK{{ $mk['kode_matkul'] }}" aria-labelledby="editMK{{ $mk['kode_matkul'] }}" aria-hidden="true">
                                                             <div class="modal-dialog" role="document">
                                                                 <div class="modal-content">
                                                                     <div class="modal-body">
@@ -173,6 +190,15 @@
                                                                             <div class="form-group mt-2">
                                                                                 <label for="nama_inggris">Nama Inggris :</label>
                                                                                 <input type="text" class="form-control" name="nama_inggris" id="nama_inggris_{{ $mk['kode_matkul'] }}" value="{{ $mk['nama_matkul_eng'] }}" required=""/>
+                                                                            </div>
+                                                                            <div class="form-group mt-2">
+                                                                                <label for="prasyarat1">Matakuliah Prasayarat 1 :</label>
+                                                                                <select class="form-control" name="prasyarat1" id="prasyarat1_u{{$mk->id}}">
+                                                                                    <option value=0>--Input Matkul Prasyarat--</option>
+                                                                                    @foreach($mks as $rows)
+                                                                                    <option value="{{$rows->id}}">{{$rows->kode_matkul}} - {{$rows->nama_matkul}}</option>
+                                                                                    @endforeach
+                                                                                </select>
                                                                             </div>
                                                                             {{-- <div class="form-group mt-2">
                                                                                 <label for="kelompok">Nama Kelompok :</label>
@@ -222,6 +248,7 @@
                                                                                     <option value="Tidak Aktif">Tidak Aktif</option>
                                                                                 </select>
                                                                             </div>
+
                                                                             <div class="form-group mt-2">
                                                                                 <label for="rps">RPS :</label>
                                                                                 <input type="file" class="form-control" name="rps"/>
@@ -246,9 +273,14 @@
                                                                 </div>
                                                             </div>
                                                         </div>
+                                                        <script>
+                                                            document.addEventListener('DOMContentLoaded', (event) => {
 
-                                                    </td>
-                                                </tr>
+                                                                $('#prasyarat1_u{{$mk->id}}').select2({
+                                                                    dropdownParent: $('#editMK{{ $mk['kode_matkul'] }}')
+                                                                });
+                                                            })
+                                                        </script>
                                             @endforeach
                                         </tbody>
                                     </table>
@@ -266,12 +298,16 @@
 @section('script')
     <script src="{{ asset('assets/js/datatable/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{asset('assets/js/sweet-alert/sweetalert.min.js')}}"></script>
-
+    <script src="{{asset('assets/js/select2/select2.full.min.js')}}"></script>
+    <script src="{{asset('assets/js/select2/select2-custom.js')}}"></script>
     <script>
         $(function() {
             $("#tableMK").DataTable({
                 responsive: true
             })
+            $('#prasyarat1_c').select2({
+                dropdownParent: $('#tambahMK')
+            });
         })
         function simpanMK(){
             const baseUrl = {!! json_encode(url('/')) !!};

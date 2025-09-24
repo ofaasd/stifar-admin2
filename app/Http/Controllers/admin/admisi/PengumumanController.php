@@ -9,6 +9,7 @@ use App\Models\PmbPesertaOnline;
 use App\Models\PmbJalurProdi;
 use App\Models\Prodi;
 use App\Models\TahunAjaran;
+use App\helpers;
 
 class PengumumanController extends Controller
 {
@@ -146,13 +147,29 @@ class PengumumanController extends Controller
         }
     }
     public function edit_peserta($id){
-        $peserta = PmbPesertaOnline::find($id);
+        $peserta[0] = PmbPesertaOnline::find($id);
+        $peserta[1] = Prodi::find($peserta[0]->pilihan1);
+        $peserta[2] = Prodi::find($peserta[0]->pilihan2);
         return response()->json($peserta);
     }
     public function simpan_peserta(Request $request){
         $peserta = PmbPesertaOnline::find($request->id);
         $peserta->is_lolos = $request->is_lolos;
+        $peserta->final_prodi = $request->final_prodi;
+        $peserta->pilihan1 = $request->final_prodi;
         $peserta->save();
-        return response()->json("Saved");
+        if($request->is_lolos == 1){
+            $data['no_wa'] = $peserta->hp;
+            $message = "*Pesan dari STIFAR ini otomatis dikirim dari sistem* \n\n Halo, " . $peserta->nama . ", \n\n Selamat !! anda dinyatakan *LULUS* dan resmi diterima sebagai mahasiswa baru STIFAR,\n\nUntuk informasi selanjutnya akan disampaikan melalui WAG (Whatsapp Group). Jika kamu blm bergabung kamu bisa login kembali melalui \n https://pendaftaran.stifar.ac.id/ \n dan masuk ke menu *pengumuman* untuk dapat bergabung ke WAG admisi STIFAR \n\n jika terdapat kendala dapat menghubungi no. 081393111171 \n sebagai media center PMB STIFAR 2025 \n\n Terimakasih, \n Admin PMB STIFAR";
+            $data['pesan'] = $message;
+
+            $nohp = $peserta->hp;
+            $pesan = helpers::send_wa($data);
+            return response()->json("Sended");
+        }else{
+            return response()->json("Saved");
+        }
+
+
     }
 }

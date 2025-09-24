@@ -1,6 +1,7 @@
 
 <form id="form_set_pertemuan" action="javascript:void(0)" method="POST">
 <div id="tablePertemuan">
+    <a href="{{URL::to('dosen/cetak_absensi/' . $jadwal->id)}}" class="btn btn-primary" target="_blank">Cetak Absensi</a>
     <input type="hidden" name="id_jadwal" value="{{$jadwal->id}}">
     <table class="table">
         <thead>
@@ -8,6 +9,7 @@
                 <th>Pertemuan</th>
                 <th>Tanggal Pertemuan</th>
                 <th>Dosen Pengampu</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -20,9 +22,14 @@
                     <select name="id_dosen[]" class="form-control">
                         <option value="0">--Pilih Dosen Pengampu</option>
                         @foreach($anggota as $row)
-                            <option value="{{$row->id_pegawai_bio}}" {{($row->id_pegawai_bio == $list_pertemuan[$i]['id_dosen'])?"selected":""}}>{{$row->nama_lengkap}}</option>
+                            <option value="{{$row->id_dsn}}" {{($row->id_dsn == $list_pertemuan[$i]['id_dosen'])?"selected":""}}>{{$list_pegawai[$row->id_dsn]}}</option>
                         @endforeach
                     </select>
+                </td>
+                <td>
+                    @if($list_pertemuan[$i]['id_dosen'] != 0)
+                        <a href="{{url('dosen/absensi/' . $jadwal->id .'/'. $list_pertemuan[$i]['id'] .'/input_new')}}" class="btn btn-primary btn-sm">Input Absensi</a>
+                    @endif
                 </td>
             </tr>
             @endfor

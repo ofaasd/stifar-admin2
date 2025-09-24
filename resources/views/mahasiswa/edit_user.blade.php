@@ -46,8 +46,15 @@
                           </div>
                         <div class="media-body">
                           <h5 class="mb-1">{{$mahasiswa->nama}}</h5>
+                          <p class="mb-1">{{$mahasiswa->nim}}</p>
+                          {{-- <p class="mb-1">Dosen Wali : <br />{{$dosen_wali}}</p> --}}
+
                           <p>{{$prodi[$mahasiswa->id_program_studi]}}</p>
                         </div>
+                      </div>
+                      <div class="d-flex align-items-center mb-2">
+                        <h6 class="mb-0 me-2">Dosen Wali:</h6>
+                        <p class="mb-0">{{ $mahasiswa->dosenWali }}</p>
                       </div>
                     </div>
                   </div>
@@ -69,6 +76,24 @@
                   </div> --}}
                   <div class="form-footer">
                       <div class="row">
+                          <div class="col-md-12 mb-4">
+                              <div class="modal fade" id="isi-no-pisn" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                  <div class="modal-dialog" role="document">
+                                      <form action="javascript:void(0)" id="userForm">
+                                          <div class="modal-content">
+                                              <div class="modal-header">
+                                                  <h5 class="modal-title" id="exampleModalLabel">Isi No PISN</h5>
+                                                  <button class="btn-close" type="button" data-bs-dismiss="modal"
+                                                      aria-label="Close"></button>
+                                              </div>
+                                              <div class="modal-body">
+                                                <p>Silakan isi nomor PISN Anda pada form untuk melengkapi data yudisium.</p>
+                                              </div>
+                                          </div>
+                                      </form>
+                                  </div>
+                              </div>
+                          </div>
                           <div class="col-md-12 mb-4">
                               <a href="#" class="btn btn-primary btn-block" data-bs-toggle="modal" data-original-title="test" data-bs-target="#ubahPasswordModal"><i class="fa fa-key"></i> Ubah Password</a>
                               @include('mahasiswa._form_ubah_password_user')
@@ -113,6 +138,13 @@
     <script>
         $(window).on('load', function() {
             $('#ubahPasswordModal').modal('show');
+        });
+    </script>
+    @endif
+    @if($mahasiswa->is_yudisium == 1 && empty($mahasiswa->no_pisn))
+    <script>
+        $(window).on('load', function() {
+            $('#isi-no-pisn').modal('show');
         });
     </script>
     @endif

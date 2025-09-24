@@ -2,7 +2,12 @@
 @section('title', 'Basic DataTables')
 
 @section('css')
-
+<style>
+    .dataTables_wrapper tbody td{
+        font-size: 0.85em; /* Adjust this value (e.g., 14px, small, 85%) */
+        padding: 0.3em 0.5em;
+    }
+</style>
 @endsection
 
 @section('style')
@@ -24,6 +29,10 @@
         <div class="row">
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
+                <div class="alert alert-primary inverse alert-dismissible fade show" role="alert"><i class="icon-help-alt"></i>
+                    <p>Menu verifikasi digunakan untuk memverifikasi no pendaftaran mahasiswa baru untuk dapat dikoneksikan dengan data dari bank data VA yang disediakan oleh bagian keuangan</p>
+                    <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close" data-bs-original-title="" title=""></button>
+                </div>
                 <div class="card">
                     <div class="card-header pb-0">
                         <div class="row">
@@ -55,8 +64,8 @@
                     </div>
                     <div class="card-body">
                         <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
-                        <div class="table-responsive">
-                            <table class="display" id="basic-1">
+                        <div class="table-responsive ">
+                            <table class="display dataTables_wrapper" id="basic-1">
                                 <thead>
                                     <tr>
                                         <th></th>
@@ -64,11 +73,11 @@
                                         <th>Nama.</th>
                                         <th>No. Pendaftaran</th>
                                         <th>Gelombang</th>
-                                        <th>Pilihan1</th>
-                                        <th>Pilihan2</th>
-                                        <th>TTL</th>
+                                        <th>Pilihan</th>
+                                        <th>Tgl Registrasi</th>
                                         <th>Verifikasi</th>
                                         <th>No. VA</th>
+                                        <th>Status</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -100,7 +109,7 @@
                                                     <option value="1">Verifikasi Diterima</option>
                                                     <option value="2">Verifikasi Ditolak</option>
                                                 </select>
-                                            </div>
+                                            </div>  
                                         </div>
                                         <div class="modal-footer">
                                             <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
@@ -224,7 +233,15 @@
                     {
                         searchable: false,
                         orderable: false,
-                        targets: 8,
+                        targets: 5,
+                        render: function render(data, type, full, meta) {
+                            return '<span>'.concat(full.pilihan1).concat(' | ', full.pilihan2).concat('</span>');
+                        }
+                    },
+                    {
+                        searchable: false,
+                        orderable: false,
+                        targets: 7,
                         render: function render(data, type, full, meta) {
                             if(full['is_verifikasi'] == "0"){
                                 return '<div class="col-md-12 text-center"><span class="text-center"><i class="fa fa-minus-circle fa-lg"></i></span></div>';
@@ -236,6 +253,17 @@
                             //return '<span>asdasdasd</span>';
                         }
                     },
+                    
+                    {
+                    searchable: false,
+                    orderable: false,
+                    targets: 9,
+                    render: function render(data, type, full, meta) {
+                        return '<span>'.concat((full.is_bayar)?"<button class='btn btn-success btn-xs' style='font-size:9pt; margin:2px 0;'>Sudah Bayar</button>":"<button class='btn btn-danger btn-xs' style='font-size:9pt;  margin:2px 0;' title='Belum bayar registrasi uang masuk'>Belum Bayar</button>")
+                        .concat((full.is_lolos)?"<button class='btn btn-success btn-xs' style='font-size:9pt'>Sudah Lolos</button>":"<button class='btn btn-danger btn-xs' style='font-size:9pt'>Belum Lolos</button>").concat('</span>');
+                    }
+                    },
+                   
                     {
                         searchable: false,
                         orderable: false,
@@ -254,7 +282,7 @@
                     render: function render(data, type, full, meta) {
                         return (
                             
-                            '<div class="btn-group"><a class="btn btn-sm  show-record btn-primary" data-id="'
+                            '<div class="btn-group btn-group-sm"><a class="btn btn-sm  show-record btn-primary" data-id="'
                             .concat(full['id'], '" data-bs-toggle="modal" data-original-title="show" data-bs-target="#showModal"')
                             .concat(title, '"><i class="fa fa-eye"></i></a>'+
                             
@@ -268,7 +296,7 @@
                     }
                     }
                 ],
-                order: [[2, 'desc']],
+                order: [[1, 'desc']],
                 dom:
                     '<"row mx-2"' +
                     '<"col-md-2"<"me-3"l>>' +

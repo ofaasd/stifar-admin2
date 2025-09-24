@@ -43,7 +43,7 @@
 
                 </td>
                 <td>
-                    <a href="{{ $ta['krs'] == 1 ? url('admin/masterdata/krs/admin/input/'.$row_mhs['id'].'/'.$ta['id']):'#' }}" class="btn btn-success btn-xs">
+                    <a href="{{ url('admin/masterdata/krs/admin/input/'.$row_mhs['id'].'/'.$ta['id']) }}" class="btn btn-success btn-xs">
                         <i class="fa fa-edit"></i>
                         Input KRS
                     </a>

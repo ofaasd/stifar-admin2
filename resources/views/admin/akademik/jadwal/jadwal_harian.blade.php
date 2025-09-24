@@ -24,6 +24,7 @@
     <div class="container-fluid">
         <div class="row">
             @include('admin.akademik.jadwal.note')
+            @role('super-admin')
             <div class="col-md-12 project-list">
                 <div class="card">
                    <div class="row">
@@ -38,6 +39,7 @@
                    </div>
                 </div>
             </div>
+            @endrole
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
                 <div class="card">
@@ -103,13 +105,13 @@
                                                             <td>{{ $no++ }}</td>
                                                             <td>{{ $jad['kode_jadwal'] }}</td>
                                                             <td>{{ $jad['hari'] }}, {{ $jad['nama_sesi'] }}</td>
-                                                            <td>{{ $jad['nama_dosen'] }}</td>
+                                                            <td>{!! $list_pengajar[$jad['id']] !!}</td>
                                                             <td>[{{ $jad['kode_matkul'] }}] {{ $jad['nama_matkul'] }}</td>
                                                             <td>{{ $jad['nama_ruang'] }}</td>
                                                             {{-- <td>{{ $jad['kode_ta'] }}</td>
                                                             <td>{{ $jad['status'] }}</td> --}}
                                                             <td>{{ $jad['tp'] }}</td>
-                                                            <td>{{$jumlah_input_krs[$jad->id]}} / {{ $jad['kuota'] }}</td>
+                                                            <td>{{$jumlah_input_krs[$jad->id]}} / {{ ((int)$jad['kuota'] +(int)$jumlah_input_krs[$jad->id])}}</td>
                                                             <td>
                                                                 <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                                                                     #
@@ -263,7 +265,8 @@
                 dataType: 'json',
                 success: function(res){
                     var data = res.data
-                    var jumlah_input = res.jumlah_input;
+                    var jumlah_input = res.jumlah_input
+                    var list_pengajar = res.list_pengajar
                     var html = `
                         <table class="table" id="myTable1">
                             <thead>
@@ -290,7 +293,7 @@
                                     <td>${ no }</td>
                                     <td>${ data[i].kode_jadwal }</td>
                                     <td>${ data[i].hari }, ${ data[i].nama_sesi }</td>
-                                    <td>${ data[i].nama_dosen }</td>
+                                    <td>${ list_pengajar[data[i].id] }</td>
                                     <td>[${ data[i].kode_matkul }] ${ data[i].nama_matkul }</td>
                                     <td>${ data[i].nama_ruang }</td>
 

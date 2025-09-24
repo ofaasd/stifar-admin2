@@ -185,19 +185,14 @@
                 </div>
             </div>
         </div>
-        {{-- <div class="mb-2">
-            <label class="col-sm-10 col-form-label">Dosen Wali :</label>
-            <div class="col-sm-12">
-                <p>
-                    <select name="id_dsn_wali" id="id_dsn_wali" class="form-control" >
-                        <option selected="" disabled="">Pilih Dosen</option>
-                        @foreach($dosen as $row)
-                            <option value="{{ $row->id }}" {{(!empty($mahasiswa->id_dsn_wali) && $mahasiswa->id_dsn_wali == $row->id)?"selected":""}}>{{$row->nama_lengkap}}</option>
-                        @endforeach
-                    </select>
-                </p>
+        @if($mahasiswa->is_yudisium == 1)
+            <div class="mb-2">
+                <label class="col-sm-10 col-form-label font-weight-bold text-primary">Nomor PISN :</label>
+                <div class="col-sm-12">
+                    <input type="text" name="no_pisn" id="no_pisn" class="form-control border border-primary font-weight-bold text-primary" value="{{ $mahasiswa->no_pisn ?? '' }}" placeholder="Nomor PISN" required>
+                </div>
             </div>
-        </div> --}}
+        @endif
 
     </div>
 </div>

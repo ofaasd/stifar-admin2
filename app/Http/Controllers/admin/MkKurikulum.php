@@ -7,6 +7,7 @@ use App\Models\Kurikulum;
 use App\Models\MatakuliahKurikulum;
 use App\Models\MataKuliah;
 use App\Models\Rumpun;
+use App\Models\TahunAjaran;
 use Illuminate\Http\Request;
 
 class MkKurikulum extends Controller
@@ -42,6 +43,29 @@ class MkKurikulum extends Controller
                         'matkul' => $matkul,
                         'id_kur' => $request->id_kur
                     ]);
+    }
+    public function copy_mk($id){
+        $curr_kurikulum = Kurikulum::find($id);
+        // echo $mk->thn_ajar;
+        $ta = TahunAjaran::find($curr_kurikulum->thn_ajar);
+        $kode_ta = (string)$ta->kode_ta;
+        $kode_periode = $kode_ta[-1];
+        $ta_number = (int)substr($kode_ta,0,4);
+        $ta_before = (string)($ta_number-1) . $kode_periode;
+        $latest_ta = TahunAjaran::where('kode_ta',$ta_before)->first();
+        $kurikulum = Kurikulum::where('thn_ajar',$latest_ta->id)->where('progdi',$curr_kurikulum->progdi)->where('status','Aktif')->first();
+        echo $kurikulum->id;
+        echo "<br />";
+        $delete_all = MatakuliahKurikulum::where('matakuliah_kurikulums.id_kurikulum', $id)->delete();
+        $list_mk = MatakuliahKurikulum::where('matakuliah_kurikulums.id_kurikulum', $kurikulum->id)->get();
+        foreach($list_mk as $row){
+            $data = [
+                'id_kurikulum' => $id,
+                'id_mk' => $row->id_mk,
+            ];
+            MatakuliahKurikulum::create($data);
+        }
+        return back();
     }
     public function simpandaftarKur(Request $request){
         $cek = MatakuliahKurikulum::where(['id_kurikulum' => $request->id_kur, 'id_mk' => $request->id_mk])->first();
