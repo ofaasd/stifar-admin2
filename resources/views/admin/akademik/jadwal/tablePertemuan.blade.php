@@ -2,6 +2,8 @@
 <form id="form_set_pertemuan" action="javascript:void(0)" method="POST">
 <div id="tablePertemuan">
     <a href="{{URL::to('dosen/cetak_absensi/' . $jadwal->id)}}" class="btn btn-primary" target="_blank">Cetak Absensi</a>
+    <a href="{{URL::to('dosen/cetak_jurnal_uts/' . $jadwal->id)}}" class="btn btn-secondary" target="_blank">Cetak Jurnal UTS</a>
+    <a href="{{URL::to('dosen/cetak_jurnal_uts/' . $jadwal->id . '/1')}}" class="btn btn-info" target="_blank">Cetak Jurnal UAS</a>
     <input type="hidden" name="id_jadwal" value="{{$jadwal->id}}">
     <table class="table">
         <thead>

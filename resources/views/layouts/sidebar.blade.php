@@ -144,7 +144,7 @@
                         <ul class="nav-sub-childmenu submenu-content">
                             <li><a href="{{URL::to('admin/akademik/setting-pertemuan')}}">Setting Pertemuan & Presensi</a></li>
                             {{-- <li><a href="{{Url::to('admin/akademik/list-absensi')}}">Input Presensi</a></li> --}}
-                            <li><a href="#">Ganti Kuliah - Pengganti <label class="badge badge-light-danger">!</label></a></li>
+                            {{-- <li><a href="#">Ganti Kuliah - Pengganti <label class="badge badge-light-danger">!</label></a></li> --}}
 
                         </ul>
                     </li>

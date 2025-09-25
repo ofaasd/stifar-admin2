@@ -39,6 +39,22 @@
                                     <tr><td>Total Izin</td><td>: {{$total_izin ?? 0}}</td></tr>
                                     </tr>
                                 </table>
+                                <hr />
+                                <h3>Realisasi SAP</h3>
+                                <form method="POST" action="{{URL::to("dosen/simpan-capaian")}}">
+                                    @csrf
+                                    <input type="hidden" name="id" value="{{$id_jadwal}}">
+                                    <input type="hidden" name="id_pertemuan" value="{{$id_pertemuan}}">
+                                    <div class="form-group mb-3">
+                                        <label for="judul">Judul Bab</label>
+                                        <input type="text" name="judul" id="judul" class="form-control" value="{{$pertemuan->judul}}">
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="rincian">Rincian Materi</label>
+                                        <textarea name="rincian" id="rincian" class="form-control">{{$pertemuan->rincian}}</textarea>
+                                    </div>
+                                    <input type="submit" value="Simpan" class="btn btn-primary">
+                                </form>
                             </div>
                             <div class="col-sm-6 text-end">
                                 @if($pertemuan->tgl_pertemuan == date('Y-m-d'))

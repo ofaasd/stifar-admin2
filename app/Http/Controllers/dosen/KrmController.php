@@ -26,6 +26,7 @@ use App\Models\master_nilai as MasterNilai;
 use Illuminate\Support\Facades\DB;
 use Redirect;
 use PDF;
+use Carbon\Carbon; 
 
 class KrmController extends Controller
 {
@@ -112,13 +113,14 @@ class KrmController extends Controller
 
     public function daftarMhsNew($id,$id_pertemuan){
         $id_jadwal = $id;
-        $pertemuan = $id_pertemuan;
+        $id_pertemuan = $id_pertemuan;
         $title = "Input Absensi";
         $absensi = [];
+        
         $pertemuan = Pertemuan::select('pertemuans.*', 'pegawai_biodata.nama_lengkap', 'absensi_models.type')
                               ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'pertemuans.id_dsn')
                               ->leftJoin('absensi_models', 'absensi_models.id_pertemuan', '=', 'pertemuans.id')
-                              ->where('pertemuans.id_jadwal', $id_jadwal)->where("pertemuans.id",$pertemuan)->first();
+                              ->where('pertemuans.id_jadwal', $id_jadwal)->where("pertemuans.id",$id_pertemuan)->first();
         $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
                         ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
                         ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
@@ -155,9 +157,9 @@ class KrmController extends Controller
         $user = Auth::user()->roles->pluck('name');
         $no = 1;
         if($user == 'admin'){
-            return view('dosen.daftar_mhs_new', compact('total_hadir','total_tidak_hadir','total_sakit','total_izin','absensi','title','pertemuan', 'jadwal', 'daftar_mhs', 'no'));
+            return view('dosen.daftar_mhs_new', compact('total_hadir','total_tidak_hadir','total_sakit','total_izin','absensi','title','pertemuan', 'jadwal', 'daftar_mhs', 'no', 'id_jadwal','id_pertemuan'));
         }else{
-            return view('dosen.daftar_mhs_new2', compact('total_hadir','total_tidak_hadir','total_sakit','total_izin','absensi','title','pertemuan', 'jadwal', 'daftar_mhs', 'no'));
+            return view('dosen.daftar_mhs_new2', compact('total_hadir','total_tidak_hadir','total_sakit','total_izin','absensi','title','pertemuan', 'jadwal', 'daftar_mhs', 'no', 'id_jadwal','id_pertemuan'));
         }
     }
     public function bukaTutupAbsen($id, $id_pertemuan){
@@ -265,10 +267,11 @@ class KrmController extends Controller
     }
     public function simpanCapaian(Request $request){
         $id_pertemuan = $request->id_pertemuan;
-        $capaian = $request->capaian;
-        Pertemuan::where('id', $id_pertemuan)->update(['capaian' => $capaian]);
+        $judul = $request->judul;
+        $rincian = $request->rincian;
+        Pertemuan::where('id', $id_pertemuan)->update(['judul' => $judul,'rincian' => $rincian]);
 
-        return json_encode(['msg' => 'ok']);
+       return redirect()->back()->with('msg', 'Data Berhasil Tersimpan');
     }
     public function daftarMhsNilai($id){
         $title = "Input Nilai";
@@ -601,7 +604,7 @@ class KrmController extends Controller
         $dosen = implode(", ",$list_pegawai);
 
         $list_pertemuan = [];
-        for($i=1; $i<=14; $i++){
+        for($i=1; $i<=16; $i++){
             $list_pertemuan[$i]['id_dosen'] = 0;
             $list_pertemuan[$i]['tanggal_pertemuan'] = '0000-00-00';
             $list_pertemuan[$i]['id'] = '';
@@ -641,6 +644,101 @@ class KrmController extends Controller
 
     	$pdf = PDF::loadView('admin/akademik/jadwal/cetak_absensi', $data)
                     ->setPaper('a4', 'landscape');
+    	return $pdf->stream('absensi-' . $jadwal->kode_jadwal . '.pdf');
+    }
+    public function cetakJurnalUts(int $id, int $status=0){
+        $ta = TahunAjaran::where('status','Aktif')->first();
+        $id_tahun = $ta->id;
+        $tahun = substr($ta->kode_ta, 0, 4);
+        $tahun_semester = substr($ta->kode_ta, -1, 1);
+        $semester = ($tahun_semester%2 == 0)?"Genap":"Ganjil";
+        $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul', 'program_studi.nama_prodi', 'program_studi.id as prodi_id')
+                ->Join('pengajars', 'pengajars.id_jadwal', '=', 'jadwals.id')
+                ->Join('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
+                ->Join('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
+                ->Join('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
+                ->Join('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
+                ->join('matakuliah_kurikulums', 'matakuliah_kurikulums.id_mk', '=', 'jadwals.id_mk')
+                ->join('kurikulums', 'kurikulums.id', '=', 'matakuliah_kurikulums.id_kurikulum')
+                ->join('program_studi', 'program_studi.kode_prodi', '=', 'kurikulums.progdi')
+                ->where('jadwals.id',$id)
+                ->where('kurikulums.thn_ajar',$id_tahun)   
+                ->first();  
+        $jabatan = JabatanStruktural::where('prodi_id',$jadwal->prodi_id)->where('jabatan','like','%'.'Kepala'.'%')->first();
+        $kep_prodi = PegawaiBiodatum::where('id',$jabatan->id_pegawai)->first();
+        // $anggota = anggota_mk::select('anggota_mks.*', 'pegawai_biodata.npp', 'pegawai_biodata.nama_lengkap', 'pegawai_biodata.gelar_belakang')
+        //                 ->leftJoin('pegawai_biodata', 'anggota_mks.id_pegawai_bio', '=', 'pegawai_biodata.id')
+        //                 ->where(['anggota_mks.idmk' => $jadwal->id_mk])->get();
+        $anggota = Pengajar::select('pegawai_biodata.nama_lengkap','pengajars.*')
+                            ->join('pegawai_biodata','pegawai_biodata.id','=','pengajars.id_dsn')
+                            ->where('id_jadwal',$id)->get();
+        $pegawai = PegawaiBiodatum::all();
+        $list_pegawai = [];
+        foreach($anggota as $row){
+            $list_pegawai[$row->id] = $row->nama_lengkap;
+        }
+        $dosen = implode(", ",$list_pegawai);
+
+        $list_pertemuan = [];
+        for($i=1; $i<=16; $i++){
+            $list_pertemuan[$i]['id_dosen'] = 0;
+            $list_pertemuan[$i]['tanggal_pertemuan'] = '0000-00-00';
+            $list_pertemuan[$i]['id'] = '';
+            $list_pertemuan[$i]['judul'] = '';
+            $list_pertemuan[$i]['rincian'] = '';
+            $list_pertemuan[$i]['jml_hadir'] = '';
+        }
+        $pertemuan = Pertemuan::where('id_jadwal',$id)->get();
+        
+        foreach($pertemuan as $row){
+            $tanggal_gabung = '';
+            if(!empty($row->tgl_pertemuan)){
+                $tanggalAwal = $row->tgl_pertemuan;
+                $carbonDate = Carbon::parse($tanggalAwal);
+                $carbonDate->locale('id');
+                $namaHari = ucfirst($carbonDate->dayName); // ucfirst() untuk membuat huruf pertama kapital
+                $tanggalFormat = $carbonDate->format('d-m-Y');
+                $tanggal_gabung = $namaHari . ' / ' . $tanggalFormat;
+            }
+            $list_pertemuan[$row->no_pertemuan]['id_dosen'] = $row->id_dsn;
+            $list_pertemuan[$row->no_pertemuan]['tanggal_pertemuan'] = $tanggal_gabung;
+            $list_pertemuan[$row->no_pertemuan]['id'] = $row->id;
+            $list_pertemuan[$row->no_pertemuan]['judul'] = $row->judul ?? "";
+            $list_pertemuan[$row->no_pertemuan]['rincian'] = $row->rincian ?? "";
+            $list_pertemuan[$row->no_pertemuan]['jml_hadir'] = AbsensiModel::where('id_jadwal',$id)->where('id_pertemuan',$row->id)->where('type',1)->count();
+
+            
+        }
+        $logo = 'https://stifar.id/assets/images/logo/logo-icon.png';
+        
+        //list mahasiswa yang akan pada jadwal tersebut
+        $daftar_mhs = Krs::select('krs.*', 'mhs.nim', 'mhs.nama', 'mhs.foto_mhs')
+                        ->leftJoin('mahasiswa as mhs', 'mhs.id', '=', 'krs.id_mhs')
+                        ->orderBy('nim','asc')
+                        ->where('krs.id_jadwal', $id)->get();
+        // return view('admin.akademik.jadwal.cetak_absensi',compact('id','logo','jadwal','list_pegawai','anggota','pertemuan','list_pertemuan','dosen','tahun','semester','daftar_mhs','kep_prodi'));
+
+        $data = [
+            'logo' => public_path('/assets/images/logo/logo-icon.png'),
+            'jadwal' => $jadwal,
+            'id' => $id,
+            'list_pegawai' => $list_pegawai,
+            'anggota' => $anggota,
+            'pertemuan' => $pertemuan,
+            'list_pertemuan' => $list_pertemuan,
+            'dosen' => $dosen,
+            'tahun' => $tahun,
+            'semester' => $semester,
+            'daftar_mhs' => $daftar_mhs,
+            'kep_prodi' => $kep_prodi,
+        ];
+        if($status == 0){
+    	    $pdf = PDF::loadView('admin/akademik/jadwal/cetak_jurnal_uts', $data)
+                    ->setPaper('a4', 'landscape');
+        }else{
+            $pdf = PDF::loadView('admin/akademik/jadwal/cetak_jurnal_uas', $data)
+                    ->setPaper('a4', 'landscape');
+        }
     	return $pdf->stream('absensi-' . $jadwal->kode_jadwal . '.pdf');
     }
 }

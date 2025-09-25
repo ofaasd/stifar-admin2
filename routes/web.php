@@ -832,6 +832,8 @@ Route::group(['middleware' => ['auth', 'role:mhs|pegawai|super-admin']], functio
 });
 Route::group(['middleware' => ['auth', 'role:mhs|pegawai|super-admin']], function () {
     Route::get('dosen/cetak_absensi/{id}', [KrmController::class, 'cetakPertemuan']);
+    Route::get('dosen/cetak_jurnal_uts/{id}', [KrmController::class, 'cetakJurnalUts']);
+    Route::get('dosen/cetak_jurnal_uts/{id}/{status}', [KrmController::class, 'cetakJurnalUts']);
 });
 
 Route::group(['middleware' => ['auth', 'role:admin-prodi|pegawai|super-admin']], function () {

@@ -73,7 +73,7 @@
             </tr>
             <tr>
                 @for($i=1; $i<=16; $i++)
-                <td {{($i == 8 || $i == 16)?"bgcolor=#dfdfdf":""}} width="30">&nbsp;</td>
+                <td {{($i == 8 || $i == 16)?"bgcolor=#dfdfdf":""}} width="23">&nbsp;</td>
                 @endfor
             </tr>
         </thead>

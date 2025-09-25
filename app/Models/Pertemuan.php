@@ -15,5 +15,7 @@ class Pertemuan extends Model
         'id_dsn',
         'buka_kehadiran',
         'tgl_expired',
+        'judul',
+        'rincian',
     ];
 }
