@@ -36,46 +36,51 @@
                         </div>
                     </div>
                     <div class="card-body" style="padding:0">
-                        <div class="mt-4">
-                            <div class="mt-4 col-md-6 ">
-                                <div class="mt-2"></div>
-                                <table class="table table-hover table-border-horizontal m-4" id="tablekrs">
-                                    <thead>
-                                        {{-- <th>No.</th> --}}
-                                        <th>Jenis Tagihan</th>
-                                        <th>Nominal</th>
-                                    </thead>
-                                    <tbody>
-                                        @php $i=0; @endphp
-                                        @foreach($jenis as $row)
-                                            @php $i++;@endphp
+                        @if(!empty($list_total))
+                            <div class="mt-4">
+                                <div class="mt-4 col-md-6 ">
+                                    <div class="mt-2"></div>
+                                    <table class="table table-hover table-border-horizontal m-4" id="tablekrs">
+                                        <thead>
+                                            {{-- <th>No.</th> --}}
+                                            <th>Jenis Tagihan</th>
+                                            <th>Nominal</th>
+                                        </thead>
+                                        <tbody>
+                                            @php $i=0; @endphp
+                                            @foreach($jenis as $row)
+                                                @php $i++;@endphp
+                                                <tr>
+                                                    {{-- <td>{{ $i }}</td> --}}
+                                                    <td>{{ $row->nama }}</td>
+                                                    <td>Rp. {{number_format($list_total[$row->id],0,",",".") }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                        <tfoot>
                                             <tr>
-                                                {{-- <td>{{ $i }}</td> --}}
-                                                <td>{{ $row->nama }}</td>
-                                                <td>Rp. {{number_format($list_total[$row->id],0,",",".") }}</td>
+                                                <th>Total</th>
+                                                <th>Rp. {{number_format($tagihan->total,0,",",".")}}</th>
                                             </tr>
-                                        @endforeach
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <th>Total</th>
-                                            <th>Rp. {{number_format($tagihan->total,0,",",".")}}</th>
-                                        </tr>
-                                        <tr class="{{($tagihan->status==0) ? "bg-danger text-light" : "bg-success text-light"}}">
-                                            <th class="text-white">Total Bayar</th>
-                                            <th class="text-white">Rp. {{number_format($tagihan->total_bayar,0,",",".")}}</th>
-                                        <tr class="{{($tagihan->status==0) ? "bg-danger text-light" : "bg-success text-light"}}">
-                                            <th class="text-white">Status</th>
-                                            <th class="text-white">{{($tagihan->status==0) ? "Belum Lunas" : "Lunas"}}</th>
-                                        </tr>
-                                        <tr class="{{($tagihan->status==0) ? "bg-danger text-light" : "bg-success text-light"}}">
-                                            <th class="text-white">Batas Waktu</th>
-                                            <th class="text-white">{{date('d-m-Y',strtotime($tagihan->batas_waktu))}}</th>
-                                        </tr>
-                                    </tfoot>
-                                </table>
+                                            <tr class="{{($tagihan->status==0) ? "bg-danger text-light" : "bg-success text-light"}}">
+                                                <th class="text-white">Total Bayar</th>
+                                                <th class="text-white">Rp. {{number_format($tagihan->total_bayar,0,",",".")}}</th>
+                                            <tr class="{{($tagihan->status==0) ? "bg-danger text-light" : "bg-success text-light"}}">
+                                                <th class="text-white">Status</th>
+                                                <th class="text-white">{{($tagihan->status==0) ? "Belum Lunas" : "Lunas"}}</th>
+                                            </tr>
+                                            <tr class="{{($tagihan->status==0) ? "bg-danger text-light" : "bg-success text-light"}}">
+                                                <th class="text-white">Batas Waktu</th>
+                                                <th class="text-white">{{date('d-m-Y',strtotime($tagihan->batas_waktu))}}</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                
+                                </div>
                             </div>
-                        </div>
+                         @else
+                            <div class="alert alert-primary">Belum ada tagihan tersedia</div>
+                        @endif
                     </div>
                 </div>
             </div>

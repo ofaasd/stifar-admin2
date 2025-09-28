@@ -39,6 +39,9 @@ class SettingKeuangan extends Model
 		'id_tahun',
 		'id_jenis',
 		'id_prodi',
-		'jumlah'
+		'jumlah',
+		'gelombang',
+		'alumni',
+		'angkatan'
 	];
 }

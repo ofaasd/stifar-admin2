@@ -150,7 +150,7 @@
                     </li>
                     <li>
                         <a class="submenu-title" href="#">
-                            <span>Ujian <label class="badge badge-light-danger">!</label></span>
+                            <span>Ujian</span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
                             <li><a href="{{Url::to('admin/akademik/pengaturan-ujian')}}">Pengaturan</a></li>{{--  Ada menu untuk toggle ujian sedang dibuka atau ditutup--}}
@@ -210,7 +210,7 @@
                             <li><a href="#">Nilai <label class="badge badge-light-danger">!</label></a></li>
                         </ul>
                     </li>
-                     <li><a href="#">Evaluasi Studi <label class="badge badge-light-danger">!</label></a></li>
+                     {{-- <li><a href="#">Evaluasi Studi <label class="badge badge-light-danger">!</label></a></li>
                      <li><a href="#">Histori Jadwal <label class="badge badge-light-danger">!</label></a></li>
                      <li>
                         <a class="submenu-title" href="#">
@@ -220,7 +220,7 @@
                             <li><a href="#">Absensi <label class="badge badge-light-danger">!</label></a></li>
                             <li><a href="#">Ujian <label class="badge badge-light-danger">!</label></a></li>
                         </ul>
-                    </li>
+                    </li> --}}
                  </ul>
              </li>
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
@@ -245,7 +245,7 @@
                     <li><a href="{{URL::to('admin/keuangan/jenis_keuangan')}}">Jenis Keuangan</a></li> {{-- Untuk setting pembayaran sks dalam bentuk paket --}}
                     <li><a href="{{URL::to('admin/keuangan/setting_keuangan')}}">Setting Keuangan</a></li> {{-- Untuk setting pembayaran sks dalam bentuk paket --}}
                     <li><a href="{{URL::to('admin/keuangan/tagihan')}}">Buat Tagihan </a></li> {{--Buat dan Publish Tagihan --}}
-                    <li><a href="{{URL::to('admin/keuangan/lapor_bayar')}}">Input Laporan Pembayaran</a></li>
+                    <li><a href="{{URL::to('admin/keuangan/lapor_bayar')}}">Laporan Pembayaran</a></li>
                     <li><a href="#">Statistik <label class="badge badge-light-danger">!</label></a></li>
                     {{-- <li><a href="#">Cetak <label class="badge   badge-light-danger">!</label></a></li> --}}
                     {{-- <li><a href="#">Sync <label class="badge badge-light-danger">!</label></a></li> --}}

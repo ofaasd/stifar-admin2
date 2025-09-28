@@ -35,9 +35,45 @@
                         <h4>Setting Keuangan</h4>
                     </div>
                     <div class="card-body">
+                        <div class="row mb-4">
+                            <div class="col-md-12">
+                                <form class="d-flex flex-wrap gap-3" method="GET">
+                                    @csrf
+                                    <label for="tahun_ajaran" class="visually-hidden">Angkatan</label>
+                                    <select name="tahun_ajaran" id="tahun_ajaran" class="form-select w-auto">
+                                        @foreach($ta_all as $row)
+                                        <option value="{{$row->id}}" {{($tahun_ajaran == $row->id)?"selected":""}}>{{substr($row->kode_ta,0,4)}} - {{(substr($row->kode_ta,-1,1) == 1)?"Ganjil":"Genap"}}</option>
+                                        @endforeach
+                                    </select>
+                                    <select name="angkatan" id="angkatan" class="form-select w-auto">
+                                        @for($i=date('Y');$i>=date('Y')-5;$i--)
+                                            <option value="{{$i}}" {{($angkatan == $i)?"selected":""}}>{{$i}}</option>
+                                        @endfor
+                                    </select>
+
+                                    <label for="alumni" class="visually-hidden">Alumni</label>
+                                    <select name="alumni" id="alumni" class="form-select w-auto">
+                                        <option value="1" {{($alumni == 1)?"selected":""}}>Yaphar</option>
+                                        <option value="2" {{($alumni == 2)?"selected":""}}>Umum</option>
+                                    </select>
+
+                                    <label for="gelombang" class="visually-hidden">Gelombang</label>
+                                    <select name="gelombang" id="gelombang" class="form-select w-auto">
+                                        <option value="1" {{($gelombang == 1)?"selected":""}}>Gelombang 1</option>
+                                        <option value="2" {{($gelombang == 2)?"selected":""}}>Gelombang 2</option>
+                                        <option value="3" {{($gelombang == 3)?"selected":""}}>Gelombang 3</option>
+                                    </select>
+                                    <input type="submit" value="Filter" class="btn btn-primary">
+                                    </form>
+                            </div>
+                        </div>
                         <div class="table-responsive" id="my-table">
                             <form method="POST" action="{{url('admin/keuangan/setting_keuangan')}}">
                             @csrf
+                            <input type="hidden" name="tahun_ajaran" value="{{$tahun_ajaran}}">
+                            <input type="hidden" name="alumni" value="{{$alumni}}">
+                            <input type="hidden" name="gelombang" value="{{$gelombang}}">
+                            <input type="hidden" name="angkatan" value="{{$angkatan}}">
                             <table class="table table-stripped" id="pengumuman-table">
                                 <thead>
                                     <tr>

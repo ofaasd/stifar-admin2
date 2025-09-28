@@ -56,6 +56,25 @@
                                         </div>
                                         <div class="modal-body">
                                             <input type="hidden" name="id_prodi" id="id_prodi" value="{{$id}}">
+                                            <label for="tahun_ajaran">Angkatan</label>
+                                            <select name="tahun_ajaran" id="tahun_ajaran" class="form-control">
+                                                @foreach($ta_all as $row)
+                                                <option value="{{$row->id}}" {{($tahun_ajaran == $row->id)?"selected":""}}>{{substr($row->kode_ta,0,4)}} - {{(substr($row->kode_ta,-1,1) == 1)?"Ganjil":"Genap"}}</option>
+                                                @endforeach
+                                            </select>
+
+                                            <label for="alumni">Alumni</label>
+                                            <select name="alumni" id="alumni" class="form-control">
+                                                <option value="1" {{($alumni == 1)?"selected":""}}>Yaphar</option>
+                                                <option value="2" {{($alumni == 2)?"selected":""}}>Umum</option>
+                                            </select>
+
+                                            <label for="gelombang">Gelombang</label>
+                                            <select name="gelombang" id="gelombang" class="form-control">
+                                                <option value="1" {{($gelombang == 1)?"selected":""}}>Gelombang 1</option>
+                                                <option value="2" {{($gelombang == 2)?"selected":""}}>Gelombang 2</option>
+                                                <option value="3" {{($gelombang == 3)?"selected":""}}>Gelombang 3</option>
+                                            </select>
                                             @foreach($jenis as $row)
                                             <div class="mb-3" id="field-nama">
                                                 <label for="jenis" class="form-label">{{$row->nama}}</label>
@@ -74,6 +93,13 @@
                                             <div class="form-group">
                                                 <label for="batas_waktu">Batas Waktu</label>
                                                 <input type="date" name="batas_waktu" id="batas_waktu_generate" class="form-control">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="batas_waktu">Tipe Bayar</label>
+                                                <select name="tipe_bayar" id="tipe_bayar" class="form-control">
+                                                    <option value="1">Bulanan</option>
+                                                    <option value="2">Semester</option>
+                                                </select>
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -225,7 +251,7 @@
                 {
                     searchable: false,
                     orderable: false,
-                    targets: 9,
+                    targets: 10,
                     render: function render(data, type, full) {
                         if(full['status'] == 1){
                             return `<i class="fa fa-check text-success" title="Sudah Bayar"></i>`;
@@ -238,7 +264,7 @@
                 {
                     searchable: false,
                     orderable: false,
-                    targets: 10,
+                    targets: 11,
                     render: function render(data, type, full) {
                         if(full['is_publish'] == 1){
                             return `<i class="fa fa-check text-success" title="Sudah Publish"></i>`;

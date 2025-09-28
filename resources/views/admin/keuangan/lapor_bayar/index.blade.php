@@ -27,14 +27,14 @@
                 <div class="card">
                     <div class="card-header pb-0 card-no-border">
                         @if(empty($link))
-                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal" id="add-record">+ {{$title2}}</button>
+                        {{-- <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal" id="add-record">+ {{$title2}}</button> --}}
                         @endif
                         <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <form action="javascript:void(0)" id="formAdd">
                                         @csrf
-                                        <input type="hidden" name="id" id="id">
+                                        
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="ModalLabel">Tambah {{$title2}}</h5>
                                             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -67,12 +67,53 @@
                                         <th>Tanggal</th>
                                         <th>Status</th>
                                         <th>Bukti Bayar</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
 
                                 </tbody>
                             </table>
+                        </div>
+                        <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModal" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <form action="javascript:void(0)" id="formAdd2">
+                                        @csrf
+                                        <input type="hidden" name="id" id="id">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="ModalLabel">Update Laporan Pembayaran <span id="tpt-nim"></span></h5>
+                                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="mb-3" id="field-nama">
+                                                <label for="status" class="form-label">NIM</label>
+                                                <input type="text" name="nim_mahasiswa" id="nim_mahasiswa" readonly class="form-control">
+                                            </div>
+                                            <div class="mb-3" id="field-nama">
+                                                <label for="tanggal_bayar" class="form-label">Tanggal Bayar</label>
+                                                <input type="text" name="tanggal_bayar" id="tanggal_bayar" readonly class="form-control">
+                                            </div>
+                                            <div class="mb-3" id="field-nama">
+                                                <label for="atas_nama" class="form-label">Atas Nama</label>
+                                                <input type="text" name="atas_nama" id="atas_nama"  readonly class="form-control">
+                                            </div>
+                                            <div class="mb-3" id="field-nama">
+                                                <label for="status" class="form-label">Status Laporan</label>
+                                                <select name="status" id="status" class="form-control">
+                                                    <option value="pending">Pending</option>
+                                                    <option value="verified">Verified</option>
+                                                    <option value="rejected">Rejected</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                                            <button class="btn btn-primary" id="btn-submit2" type="submit">Simpan</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -148,7 +189,12 @@
                     orderable: false,
                     targets: 5,
                     render: function render(data, type, full) {
-                        return `<span>${full['status']}</span>`;
+                        if(full['status'] == 'pending')
+                            return `<span class='btn btn-info'>${full['status']}</span>`;
+                        else if(full['status'] == 'verified')
+                            return `<span class='btn btn-success'>${full['status']}</span>`;
+                        else
+                            return `<span class='btn btn-danger'>${full['status']}</span>`;
                     }
                 },
                 {
@@ -158,6 +204,19 @@
                     render: function render(data, type, full) {
                         const url = "{{url('')}}"
                         return `<span><a href='${url}/assets/bukti_pembayaran/${full['bukti_bayar']}'>Lihat Bukti</a></span>`;
+                    }
+                },
+                {
+                    targets: 7,
+                    searchable: false,
+                    orderable: false,
+                    render: function render(data, type, full) {
+                        return `
+                            <div class="d-inline-block text-nowrap">
+                                <button class="btn btn-sm btn-primary edit-record" data-id="${full['id']}" data-bs-toggle="modal" data-bs-target="#editModal">
+                                    <i class="fa fa-pencil"></i>
+                                </button>
+                            </div>`;
                     }
                 },
                 {
@@ -212,11 +271,11 @@
         });
 
         // Save record
-        $('#formAdd').on('submit', function (e) {
+        $('#formAdd2').on('submit', function (e) {
             e.preventDefault();
             const myFormData = new FormData(this);
 
-            var btnSubmit = $('#btn-submit');
+            var btnSubmit = $('#btn-submit2');
             btnSubmit.prop('disabled', true);
 
             $.ajax({
@@ -227,7 +286,7 @@
                 contentType: false,
                 success: function (status) {
                     dt.draw();
-                    $("#tambahModal").modal('hide');
+                    $("#editModal").modal('hide');
                     swal({
                         icon: 'success',
                         title: `Successfully ${status}!`,
@@ -239,7 +298,7 @@
                     btnSubmit.prop('disabled', false);
                 },
                 error: function (xhr) {
-                    $("#tambahModal").modal('hide');
+                    $("#editModal").modal('hide');
                     let errMsg = 'An error occurred. Please try again.';
                     if (xhr.status === 422) { // Laravel validation error
                         errMsg = xhr.responseJSON.message;

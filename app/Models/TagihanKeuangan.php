@@ -46,6 +46,7 @@ class TagihanKeuangan extends Model
 		'is_pubish',
         'batas_waktu',
 		'id_prodi',
-		'nim'
+		'nim',
+		'tipe_bayar',
 	];
 }

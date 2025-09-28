@@ -11,28 +11,47 @@ use App\Models\Prodi;
 
 class SettingKeuanganController extends Controller
 {
-    public function index(Int $id=0)
+    public function index(Request $request)
     {
         $title = "setting_keuangan";
         $title2 = "Setting Keuangan";
         $ta = TahunAjaran::where('status','Aktif')->first();
+        $ta_all = TahunAjaran::orderBy('id','desc')->get();
         $jenis = JenisKeuangan::all();
         $prodi = Prodi::all();
         $setting_keuangan = [];
+        $tahun_ajaran = $ta->id;
+        $angkatan = date('Y');
+        $gelombang = 1;
+        $alumni = 1;
         foreach($prodi as $pro){
             foreach($jenis as $jen){
                 $setting_keuangan[$pro->id][$jen->id] = 0;
             }
         }
-        $SettingKeuangan = SettingKeuangan::where('id_tahun',$ta->id);
+        if(empty($request->tahun_ajaran)){
+            $SettingKeuangan = SettingKeuangan::where('id_tahun',$ta->id);
+        }else{            
+            $tahun_ajaran = $request->tahun_ajaran;
+            $alumni = $request->alumni;
+            $gelombang = $request->gelombang;
+            $angkatan = $request->angkatan;
+            $ta = TahunAjaran::where('id',$tahun_ajaran)->first();
+            $SettingKeuangan = SettingKeuangan::where([
+                'id_tahun'=>$ta->id,
+                'alumni' => $alumni,
+                'gelombang' => $gelombang,
+                'angkatan' => $angkatan,
+            ]);
+        }
         if($SettingKeuangan->count() > 0){
             foreach($prodi as $pro){
                 foreach($jenis as $jen){
-                    $setting_keuangan[$pro->id][$jen->id] = SettingKeuangan::where(['id_tahun'=>$ta->id,'id_prodi'=>$pro->id,'id_jenis'=>$jen->id])->first()->jumlah;
+                    $setting_keuangan[$pro->id][$jen->id] = SettingKeuangan::where(['id_tahun'=>$ta->id,'id_prodi'=>$pro->id,'id_jenis'=>$jen->id,'gelombang'=>$gelombang,'alumni'=>$alumni,'angkatan'=>$angkatan])->first()->jumlah ?? 0;
                 }
             }
         }
-        return view('admin.keuangan.setting_keuangan.index', compact('title', 'title2', 'SettingKeuangan','setting_keuangan', 'prodi','ta','jenis'));
+        return view('admin.keuangan.setting_keuangan.index', compact('title', 'title2', 'SettingKeuangan','setting_keuangan', 'prodi','ta','jenis','ta_all','tahun_ajaran','gelombang','alumni','angkatan'));
     }
 
     /**
@@ -52,26 +71,33 @@ class SettingKeuanganController extends Controller
         $prodi = $request->prodi;
         $jenis = $request->jenis;
         $jumlah = $request->setting_keuangan;
-        $ta = TahunAjaran::where('status','Aktif')->first();
+    
+        $ta = $request->tahun_ajaran;
+        $alumni = $request->alumni;
+        $angkatan = $request->angkatan;
+        $gelombang = $request->gelombang;
         foreach($prodi as $key=>$value){
-            $cek = SettingKeuangan::where("id_prodi",$value)->where('id_jenis',$jenis[$key])->where('id_tahun',$ta->id);
+            $cek = SettingKeuangan::where("id_prodi",$value)->where('id_jenis',$jenis[$key])->where('id_tahun',$ta)->where('alumni',$alumni)->where('gelombang',$gelombang)->where('angkatan',$angkatan);
             if($cek->count() == 0){
                 $create = SettingKeuangan::create(
                     [
                         'id_prodi' => $value,
                         'id_jenis' => $jenis[$key],
-                        'id_tahun' => $ta->id,
-                        'jumlah' => $jumlah[$key],
+                        'id_tahun' => $ta,
+                        'alumni' => $alumni,
+                        'gelombang' => $gelombang,
+                        'jumlah' => $jumlah[$key] ?? 0,
+                        'angkatan' => $angkatan
                     ]
                 );
             }else{
                 $set = $cek->first();
                 $update = SettingKeuangan::find($set->id);
-                $update->jumlah = $jumlah[$key];
+                $update->jumlah = $jumlah[$key] ?? 0;
                 $update->save();
             }
         }
-        return redirect('admin/keuangan/setting_keuangan');
+        return back();
     }
 
     /**

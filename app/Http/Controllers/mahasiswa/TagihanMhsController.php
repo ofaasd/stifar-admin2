@@ -23,8 +23,10 @@ class TagihanMhsController extends Controller
         $tagihan = TagihanKeuangan::where('id_tahun',$ta->id)->where('nim',$nim)->first();
         $jenis = JenisKeuangan::all();
         $list_total = [];
-        foreach($jenis as $row){
-            $list_total[$row->id] = DetailTagihanKeuangan::where('id_tagihan',$tagihan->id)->where('id_jenis',$row->id)->first()->jumlah;
+        if(!empty($tagihan)){
+            foreach($jenis as $row){
+                $list_total[$row->id] = DetailTagihanKeuangan::where('id_tagihan',$tagihan->id)->where('id_jenis',$row->id)->first()->jumlah ?? 0;
+            }
         }
         return view('mahasiswa.tagihan', compact('title','mhs','tagihan', 'jenis','list_total'));
     }

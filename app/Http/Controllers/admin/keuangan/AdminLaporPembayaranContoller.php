@@ -14,7 +14,7 @@ class AdminLaporPembayaranContoller extends Controller
     {
         if (empty($request->input('length'))) {
             $title = "lapor_bayar";
-            $title2 = "Lapor Pembayaran";
+            $title2 = "Laporan Pembayaran";
             $indexed = $this->indexed;
             return view('admin.keuangan.lapor_bayar.index', compact('title', 'title2', 'indexed'));
         } else {
@@ -94,33 +94,17 @@ class AdminLaporPembayaranContoller extends Controller
     public function store(Request $request)
     {
         // Validasi data
-        $validatedData = $request->validate([
-
-            'nama' => 'string|required',
-            'id' => 'nullable',
-        ]);
-
-        try {
-            $id = $validatedData['id'];
-
-            $save = LaporPembayaran::updateOrCreate(
-                ['id' => $id],
-                [
-                    'nama' => $validatedData['nama'],
-                ]
-            );
-
-            if ($id) {
-                return response()->json('Updated');
-            } elseif ($save) {
-                return response()->json('Created');
-            }
-
-        } catch (\Exception $e) {
+        $id = $request->id;
+        if($id){
+            $lapor = LaporPembayaran::find($id);
+            $lapor->status = $request->status;
+            $lapor->update();
             return response()->json([
-                'message' => 'Failed to save Kategori Aset',
-                'error' => $e->getMessage(),
-            ], 500);
+                'status' => 'success',
+                'message' => 'Update Status laporan pembayaran berhasil',
+            ], 200);
+        }else{
+
         }
     }
 

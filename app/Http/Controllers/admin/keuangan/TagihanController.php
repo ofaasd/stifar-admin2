@@ -22,6 +22,10 @@ class TagihanController extends Controller
         $prodi = Prodi::all();
         $nama = [];
         $id_tahun = TahunAjaran::where('status','Aktif')->first()->id;
+        $ta_all = TahunAjaran::orderBy('id','desc')->get();
+        $tahun_ajaran = $id_tahun;
+        $gelombang = 1;
+        $alumni = 1;
 
         foreach($prodi as $row){
             $nama_prodi = explode(' ',$row->nama_prodi);
@@ -42,7 +46,7 @@ class TagihanController extends Controller
             $indexed[] = 'is_publish';
             $title = "tagihan";
             $title2 = "Tagihan";
-            return view('admin.keuangan.tagihan.index', compact('title', 'angkatan','prodi','title2', 'jenis','jumlah_jenis','TagihanKeuangan', 'indexed','id','nama'));
+            return view('admin.keuangan.tagihan.index', compact('title', 'angkatan','prodi','title2', 'jenis','jumlah_jenis','TagihanKeuangan', 'indexed','id','nama','ta_all','tahun_ajaran','gelombang','alumni'));
         } else {
             $columns = [
                 1 => 'id',
