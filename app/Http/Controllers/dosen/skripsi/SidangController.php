@@ -24,36 +24,43 @@ class SidangController extends Controller
         $tahunAjaran = TahunAjaran::all();
         $ruang = MasterRuang::all();
         $pegawai = PegawaiBiodatum::all();
+        
+        $mahasiswaSkripsi = MasterSkripsi::select([
+            'mahasiswa.nim',
+            'mahasiswa.nama',
+            'pengajuan_judul_skripsi.judul',
+            'master_skripsi.id AS idMasterSkripsi'
+        ])
+        ->leftJoin('mahasiswa', 'master_skripsi.nim', '=', 'mahasiswa.nim')
+        ->leftJoin('pengajuan_judul_skripsi', 'master_skripsi.id', '=', 'pengajuan_judul_skripsi.id_master')
+        ->where('master_skripsi.status', 1)
+        ->where('pengajuan_judul_skripsi.status', 1)
+        ->whereNotIn('master_skripsi.id', function($query) {
+            $query->select('skripsi_id')->from('sidang');
+        })
+        ->get();
 
-        return view('dosen.skripsi.sidang.index', compact('gelombang', 'tahunAjaran', 'ruang', 'pegawai'));
+        return view('dosen.skripsi.sidang.index', compact('gelombang', 'tahunAjaran', 'ruang', 'pegawai', 'mahasiswaSkripsi'));
     }
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'tanggal'       => 'required|date',
-            'waktu_mulai'   => 'required|date_format:H:i',
-            'waktu_selesai' => 'required|date_format:H:i|after:waktu_mulai',
-            'ruangan'       => 'required|string|max:50',
-            'status'        => 'nullable|string'
-        ]);
-    
-        $sidang = SidangSkripsi::create([
-            'skripsi_id'    => 5,   // sementara fix, bisa diganti dari input
-            'gelombang_id'  => 1,   // sementara fix, bisa diganti dari input
-            'tanggal'       => $validated['tanggal'],
-            'waktu_mulai'   => $validated['waktu_mulai'],
-            'waktu_selesai' => $validated['waktu_selesai'],
-            'ruangan'       => $validated['ruangan'],
-            'status'        => 2,
-        ]);
-        // Simpan log
-        \Log::create([
-            'user_id'    => auth()->id(),  // kalau ada sistem login
-            'action'     => 'Tambah Jadwal Sidang',
-            'description'=> "User ".auth()->user()->name." menambahkan jadwal sidang ID: {$sidang->id} untuk skripsi ID: {$sidang->skripsi_id} pada tanggal {$sidang->tanggal}."
-        ]);
-    
-        return redirect()->back()->with('success', 'Jadwal sidang berhasil ditambahkan.');
+        try {
+            $sidang = SidangSkripsi::create([
+                'skripsi_id'    => $request->masterSkripsiId,
+                'gelombang_id'  => $request->gelombangId,
+                'tanggal'       => $request->tanggal,
+                'waktu_mulai'   => $request->waktuMulai,
+                'waktu_selesai' => $request->waktuSelesai,
+                'ruang_id'       => $request->ruangId,
+                'penguji'       => isset($request->penguji) ? implode(',', $request->penguji) : null,
+                'jenis'        => $request->jenisSidang,
+                'status'        => 2,
+            ]);
+
+            return redirect()->back()->with('success', 'Jadwal sidang berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     public function getDataPeserta($idGelombang = null)

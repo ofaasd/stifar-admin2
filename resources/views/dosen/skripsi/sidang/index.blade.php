@@ -139,19 +139,19 @@
 </div>
 
 <div class="modal fade" id="tambahJadwalModal" tabindex="-1" aria-labelledby="tambahJadwalModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="tambahJadwalModalLabel">Tambah Jadwal Sidang</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="{{ route('sidang.store') }}" method="post">
+                <form action="{{ route('sidang.store') }}" method="post" id="form-tambah-jadwal">
                     @csrf
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="gelombangSidang" class="form-label">Gelombang</label>
-                            <select class="form-select" id="gelombangSidang" name="gelombang_id">
+                            <select class="form-select" id="gelombangSidang" name="gelombangId">
                                 <option value="#" selected disabled>Pilih Gelombang</option>
                                 @foreach ($gelombang as $row)
                                     <option value="{{ $row->id }}">{{ $row->nama }}/{{ $row->periode }}</option>
@@ -166,59 +166,58 @@
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="waktuMulai" class="form-label">Waktu Mulai</label>
-                            <input type="time" class="form-control" id="waktuMulai" name="waktu_mulai" required>
+                            <input type="time" class="form-control" id="waktuMulai" name="waktuMulai" required>
                         </div>
                         <div class="col-md-6">
                             <label for="waktuSelesai" class="form-label">Waktu Selesai</label>
-                            <input type="time" class="form-control" id="waktuSelesai" name="waktu_selesai" required>
+                            <input type="time" class="form-control" id="waktuSelesai" name="waktuSelesai" required>
                         </div>
                     </div>
                     <div class="mb-3">
                         <label for="ruanganSidang" class="form-label">Ruangan</label>
-                        <select class="form-select" id="ruanganSidang" name="ruangan">
-                            <option value="R.301" selected>R.301</option>
-                            <option value="R.302">R.302</option>
-                            <option value="R.303">R.303</option>
-                            <option value="R.304">R.304</option>
-                            <option value="R.305">R.305</option>
+                        <select class="form-select" id="ruanganSidang" name="ruangId">
+                            <option value="" selected>Pilih Ruangan</option>
+                            @foreach ($ruang as $row)
+                                <option value="{{ $row->id }}">{{ $row->nama_ruang }}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="mb-3">
                         <label for="mahasiswaSidang" class="form-label">Mahasiswa</label>
-                        <select class="form-select" id="mahasiswaSidang" name="skripsi_id">
+                        <select class="form-select" id="mahasiswaSidang" name="masterSkripsiId">
                             <option value="" selected>Pilih Mahasiswa</option>
-                            <option value="1">Rina Wati (1903456) - Analisis Performa Algoritma Sorting</option>
-                            <option value="2">Joko Susilo (1904567) - Implementasi IoT untuk Smart Home</option>
-                            <option value="3">Anita Sari (1905678) - Pengembangan Game Edukasi untuk Anak</option>
+                            @forelse ($mahasiswaSkripsi as $mhs)
+                                <option value="{{ $mhs->idMasterSkripsi }}" title="{{ $mhs->judul }}">{{ $mhs->nama }} ({{ $mhs->nim }}) / {{ $mhs->judul }}</option>
+                            @empty
+                                <option value="" disabled>Tidak ada mahasiswa tersedia</option>
+                            @endforelse
                         </select>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="pembimbingSidang" class="form-label">Pembimbing</label>
-                            <select class="form-select" id="pembimbingSidang" name="pembimbing">
-                                <option value="1" selected>Dr. Budi Santoso, M.Kom</option>
-                                <option value="2">Dr. Siti Aminah, M.T</option>
-                                <option value="3">Dr. Ahmad Fauzi, M.Sc</option>
-                                <option value="4">Dewi Lestari, M.Kom</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
+                        <div class="col-md-12 col-md-6">
                             <label for="pengujiSidang" class="form-label">Penguji</label>
                             <select class="form-select" id="pengujiSidang" name="penguji[]" multiple>
                                 @foreach ($pegawai as $row)
-                                    <option value="{{ $row->nip }}">{{ $row->nip }} / {{ $row->nama_lengkap }}</option>
+                                    <option value="{{ $row->npp }}">{{ $row->npp }} / {{ $row->nama_lengkap }}</option>
                                 @endforeach
                             </select>
                         </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="jenisSidang" class="form-label">Jenis Sidang</label>
+                        <select class="form-select" id="jenisSidang" name="jenisSidang" required>
+                            <option value="" selected disabled>Pilih Jenis Sidang</option>
+                            <option value="1">Sidang Terbuka</option>
+                            <option value="2">Sidang Tertutup</option>
+                        </select>
                     </div>
                     <input type="hidden" name="status" value="2">
                 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary">Simpan</button>
+                        <button type="submit" class="btn btn-primary" id="btn-tambah-jadwal">Simpan</button>
                     </div>
                 </form>
-                
             </div>
         </div>
     </div>
@@ -386,6 +385,12 @@
             $('#formEdit input[name=tanggal_mulai_pelaksanaan]').val($(this).data('pelaksanaan_mulai'));
             $('#formEdit input[name=tanggal_selesai_pelaksanaan]').val($(this).data('pelaksanaan_selesai'));
             $('#modalEditGelombang').modal('show');
+        });
+
+        $('#form-tambah-jadwal').on('submit', function(e) {
+            var $btn = $('#btn-tambah-jadwal');
+            $btn.prop('disabled', true);
+            $btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Please Wait...');
         });
 
         // Submit form edit jadwal
