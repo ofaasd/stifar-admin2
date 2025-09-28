@@ -136,7 +136,7 @@
                         {
                             return (
                                 '<div class="d-inline-block text-nowrap">' +
-                                    '<a target="_blank" href="/admin/akademik/yudisium/cetak/' + full['idEnkripsi'] + '" class="btn btn-sm btn-icon text-primary" title="Cetak">' +
+                                    '<a target="_blank" href="/admin/akademik/yudisium/cetak-daftar-yudisium/' + full['idEnkripsi'] + '" class="btn btn-sm btn-icon text-primary" title="Cetak">' +
                                         '<i class="fa fa-print"></i></a> | ' +
                                         '<button class="btn btn-sm btn-icon btn-pengesahan text-info" title="Pengesahan Yudisium" data-nama="'+ full['nama'] + '" data-id="' + full['idEnkripsi'] +
                                         '" data-bs-toggle="modal" data-original-title="Pengesahan Yudisium" data-bs-target="#pengesahanModal"><i class="fa fa-check"></i></button>' +
@@ -145,7 +145,7 @@
                         }else{
                             return (
                                 '<div class="d-inline-block text-nowrap">' +
-                                    '<a target="_blank" href="/admin/akademik/yudisium/cetak/' + full['idEnkripsi'] + '" class="btn btn-sm btn-icon text-primary" title="Cetak">' +
+                                    '<a target="_blank" href="/admin/akademik/yudisium/cetak-daftar-yudisium/' + full['idEnkripsi'] + '" class="btn btn-sm btn-icon text-primary" title="Cetak">' +
                                         '<i class="fa fa-print"></i></a> | ' +
                                         '<span class="badge bg-success">Disahkan pada ' + full['tanggalPengesahan'] + '</span>' +
                                     '</div>'
