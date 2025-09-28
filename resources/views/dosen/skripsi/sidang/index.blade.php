@@ -4,6 +4,7 @@
 @section('style')
 <link rel="stylesheet" href="{{ asset('assets/css/vendors/sweetalert2.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/icons/bootstrap-icons/bootstrap-icons.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/css/vendors/datatables.css') }}">
 @endsection
 
 @section('breadcrumb-title')
@@ -48,7 +49,7 @@
                         <td>{{ $g->periode }}</td>
                         <td>{{ \Carbon\Carbon::parse($g->tanggal_mulai_daftar)->translatedFormat('d M Y') }} - {{ \Carbon\Carbon::parse($g->tanggal_selesai_daftar)->translatedFormat('d M Y') }}</td>
                         <td>{{ \Carbon\Carbon::parse($g->tanggal_mulai_pelaksanaan)->translatedFormat('d M Y') }} - {{ \Carbon\Carbon::parse($g->tanggal_selesai_pelaksanaan)->translatedFormat('d M Y') }}</td>
-                        <td>0/50</td> {{-- Contoh kuota, nanti bisa dikalkulasi --}}
+                        <td>{{ $g->jumlahPeserta }}/{{ $g->kuota }}</td> {{-- Contoh kuota, nanti bisa dikalkulasi --}}
                         <td>
                             <button class="btn btn-warning btn-sm btn-edit" 
                                 data-id="{{ $g->id }}"
@@ -78,13 +79,13 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0">Jadwal Sidang Skripsi</h5>
+                <h5 class="card-title mb-0">Jadwal Sidang</h5>
                 <div>
-                    <select class="form-select form-select-sm d-inline-block w-auto me-2">
-                        <option>Semua Gelombang</option>
-                        <option selected>Gelombang 1</option>
-                        <option>Gelombang 2</option>
-                        <option>Gelombang 3</option>
+                    <select class="form-select form-select-sm d-inline-block w-auto me-2" id="filterGelombang">
+                        <option value="#" selected disabled>Semua Gelombang</option>
+                        @foreach ($gelombang as $row)
+                            <option value="{{ $row->id }}">{{ $row->nama }} / {{ $row->periode }}</option>
+                        @endforeach
                     </select>
                     <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#tambahJadwalModal">
                         <i class="bi bi-plus-circle"></i> Tambah Jadwal
@@ -93,14 +94,15 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover" id="jadwal-sidang-table">
                         <thead>
                             <tr>
+                                <th>No</th>
                                 <th>Tanggal</th>
                                 <th>Waktu</th>
                                 <th>Ruangan</th>
                                 <th>Mahasiswa</th>
-                                <th>Judul Skripsi</th>
+                                <th>Judul</th>
                                 <th>Pembimbing</th>
                                 <th>Penguji</th>
                                 <th>Status</th>
@@ -108,62 +110,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>2 Mei 2025</td>
-                                <td>08:00 - 10:00</td>
-                                <td>R.301</td>
-                                <td>Ahmad Fauzi (1901234)</td>
-                                <td>Implementasi Machine Learning untuk Prediksi Cuaca</td>
-                                <td>Dr. Budi Santoso, M.Kom</td>
-                                <td>Dr. Siti Aminah, M.T</td>
-                                <td><span class="badge bg-success">Selesai</span></td>
-                                <td>
-                                    <button class="btn btn-sm btn-info"><i class="bi bi-eye"></i></button>
-                                    <button class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>2 Mei 2025</td>
-                                <td>10:30 - 12:30</td>
-                                <td>R.301</td>
-                                <td>Siti Nurhaliza (1905678)</td>
-                                <td>Analisis Sentimen Media Sosial Terhadap Kebijakan Pendidikan</td>
-                                <td>Dr. Ahmad Fauzi, M.Sc</td>
-                                <td>Dewi Lestari, M.Kom</td>
-                                <td><span class="badge bg-success">Selesai</span></td>
-                                <td>
-                                    <button class="btn btn-sm btn-info"><i class="bi bi-eye"></i></button>
-                                    <button class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>3 Mei 2025</td>
-                                <td>08:00 - 10:00</td>
-                                <td>R.302</td>
-                                <td>Budi Santoso (1907890)</td>
-                                <td>Pengembangan Aplikasi Mobile untuk Monitoring Kesehatan</td>
-                                <td>Dewi Lestari, M.Kom</td>
-                                <td>Dr. Budi Santoso, M.Kom</td>
-                                <td><span class="badge bg-success">Selesai</span></td>
-                                <td>
-                                    <button class="btn btn-sm btn-info"><i class="bi bi-eye"></i></button>
-                                    <button class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>3 Mei 2025</td>
-                                <td>10:30 - 12:30</td>
-                                <td>R.302</td>
-                                <td>Dewi Lestari (1902345)</td>
-                                <td>Pengaruh Media Sosial Terhadap Perilaku Remaja</td>
-                                <td>Dr. Siti Aminah, M.T</td>
-                                <td>Dr. Ahmad Fauzi, M.Sc</td>
-                                <td><span class="badge bg-success">Selesai</span></td>
-                                <td>
-                                    <button class="btn btn-sm btn-info"><i class="bi bi-eye"></i></button>
-                                    <button class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></button>
-                                </td>
-                            </tr>
+                            
                         </tbody>
                     </table>
                 </div>
@@ -205,9 +152,10 @@
                         <div class="col-md-6">
                             <label for="gelombangSidang" class="form-label">Gelombang</label>
                             <select class="form-select" id="gelombangSidang" name="gelombang_id">
-                                <option value="1" selected>Gelombang 1</option>
-                                <option value="2">Gelombang 2</option>
-                                <option value="3">Gelombang 3</option>
+                                <option value="#" selected disabled>Pilih Gelombang</option>
+                                @foreach ($gelombang as $row)
+                                    <option value="{{ $row->id }}">{{ $row->nama }}/{{ $row->periode }}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="col-md-6">
@@ -257,10 +205,9 @@
                         <div class="col-md-6">
                             <label for="pengujiSidang" class="form-label">Penguji</label>
                             <select class="form-select" id="pengujiSidang" name="penguji[]" multiple>
-                                <option value="1">Dr. Budi Santoso, M.Kom</option>
-                                <option value="2">Dr. Siti Aminah, M.T</option>
-                                <option value="3" selected>Dr. Ahmad Fauzi, M.Sc</option>
-                                <option value="4" selected>Dewi Lestari, M.Kom</option>
+                                @foreach ($pegawai as $row)
+                                    <option value="{{ $row->nip }}">{{ $row->nip }} / {{ $row->nama_lengkap }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
@@ -276,6 +223,104 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="editJadwalModal" tabindex="-1" aria-labelledby="editJadwalModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editJadwalModalLabel">Edit Jadwal Sidang</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="max-height:70vh;overflow-y:auto;">
+                <form action="" method="post" id="form-edit-jadwal">
+                    @csrf
+                    @method('PUT')
+                    <div class="col-md-12">
+                        <label for="gelombangSidang" class="form-label">Gelombang</label>
+                        <select class="form-select" id="gelombangSidang" name="gelombangId">
+                            @foreach ($gelombang as $row)
+                                <option value="{{ $row->id }}">{{ $row->nama }} / {{ $row->periode }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <label for="tanggalSidang" class="form-label">Tanggal Sidang</label>
+                            <input type="date" class="form-control" id="tanggalSidang" name="tanggal" required>
+                        </div>
+                        <div class="col-md-6 mt-2" id="view-update-status">
+                            <button type="button" class="btn btn-success btn-sm mt-4" id="btn-update-status" style="display: none">Selesai Sidang</button>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Preferensi Waktu Sidang Mahasiswa</label>
+                            <div>
+                                <p>Catatan: <span class="badge bg-info me-1" id="preferensiCatatan"></span></p>
+                                <p>Hari: <span class="badge bg-info me-1" id="preferensiHari"></span></p>
+                                <p>Waktu: <span class="badge bg-info" id="preferensiWaktu"></span></p>
+                            </div>
+                            <small class="text-muted d-block mt-1">
+                                <strong>Catatan:</strong> Preferensi ini merupakan permintaan dari mahasiswa, jadwal sidang yang sebenarnya dapat berbeda dan tidak harus mengikuti preferensi ini.
+                            </small>
+                        </div>
+                    </div>
+                    <div class="row mt-2 align-items-center">
+                        <div class="col-md-6">
+                            <label for="waktuMulai" class="form-label">Waktu Mulai</label>
+                            <input type="time" class="form-control" id="waktuMulai" name="waktuMulai" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="waktuSelesai" class="form-label">Waktu Selesai</label>
+                            <input type="time" class="form-control" id="waktuSelesai" name="waktuSelesai" required>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <label for="ruanganSidang" class="form-label">Ruangan</label>
+                        <select class="form-select" id="ruanganSidang" name="ruangId">
+                            @foreach ($ruang as $row)
+                                <option value="{{ $row->id }}">{{ $row->nama_ruang }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mt-2">
+                        <label for="mahasiswaSidang" class="form-label">Mahasiswa</label>
+                        <div id="mahasiswaSidang" class="bg-warning text-white bg-opacity-25 p-2 rounded"></div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <label class="form-label">Pembimbing</label>
+                            <div id="pembimbingSidang"></div>
+                        </div>
+                        <div class="col-md-12 mt-2">
+                            <label for="pengujiSidang" class="form-label">Penguji</label>
+                            <select class="form-select" id="pengujiSidang" name="penguji[]" multiple size="8">
+                                @foreach ($pegawai as $row)
+                                    <option value="{{ $row->npp }}">{{ $row->npp }} / {{ $row->nama_lengkap }}</option>
+                                @endforeach
+                            </select>
+                            <div id="listPengujiTerpilih" class="mt-2"></div>
+                            <small class="text-muted">Tekan Ctrl (atau Cmd di Mac) untuk memilih lebih dari satu penguji.</small>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <div class="d-flex flex-wrap gap-2">
+                            <div><strong>Proposal:</strong> <span id="sidangProposal"></span></div>
+                            <div><strong>Kartu Bimbingan:</strong> <span id="sidangKartuBimbingan"></span></div>
+                            <div><strong>Presentasi:</strong> <span id="sidangPresentasi"></span></div>
+                            <div><strong>Pendukung:</strong> <span id="sidangPendukung"></span></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer mt-2">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary btn-submit" id="btn-submit">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+</script>
+
 <!-- Modal Edit -->
 <div class="modal fade" id="modalEditGelombang" tabindex="-1">
     <div class="modal-dialog">
@@ -298,10 +343,20 @@
 @endsection
 
 @section('script')
+<script src="{{ asset('assets/js/datatable/datatables/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('assets/js/datatable/datatables/datatable.custom.js') }}"></script>
 <script src="{{ asset('assets/js/bootstrap/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ asset('assets/js/sweet-alert/sweetalert.min.js') }}"></script>
 <script>
     $(document).ready(function () {
+        initJadwalSidangTable();
+
+        $('#filterGelombang').on('change', function() {
+            let idGelombang = $(this).val();
+            $('#jadwal-sidang-table').DataTable().destroy();
+            initJadwalSidangTable(idGelombang);
+        });
+        
         // SweetAlert konfirmasi hapus
         $('.delete-form').on('submit', function (e) {
             e.preventDefault();
@@ -332,6 +387,200 @@
             $('#formEdit input[name=tanggal_selesai_pelaksanaan]').val($(this).data('pelaksanaan_selesai'));
             $('#modalEditGelombang').modal('show');
         });
+
+        // Submit form edit jadwal
+        $('#form-edit-jadwal').on('submit', function(e) {
+            var $btn = $('#btn-submit');
+            $btn.prop('disabled', true);
+            $btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Please Wait...');
+            // Submit form
+            this.submit();
+            $btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Please Wait...');
+        });
     });
+
+    function initJadwalSidangTable(idGelombang = null) {
+        let ajaxUrl = '{{ route('sidang.get-data-peserta') }}';
+        if (idGelombang) {
+            ajaxUrl = '{{ url('sidang/get-data-peserta') }}/' + idGelombang;
+        }
+        $('#jadwal-sidang-table').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: ajaxUrl,
+            columns: [
+                { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
+                { data: 'tanggal', name: 'tanggal' },
+                { data: 'waktu', name: 'waktu' },
+                { data: 'ruangan', name: 'ruangan' },
+                { data: 'mahasiswa', name: 'mahasiswa' },
+                { data: 'judul', name: 'judul' },
+                { data: 'pembimbing', name: 'pembimbing' },
+                { data: 'penguji', name: 'penguji' },
+                { data: 'status', name: 'status' },
+                { data: 'actions', name: 'actions', orderable: false, searchable: false }
+            ],
+            language: {
+                emptyTable: "Tidak ada data sidang."
+            }
+        });
+    }
+
+    function showEditJadwalModal(id, btn = null) 
+    {
+        if (btn) {
+            $(btn).prop('disabled', true);
+            btn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i> Tunggu...';
+        }
+        const url = `{{ route('sidang.get-detail', ':id') }}`.replace(':id', id);
+        $.ajax({
+            url: url,
+            type: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                const data = response.data
+                console.log('====================================');
+                console.log(data);
+                console.log('====================================');
+                const $form = $('#form-edit-jadwal');
+                $form.attr('action', '{{ route('sidang.update-jadwal', '') }}/' + id);
+                $form.find('#gelombangSidang').val(data.gelombangId);
+                $form.find('#tanggalSidang').val(data.tanggal);
+                $form.find('#waktuMulai').val(data.waktuMulai);
+                $form.find('#waktuSelesai').val(data.waktuSelesai);
+                $form.find('#ruanganSidang').val(data.ruangId);
+
+                // Tampilkan tombol update status jika hari ini >= data.tanggal
+                const today = new Date();
+                const tanggalSidang = new Date(data.tanggal);
+                if (today >= tanggalSidang) {
+                    $('#view-update-status').show()
+                    $('#btn-update-status')
+                    .show()
+                    .attr('onclick', `updateStatusSidang('${data.id}', this)`);
+                } else {
+                    $('#view-update-status').hide();
+                }
+
+                // Mahasiswa
+                $form.find('#mahasiswaSidang').html(`<span class="form-control-plaintext">${data.nama ? data.nama : '-'}</span>`);
+
+                // Pembimbing
+                let pembimbingHtml = '';
+                if (data.namaPembimbing1) {
+                    pembimbingHtml += `<div class="mb-1">${data.namaPembimbing1}</div>`;
+                }
+                if (data.namaPembimbing2) {
+                    pembimbingHtml += `<div>${data.namaPembimbing2}</div>`;
+                }
+                $form.find('#pembimbingSidang').html(pembimbingHtml);
+
+                // Penguji
+                $form.find('#pengujiSidang').val(data.pengujiIds);
+
+                // Proposal
+                if (data.proposal) {
+                    $form.find('#sidangProposal').html(
+                        `<a href="/berkas-sidang/${data.proposal}" target="_blank" class="btn btn-outline-primary btn-sm">Download Proposal</a>`
+                    );
+                } else {
+                    $form.find('#sidangProposal').html('<span class="text-muted">Belum diunggah</span>');
+                }
+
+                // Kartu Bimbingan
+                if (data.kartuBimbingan) {
+                    $form.find('#sidangKartuBimbingan').html(
+                        `<a href="/berkas-sidang/${data.kartuBimbingan}" target="_blank" class="btn btn-outline-primary btn-sm">Download Kartu Bimbingan</a>`
+                    );
+                } else {
+                    $form.find('#sidangKartuBimbingan').html('<span class="text-muted">Belum diunggah</span>');
+                }
+
+                // Presentasi
+                if (data.presentasi) {
+                    $form.find('#sidangPresentasi').html(
+                        `<a href="/berkas-sidang/${data.presentasi}" target="_blank" class="btn btn-outline-primary btn-sm">Download Presentasi</a>`
+                    );
+                } else {
+                    $form.find('#sidangPresentasi').html('<span class="text-muted">Belum diunggah</span>');
+                }
+
+                // Pendukung
+                if (data.pendukung) {
+                    $form.find('#sidangPendukung').html(
+                        `<a href="/berkas-sidang/${data.pendukung}" target="_blank" class="btn btn-outline-primary btn-sm">Download Pendukung</a>`
+                    );
+                } else {
+                    $form.find('#sidangPendukung').html('<span class="text-muted">Belum diunggah/tidak diunggah</span>');
+                }
+
+                // Preferensi Jadwal Sidang Mahasiswa
+                $('#preferensiCatatan').text(data.catatan ? data.catatan : '-');
+                $('#preferensiHari').text(data.hari ? data.hari : '-');
+                $('#preferensiWaktu').text(data.waktu ? data.waktu : '-');
+
+                $('#editJadwalModal').modal('show');
+                if (btn) {
+                    $(btn).prop('disabled', false);
+                    btn.innerHTML = '<i class="bi bi-pencil"></i>';
+                }
+            },
+            error: function(xhr, status, error) {
+                console.log('====================================');
+                console.log(xhr);
+                console.log('====================================');
+                alert('Gagal mengambil data jadwal sidang.');
+                if (btn) {
+                    $(btn).prop('disabled', false);
+                    btn.innerHTML = '<i class="bi bi-pencil"></i>';
+                }
+            }
+        });
+    }
+
+    function updateStatusSidang(id, btn) 
+    {
+        swal({
+            title: "Yakin ingin mengubah telah menyelesaikan sidang?",
+            text: "Status sidang akan diubah menjadi selesai.",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willUpdate) => {
+            if (!willUpdate) {
+                return;
+            }
+            if (btn) {
+                $(btn).prop('disabled', true);
+                btn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i> Tunggu...';
+            }
+            const url = `{{ route('sidang.update-status-jadwal', ':id') }}`.replace(':id', id);
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    _method: 'PUT',
+                    status: 1
+                },
+                success: function(response) {
+                    $('#editJadwalModal').modal('hide');
+                    $('#jadwal-sidang-table').DataTable().ajax.reload(null, false);
+                    swal("Sukses!", response.message, "success");
+                    if (btn) {
+                        $(btn).prop('disabled', false);
+                        btn.innerHTML = 'Selesai Sidang';
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('Gagal memperbarui status sidang.');
+                    if (btn) {
+                        $(btn).prop('disabled', false);
+                        btn.innerHTML = 'Selesai Sidang';
+                    }
+                }
+            });
+        });
+    }
 </script>
 @endsection

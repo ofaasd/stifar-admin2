@@ -10,11 +10,7 @@ class BimbinganSkripsi extends Model
     use HasFactory;
     protected $table = 'bimbingan_skripsi';
 
-    protected $fillable = [
-        'id_master', 'tanggal_waktu', 'tempat', 'topik',
-        'status', 'catatan_mahasiswa', 'catatan_dosen', 'metode',
-        'created_at', 'updated_at'
-    ];
+    protected $guarded = ['id'];
 
     public function skripsi()
     {

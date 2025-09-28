@@ -23,72 +23,71 @@ class DaftarSkripsiController extends Controller
         $dosenList = RefPembimbing::get();
         $data = Skripsi::where('nim', $nim)->with('pembimbing')->get(); // Perbaiki dengan get()
 
-        // dd($nim);
         return view('mahasiswa.skripsi.daftar.index', compact('data','dosenList'));
     }
     public function store(Request $request)
-{
-    try {
-        Log::info('Mulai menyimpan pengajuan skripsi', ['request' => $request->all()]);
+    {
+        try {
+            Log::info('Mulai menyimpan pengajuan skripsi', ['request' => $request->all()]);
 
-        $request->validate([
-            'judul' => 'required|string',
-            'abstrak' => 'required|string',
-            'metodologi' => 'required|string',
-            'proposal' => 'required|file|mimes:pdf|max:2048',
-            'pembimbing_1' => 'required|exists:ref_pembimbing_skripsi,nip',
-            'pembimbing_2' => 'nullable|exists:ref_pembimbing_skripsi,nip|different:pembimbing_1',
-        ]);
+            $request->validate([
+                'judul' => 'required|string',
+                'abstrak' => 'required|string',
+                'metodologi' => 'required|string',
+                'proposal' => 'required|file|mimes:pdf|max:2048',
+                'pembimbing_1' => 'required|exists:ref_pembimbing_skripsi,nip',
+                'pembimbing_2' => 'nullable|exists:ref_pembimbing_skripsi,nip|different:pembimbing_1',
+            ]);
 
-        $user = Auth::user();
-        $mhs = Mahasiswa::where('id', $user->id)->first();
+            $user = Auth::user();
+            $mhs = Mahasiswa::where('id', $user->id)->first();
 
-        if (!$mhs) {
-            Log::error('Mahasiswa tidak ditemukan', ['user_id' => $user->id]);
-            return redirect()->back()->withErrors(['Mahasiswa tidak ditemukan.']);
-        }
+            if (!$mhs) {
+                Log::error('Mahasiswa tidak ditemukan', ['user_id' => $user->id]);
+                return redirect()->back()->withErrors(['Mahasiswa tidak ditemukan.']);
+            }
 
-        $nim = $mhs->nim;
+            $nim = $mhs->nim;
 
-        $proposalPath = $request->file('proposal')->store('proposal', 'public');
+            $proposalPath = $request->file('proposal')->store('proposal', 'public');
 
-        $skripsi = Skripsi::create([
-            'nim' => $nim,
-            'judul' => $request->judul,
-            'abstrak' => $request->abstrak,
-            'metodologi' => $request->metodologi,
-            'status' => 0,
-            'tanggal_pengajuan' => now(),
-            'proposal' => $proposalPath,
-        ]);
+            $skripsi = Skripsi::create([
+                'nim' => $nim,
+                'judul' => $request->judul,
+                'abstrak' => $request->abstrak,
+                'metodologi' => $request->metodologi,
+                'status' => 0,
+                'tanggal_pengajuan' => now(),
+                'proposal' => $proposalPath,
+            ]);
 
-        Log::info('Skripsi berhasil dibuat', ['skripsi_id' => $skripsi->id]);
+            Log::info('Skripsi berhasil dibuat', ['skripsi_id' => $skripsi->id]);
 
-        PembimbingSkripsi::create([
-            'skripsi_id' => $skripsi->id,
-            'nip' => $request->pembimbing_1,
-            'tanggal_penetapan' => now(),
-        ]);
-
-        if ($request->filled('pembimbing_2')) {
             PembimbingSkripsi::create([
                 'skripsi_id' => $skripsi->id,
-                'nip' => $request->pembimbing_2,
+                'nip' => $request->pembimbing_1,
                 'tanggal_penetapan' => now(),
             ]);
+
+            if ($request->filled('pembimbing_2')) {
+                PembimbingSkripsi::create([
+                    'skripsi_id' => $skripsi->id,
+                    'nip' => $request->pembimbing_2,
+                    'tanggal_penetapan' => now(),
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'Pengajuan skripsi berhasil disimpan.');
+
+        } catch (\Throwable $e) {
+            Log::error('Terjadi kesalahan saat menyimpan pengajuan skripsi', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.');
         }
-
-        return redirect()->back()->with('success', 'Pengajuan skripsi berhasil disimpan.');
-
-    } catch (\Throwable $e) {
-        Log::error('Terjadi kesalahan saat menyimpan pengajuan skripsi', [
-            'error' => $e->getMessage(),
-            'trace' => $e->getTraceAsString(),
-        ]);
-
-        return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.');
     }
-}
 
     
     public function update(Request $request, $id)

@@ -11,6 +11,8 @@ use App\Models\LogbookBimbingan;
 use App\Models\MasterPembimbing;
 use App\Http\Controllers\Controller;
 use App\Models\Mahasiswa;
+use App\Models\MasterSkripsi;
+use App\Models\PengajuanJudulSkripsi;
 use Illuminate\Support\Facades\Auth;
 
 class BimbinganController extends Controller
@@ -35,7 +37,8 @@ class BimbinganController extends Controller
         }
       
         // Mengambil data lainnya
-        $judul = JudulSkripsi::where('nim', $nim)->first();
+        $masterSkripsi = MasterSkripsi::where('nim', $nim)->where('status', 1)->first();    
+        $judul = PengajuanJudulSkripsi::where('id_master', $masterSkripsi->id)->first();
         $dataBimbingan = BimbinganSkripsi::where('id_master_bimbingan', $dataMaster->id)->select('id')->get();
         $dataBimbinganIds = $dataBimbingan->pluck('id');
         
