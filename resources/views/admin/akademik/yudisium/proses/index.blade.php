@@ -279,6 +279,25 @@
                     url: baseUrl.concat(page),
                     data: function (d) {
                         d.filtergelombang = $('#filter_gelombang').val();
+                    },
+                    error: function(xhr, error, thrown) {
+                        console.log('====================================');
+                        console.log(xhr);
+                        console.log('====================================');
+                        let message = 'Terjadi kesalahan saat memuat data tabel.';
+                        if (xhr && xhr.responseJSON && xhr.responseJSON.message) {
+                            message = xhr.responseJSON.message;
+                        } else if (xhr && xhr.responseText) {
+                            message = xhr.responseText;
+                        }
+                        swal({
+                            title: 'Error!',
+                            text: message,
+                            icon: 'error',
+                            customClass: {
+                                confirmButton: 'btn btn-danger'
+                            }
+                        });
                     }
                 },
                 columns: my_data,
