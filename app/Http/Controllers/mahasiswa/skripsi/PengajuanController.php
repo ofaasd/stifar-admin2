@@ -13,8 +13,9 @@ class PengajuanController extends Controller
     {
         $user  = Auth::user();
         $email = $user->email;
-        $nim   = explode('@', $email)[0];
-        // ambil data master
+        // $nim   = explode('@', $email)[0];
+            $nim   = 'A11.2022.14777';
+            // ambil data master
         $dataDosbim = MasterSkripsi::where('nim', $nim)
         ->leftJoin('pegawai_biodata AS pegawai1', 'pegawai1.npp', '=', 'master_skripsi.pembimbing_1')
         ->leftJoin('pegawai_biodata AS pegawai2', 'pegawai2.npp', '=', 'master_skripsi.pembimbing_2')
@@ -26,8 +27,12 @@ class PengajuanController extends Controller
             'pegawai2.npp as npp_pembimbing2'
         )
         ->first();
+        $dataJudul = PengajuanJudulSkripsi::where('id_master', $dataDosbim->id)
+    ->latest() // otomatis pakai created_at desc
+    ->take(2)
+    ->get();
 
-        $dataJudul = PengajuanJudulSkripsi::where('id_master', $dataDosbim->id)->first();
+        
     
     if ($dataDosbim) {
         // ambil semua berkas terkait

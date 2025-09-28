@@ -115,8 +115,8 @@ class ProsesYudisiumController extends Controller
 
             $totalFiltered = $totalData;
 
-            $limit = $request->input('length');
-            $start = $request->input('start');
+            $limit = $request->input('length') ?? 0;
+            $start = $request->input('start') ?? 0;
             $order = 'tb_yudisium.created_at';
             $dir = $request->input('order.0.dir') ?? 'desc';
 
@@ -148,7 +148,12 @@ class ProsesYudisiumController extends Controller
                     ->get()
                     ->map(function ($item) use ($daftarWisudawan, $gelombangWisuda){
                         $item->nimEnkripsi = Crypt::encryptString($item->nim . "stifar");
-                        $tanggalPelaksanaan = $gelombangWisuda->where('id', $daftarWisudawan->where('nim', $item->nim)->where('status', 1)->first()->id_gelombang_wisuda)->first()->waktu_pelaksanaan ?? null;
+                        $wisudawan = $daftarWisudawan->where('nim', $item->nim)->where('status', 1)->first();
+                        $tanggalPelaksanaan = null;
+                        if ($wisudawan && isset($wisudawan->id_gelombang_wisuda)) {
+                            $gelombang = $gelombangWisuda->where('id', $wisudawan->id_gelombang_wisuda)->first();
+                            $tanggalPelaksanaan = $gelombang ? $gelombang->waktu_pelaksanaan : null;
+                        }
                         $item->tanggalDiberikan = $tanggalPelaksanaan ? \Carbon\Carbon::parse($tanggalPelaksanaan)->format('Y-m-d') : '-';
                         return $item;
                     });
