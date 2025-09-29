@@ -37,19 +37,22 @@ class PengajuanSkripsiController extends Controller
         }
         
         $getNilai = master_nilai::select(
-                'master_nilai.*',
-                'a.hari',
-                'a.kel',
-                'b.nama_matkul',
-                'b.sks_teori',
-                'b.sks_praktek',
-                'b.kode_matkul'
-            )
-            ->join('jadwals as a', 'master_nilai.id_jadwal', '=', 'a.id')
-            ->join('mata_kuliahs as b', 'a.id_mk', '=', 'b.id')
-            ->where('nim', $mhs->nim)
-            ->whereNotNull('master_nilai.nakhir')
-            ->get();
+            'master_nilai.*',
+            'a.hari',
+            'a.kel',
+            'b.nama_matkul',
+            'b.sks_teori',
+            'b.sks_praktek',
+            'b.kode_matkul'
+        )
+        ->leftJoin('jadwals as a', 'master_nilai.id_jadwal', '=', 'a.id')
+        ->join('mata_kuliahs as b', function($join) {
+            $join->on('a.id_mk', '=', 'b.id')
+                    ->orOn('master_nilai.id_matkul', '=', 'b.id');
+        })
+        ->where('nim', $mhs->nim)
+        ->whereNotNull('master_nilai.nakhir')
+        ->get();
 
         $totalSks = 0;
         $totalIps = 0;

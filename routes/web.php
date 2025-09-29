@@ -95,6 +95,7 @@ use App\Http\Controllers\admin\akademik\NilaiKuesionerController;
 use App\Http\Controllers\admin\aset\AsetGedungBangunanController;
 use App\Http\Controllers\admin\keuangan\ProdiBukaTutupController;
 use App\Http\Controllers\admin\skripsi\DosenPembimbingController;
+use App\Http\Controllers\mahasiswa\skripsi\NilaiSidangController;
 use App\Http\Controllers\mahasiswa\skripsi\PembimbingController1;
 use App\Http\Controllers\admin\akademik\KhsController as adminKhs;
 use App\Http\Controllers\admin\akademik\PengaturanUjianController;
@@ -124,6 +125,7 @@ use App\Http\Controllers\admin\kepegawaian\PegawaiPendidikanController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiPenelitianController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiPengabdianController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiRepositoryController;
+use App\Http\Controllers\dosen\akademik\skripsi\DosenPengujiController;
 use App\Http\Controllers\admin\akademik\wisuda\CetakWisudawanController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiPenghargaanController;
 use App\Http\Controllers\admin\akademik\NilaiController as nilaiakademik;
@@ -622,6 +624,23 @@ Route::group(['middleware' => ['auth', 'role:mhs|super-admin']], function () {
 
     });
 
+    Route::prefix('akademik')->name('akademik.')->group(function () {
+
+        Route::prefix('skripsi')->name('skripsi.')->group(function () {
+
+            Route::prefix('mahasiswa')->name('mahasiswa.')->group(function () {
+
+                Route::prefix('nilai-sidang')->name('nilai-sidang.')->group(function () {
+                    Route::get('/', [NilaiSidangController::class, 'index'])->name('index');
+                    Route::get('/show/{id}', [NilaiSidangController::class, 'show'])->name('show');
+                });
+
+            });
+            
+        });
+
+    });
+
     Route::get('/mhs/absensi/history/{id_jadwal}', [mhsAbsensiController::class, 'setAbsensiSatuan'] );
     Route::get('/mhs/absensi/save/{id_jadwal}', [mhsAbsensiController::class, 'saveAbsensi'] );
     Route::group(['prefix' => 'mahasiswa/pengajuan', 'as' => 'mhs.pengajuan.', 'controller' => PengajuanController::class], function () {
@@ -752,11 +771,11 @@ Route::group(['middleware' => ['auth', 'role:pegawai|super-admin']], function ()
                 });
 
                 Route::prefix('penguji')->name('penguji.')->group(function () {
-                    Route::get('/', [DosenBimbinganController::class, 'index'])->name('index');
-                    Route::get('/get-data', [DosenBimbinganController::class, 'getData'])->name('get-data');
-                    Route::get('/show/{id}', [DosenBimbinganController::class, 'show'])->name('show');
-                    Route::put('/update/{id}', [DosenBimbinganController::class, 'update'])->name('update');
-                    Route::put('/update-status/{id}', [DosenBimbinganController::class, 'updateStatus'])->name('update-status');
+                    Route::get('/', [DosenPengujiController::class, 'index'])->name('index');
+                    Route::get('/get-data', [DosenPengujiController::class, 'getData'])->name('get-data');
+                    Route::get('/show/{id}', [DosenPengujiController::class, 'show'])->name('show');
+                    Route::put('/update-nilai/{id}', [DosenPengujiController::class, 'updateNilai'])->name('update-nilai');
+                    Route::put('/update-status/{id}', [DosenPengujiController::class, 'updateStatus'])->name('update-status');
                 });
 
             });

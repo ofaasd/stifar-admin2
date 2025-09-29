@@ -50,6 +50,7 @@
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
                             <li><a href="{{ route('akademik.skripsi.dosen.bimbingan.index') }}">Bimbingan</a></li>
+                            <li><a href="{{ route('akademik.skripsi.dosen.penguji.index') }}">Penguji</a></li>
                         </ul>
                     </li>
                 </ul>

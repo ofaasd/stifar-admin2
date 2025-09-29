@@ -36,7 +36,7 @@ class PengajuanSidangController extends Controller
             $mhs = Mahasiswa::where('user_id', Auth::id())->first();
             $nim = $mhs->nim;
 
-            $masterSkripsi = MasterSkripsi::where('nim', $nim)->where('status', 1)->first();
+            $masterSkripsi = MasterSkripsi::where('nim', $nim)->where('status', 2)->first();
 
             // Ambil gelombang yang dipilih
             $gelombang = GelombangSidangSkripsi::select([

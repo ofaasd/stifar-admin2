@@ -157,7 +157,7 @@ class AdminPengajuanSkripsiController extends Controller
 
                 if ($status == 1) {
                     $masterSkripsi->update([
-                        'status' => 1
+                        'status' => 2
                     ]);
                 }
 
@@ -206,9 +206,9 @@ class AdminPengajuanSkripsiController extends Controller
         $judulSkripsi = PengajuanJudulSkripsi::where('id_master', $id)->get();
         $mahasiswa = Mahasiswa::where('nim', $masterSkripsi->nim)->first();
         $dosen = RefPembimbing::leftJoin('pegawai_biodata as pegawai', 'pegawai.npp', '=', 'ref_pembimbing_skripsi.nip')
-            ->select('pegawai.nama_lengkap AS nama', 'pegawai.npp', 'kuota', 'ref_pembimbing_skripsi.id_progdi')
-            // ->where('ref_pembimbing_skripsi.id_progdi', $mahasiswa->id_program_studi)
-            ->get();
+        ->select('pegawai.nama_lengkap AS nama', 'pegawai.npp', 'ref_pembimbing_skripsi.kuota', 'ref_pembimbing_skripsi.id_progdi')
+        ->where('ref_pembimbing_skripsi.id_progdi', $mahasiswa->id_program_studi)
+        ->get();
 
         $data = [
             'title' => 'Detail Pengajuan Judul Skripsi',

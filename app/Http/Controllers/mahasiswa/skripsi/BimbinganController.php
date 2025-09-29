@@ -3,12 +3,10 @@
 namespace App\Http\Controllers\mahasiswa\skripsi;
 
 use App\Models\BimbinganSkripsi;
-use App\Models\JudulSkripsi;
 use App\Models\PegawaiBiodatum;
 use Illuminate\Http\Request;
 use App\Models\MasterBimbingan;
 use App\Models\LogbookBimbingan;
-use App\Models\MasterPembimbing;
 use App\Http\Controllers\Controller;
 use App\Models\Mahasiswa;
 use App\Models\MasterSkripsi;
@@ -17,7 +15,8 @@ use Illuminate\Support\Facades\Auth;
 
 class BimbinganController extends Controller
 {
-    public function index() {
+    public function index() 
+    {
         $user = Auth::user();
     
         $nim = Mahasiswa::where('id', $user->id)->value('nim');
@@ -37,7 +36,7 @@ class BimbinganController extends Controller
         }
       
         // Mengambil data lainnya
-        $masterSkripsi = MasterSkripsi::where('nim', $nim)->where('status', 1)->first();    
+        $masterSkripsi = MasterSkripsi::where('nim', $nim)->where('status', 2)->first();    
         $judul = PengajuanJudulSkripsi::where('id_master', $masterSkripsi->id)->first();
         $dataBimbingan = BimbinganSkripsi::where('id_master_bimbingan', $dataMaster->id)->select('id')->get();
         $dataBimbinganIds = $dataBimbingan->pluck('id');
@@ -63,6 +62,7 @@ class BimbinganController extends Controller
         // Render view dengan data
         return $this->renderView($dataMaster, $dataBimbingan, $TahapBimbingan, $pembimbing1, $pembimbing2, $judul, $logbookBimbingan);
     }
+    
     private function renderView(
         $dataMaster = null,
         $dataBimbingan = null,

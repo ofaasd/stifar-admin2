@@ -51,7 +51,7 @@ class DosenBimbinganController extends Controller
         })
         ->leftJoin('pengajuan_judul_skripsi', 'master_skripsi.id', '=', 'pengajuan_judul_skripsi.id_master')
         ->leftJoin('mahasiswa', 'master_skripsi.nim', '=', 'mahasiswa.nim')
-        ->where('master_skripsi.status', '=', 1)
+        ->where('master_skripsi.status', '=', 2)
         ->where('pengajuan_judul_skripsi.status', '=', 1)
         ->get()
         ->map(function ($item) {
