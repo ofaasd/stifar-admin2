@@ -151,7 +151,7 @@ class ProdiAkreditasiController extends Controller
                         'status' => $request->status,
                         'capaian' => $request->capaian,
                         'lembaga' => $request->lembaga,
-                        'tahun' => $request->tahun
+                        'tahun' => $request->tahun,
                     ]
                 );
             }
@@ -176,6 +176,7 @@ class ProdiAkreditasiController extends Controller
                     'lembaga' => $request->lembaga,
                     'tahun' => $request->tahun,
                     'url' => $request->url,
+                    'file' => $filename,
                 ]
             );
 

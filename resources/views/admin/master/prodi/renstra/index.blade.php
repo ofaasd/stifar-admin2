@@ -173,6 +173,12 @@
                         }
                     },
                     {
+                        targets:4,
+                        render:function render(data, type, full, meta){
+                            return (`<a target='_blank' href='${full['url']}' class="btn btn-primary">URL</a>`)
+                        }
+                    },
+                    {
                     // Actions
                     targets: -1,
                     title: 'Actions',
