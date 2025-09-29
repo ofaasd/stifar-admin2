@@ -205,7 +205,7 @@ class AdminPengajuanSkripsiController extends Controller
         $mahasiswa = Mahasiswa::where('nim', $masterSkripsi->nim)->first();
         $dosen = RefPembimbing::leftJoin('pegawai_biodata as pegawai', 'pegawai.npp', '=', 'ref_pembimbing_skripsi.nip')
         ->select('pegawai.nama_lengkap AS nama', 'pegawai.npp', 'ref_pembimbing_skripsi.kuota', 'ref_pembimbing_skripsi.id_progdi')
-        ->where('ref_pembimbing_skripsi.id_progdi', $mahasiswa->id_program_studi)
+        ->where('pegawai.id_progdi', $mahasiswa->id_program_studi)
         ->get();
 
         $data = [
