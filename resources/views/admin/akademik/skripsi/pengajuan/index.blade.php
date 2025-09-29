@@ -174,7 +174,7 @@
                     }
                 ],
                 language: {
-                    emptyTable: "Tidak ada data dosen pembimbing yang tersedia." // Pesan ketika data kosong
+                    emptyTable: "Tidak ada data yang tersedia." // Pesan ketika data kosong
                 }
             });
 

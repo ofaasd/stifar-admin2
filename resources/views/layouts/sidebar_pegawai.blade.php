@@ -84,7 +84,7 @@
                 <span><i class="fa fa-bookmark"></i> Kuesioner Kepuasan Dosen</span></a> <label class="badge badge-light-danger">!</label>
             </li> --}}
             {{-- <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{URL::to('dsn/skripsi/pengajuan')}}" >
-                <span><i class="fa fa-users"></i>  </span></a>
+                <span><i class="fa fa-users"></i> Pengajuan Mahasiswa</span></a>
             </li> --}}
           </ul>
         </div>

@@ -10,12 +10,12 @@
 @endsection
 
 @section('breadcrumb-title')
-    <h3>{{ 'Bimbingan Mahasiswa' }}</h3>
+    <h3>{{ $title }}</h3>
 @endsection
 
 @section('breadcrumb-items')
-    <li class="breadcrumb-item">Bimbingan</li>
-    <li class="breadcrumb-item active">{{ 'Bimbingan Skripsi' }}</li>
+    <li class="breadcrumb-item">Skripsi</li>
+    <li class="breadcrumb-item active">{{ $title }}</li>
 @endsection
 
 @section('content')
@@ -36,45 +36,49 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($sidang as $index => $row)
-                            <tr>
-                                <td>{{ $index + 1 }}</td>
-                                <td>
-                                    {{ $row->tanggal }}<br>
-                                    {{ $row->waktuMulai }} - {{ $row->waktuSelesai }}<br>
-                                    Ruang: {{ $row->ruangan }}
-                                </td>
-                                <td>
-                                    @if($row->jenis == 1)
-                                        Sidang Terbuka
-                                    @elseif($row->jenis == 2)
-                                        Sidang Tertutup
-                                    @else
-                                        {{ $row->jenis }}
-                                    @endif
-                                    <br>
-                                    <span class="badge bg-secondary">{{ $row->namaGelombang }} ({{ $row->periode }})</span><br>
-                                </td>
-                                <td>
-                                    1. {{ $row->namaPembimbing1 }}<br>
-                                    2. {{ $row->namaPembimbing2 }}
-                                </td>
-                                <td>
-                                    @for ($i = 1; $i <= 5; $i++)
-                                        @php $nama = $row->{'namaPenguji' . $i} ?? null; @endphp
-                                        @if ($nama)
-                                            {{ $i }}. {{ $nama }}<br>
+                            @forelse($sidang as $index => $row)
+                                <tr>
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>
+                                        {{ $row->tanggal }}<br>
+                                        {{ $row->waktuMulai }} - {{ $row->waktuSelesai }}<br>
+                                        Ruang: {{ $row->ruangan }}
+                                    </td>
+                                    <td>
+                                        @if($row->jenis == 1)
+                                            Sidang Terbuka
+                                        @elseif($row->jenis == 2)
+                                            Sidang Tertutup
+                                        @else
+                                            {{ $row->jenis }}
                                         @endif
-                                    @endfor
-                                </td>
-                                <td>
-                                    <a href="{{ route('akademik.skripsi.mahasiswa.nilai-sidang.show', $row->idEnkripsi) }}" class="btn btn-primary btn-sm btn-detail">
-                                        <span class="btn-text">Detail</span>
-                                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-                                    </a>
-                                </td>
-                            </tr>
-                            @endforeach
+                                        <br>
+                                        <span class="badge bg-secondary">{{ $row->namaGelombang }} ({{ $row->periode }})</span><br>
+                                    </td>
+                                    <td>
+                                        1. {{ $row->namaPembimbing1 }}<br>
+                                        2. {{ $row->namaPembimbing2 }}
+                                    </td>
+                                    <td>
+                                        @for ($i = 1; $i <= 5; $i++)
+                                            @php $nama = $row->{'namaPenguji' . $i} ?? null; @endphp
+                                            @if ($nama)
+                                                {{ $i }}. {{ $nama }}<br>
+                                            @endif
+                                        @endfor
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('akademik.skripsi.mahasiswa.nilai-sidang.show', $row->idEnkripsi) }}" class="btn btn-primary btn-sm btn-detail">
+                                            <span class="btn-text">Detail</span>
+                                            <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="text-center">Data tidak ditemukan.</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>

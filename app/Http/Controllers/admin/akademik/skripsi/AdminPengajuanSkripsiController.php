@@ -139,13 +139,13 @@ class AdminPengajuanSkripsiController extends Controller
             }
 
             if ($countStatus1 == 1) {
-                // Pastikan hanya satu judul yang berstatus ACC
+                // Pastikan judul lain harus status 3 (Ditolak)
                 foreach ($judulSkripsi as $judul) {
                     $status = $request->input('statusJudul' . $judul->id);
-                    if ($status == 1 && $judul->id != $judulAccId) {
+                    if ($judul->id != $judulAccId && $status != 3) {
                         return response()->json([
                             'success' => false,
-                            'message' => 'Hanya satu judul yang boleh ACC (1).'
+                            'message' => 'Hanya 1 judul yang bisa disimpan'
                         ], 400);
                     }
                 }

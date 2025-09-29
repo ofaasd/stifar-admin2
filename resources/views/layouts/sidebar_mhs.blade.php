@@ -58,7 +58,7 @@
                             <li><a href="{{ Route('mhs.skripsi.bimbingan.index') }}">Bimbingan</a></li>
                             {{-- <li><a href="{{Route('mhs.skripsi.berkas.index')}}">Berkas</a></li> --}}
                             {{-- <li><a href="{{ Route('sidang.index') }}">Daftar Sidang</a></li> --}}
-                            <li><a href="{{ route('akademik.skripsi.mahasiswa.nilai-sidang.index') }}">Nilai <label class="badge badge-light-danger">!</label></a></li>
+                            <li><a href="{{ route('akademik.skripsi.mahasiswa.nilai-sidang.index') }}">Nilai</a></li>
                         </ul>
                     </li>
                     @if(session()->has('isYudisium') && session()->get('isYudisium') == 1)

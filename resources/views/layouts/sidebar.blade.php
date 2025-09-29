@@ -165,6 +165,17 @@
 
                     <li>
                         <a class="submenu-title" href="#">
+                            <span>Skripsi</span>
+                        </a>
+                        <ul class="nav-sub-childmenu submenu-content">
+                            <li><a href="{{ Route('mhs.pengajuan.index') }}">Pengajuan Skripsi </a></li>
+                            <li><a href="{{Route('mhs.skripsi.bimbingan.index')}}">Bimbingan Skripsi </a></li>
+                            <li><a href="{{ Route('sidang.index') }}">Jadwal Sidang </a></li>
+                            {{-- <li><a href="#">Nilai <label class="badge badge-light-danger">!</label></a></li> --}}
+                        </ul>
+                    </li>
+                    <li>
+                        <a class="submenu-title" href="#">
                             <span>Yuidisium</span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
@@ -197,17 +208,6 @@
                             <li><a href="{{URL::to('admin/akademik/transkrip-ijazah/print-transkrip')}}">Print Transkrip</a></li>
                             {{-- <li><a href="#">Legalisir <label class="badge badge-light-danger">!</label></a></li> --}}
 
-                        </ul>
-                    </li>
-                    <li>
-                        <a class="submenu-title" href="#">
-                            <span>Skripsi</span>
-                        </a>
-                        <ul class="nav-sub-childmenu submenu-content">
-                            <li><a href="{{ URL::to('admin/akademik/skripsi/pengajuan') }}">Pengajuan</a></li>
-                            {{-- <li><a href="{{ route('akademik.skripsi.dosen.bimbingan.index') }}">Dosen Bimbingan</a></li> --}}
-                            <li><a href="{{ Route('sidang.index') }}">Jadwal Sidang</a></li>
-                            <li><a href="{{ URL::to('admin/skripsi/pembimbing') }}">Pembimbing</a></li>
                         </ul>
                     </li>
                      {{-- <li><a href="#">Evaluasi Studi <label class="badge badge-light-danger">!</label></a></li>

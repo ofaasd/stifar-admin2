@@ -250,7 +250,7 @@
                     </div>
 
                     <div class="text-end mt-4">
-                        <button class="btn btn-success btn-lg" onclick="nextStep(2)" {{ $syarat < 2 ? 'disabled' : '' }}>
+                        <button class="btn btn-success btn-lg" onclick="nextStep(2)">
                             Lanjutkan <i class="bi bi-arrow-right ms-2"></i>
                         </button>
                     </div>
