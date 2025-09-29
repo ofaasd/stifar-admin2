@@ -168,10 +168,9 @@
                             <span>Skripsi</span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
-                            <li><a href="{{ Route('mhs.pengajuan.index') }}">Pengajuan Skripsi </a></li>
-                            <li><a href="{{Route('mhs.skripsi.bimbingan.index')}}">Bimbingan Skripsi </a></li>
-                            <li><a href="{{ Route('sidang.index') }}">Jadwal Sidang </a></li>
-                            {{-- <li><a href="#">Nilai <label class="badge badge-light-danger">!</label></a></li> --}}
+                            <li><a href="{{ URL::to('admin/akademik/skripsi/pengajuan') }}">Pengajuan</a></li>
+                            <li><a href="{{ Route('sidang.index') }}">Jadwal Sidang</a></li>
+                            <li><a href="{{ URL::to('admin/skripsi/pembimbing') }}">Pembimbing</a></li>
                         </ul>
                     </li>
                     <li>

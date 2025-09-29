@@ -6,7 +6,6 @@ use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use App\Models\MasterSkripsi;
 use App\Models\RefPembimbing;
-use App\Models\PegawaiBiodatum;
 use App\Http\Controllers\Controller;
 use App\Models\PengajuanJudulSkripsi;
 use Illuminate\Support\Facades\Crypt;
@@ -20,7 +19,7 @@ class AdminPengajuanSkripsiController extends Controller
     {
         $data = [
             'title' => 'Pengajuan Judul Skripsi',
-        ];
+        ];   
         return view('admin.akademik.skripsi.pengajuan.index', $data);
     }
 
