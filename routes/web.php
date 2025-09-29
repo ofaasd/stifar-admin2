@@ -506,7 +506,6 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
     Route::resource('admin/kepegawaian/jamkerja', JamkerjaController::class)->name('index', 'jamkerja');
     Route::resource('admin/kepegawaian/surat_izin', SuratIzinController::class)->name('index', 'surat_izin');
 
-
     Route::resource('admin/akademik/perwalian', PerwalianController::class)->name('index','perwalian_admin');
     Route::resource('admin/akademik/list-soal', SoalKuesionerController::class)->name('index','list-soal');
 

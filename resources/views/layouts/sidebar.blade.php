@@ -48,7 +48,7 @@
                     <li><a href="{{URL::to('admin/masterdata/user')}}">User Manajemen</a></li>
                     {{-- <li><a href="{{ route('ruang/')}}">Ruang</a></li> --}}
                     {{-- <li><a href="{{URL::to('admin/masterdata/sesi')}}">Sesi</a></li> --}}
-                    <li><a href="{{URL::to('admin/masterdata/sekolah')}}">Sekolah</a></li>
+                    {{-- <li><a href="{{URL::to('admin/masterdata/sekolah')}}">Sekolah</a></li> --}}
                     <li><a href="{{URL::to('admin/masterdata/waktu')}}">Waktu</a></li>
                     {{-- <li><a href="{{URL::to('admin/masterdata/rumpun')}}">Rumpun</a></li> --}}
                     {{-- <li><a href="{{URL::to('admin/masterdata/fakultas')}}">Fakultas</a></li> --}}

@@ -156,7 +156,7 @@ class PresenceController extends Controller
 
         $interval = DateInterval::createFromDateString('1 day');
         $period = new DatePeriod($begin, $interval, $end);
-        $user = User::all();
+        $user = User::role('pegawai')->get();
         $total_on = [];
         $total_late = [];
         $total_not = [];
