@@ -185,7 +185,8 @@
                                                                 @foreach ($item->berkas as $berkas)
                                                                     <a href="{{ asset('storage/' . $berkas->file) }}"
                                                                         target="_blank"
-                                                                        class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                                                        class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                                                                        @if(Str::endsWith(strtolower($berkas->file), '.pdf')) rel="noopener noreferrer" @endif>
                                                                         {{ basename($berkas->file) }}
                                                                         <span class="badge bg-primary rounded-pill">Unduh</span>
                                                                     </a>

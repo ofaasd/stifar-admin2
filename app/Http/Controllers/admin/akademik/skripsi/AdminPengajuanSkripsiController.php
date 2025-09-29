@@ -40,7 +40,6 @@ class AdminPengajuanSkripsiController extends Controller
             ])
             ->leftJoin('master_skripsi', 'pengajuan_judul_skripsi.id_master', '=', 'master_skripsi.id')
             ->leftJoin('mahasiswa', 'master_skripsi.nim', '=', 'mahasiswa.nim')
-            ->where('master_skripsi.status', 0)
             ->orderBy('master_skripsi.created_at', 'desc')
             ->get()
             ->map(function ($item) {
@@ -78,7 +77,13 @@ class AdminPengajuanSkripsiController extends Controller
                 'pembimbing1' => $first->pembimbing1,
                 'pembimbing2' => $first->pembimbing2,
                 'status' => $first->status,
-                'actions' => '<a href="' . route('show-skripsi', ['idMasterSkripsi' => $first->idMasterEnkripsi]) . '" class="btn btn-primary btn-sm text-light">Detail</a>',
+                'actions' => ($first->status == 0)
+                    ? '<a href="' . route('show-skripsi', ['idMasterSkripsi' => $first->idMasterEnkripsi]) . '" class="btn btn-primary btn-sm text-light">Detail</a>'
+                    : ($first->status == 1 ? '<span class="badge bg-success">ACC</span>'
+                        : ($first->status == 2 ? '<span class="badge bg-warning text-dark">Revisi</span>'
+                        : ($first->status == 3 ? '<span class="badge bg-danger">Ditolak</span>'
+                        : ($first->status == 4 ? '<span class="badge bg-info text-dark">Pergantian Judul</span>'
+                        : '<span class="badge bg-secondary">Tidak Diketahui</span>')))),
             ];
         }
 
