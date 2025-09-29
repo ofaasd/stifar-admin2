@@ -142,6 +142,7 @@ use App\Http\Controllers\admin\kepegawaian\PegawaiJabatanStrukturalController;
 use App\Http\Controllers\admin\akademik\yudisium\ArsipProsesYudisiumController;
 use App\Http\Controllers\mahasiswa\skripsi\SidangController as SidangMahasiswa;
 use App\Http\Controllers\admin\akademik\skripsi\AdminPengajuanSkripsiController;
+use App\Http\Controllers\admin\akademik\transkripIjazah\PrintTranskripController;
 use App\Http\Controllers\admin\akademik\wisuda\AdminDaftarPendaftarWisudaController;
 use App\Http\Controllers\admin\admisi\StatistikController as AdmisiStatistikController;
 
@@ -398,6 +399,9 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
         Route::prefix('/transkrip-ijazah')->group(function () {
             // Print ijazah
             Route::resource('/print-ijazah', PrintIjazahController::class)->name('index','print-ijazah');
+
+            // Print ijazah
+            Route::resource('/print-transkrip', PrintTranskripController::class)->name('index','print-transkrip');
         });
 
         // Yudisium
@@ -740,6 +744,14 @@ Route::group(['middleware' => ['auth', 'role:pegawai|super-admin']], function ()
             Route::prefix('dosen')->name('dosen.')->group(function () {
 
                 Route::prefix('bimbingan')->name('bimbingan.')->group(function () {
+                    Route::get('/', [DosenBimbinganController::class, 'index'])->name('index');
+                    Route::get('/get-data', [DosenBimbinganController::class, 'getData'])->name('get-data');
+                    Route::get('/show/{id}', [DosenBimbinganController::class, 'show'])->name('show');
+                    Route::put('/update/{id}', [DosenBimbinganController::class, 'update'])->name('update');
+                    Route::put('/update-status/{id}', [DosenBimbinganController::class, 'updateStatus'])->name('update-status');
+                });
+
+                Route::prefix('penguji')->name('penguji.')->group(function () {
                     Route::get('/', [DosenBimbinganController::class, 'index'])->name('index');
                     Route::get('/get-data', [DosenBimbinganController::class, 'getData'])->name('get-data');
                     Route::get('/show/{id}', [DosenBimbinganController::class, 'show'])->name('show');

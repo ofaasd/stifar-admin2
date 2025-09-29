@@ -194,8 +194,8 @@
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
                             <li><a href="{{URL::to('admin/akademik/transkrip-ijazah/print-ijazah')}}">Print Ijazah </a></li>
-                            <li><a href="#">Print Transkrip <label class="badge badge-light-danger">!</label></a></li>
-                            <li><a href="#">Legalisir <label class="badge badge-light-danger">!</label></a></li>
+                            <li><a href="{{URL::to('admin/akademik/transkrip-ijazah/print-transkrip')}}">Print Transkrip</a></li>
+                            {{-- <li><a href="#">Legalisir <label class="badge badge-light-danger">!</label></a></li> --}}
 
                         </ul>
                     </li>

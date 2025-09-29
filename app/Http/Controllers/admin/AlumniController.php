@@ -150,7 +150,9 @@ class AlumniController extends Controller
         ->get()
         ->map(function ($item) use ($daftarWisudawan, $gelombangWisuda) {
             $item->nimEnkripsi = Crypt::encryptString($item->nim . "stifar");
-            $tanggalPelaksanaan = $gelombangWisuda->where('id', $daftarWisudawan->where('nim', $item->nim)->where('status', 1)->first()->id_gelombang_wisuda)->first()->waktu_pelaksanaan ?? null;
+            $wisudawan = $daftarWisudawan->where('nim', $item->nim)->where('status', 1)->first();
+            $idGelombangWisuda = $wisudawan ? $wisudawan->id_gelombang_wisuda : null;
+            $tanggalPelaksanaan = $idGelombangWisuda ? ($gelombangWisuda->where('id', $idGelombangWisuda)->first()->waktu_pelaksanaan ?? null) : null;
             $item->tanggalDiberikan = $tanggalPelaksanaan ? \Carbon\Carbon::parse($tanggalPelaksanaan)->format('Y-m-d') : '-';
             return $item;
         });
