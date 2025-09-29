@@ -94,21 +94,25 @@
                                 <div class="col-md-6 mb-2">
                                     <select class="form-select" id="pembimbing1" name="pembimbing1">
                                         <option selected disabled>Pilih Pembimbing 1</option>
-                                        @foreach ($dosen as $row)
+                                        @forelse ($dosen as $row)
                                             <option value="{{ $row->npp }}">
                                                 {{ $row->nama }} (NPP: {{ $row->npp }}) &mdash; Kuota: {{ $row->kuota }}
                                             </option>
-                                        @endforeach
+                                        @empty
+                                            <option disabled>Tidak ada pembimbing tersedia</option>
+                                        @endforelse
                                     </select>
                                 </div>
                                 <div class="col-md-6 mb-2">
                                     <select class="form-select" id="pembimbing2" name="pembimbing2">
                                         <option selected disabled>Pilih Pembimbing 2</option>
-                                        @foreach ($dosen as $row)
+                                        @forelse ($dosen as $row)
                                             <option value="{{ $row->npp }}">
                                                 {{ $row->nama }} (NPP: {{ $row->npp }}) &mdash; Kuota: {{ $row->kuota }}
                                             </option>
-                                        @endforeach
+                                        @empty
+                                            <option disabled>Tidak ada pembimbing tersedia</option>
+                                        @endforelse
                                     </select>
                                 </div>
                             </div>
