@@ -37,6 +37,7 @@
           <button type="button" class="btn btn-success btn-xs cetak-ijazah-record" title="Cetak Ijazah" data-bs-toggle="modal" data-bs-target="#cetakIjazahModal" data-nama="{{ $row['nama'] }}" data-nim="{{ $row['nimEnkripsi'] }}" data-tanggal="{{ $row['tanggalDiberikan'] }}">
             <i class="fa fa-print"></i>
           </button>
+          <button class="btn btn-sm btn-icon cetak-transkrip-record text-info" title="Cetak Transkrip Nilai" data-nim="{{ $row['nimEnkripsi'] }}" data-nama="{{ $row['nama'] }}" data-bs-toggle="modal" data-original-title="Cetak Transkrip" data-bs-target="#cetakTranskripModal"><i class="fa fa-file-text"></i></button>
       </td>
     </tr>
   @endforeach
@@ -54,3 +55,4 @@
   });
 </script>
 @include('admin.akademik.transkrip-ijazah.modal.modal-ijazah')
+@include('admin.akademik.transkrip-ijazah.modal.modal-transkrip-nilai')

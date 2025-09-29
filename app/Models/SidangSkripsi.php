@@ -8,13 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class SidangSkripsi extends Model
 {
     use HasFactory;
-     protected $table = 'sidang';
+    protected $table = 'sidang';
 
-    protected $fillable = [
-        'skripsi_id', 'gelombang_id', 'tanggal', 'waktu_mulai',
-        'waktu_selesai', 'ruangan', 'status',
-        'created_at', 'updated_at'
-    ];
+    protected $guarded = ['id'];
 
     public function skripsi()
     {

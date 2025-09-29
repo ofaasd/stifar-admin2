@@ -217,6 +217,8 @@
             });
 
             $(document).on('click', '#btn-submit', function () {
+                const $btn = $(this);
+                $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Loading...');
                 swal({
                     title: 'Apakah anda yakin?',
                     text: "Data tidak dapat dikembalikan!",
@@ -231,60 +233,55 @@
                     },
                     buttonsStyling: false
                 }).then(function (result) {
-                if (result) {
-                    dataNim = {
-                        'nim': dataMhs,
-                        '_token': '{{ csrf_token() }}'
-                    }
+                    if (result) {
+                        dataNim = {
+                            'nim': dataMhs,
+                            '_token': '{{ csrf_token() }}'
+                        }
 
-                    // acc the data
-                    $.ajax({
-                    type: 'POST',
-                    url: ''.concat(baseUrl).concat(page),
-                    data: dataNim,
-                    success: function success(response) {
-                        dt.draw();
-                        swal({
-                            title: 'Success!',
-                            text: response.message,
-                            icon: 'success',
-                            customClass: {
-                                confirmButton: 'btn btn-success'
+                        $.ajax({
+                            type: 'POST',
+                            url: ''.concat(baseUrl).concat(page),
+                            data: dataNim,
+                            success: function success(response) {
+                                dt.draw();
+                                swal({
+                                    title: 'Success!',
+                                    text: response.message,
+                                    icon: 'success',
+                                    customClass: {
+                                        confirmButton: 'btn btn-success'
+                                    }
+                                });
+                                $btn.prop('disabled', false).html('Pindahkan ke alumni');
+                            },
+                            error: function error(xhr) {
+                                console.log('====================================');
+                                console.log(xhr);
+                                console.log('====================================');
+                                const message = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'An error occurred while processing your request.';
+                                swal({
+                                    title: 'Failed!',
+                                    text: message,
+                                    icon: 'error',
+                                    customClass: {
+                                        confirmButton: 'btn btn-success'
+                                    }
+                                });
+                                $btn.prop('disabled', false).html('Pindahkan ke alumni');
                             }
                         });
-                    },
-                    error: function error(xhr) {
-                        const message = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'An error occurred while processing your request.';
+                    } else {
                         swal({
-                            title: 'Failed!',
-                            text: message,
+                            title: 'Cancelled',
+                            text: 'The record is not accepted!',
                             icon: 'error',
                             customClass: {
                                 confirmButton: 'btn btn-success'
                             }
                         });
+                        $btn.prop('disabled', false).html('Pindahkan ke alumni');
                     }
-                    });
-
-                    // success sweetalert
-                    swal({
-                        icon: 'success',
-                        title: 'Accepted!',
-                        text: 'The Record has been accepted!',
-                        customClass: {
-                            confirmButton: 'btn btn-success'
-                        }
-                    });
-                } else {
-                    swal({
-                        title: 'Cancelled',
-                        text: 'The record is not accepted!',
-                        icon: 'error',
-                        customClass: {
-                            confirmButton: 'btn btn-success'
-                        }
-                    });
-                }
                 });
             });
 

@@ -11,10 +11,7 @@ class PengujiSkripsi extends Model
 
     protected $table = 'penguji';
 
-    protected $fillable = [
-        'sidang_id', 'nip', 'peran',
-        'created_at', 'updated_at'
-    ];
+    protected $guarded = ['id'];
 
     public function sidang()
     {

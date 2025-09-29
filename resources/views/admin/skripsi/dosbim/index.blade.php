@@ -54,8 +54,8 @@
                     <div class="modal-body">
                         <form class="row g-3 needs-validation custom-input" id="formDosbim">
                             <div class="col-md-12 position-relative">
-                                <label class="form-label" for="nip">Pilih Dosen</label>
-                                <input class="form-control" name="nip" id="nip" placeholder="Please select">
+                                <label class="form-label" for="npp">Pilih Dosen</label>
+                                <input class="form-control" name="npp" id="npp" placeholder="Please select">
                             </div>
 
                             <div class="col-md-12 position-relative">
@@ -81,7 +81,7 @@
     <script src="{{ asset('assets/js/select2/select3-custom.js') }}"></script>
     <script>
         $(document).ready(function() {
-            var nip = $("#nip");
+            var nip = $("#npp");
             var tagify;
 
             // Fungsi untuk menginisialisasi Tagify
@@ -127,18 +127,16 @@
             });
 
             $(document).on('click', '.edit-btn', function() {
-                var nip = $(this).data('id');
-                console.log("test")
+                var npp = $(this).data('id');
                 if (tagify) {
                     tagify.destroy();
                 }
                 $.ajax({
-                    url: '{{ route('admin.pembimbing.editDosen', '') }}/' + nip,
+                    url: '{{ route('admin.pembimbing.editDosen', '') }}/' + npp,
                     method: 'GET',
                     success: function(response) {
-                        console.log(response)
-                        $('#nip').val(response.nip);
-                        $('#nip').prop('disabled', true);
+                        $('#npp').val(response.npp);
+                        $('#npp').prop('disabled', true);
                         $('#kuotaDosen').val(response.kuota);
                         $('#FormModal').modal('show');
                     },
@@ -193,7 +191,7 @@
                     var nipTagify = tagify.value; // Ambil nilai dari Tagify
                     nip = nipTagify[0].value.split(' - ')[0]; // Ekstrak NIP dari Tagify
                 } else {
-                    nip = $('#nip').val(); // Fallback ke nilai input biasa jika Tagify kosong
+                    nip = $('#npp').val(); // Fallback ke nilai input biasa jika Tagify kosong
                 }
 
                 // Siapkan data untuk dikirim

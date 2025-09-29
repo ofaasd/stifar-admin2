@@ -21,33 +21,32 @@
 @endsection
 
 @section('content')
-    <div class="container-fluid">
-        <div class="row">
-            <div class="card">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="display" id="pembimbing-table">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Nim</th>
-                                    <th>Nama</th>
-                                    <th>Judul</th>
-                                    <th>Abstrak</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="display" id="pembimbing-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Nim</th>
+                                <th>Nama</th>
+                                <th>Judul</th>
+                                <th>Abstrak</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
                 </div>
             </div>
+        </div>
 
-        </div>
-        </div>
-    
-      @endsection
+    </div>
+</div>
+@endsection
 
 @section('script')
     <script src="{{ asset('assets/js/datatable/datatables/jquery.dataTables.min.js') }}"></script>

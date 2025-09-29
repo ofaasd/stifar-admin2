@@ -109,7 +109,7 @@
         </div>
         <!-- footer start-->
         @include('layouts.footer')
-
+        
       </div>
     </div>
     <!-- latest jquery-->
@@ -132,6 +132,7 @@
         myModal.show();
       });
     </script>
+    @include('layouts.flash-message')
 
   </body>
 </html>

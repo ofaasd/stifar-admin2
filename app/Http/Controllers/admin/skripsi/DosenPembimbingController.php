@@ -50,7 +50,7 @@ class DosenPembimbingController extends Controller
         return \DataTables::of($data)
             ->addIndexColumn() // Menambahkan kolom DT_RowIndex
             ->addColumn('button', function ($row) {
-                return '<button class="btn btn-warning btn-sm edit-btn text-light" data-id="' . $row->nip . '">Acc</button>';
+                return '<button class="btn btn-warning btn-sm edit-btn text-light" data-id="' . $row->npp . '">Acc</button>';
             })
             ->rawColumns(['button'])
             ->make(true);
@@ -59,7 +59,6 @@ class DosenPembimbingController extends Controller
     public function getNppDosen()
     {
         $data = PegawaiBiodatum::select('npp', 'nama_lengkap')->get();
-        // dd($data);
         return response()->json($data);
     }
 
@@ -74,7 +73,7 @@ class DosenPembimbingController extends Controller
         try {
             // Menggunakan updateOrCreate untuk menyederhanakan logika penyimpanan
             RefPembimbing::updateOrCreate(
-                ['nip' => $request->input('nip')],
+                ['nip' => $request->input('npp')],
                 ['sisa_kuota' => $request->input('sisa_kuota')]
             );
 
@@ -82,7 +81,7 @@ class DosenPembimbingController extends Controller
         } catch (\Exception $e) {
             // Log jika terjadi kesalahan
             Log::error('Terjadi kesalahan saat Menambahkan Dosen Pembimbing.', [
-                'nip' => $request->input('nip'),
+                'nip' => $request->input('npp'),
                 'error' => $e->getMessage()
             ]);
 
@@ -90,16 +89,16 @@ class DosenPembimbingController extends Controller
         }
     }
 
-    public function edit($nip)
+    public function edit($npp)
     {
         // Ambil data dosen pembimbing berdasarkan nip
-        $dosen = RefPembimbing::where('nip', $nip)
+        $dosen = RefPembimbing::where('nip', $npp)
             ->join('pegawai_biodata AS pegawai','pegawai.npp', '=', 'ref_pembimbing_skripsi.nip')
-            ->select('pegawai.nama_lengkap','nip','kuota')
+            ->select('pegawai.nama_lengkap','pegawai.npp','kuota')
             ->firstOrFail();
     if($dosen){
         return response()->json([
-            'nip' => $dosen->nip . ' - ' . $dosen->nama_lengkap,
+            'npp' => $dosen->npp . ' - ' . $dosen->nama_lengkap,
             'kuota' => $dosen->kuota
         ]);
     }else{

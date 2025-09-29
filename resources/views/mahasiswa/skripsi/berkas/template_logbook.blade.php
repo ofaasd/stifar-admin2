@@ -74,9 +74,12 @@
             <td>Nama</td>
             <td>:</td>
             <td>{{ $mhs->nama }}</td>
-            <td style="padding-left: 80px;">Tahun Ajaran</td>
+            {{-- <td style="padding-left: 80px;">Tahun Ajaran</td>
             <td>:</td>
-            <td>{{ $tahun_ajar }}</td>
+            <td>{{ $tahunAjar }}</td> --}}
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
             <td>NIM</td>
@@ -84,15 +87,15 @@
             <td>{{ $mhs->nim }}</td>
             <td style="padding-left: 80px;">Pembimbing 1</td>
             <td>:</td>
-            <td>{{ $dosbim->nama_pembimbing_1 ?? '-' }}</td>
+            <td>{{ $masterSkripsi->namaPembimbing1 ?? '-' }}</td>
         </tr>
         <tr>
             <td>Jurusan/Prodi</td>
             <td>:</td>
-            <td>{{ $mhs->nama_prodi }}</td>
+            <td>{{ $mhs->namaProdi }}</td>
             <td style="padding-left: 80px;">Pembimbing 2</td>
             <td>:</td>
-            <td>{{ $dosbim->nama_pembimbing_2 ?? '-'}}</td>
+            <td>{{ $masterSkripsi->namaPembimbing2 ?? '-'}}</td>
         </tr>
     </table>
     <br>
@@ -102,35 +105,49 @@
                 <thead >
                     <tr>
                         <th>No.</th>
-                        <th>Kategori</th>
-                        <th>Keterangan</th>
-                        <th>Komentar Pembimbing</th>
-                        <th>Tanggal Pengajuan</th>
+                        <th>Tanggal</th>
+                        <th>Topik</th>
                         <th>Status</th>
+                        <th>Catatan Mahasiswa</th>
+                        <th>Catatan Dosen</th>
+                        <th>Metode</th>
+                        <th>Waktu Pengajuan</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($logbookBimbingan as $data)
-                    <tr>
-                        <td>{{ $no++ }}</td>
-                        <td>{{ $data->kategori }}</td>
-                        <td>{{ $data->keterangan }}</td>
-                        <td>{{ $data->komentar }}</td>
-                        <td>{{ $data->tgl_pengajuan }}</td>
-                       
-                        <td>
-                            @if($data->status == 0)
-                            <span class="badge bg-warning">Pending</span>
-                            @elseif($data->status == 1)
-                            <span class="badge bg-success">Approved</span>
-                            @else
-                            <span class="badge bg-danger">Rejected</span>
-                            @endif
-                        </td>
-                    </tr>
-                    @endforeach
+                    @forelse($logBook as $row)
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ \Carbon\Carbon::parse($row->tanggal_waktu)->format('d/m/Y') }}</td>
+                            <td>{{ $row->topik }}</td>
+                            <td>
+                                @if($row->status == 0)
+                                    <span class="badge bg-warning">Menunggu</span>
+                                @elseif($row->status == 1)
+                                    <span class="badge bg-success">ACC</span>
+                                @elseif($row->status == 2)
+                                    <span class="badge bg-primary">Setuju</span>
+                                @elseif($row->status == 3)
+                                    <span class="badge bg-info">Revisi</span>
+                                @else
+                                    <span class="badge bg-secondary">Unknown</span>
+                                @endif
+                            </td>
+                            <td>{{ $row->catatan_mahasiswa }}</td>
+                            <td>{{ $row->catatan_dosen }}</td>
+                            <td>{{ $row->metode }}</td>
+                            <td>{{ \Carbon\Carbon::parse($row->created_at)->format('d/m/Y H:i:s') }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="8" style="text-align: center;">Data logbook tidak tersedia.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
+            <p style="text-align: right; font-size: 12px; color: #555; margin-top: 10px;">
+                Dicetak: {{ \Carbon\Carbon::now()->format('d/m/Y H:i:s') }}
+            </p>
         </div>
     </div>
     

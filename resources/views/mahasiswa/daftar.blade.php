@@ -111,16 +111,10 @@
                 method: "GET",
                 data: { id: id },
                 success: function(data) {
-                    console.log('====================================');
-                    console.log(data);
-                    console.log('====================================');
                     $(".tbl-mhs").html(data);
                 },
                 error: function(xhr, status, error) {
-                    // console.log("Terjadi kesalahan:");
-                    // console.log("Status:", status);
-                    // console.log("Error:", error);
-                    // console.log("Response Text:", xhr.responseText);
+                    console.log("Response Text:", xhr);
                 }
             });
         }

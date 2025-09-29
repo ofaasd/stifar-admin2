@@ -44,6 +44,15 @@
                              Input Nilai
                         </a>
                     </li>
+                    <li>
+                        <a class="submenu-title" href="#">
+                            <span>Skripsi</span>
+                        </a>
+                        <ul class="nav-sub-childmenu submenu-content">
+                            <li><a href="{{ route('akademik.skripsi.dosen.bimbingan.index') }}">Bimbingan</a></li>
+                            <li><a href="{{ route('akademik.skripsi.dosen.penguji.index') }}">Penguji</a></li>
+                        </ul>
+                    </li>
                 </ul>
             </li>
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{URL::to('dosen/berkas')}}" >
@@ -52,7 +61,7 @@
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{URL::to('riwayat')}}" >
                 <span><i class="fa fa-users"></i> Riwayat Pegawai</span></a>
             </li>
-            <li class="sidebar-list"><a class="sidebar-link sidebar-title" >
+            {{-- <li class="sidebar-list"><a class="sidebar-link sidebar-title" >
                 <span><i class="fa fa-book"></i> Bimbingan</span></a>
                 <ul class="sidebar-submenu">
                     <li>
@@ -66,7 +75,7 @@
                         </a>
                     </li>
                 </ul>
-            </li>
+            </li> --}}
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{route('Perwalian')}}" >
                 <span><i class="fa fa-bookmark"></i> Perwalian</span></a>
             </li>
@@ -74,9 +83,9 @@
             {{-- <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
                 <span><i class="fa fa-bookmark"></i> Kuesioner Kepuasan Dosen</span></a> <label class="badge badge-light-danger">!</label>
             </li> --}}
-            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{URL::to('dsn/skripsi/pengajuan')}}" >
-                <span><i class="fa fa-users"></i> Pengajuan Mahasiswa</span></a>
-            </li>
+            {{-- <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{URL::to('dsn/skripsi/pengajuan')}}" >
+                <span><i class="fa fa-users"></i>  </span></a>
+            </li> --}}
           </ul>
         </div>
         <div class="right-arrow" id="right-arrow"><i data-feather="arrow-right"></i></div>
