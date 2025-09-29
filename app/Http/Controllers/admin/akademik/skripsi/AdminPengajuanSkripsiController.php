@@ -173,11 +173,9 @@ class AdminPengajuanSkripsiController extends Controller
             if ($pembimbing1 || $pembimbing2) {
                 if ($pembimbing1) {
                     $masterSkripsi->pembimbing_1 = $pembimbing1;
-                    RefPembimbing::where('nip', $pembimbing1)->decrement('kuota');
                 }
                 if ($pembimbing2) {
                     $masterSkripsi->pembimbing_2 = $pembimbing2;
-                    RefPembimbing::where('nip', $pembimbing1)->decrement('kuota');
                 }
                 $masterSkripsi->save();
             }
