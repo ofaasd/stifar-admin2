@@ -91,11 +91,11 @@ class AbsensiController extends Controller
             $type_mhs[$row->id] = 0;
 
             if(!empty($model_absen->tanggal_absen)){
-                if($model_absen->tanggal_absen > $row->tgl_expired){
-                    $keterangan[$row->id] = "<div class='btn btn-danger btn-sm'>Terlambat</div>";
-                }else{
-                    $keterangan[$row->id] = "<div class='btn btn-success btn-sm'>Tepat Waktu</div>";
-                }
+                    if($model_absen->tanggal_absen > $row->tgl_expired){
+                        $keterangan[$row->id] = "<div class='btn btn-danger btn-sm'>Terlambat</div>";
+                    }else{
+                        $keterangan[$row->id] = "<div class='btn btn-success btn-sm'>Tepat Waktu</div>";
+                    }
             }
             $type_mhs[$row->id] = $model_absen->type ?? '';
         }

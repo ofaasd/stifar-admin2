@@ -72,6 +72,7 @@
                     <th>Tanggal SK </th>
                     <th>TMT SK</th>
                     <th>Status</th>
+                    <th>File</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -84,6 +85,13 @@
                     <td>{{date('d-m-Y',strtotime($row->tgl_sk_fungsional))}}</td>
                     <td>{{date('d-m-Y',strtotime($row->tmt_sk_fungsional))}}</td>
                     <td>{!!($row->status == 1)?"<span class='btn btn-success btn-sm'>Aktif</span>":"<span class='btn btn-danger btn-sm'>Tidak Aktif</span>"!!}</td>
+                    <td>
+                        @if(!empty($row->dokumen))
+                        <a href="/assets/file/fungsional/{{$row->dokumen}}" target="_blank" class="btn btn-info" style="margin-top:20px">Lihat File</a>
+                        @else
+                        <span class="btn btn-secondary">Tidak ada file</span>
+                        @endif
+                    </td>
                     <td>
                         <a href="#" title="Edit" class="edit-record-fungsional" data-id="{{$row['id']}}" data-bs-toggle="modal" data-original-title="test" data-bs-target="#modalFungsional"><i class="fa fa-pencil"></i></a>
                         <button class="btn btn-sm btn-icon delete-record-fungsional text-danger" data-id="{{$row->id}}"><i class="fa fa-trash"></i></button>

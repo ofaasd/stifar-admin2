@@ -16,14 +16,14 @@ class WorkingHourController extends Controller
     {
         //
         $title = "Working Hour Management";
-        $user = User::all();
+        $user = User::role('pegawai')->get();
         $array_day = [1=>"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
         return view('admin.presence.working.index',compact('title','user','array_day'));
     }
     public function get_table(){
 
         $no = 0;
-        $working = User::all();
+        $working = User::role('pegawai')->get();
         return view('admin.presence.working.table',compact('no','working'));
     }
 

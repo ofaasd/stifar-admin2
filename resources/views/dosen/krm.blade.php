@@ -26,7 +26,7 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="{{ url('/dosen/download-krm') }}" class="btn btn-info btn-sm"><i class="fa fa-download"></i> Unduh KRM</a>
+                        <a href="{{ url('/dosen/download-krm') }}" class="btn btn-info btn-sm" target="_blank"><i class="fa fa-download"></i> Unduh KRM</a>
                         <!-- Button trigger modal -->
                         <div class="table-responsive mt-2">
                             <table class="display" id="myTable">

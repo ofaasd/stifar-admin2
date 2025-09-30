@@ -186,7 +186,8 @@ class KrmController extends Controller
             }
             $kunci = 1;
         }
-        $waktu_selesai = date("H:i:s", strtotime($jadwal->waktu_selesai));
+        //$waktu_selesai = date("H:i:s", strtotime($jadwal->waktu_selesai));
+        $waktu_selesai = date("H:i:s", strtotime('+5 minutes'));
         $tanggal_expired = $q_pertemuan->tgl_pertemuan . " " . $waktu_selesai;
         if($kunci == 1){
             $pertemuan->update(['buka_kehadiran'=>$kunci,'tgl_expired'=>$tanggal_expired]);
@@ -740,5 +741,31 @@ class KrmController extends Controller
                     ->setPaper('a4', 'landscape');
         }
     	return $pdf->stream('absensi-' . $jadwal->kode_jadwal . '.pdf');
+    }
+    public function cetak_krm(){
+        $title = "Kartu Rencana Mengajar";
+        $id_tahun = TahunAjaran::where('status','Aktif')->first()->id;
+        $id_dsn = PegawaiBiodatum::where('user_id', Auth::id())->first();
+        $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul', 'mata_kuliahs.rps')
+                        ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
+                        ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
+                        ->leftJoin('mata_kuliahs', 'mata_kuliahs.id', '=', 'jadwals.id_mk')
+                        ->leftJoin('pengajars', 'pengajars.id_jadwal', '=', 'jadwals.id')
+                        ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
+                        ->where([ 'pengajars.id_dsn' => $id_dsn->id, 'jadwals.status' => 'Aktif', 'jadwals.id_tahun' => $id_tahun])->get();
+        $no = 1;
+        $jumlah_input_krs = [];
+        foreach($jadwal as $row){
+            $jumlah_input_krs[$row->id] = Krs::where('id_jadwal',$row->id)->count();
+        }
+        $data = [
+            'logo' => public_path('/assets/images/logo/logo-icon.png'),
+            'jadwal' => $jadwal,
+            'no' => $no,
+            'jumlah_input_krs' => $jumlah_input_krs,
+        ];
+        $pdf = PDF::loadView('admin/akademik/jadwal/cetak_krm', $data)
+                    ->setPaper('a4', 'potrait');
+        return $pdf->stream('KRM-' . $id_dsn . '-' . date('YmdHis'). '.pdf');
     }
 }

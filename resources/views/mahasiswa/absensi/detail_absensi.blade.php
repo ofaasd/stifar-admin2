@@ -56,6 +56,7 @@
                                         <th>Pengampu</th>
                                         <th>Waktu Absen</th>
                                         <th>Keterangan</th>
+                                        <th>Status</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -67,6 +68,15 @@
                                             <td>{{ $row['nama_lengkap'] }}</td>
                                             <td>{{ $tanggal_absen[$row->id] }}</td>
                                             <td>{!! $keterangan[$row->id] !!}</td>
+                                            <td>
+                                                @if($type_mhs[$row->id] == 0)
+                                                        <a href="#" class="btn btn-secondary btn-sm disabled" >{{$status_kehadiran[$type_mhs[$row->id]]}}</a>
+                                                @elseif($type_mhs[$row->id] == 1)
+                                                    <a href="#" class="btn btn-success btn-sm disabled" >{{$status_kehadiran[$type_mhs[$row->id]]}}</a>
+                                                @else
+                                                    <a href="#" class="btn btn-warning btn-sm disabled" >{{$status_kehadiran[$type_mhs[$row->id]]  ?? ''}}</a>
+                                                @endif
+                                            </td>
                                             <td>
                                                 @if($row->tgl_pertemuan == date('Y-m-d') && $row->buka_kehadiran == 1)
                                                     @if(empty($tanggal_absen[$row->id]))
@@ -82,7 +92,7 @@
                                                     @elseif($type_mhs[$row->id] == 1)
                                                         <a href="#" class="btn btn-success btn-sm disabled" >{{$status_kehadiran[$type_mhs[$row->id]]}}</a>
                                                     @else
-                                                        <a href="#" class="btn btn-warning btn-sm disabled" >{{$status_kehadiran[$type_mhs[$row->id]]}}</a>
+                                                        <a href="#" class="btn btn-warning btn-sm disabled" >Absensi Blm Dibuka</a>
                                                     @endif
 
                                                 @endif
@@ -94,6 +104,7 @@
                                                     <option value="3" {{ $row['type'] == 3? 'selected=""':''}}>Izin</option>
                                                 </select> --}}
                                             </td>
+                                            
                                         </tr>
                                     @endforeach
                                 </tbody>
