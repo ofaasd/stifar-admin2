@@ -126,8 +126,8 @@
             <tr>
                 <td colspan=10>
                     <table>
-                        <tr><td>IP Semester</td><td>: {{number_format($total_kualitas / ($t+$p),2,',','')}}</td></tr>
-                        <tr><td>IPK Sementara</td><td>: {{number_format($total_kualitas / ($t+$p),2,',','')}}</td></tr>
+                        <tr><td>IP Semester</td><td>: {{ ($t+$p) > 0 ? number_format($total_kualitas / ($t+$p),2,',','') : '0.00' }}</td></tr>
+                        <tr><td>IPK Sementara</td><td>: {{ ($t+$p) > 0 ? number_format($total_kualitas / ($t+$p),2,',','') : '0.00' }}</td></tr>
                     </table>
                 </td>
             </tr>
