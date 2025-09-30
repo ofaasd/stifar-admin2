@@ -62,11 +62,7 @@ class NilaiSidangController extends Controller
             ->orderBy('sidang.created_at', 'desc')
             ->get()
             ->map(function($item) {
-                if (!empty($item->id)) {
-                    $item->idEnkripsi = Crypt::encryptString($item->id . "stifar");
-                } else {
-                    $item->idEnkripsi = null;
-                }
+                $item->idEnkripsi = Crypt::encryptString($item->id . "stifar");
 
                 if (!empty($item->tanggal)) {
                     $item->tanggal = \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d/m/Y');
@@ -89,13 +85,13 @@ class NilaiSidangController extends Controller
             });
 
             $data = [
-                'title' => 'Nilai Sidang Skripsi ' . (!empty($mahasiswa) && !empty($mahasiswa->nama) ? $mahasiswa->nama : ''),
+                'title' => 'Nilai Sidang Skripsi' . $mahasiswa->nama ?? '',
                 'sidang' => $sidang,
             ];
         
             return view('mahasiswa.skripsi.nilai.index', $data);
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kesalahan: Data tidak ditemukan. Pastikan sudah Sidang dan nilai sudah divalidasi' );
         }
     }
 

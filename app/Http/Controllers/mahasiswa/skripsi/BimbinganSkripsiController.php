@@ -73,13 +73,28 @@ class BimbinganSkripsiController extends Controller
             return $item;
         });
 
-        $masterSkripsi = MasterSkripsi::find($idMaster);
+        $masterSkripsi = MasterSkripsi::where('master_skripsi.id', $idMaster)
+        ->leftJoin('pegawai_biodata AS pegawai1', 'pegawai1.npp', '=', 'master_skripsi.pembimbing_1')
+        ->leftJoin('pegawai_biodata AS pegawai2', 'pegawai2.npp', '=', 'master_skripsi.pembimbing_2')
+        ->select(
+            'master_skripsi.*',
+            'pegawai1.nama_lengkap as nama_pembimbing1',
+            'pegawai1.npp as npp_pembimbing1',
+            'pegawai1.email1 as email_pembimbing1',
+            'pegawai2.nama_lengkap as nama_pembimbing2',
+            'pegawai2.npp as npp_pembimbing2',
+            'pegawai2.email1 as email_pembimbing2'
+        )
+        ->latest()
+        ->first();
 
         // Enkripsi NIM jika masterSkripsi ditemukan
         if ($masterSkripsi && isset($masterSkripsi->nim)) {
             $masterSkripsi->nimEnkripsi = Crypt::encryptString($masterSkripsi->nim . "stifar");
         }
-        return view('mahasiswa.skripsi.bimbingan.main', compact('bimbingan', 'judulSkripsi', 'masterSkripsi'));
+
+        $title = "Bimbingan";
+        return view('mahasiswa.skripsi.bimbingan.main', compact('bimbingan', 'judulSkripsi', 'masterSkripsi', 'title'));
     }
 
     public function store(Request $request)

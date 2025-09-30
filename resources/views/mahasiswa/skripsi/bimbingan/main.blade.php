@@ -10,12 +10,12 @@
 @endsection
 
 @section('breadcrumb-title')
-    <h3>{{ 'Bimbingan Mahasiswa' }}</h3>
+    <h3>{{ $title }}</h3>
 @endsection
 
 @section('breadcrumb-items')
     <li class="breadcrumb-item">Bimbingan</li>
-    <li class="breadcrumb-item active">{{ 'Bimbingan Skripsi' }}</li>
+    <li class="breadcrumb-item active">{{ $title }}</li>
 @endsection
 
 @section('content')
@@ -31,6 +31,31 @@
     <div class="page-content" id="bimbingan-page">
         <div class="row mb-4">
             <div class="col-md-12">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Pembimbing</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-2">
+                            <div class="col-md-6">
+                                <strong>Pembimbing 1</strong>
+                                <ul class="list-unstyled mb-0">
+                                    <li>Nama: {{ $masterSkripsi->nama_pembimbing1 ?? '-' }}</li>
+                                    <li>NPP: {{ $masterSkripsi->npp_pembimbing1 ?? '-' }}</li>
+                                    <li>Email: {{ $masterSkripsi->email_pembimbing1 ?? '-' }}</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Pembimbing 2</strong>
+                                <ul class="list-unstyled mb-0">
+                                    <li>Nama: {{ $masterSkripsi->nama_pembimbing2 ?? '-' }}</li>
+                                    <li>NPP: {{ $masterSkripsi->npp_pembimbing2 ?? '-' }}</li>
+                                    <li>Email: {{ $masterSkripsi->email_pembimbing2 ?? '-' }}</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="card-title mb-0">Jadwal Bimbingan</h5>
@@ -65,7 +90,7 @@
                                     @forelse($bimbingan as $index => $item)
                                     <tr>
                                             <td>{{ $index + 1 }}</td>
-                                            <td>{{ \Carbon\Carbon::parse($item->tanggal_waktu)->format('d F Y') }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($item->tanggal_waktu)->format('d/m/Y') }}</td>
                                       
                                             <td>{{ $item->topik }}</td>
                                             <td>
