@@ -112,7 +112,7 @@
                                 @if($first->pembimbing2)
                                     {{ $first->pembimbing1 . ' & ' . $first->pembimbing2 }}
                                 @else
-                                    {{ $first->pembimbing1 }}
+                                    {{ $first->pembimbing1 ?? '-' }}
                                 @endif
                             </td>
                         </tr>
