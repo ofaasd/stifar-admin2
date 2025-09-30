@@ -395,6 +395,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
             Route::get('/get-data', [AdminPengajuanSkripsiController::class, 'getData'])->name('get-data-skripsi');
             Route::get('/show/{idMasterSkripsi?}', [AdminPengajuanSkripsiController::class, 'show'])->name('show-skripsi');
             Route::post('/store', [AdminPengajuanSkripsiController::class, 'store'])->name('store-pengajuan-skripsi');
+            Route::post('/print', [AdminPengajuanSkripsiController::class, 'print'])->name('print-pengajuan-skripsi');
         });
 
         // Transkrip ijazah
@@ -688,6 +689,7 @@ Route::group(['middleware' => ['auth', 'role:mhs|super-admin']], function () {
         // Route::post('/update-kuota', 'updateKuota')->name('updateKuota');
         Route::get('/get-data-pengajuan/{id}', 'getDataPengajuanJudul')->name('getDataPengajuanJudul');
         Route::put('/{id?}', 'update')->name('update');
+        Route::post('/print-sidang', 'printSidang')->name('print-sidang');
     });
     Route::group(['prefix' => 'mahasiswa/skripsi/berkas', 'as' => 'mhs.skripsi.berkas.', 'controller' => BerkasController::class], function () {
         Route::get('/', 'index')->name('index');

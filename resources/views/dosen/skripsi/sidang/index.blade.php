@@ -102,7 +102,6 @@
                                 <th>Waktu</th>
                                 <th>Ruangan</th>
                                 <th>Mahasiswa</th>
-                                <th>Judul</th>
                                 <th>Pembimbing</th>
                                 <th>Penguji</th>
                                 <th>Status</th>
@@ -334,7 +333,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="submit" class="btn btn-primary">Update</button>
+                <button type="submit" class="btn btn-primary" id="btn-update-gelombang">Update</button>
             </div>
         </form>
     </div>
@@ -387,8 +386,8 @@
             $('#modalEditGelombang').modal('show');
         });
 
-        $('#form-tambah-jadwal').on('submit', function(e) {
-            var $btn = $('#btn-tambah-jadwal');
+        $('#formEdit, #form-tambah-jadwal').on('submit', function(e) {
+            var $btn = $(this).find('button[type="submit"]');
             $btn.prop('disabled', true);
             $btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Please Wait...');
         });
@@ -419,7 +418,6 @@
                 { data: 'waktu', name: 'waktu' },
                 { data: 'ruangan', name: 'ruangan' },
                 { data: 'mahasiswa', name: 'mahasiswa' },
-                { data: 'judul', name: 'judul' },
                 { data: 'pembimbing', name: 'pembimbing' },
                 { data: 'penguji', name: 'penguji' },
                 { data: 'status', name: 'status' },
@@ -444,9 +442,6 @@
             dataType: 'json',
             success: function(response) {
                 const data = response.data
-                console.log('====================================');
-                console.log(data);
-                console.log('====================================');
                 const $form = $('#form-edit-jadwal');
                 $form.attr('action', '{{ route('sidang.update-jadwal', '') }}/' + id);
                 $form.find('#gelombangSidang').val(data.gelombangId);
@@ -458,7 +453,7 @@
                 // Tampilkan tombol update status jika hari ini >= data.tanggal
                 const today = new Date();
                 const tanggalSidang = new Date(data.tanggal);
-                if (today >= tanggalSidang) {
+                if (data.tanggal && today >= tanggalSidang) {
                     $('#view-update-status').show()
                     $('#btn-update-status')
                     .show()
@@ -531,9 +526,6 @@
                 }
             },
             error: function(xhr, status, error) {
-                console.log('====================================');
-                console.log(xhr);
-                console.log('====================================');
                 alert('Gagal mengambil data jadwal sidang.');
                 if (btn) {
                     $(btn).prop('disabled', false);

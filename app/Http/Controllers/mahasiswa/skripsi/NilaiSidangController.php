@@ -91,7 +91,7 @@ class NilaiSidangController extends Controller
         
             return view('mahasiswa.skripsi.nilai.index', $data);
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kesalahan: Data tidak ditemukan. Pastikan sudah Sidang dan nilai sudah divalidasi' );
         }
     }
 

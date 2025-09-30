@@ -124,12 +124,19 @@ class SidangController extends Controller
                     return $row->nim . ' - ' . $row->nama;
                 })
                 ->addColumn('pembimbing', function($row) {
-                    if ($row->namaPembimbing1 && $row->namaPembimbing2) {
-                        return $row->namaPembimbing1 . ' & ' . $row->namaPembimbing2;
-                    } elseif ($row->namaPembimbing1) {
-                        return $row->namaPembimbing1;
-                    } elseif ($row->namaPembimbing2) {
-                        return $row->namaPembimbing2;
+                    $list = '';
+                    $pembimbings = [];
+                    if ($row->namaPembimbing1) {
+                        $pembimbings[] = $row->namaPembimbing1;
+                    }
+                    if ($row->namaPembimbing2) {
+                        $pembimbings[] = $row->namaPembimbing2;
+                    }
+                    if (count($pembimbings) > 0) {
+                        foreach ($pembimbings as $i => $name) {
+                            $list .= '<strong>' . ($i + 1) . '</strong>. ' . $name . '<br>';
+                        }
+                        return $list;
                     } else {
                         return '-';
                     }
@@ -140,7 +147,11 @@ class SidangController extends Controller
                     }
                     $npps = explode(',', $row->penguji);
                     $names = PegawaiBiodatum::whereIn('npp', $npps)->pluck('nama_lengkap')->toArray();
-                    return implode(' & ', $names);
+                    $list = '';
+                    foreach ($names as $i => $name) {
+                        $list .= '<strong>'.($i + 1) . '</strong>. ' . $name . '<br>';
+                    }
+                    return $list;
                 })
                 ->addColumn('waktu', function($row) {
                     return $row->waktuMulai . ' - ' . $row->waktuSelesai;
@@ -262,7 +273,7 @@ class SidangController extends Controller
         $request->validate([
             'nama' => 'required|string',
             'id_tahun_ajaran' => 'required|exists:tahun_ajarans,id',
-            'kuota' => 'required|kuota',
+            'kuota' => 'required|integer|min:1',
             'tanggal_mulai_daftar' => 'required|date',
             'tanggal_selesai_daftar' => 'required|date',
             'tanggal_mulai_pelaksanaan' => 'required|date',

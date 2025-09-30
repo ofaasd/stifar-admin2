@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Template KRS</title>
+    <title>Template Log Book</title>
     <style>
         #customers {
             font-family: Arial, Helvetica, sans-serif;
@@ -145,47 +145,36 @@
                     @endforelse
                 </tbody>
             </table>
+
+            <hr>
+            <br>
+            <table width="100%">
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Semarang, {{ \Carbon\Carbon::now()->format('d F Y') }}</td>
+                </tr>
+                <tr>
+                    <td><center>Pembimbing 1</center></td>
+                    <td><center>Pembimbing 2</center></td>
+                    <td><center>Mahasiswa</center></td>
+                </tr>
+                <tr>
+                    <td><center><br><br><br></center></td>
+                    <td><center><br><br><br></center></td>
+                    <td><center><br><br><br></center></td>
+                </tr>
+                <tr>
+                    <td><center>{{ $masterSkripsi->namaPembimbing1 ?? '-' }}</center></td>
+                    <td><center>{{ $masterSkripsi->namaPembimbing2 ?? '-' }}</center></td>
+                    <td><center>{{ $mhs->nama }}</center></td>
+                </tr>
+            </table>
             <p style="text-align: right; font-size: 12px; color: #555; margin-top: 10px;">
                 Dicetak: {{ \Carbon\Carbon::now()->format('d/m/Y H:i:s') }}
             </p>
         </div>
     </div>
-    
-    {{-- <hr>
-    <br>
-    <center>PERSETUJUAN KARTU STUDI</center>
-    <table width="100%">
-        <tr>
-            <td></td>
-            <td></td>
-            <td>Semarang, {{ date("d M Y") }}</td>
-        </tr>
-        <tr>
-            <td><center>Dosen Wali</center></td>
-            <td><center></center></td>
-            <td><center>Mahasiswa</center></td>
-        </tr>
-        <tr>
-            <td><center><br><br><br></center></td>
-            <td><center></center></td>
-            <td><center></center></td>
-        </tr>
-        <tr>
-            <td><center>{{ $mhs->dsn_wali }}</center></td>
-            <td><center>Orang Tua Wali</center></td>
-            <td><center>{{ $mhs->nama }}</center></td>
-        </tr>
-        <tr>
-            <td><center><br><br><br></center></td>
-            <td><center></center></td>
-            <td><center></center></td>
-        </tr>
-        <tr>
-            <td><center></center></td>
-            <td><center>..................</center></td>
-            <td><center></center></td>
-        </tr>
-    </table> --}}
 </body>
 
 </html>

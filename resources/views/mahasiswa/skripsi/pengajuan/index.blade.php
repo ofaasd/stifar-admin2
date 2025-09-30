@@ -201,7 +201,7 @@
                         <h5 class="mb-0">Riwayat Pengajuan Sidang</h5>
                     </div>
                     <div class="card-body">
-                        @forelse ($sidang as $row)
+                        @if (isset($sidang) && count($sidang) > 0)
                             <div class="table-responsive">
                                 <table class="table table-hover" id="jadwal-sidang-table">
                                     <thead>
@@ -216,58 +216,75 @@
                                             <th>Penguji</th>
                                             <th>Status</th>
                                             <th>Jenis</th>
+                                            <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $row->tanggal }}</td>
-                                            <td>{{ $row->waktuMulai }} - {{ $row->waktuSelesai }}</td>
-                                            <td>{{ $row->ruangan }}</td>
-                                            <td>{{ $row->nim ?? '-' }} - {{ $row->nama ?? '-' }}</td>
-                                            <td>{{ $row->judul ?? '-' }}</td>
-                                            <td>
-                                                <ul class="list-unstyled mb-0">
-                                                    <li><strong>1:</strong> {{ $row->namaPembimbing1 ?? '-' }}</li>
-                                                    <li><strong>2:</strong> {{ $row->namaPembimbing2 ?? '-' }}</li>
-                                                </ul>
-                                            </td>
-                                            <td>
-                                                <ul class="list-unstyled mb-0">
-                                                    <li><strong>1:</strong> {{ $row->namaPenguji1 ?? '-' }}</li>
-                                                    <li><strong>2:</strong> {{ $row->namaPenguji1 ?? '-' }}</li>
-                                                </ul>
-                                            </td>
-                                            <td>
-                                                @if ($row->status == 0)
-                                                    <span class="badge bg-primary">Pengajuan</span>
-                                                @elseif ($row->status == 1)
-                                                    <span class="badge bg-success">Selesai</span>
-                                                @elseif ($row->status == 2)
-                                                    <span class="badge bg-info">Diterima</span>
-                                                @else
-                                                    <span class="badge bg-secondary">Tidak Diketahui</span>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @if ($row->jenis == 1)
-                                                    <span class="badge bg-success">Sidang Terbuka</span>
-                                                @elseif ($row->jenis == 2)
-                                                    <span class="badge bg-warning">Sidang Tertutup</span>
-                                                @else
-                                                    <span class="badge bg-secondary">Tidak Diketahui</span>
-                                                @endif
-                                            </td>
-                                        </tr>
+                                        @foreach ($sidang as $row)
+                                            <tr>
+                                                <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $row->tanggal }}</td>
+                                                <td>{{ $row->waktuMulai }} - {{ $row->waktuSelesai }}</td>
+                                                <td>{{ $row->ruangan }}</td>
+                                                <td>{{ $row->nim ?? '-' }} - {{ $row->nama ?? '-' }}</td>
+                                                <td>{{ $row->judul ?? '-' }}</td>
+                                                <td>
+                                                    <ul class="list-unstyled mb-0">
+                                                        <li><strong>1:</strong> {{ $row->namaPembimbing1 ?? '-' }}</li>
+                                                        <li><strong>2:</strong> {{ $row->namaPembimbing2 ?? '-' }}</li>
+                                                    </ul>
+                                                </td>
+                                                <td>
+                                                    <ul class="list-unstyled mb-0">
+                                                        @for ($i = 1; $i <= $row->jmlPenguji; $i++)
+                                                            <li><strong>{{ $i }}:</strong> {{ $row->{'namaPenguji' . $i} ?? '-' }}</li>
+                                                        @endfor
+                                                    </ul>
+                                                </td>
+                                                <td>
+                                                    @if ($row->status == 0)
+                                                        <span class="badge bg-primary">Pengajuan</span>
+                                                    @elseif ($row->status == 1)
+                                                        <span class="badge bg-success">Selesai</span>
+                                                    @elseif ($row->status == 2)
+                                                        <span class="badge bg-info">Diterima</span>
+                                                    @else
+                                                        <span class="badge bg-secondary">Tidak Diketahui</span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if ($row->jenis == 1)
+                                                        <span class="badge bg-success">Sidang Terbuka</span>
+                                                    @elseif ($row->jenis == 2)
+                                                        <span class="badge bg-warning">Sidang Tertutup</span>
+                                                    @else
+                                                        <span class="badge bg-secondary">Tidak Diketahui</span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if ($row->status == 1 || $row->status == 2)
+                                                        <form action="{{ route('mhs.skripsi.daftar.print-sidang') }}" method="POST" class="d-inline" target="_blank">
+                                                            @csrf
+                                                            <input type="hidden" name="id" value="{{ $row->id }}">
+                                                            <button type="submit" class="btn btn-sm btn-outline-success ms-2" title="Download Surat Pengantar Sidang">
+                                                                <i class="bi bi-download"></i>
+                                                            </button>
+                                                        </form>
+                                                    @else
+                                                        <span class="text-muted">-</span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
-                        @empty
+                        @else
                             <div class="alert alert-info">
                                 <i class="bi bi-info-circle me-2"></i>
                                 Belum ada pengajuan sidang. Selesaikan proposal terlebih dahulu.
                             </div>
-                        @endforelse
+                        @endif
                     </div>
                 </div>
             </div>
