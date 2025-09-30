@@ -62,7 +62,11 @@ class NilaiSidangController extends Controller
             ->orderBy('sidang.created_at', 'desc')
             ->get()
             ->map(function($item) {
-                $item->idEnkripsi = Crypt::encryptString($item->id . "stifar");
+                if (!empty($item->id)) {
+                    $item->idEnkripsi = Crypt::encryptString($item->id . "stifar");
+                } else {
+                    $item->idEnkripsi = null;
+                }
 
                 if (!empty($item->tanggal)) {
                     $item->tanggal = \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d/m/Y');
@@ -85,7 +89,7 @@ class NilaiSidangController extends Controller
             });
 
             $data = [
-                'title' => 'Nilai Sidang Skripsi' . $mahasiswa->nama ?? '',
+                'title' => 'Nilai Sidang Skripsi ' . (!empty($mahasiswa) && !empty($mahasiswa->nama) ? $mahasiswa->nama : ''),
                 'sidang' => $sidang,
             ];
         
