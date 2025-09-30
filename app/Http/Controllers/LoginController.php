@@ -93,6 +93,13 @@ class LoginController extends Controller
 
             if($role[0] == "mhs"){
                 $mhs = Mahasiswa::where('user_id',Auth::user()->id)->first();
+
+                if(!$mhs){
+                    Auth::logout();
+                    Session::flash('error', 'Data Mahasiswa tidak ditemukan, silahkan hubungi admin');
+                    return redirect()->route('login');
+                }
+                
                 $session = [
                     'isYudisium' => $mhs->is_yudisium ?? 0,
                 ];
