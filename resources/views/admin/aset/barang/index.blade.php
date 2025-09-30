@@ -43,7 +43,7 @@
                                                     <label for="kode_ruang " class="form-label">Ruang</label>
                                                     <select class="form-select" aria-label="Default select example" id="kode_ruang" name="kodeRuang">
                                                         @foreach ($asetRuang as $row)
-                                                            <option value="{{ $row->nama_ruang }}">{{ $row->nama_ruang }}</option>
+                                                            <option value="{{ str_replace(' ', '', $row->nama_ruang) }}">{{ $row->nama_ruang }}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>
@@ -288,7 +288,7 @@
                         $('#' + key)
                             .val(dateOnly)
                             .trigger('change');
-                    }{
+                    }else{
                         $('#' + key)
                             .val(data[key])
                             .trigger('change');

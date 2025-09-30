@@ -49,14 +49,16 @@ class CetakLabelController extends Controller
                 });
                 $title = MasterJenisKendaaran::where('kode', $value)->pluck('nama')->first();
             } elseif ($type === 'ruang') {
-                $title = MasterRuang::where('nama_ruang', $value)->pluck('nama_ruang')->first();
-                $data = AsetBarang::where('kode_ruang', $value)->get();
+                $title = MasterRuang::whereRaw('REPLACE(nama_ruang, " ", "") = ?', [$value])->pluck('nama_ruang')->first();
+                $data = AsetBarang::whereRaw('REPLACE(kode_ruang, " ", "") = ?', [$value])->get();
             } else {
                 return response()->json("tidak ditemukan");
             }
 
+            $logo = asset('assets/images/logo/upload/logo_besar.png');
+
             $title = str_replace(' ', '', $title);
-            $pdf = Pdf::loadView('admin.aset.cetak-label.label-pdf', compact('data', 'title'));
+            $pdf = Pdf::loadView('admin.aset.cetak-label.label-pdf', compact('data', 'title', 'logo'));
             return response()->json([
                 'message'   => 'Berhasil cetak',
                 'pdf' => base64_encode($pdf->output()),

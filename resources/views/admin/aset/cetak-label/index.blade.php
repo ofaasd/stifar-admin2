@@ -42,7 +42,7 @@
                         </optgroup>
                         <optgroup label="Ruang">
                             @foreach ($ruang as $r)
-                                <option value="ruang_{{ $r->nama_ruang }}">{{ $r->nama_ruang }}</option>
+                                <option value="ruang_{{ str_replace(' ', '', $r->nama_ruang) }}">{{ $r->nama_ruang }}</option>
                             @endforeach
                         </optgroup>
                     </select>

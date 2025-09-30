@@ -94,7 +94,7 @@ class LoginController extends Controller
             if($role[0] == "mhs"){
                 $mhs = Mahasiswa::where('user_id',Auth::user()->id)->first();
                 $session = [
-                    'isYudisium' => $mhs->is_yudisium,
+                    'isYudisium' => $mhs->is_yudisium ?? 0,
                 ];
                 $berkas = BerkasPendukungMahasiswa::where("nim", $mhs->nim)->latest()->first();
                 if($mhs->update_password == 0){

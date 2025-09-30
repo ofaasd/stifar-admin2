@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\AsetGedungBangunan;
-use App\Models\MasterJenisRuang;
 use App\Models\Lantai;
-use Illuminate\Http\Request;
+use App\Models\AsetBarang;
 use App\Models\MasterRuang;
+use Illuminate\Http\Request;
+use App\Models\MasterJenisRuang;
+use App\Models\AsetGedungBangunan;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Crypt;
 
 class RuangController extends Controller
@@ -220,8 +221,14 @@ class RuangController extends Controller
         $idDekrip = Crypt::decryptString($idEnkripsi);
         $id = str_replace("stifar", "", $idDekrip);
 
-        $data = MasterRuang::where(['id' => $id])->first();
-        // $dataBarang = Barang::where(['kode_ruang'   => $data->kode])->get();
+        $ruang = MasterRuang::where(['id' => $id])->first();
+        $barang = AsetBarang::where(['kode_ruang'   => $ruang->kode])->get();
+
+        $data = [
+            'title' => 'Detail Ruang ' . $ruang->nama_ruang,
+            'ruang' => $ruang,
+            'barang' => $barang,
+        ];
 
         return view('admin.master.ruang.show', $data);
     }
