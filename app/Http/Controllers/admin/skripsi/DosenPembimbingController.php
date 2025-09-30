@@ -58,7 +58,8 @@ class DosenPembimbingController extends Controller
 
     public function getNppDosen()
     {
-        $data = PegawaiBiodatum::select('npp', 'nama_lengkap')->get();
+        $arrPembimbing = RefPembimbing::pluck('nip')->toArray();
+        $data = PegawaiBiodatum::select('npp', 'nama_lengkap')->whereNotIn('npp', $arrPembimbing)->orderBy('nama_lengkap','asc')->get();
         return response()->json($data);
     }
 

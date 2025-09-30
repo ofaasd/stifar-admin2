@@ -246,4 +246,71 @@ class AdminPengajuanSkripsiController extends Controller
     {
         //
     }
+
+    public function print(Request $request)
+    {
+        $pengajuan = PengajuanJudulSkripsi::select([
+                'pengajuan_judul_skripsi.id',
+                'pengajuan_judul_skripsi.id_master',
+                'pengajuan_judul_skripsi.judul',
+                'pengajuan_judul_skripsi.judul_eng AS judulEnglish',
+                'pengajuan_judul_skripsi.abstrak',
+                'master_skripsi.nim',
+                'mahasiswa.nama AS nama',
+                'pengajuan_judul_skripsi.status',
+                'pb1.nama_lengkap AS pembimbing1',
+                'pb2.nama_lengkap AS pembimbing2',  
+            ])
+            ->leftJoin('master_skripsi', 'pengajuan_judul_skripsi.id_master', '=', 'master_skripsi.id')
+            ->leftJoin('pegawai_biodata as pb1', 'pb1.npp', '=', 'master_skripsi.pembimbing_1')
+            ->leftJoin('pegawai_biodata as pb2', 'pb2.npp', '=', 'master_skripsi.pembimbing_2')
+            ->leftJoin('mahasiswa', 'master_skripsi.nim', '=', 'mahasiswa.nim')
+            ->orderBy('master_skripsi.created_at', 'desc')
+            ->get()
+            ->map(function ($item) {
+                $item->idMasterEnkripsi = Crypt::encryptString($item->id_master . "stifar");
+                return $item;
+            })
+            ->groupBy('nim');
+
+        $data = [];
+        foreach ($pengajuan as $nim => $rows) {
+            $judulArr = [];
+            foreach ($rows as $row) {
+                // Tentukan icon status
+                switch ($row->status) {
+                    case 1:
+                        $icon = '<span title="ACC" class="text-success"><i class="bi bi-check-circle-fill"></i></span>';
+                        break;
+                    case 2:
+                        $icon = '<span title="Revisi" class="text-warning"><i class="bi bi-pencil-square"></i></span>';
+                        break;
+                    case 3:
+                        $icon = '<span title="Ditolak" class="text-danger"><i class="bi bi-x-circle-fill"></i></span>';
+                        break;
+                    default:
+                        $icon = '<span title="Pengajuan" class="text-secondary"><i class="bi bi-clock-fill"></i></span>';
+                        break;
+                }
+                $judulArr[] = $icon . ' ' . $row->judul . '<br>' . $icon . ' ' . $row->judulEnglish;
+            }
+            $first = $rows->first();
+            $data[] = [
+                'nim' => $nim,
+                'nama' => $first->nama,
+                'judul' => implode('<hr><br>', $judulArr),
+                'pembimbing1' => $first->pembimbing1,
+                'pembimbing2' => $first->pembimbing2,
+            ];
+        }
+
+        $logo = asset('assets/images/logo/upload/logo_besar.png');
+
+        // Generate PDF dengan mPDF
+        $mpdf = new \Mpdf\Mpdf();
+        $html = view('admin.akademik.skripsi.pengajuan.print', compact('pengajuan', 'logo'))->render();
+        $mpdf->WriteHTML($html);
+
+        return response($mpdf->Output('pengajuan_judul_skripsi.pdf', 'S'))->header('Content-Type', 'application/pdf');
+    }
 }

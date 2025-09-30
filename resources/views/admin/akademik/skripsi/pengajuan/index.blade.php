@@ -26,6 +26,14 @@
         <div class="row">
             <div class="card">
                 <div class="card-body">
+                    <div class="mb-3">
+                        <form action="{{ route('print-pengajuan-skripsi') }}" method="POST" target="_blank">
+                            @csrf
+                            <button type="submit" class="btn btn-success">
+                                <i class="fa fa-download"></i> Download Pengajuan Skripsi
+                            </button>
+                        </form>
+                    </div>
                     {{-- <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#FormModal" id="tambahDosbim"></button> --}}
                     <div class="table-responsive">
                         <table class="display" id="pengajuan-table">
@@ -41,30 +49,6 @@
                             <tbody>
                             </tbody>
                         </table>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-        <!--Centered modal-->
-        <div class="modal fade" id="FormModal" tabindex="-1" role="dialog" aria-labelledby="FormModal" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <form class="row g-3 needs-validation custom-input" id="formDosbim">
-                            <div class="col-md-12 position-relative">
-                                <label class="form-label" for="nip">Pilih Dosen</label>
-                                <input class="form-control" name="nip" id="nip" placeholder="Please select">
-                            </div>
-
-                            <div class="col-md-12 position-relative">
-                                <label class="form-label" for="validationTooltip03">Kuota</label>
-                                <input class="form-control" name="kuota" id="kuotaDosen" type="number" required="">
-                            </div>
-                            <div class="col-12">
-                                <button class="btn btn-primary" type="submit">Submit form</button>
-                            </div>
-                        </form>
                     </div>
                 </div>
             </div>
