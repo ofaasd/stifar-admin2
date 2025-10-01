@@ -115,6 +115,7 @@ use App\Http\Controllers\mahasiswa\KrsController as mhsKrsController;
 use App\Http\Controllers\mahasiswa\skripsi\PengajuanSidangController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiPekerjaanController;
 use App\Http\Controllers\admin\keuangan\AdminLaporPembayaranContoller;
+use App\Http\Controllers\admin\keuangan\RekeningKoranController;
 use App\Http\Controllers\mahasiswa\skripsi\BimbinganSkripsiController;
 use App\Http\Controllers\mahasiswa\skripsi\PengajuanSkripsiController;
 use App\Http\Controllers\admin\akademik\wisuda\SettingWisudaController;
@@ -147,6 +148,7 @@ use App\Http\Controllers\admin\akademik\skripsi\AdminPengajuanSkripsiController;
 use App\Http\Controllers\admin\akademik\transkripIjazah\PrintTranskripController;
 use App\Http\Controllers\admin\akademik\wisuda\AdminDaftarPendaftarWisudaController;
 use App\Http\Controllers\admin\admisi\StatistikController as AdmisiStatistikController;
+use App\Http\Controllers\admin\admisi\HistoryPmbController;
 
 /*
 |--------------------------------------------------------------------------
@@ -206,6 +208,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
     Route::get('admin/admisi/peserta/{id}/edit_asal_sekolah', [PmbPesertaController::class, 'edit_asal_sekolah'])->name('edit_asal_sekolah');
     Route::get('admin/admisi/peserta/{id}/edit_file_pendukung', [PmbPesertaController::class, 'edit_file_pendukung'])->name('edit_file_pendukung');
     Route::get('admin/admisi/peserta/gelombang/{id}', [PmbPesertaController::class, 'index'])->name('peserta_filter_gelombang');
+    Route::get('admin/admisi/peserta/history', [HistoryPmbController::class, 'index'])->name('peserta_history');
 
     Route::get('admin/admisi/peringkat', [PeringkatPmdpController::class, 'index'])->name('peringkat');
     Route::get('admin/admisi/peringkat/table', [PeringkatPmdpController::class, 'table'])->name('table_tambahan');
@@ -515,6 +518,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
     Route::resource('admin/keuangan/buka_tutup_prodi', ProdiBukaTutupController::class)->name('index', 'buka_tutup_prodi');
     Route::resource('admin/keuangan/jenis_keuangan', JenisKeuanganController::class)->name('index','keuangan');
     Route::resource('admin/keuangan/lapor_bayar', AdminLaporPembayaranContoller::class)->name('index','lapor_bayar');
+    Route::resource('admin/keuangan/rekening_koran', RekeningKoranController::class)->name('index','rekening_koran');
     Route::resource('admin/keuangan/tagihan', TagihanController::class)->name('index','keuangan');
     Route::resource('admin/keuangan/setting_keuangan', SettingKeuanganController::class)->name('index','setting_keuangan');
     Route::resource('admin/keuangan', KeuanganController::class)->name('index','keuangan');

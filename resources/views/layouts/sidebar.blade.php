@@ -112,7 +112,7 @@
                     </li>
                     <li><a href="{{URL::to('admin/admisi/statistik')}}">Statistik</a></li>
 
-                    <li><a href="#">History PMB <label class="badge badge-light-danger">!</label></a></li>
+                    <li><a href="{{URL::to('admin/admisi/peserta/history')}}">History PMB</a></li>
                     {{-- <li><a href="#">Berita Pendaftaran</a></li> --}}
                     <li><a href="{{URL::to('admin/admisi/biaya_pendaftaran')}}">Biaya Pendaftaran</a></li>
                     <li><a href="{{URL::to('admin/admisi/slideshow')}}">Berita Gambar/Slideshow</a></li>
