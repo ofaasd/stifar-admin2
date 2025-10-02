@@ -7,7 +7,9 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class RekeningKoranTemp
@@ -31,16 +33,19 @@ use Illuminate\Database\Eloquent\Model;
  */
 class RekeningKoranTemp extends Model
 {
+	use HasFactory, SoftDeletes;
+
 	protected $table = 'rekening_koran_temp';
+	
 
 	protected $casts = [
-		'post_date' => 'datetime',
-		'eff_date' => 'datetime',
+		'post_date' => 'datetime:Y-m-d',
+		'eff_date' => 'datetime:Y-m-d',
 		'debit' => 'int',
 		'credit' => 'int',
 		'balance' => 'int',
 		'status' => 'int',
-		'deeted_at' => 'datetime'
+		'deleted_at' => 'datetime'
 	];
 
 	protected $fillable = [

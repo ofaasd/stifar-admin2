@@ -45,7 +45,7 @@
                     <li><a href="{{URL::to('admin/masterdata/ta')}}">Tahun Ajaran</a></li>
                     <!-- <li><a href="#">Jenjang</a></li> -->
                     <li><a href="{{URL::to('admin/masterdata/jabatan_struktural')}}">Jabatan</a></li>
-                    <li><a href="{{URL::to('admin/masterdata/user')}}">User Manajemen</a></li>
+                    {{-- <li><a href="{{URL::to('admin/masterdata/user')}}">User Manajemen</a></li> --}}
                     {{-- <li><a href="{{ route('ruang/')}}">Ruang</a></li> --}}
                     {{-- <li><a href="{{URL::to('admin/masterdata/sesi')}}">Sesi</a></li> --}}
                     {{-- <li><a href="{{URL::to('admin/masterdata/sekolah')}}">Sekolah</a></li> --}}
@@ -268,8 +268,8 @@
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#">
                 <span><i class="fa fa-support"></i> Setting</span></a>
                 <ul class="sidebar-submenu">
-                    <li><a href="#">Pengaturan Pengguna <label class="badge badge-light-danger">!</label></a></li>
-                    <li><a href="#">Preview Mahasiswa <label class="badge badge-light-danger">!</label></a></li>
+                    <li><a href="{{URL::to('admin/masterdata/user')}}">Pengaturan Pengguna <label class="badge badge-light-danger">!</label></a></li>
+                    {{-- <li><a href="#">Preview Mahasiswa <label class="badge badge-light-danger">!</label></a></li> --}}
                 </ul>
             </li>
             <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#">

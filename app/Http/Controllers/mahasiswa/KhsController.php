@@ -128,6 +128,10 @@ class KhsController extends Controller
             }
         }
         //$mk = MataKuliah::get();
+        $krs_now = [];
+        $nilai = [];
+        $jumlah_matkul=0;
+        $jumlah_valid = 0;
         foreach($tahun_ajaran as $ta_row){
             $ta = $ta_row->id;
             $krs_now = Krs::select('krs.*', 'a.hari', 'a.kel', 'b.nama_matkul', 'b.sks_teori', 'b.sks_praktek','b.kode_matkul')
@@ -136,8 +140,7 @@ class KhsController extends Controller
                         ->where('krs.id_tahun', $ta)
                         ->where('id_mhs',$idmhs)
                         ->get();
-            $nilai = [];
-            $jumlah_matkul=0;
+            
             foreach($krs_now as $row){
                 $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_tgs'] = '-';
                 $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uts'] = '-';
@@ -147,7 +150,7 @@ class KhsController extends Controller
                 $jumlah_matkul++;
             }
             $get_nilai = master_nilai::where(['nim'=>$mhs->nim,'id_tahun'=>$ta])->get();
-            $jumlah_valid = 0;
+            
             foreach($get_nilai as $row){
                 if($row->publish_tugas == 1){
                     //$nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_tgs'] = $row->ntugas;

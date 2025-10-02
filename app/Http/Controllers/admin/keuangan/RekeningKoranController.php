@@ -106,16 +106,32 @@ class RekeningKoranController extends Controller
     {
         // Validasi data
         $id = $request->id;
-        if($id){
-            $lapor = RekeningKoranTemp::find($id);
-            $lapor->status = $request->status;
-            $lapor->update();
+
+        $rekening = RekeningKoranTemp::updateOrCreate(
+            ['id' => $id],
+            [
+                'post_date' => $request->post_date,
+                'eff_date' => $request->eff_date,
+                'cheque_no' => $request->cheque_no,
+                'description' => $request->description,
+                'debit' => $request->debit,
+                'credit' => $request->credit,
+                'balance' => $request->balance,
+                'transaction' => $request->transaction,
+                'ref_no' => $request->ref_no,
+                'status' => $request->status,
+            ]
+        );
+        if($rekening){
             return response()->json([
                 'status' => 'success',
-                'message' => 'Update Status laporan pembayaran berhasil',
+                'message' => 'Rekening Koran Berhasil ditambah/update',
             ], 200);
         }else{
-
+           return response()->json([
+                'status' => 'Error',
+                'message' => 'Data gaga diupdate',
+            ], 401);  
         }
     }
 
@@ -157,6 +173,6 @@ class RekeningKoranController extends Controller
      */
     public function destroy(string $id)
     {
-        $gedung = RekeningKoranTemp::where('id', $id)->delete();
+        $rekening = RekeningKoranTemp::where('id', $id)->delete();
     }
 }

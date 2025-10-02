@@ -34,15 +34,55 @@
                                 <div class="modal-content">
                                     <form action="javascript:void(0)" id="formAdd">
                                         @csrf
-                                        
+                                        <input type="hidden" name="id" id="id">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="ModalLabel">Tambah {{$title2}}</h5>
                                             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
                                             <div class="mb-3" id="field-nama">
-                                                <label for="nama" class="form-label">Nama</label>
-                                                <input type="text" class="form-control" name="nama" id="nama">
+                                                <label for="post_date" class="form-label">Post Date</label>
+                                                <input type="date" class="form-control" name="post_date" id="post_date">
+                                            </div>
+                                            <div class="mb-3" id="field-nama">
+                                                <label for="eff_date" class="form-label">Eff Date</label>
+                                                <input type="date" class="form-control" name="eff_date" id="eff_date">
+                                            </div>
+                                            <div class="mb-3" id="field-nama">
+                                                <label for="cheque_no" class="form-label">Cheque No</label>
+                                                <input type="text" class="form-control" name="cheque_no" id="cheque_no">
+                                            </div>
+                                            <div class="mb-3" id="field-nama">
+                                                <label for="description" class="form-label">Description</label>
+                                                <input type="text" class="form-control" name="description" id="description">
+                                            </div>
+                                            <div class="mb-3" id="field-nama">
+                                                <label for="debit" class="form-label">Debit</label>
+                                                <input type="text" class="form-control" name="debit" id="debit">
+                                            </div>
+                                            <div class="mb-3" id="field-nama">
+                                                <label for="credit" class="form-label">Credit</label>
+                                                <input type="text" class="form-control" name="credit" id="credit">
+                                            </div>
+                                            <div class="mb-3" id="field-nama">
+                                                <label for="balance" class="form-label">Balance</label>
+                                                <input type="text" class="form-control" name="balance" id="balance">
+                                            </div>
+                                            <div class="mb-3" id="field-nama">
+                                                <label for="transaction" class="form-label">Transaction</label>
+                                                <input type="text" class="form-control" name="transaction" id="transaction">
+                                            </div>
+                                            <div class="mb-3" id="field-nama">
+                                                <label for="ref_no" class="form-label">Ref No</label>
+                                                <input type="text" class="form-control" name="ref_no" id="ref_no">
+                                            </div>
+                                            <div class="mb-3" id="field-nama">
+                                                <label for="status" class="form-label">Status</label>
+                                                <select class="form-control" name="status" id="status">
+                                                    <option value="0">Draft</option>
+                                                    <option value="1">Berhasil</option>
+                                                    <option value="2">Ditolak</option>
+                                                </select>
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -80,46 +120,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModal" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <form action="javascript:void(0)" id="formAdd2">
-                                        @csrf
-                                        <input type="hidden" name="id" id="id">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="ModalLabel">Update Laporan Pembayaran <span id="tpt-nim"></span></h5>
-                                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="mb-3" id="field-nama">
-                                                <label for="status" class="form-label">NIM</label>
-                                                <input type="text" name="nim_mahasiswa" id="nim_mahasiswa" readonly class="form-control">
-                                            </div>
-                                            <div class="mb-3" id="field-nama">
-                                                <label for="tanggal_bayar" class="form-label">Tanggal Bayar</label>
-                                                <input type="text" name="tanggal_bayar" id="tanggal_bayar" readonly class="form-control">
-                                            </div>
-                                            <div class="mb-3" id="field-nama">
-                                                <label for="atas_nama" class="form-label">Atas Nama</label>
-                                                <input type="text" name="atas_nama" id="atas_nama"  readonly class="form-control">
-                                            </div>
-                                            <div class="mb-3" id="field-nama">
-                                                <label for="status" class="form-label">Status Laporan</label>
-                                                <select name="status" id="status" class="form-control">
-                                                    <option value="pending">Pending</option>
-                                                    <option value="verified">Verified</option>
-                                                    <option value="rejected">Rejected</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
-                                            <button class="btn btn-primary" id="btn-submit2" type="submit">Simpan</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -172,6 +173,20 @@
                 targets: 1,
                 render: function render(data, type, full, meta) {
                     return '<span>'.concat(full.fake_id, '</span>');
+                }
+                },
+                {
+                searchable: false,
+                orderable: false,
+                targets: 11,
+                render: function render(data, type, full, meta) {
+                    if(full.status == 0){
+                        return '<span>Draft</span>';
+                    }else if(full.status == 1){
+                        return '<span>Berhasil</span>';
+                    }else{
+                        return '<span>Ditolak</span>';
+                    }
                 }
                 },
                 {
@@ -237,11 +252,11 @@
         });
 
         // Save record
-        $('#formAdd2').on('submit', function (e) {
+        $('#formAdd').on('submit', function (e) {
             e.preventDefault();
             const myFormData = new FormData(this);
 
-            var btnSubmit = $('#btn-submit2');
+            var btnSubmit = $('#btn-submit');
             btnSubmit.prop('disabled', true);
 
             $.ajax({
