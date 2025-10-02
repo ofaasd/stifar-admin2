@@ -27,7 +27,9 @@
                 <div class="card">
                     <div class="card-header pb-0 card-no-border">
                         @if(empty($link))
-                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal" id="add-record">Import Rekening Koran</button>
+                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal" id="add-record">+ Add Rekening Koran</button>
+                        <button class="btn btn-info" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#importModal" id="import-record">+ Import RK</button>
+                        
                         @endif
                         <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
                             <div class="modal-dialog" role="document">
@@ -93,7 +95,30 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                        <div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="importModal" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <form action="javascript:void(0)" id="formImport">
+                                        @csrf
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="ModalLabel">Import Rekeing Koran</h5>
+                                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="mb-3" id="field-nama">
+                                                <label for="file_excel" class="form-label">File Excel</label>
+                                                <input type="file" class="form-control" name="file_excel" id="file_excel">
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                                            <button class="btn btn-primary" id="btn-import" type="submit">Simpan</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>    
                     <div class="card-body">
                         <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
                         <div class="table-responsive">
@@ -267,7 +292,7 @@
                 contentType: false,
                 success: function (status) {
                     dt.draw();
-                    $("#editModal").modal('hide');
+                    $("#tambahModal").modal('hide');
                     swal({
                         icon: 'success',
                         title: `Successfully ${status}!`,
@@ -279,7 +304,50 @@
                     btnSubmit.prop('disabled', false);
                 },
                 error: function (xhr) {
-                    $("#editModal").modal('hide');
+                    $("#tambahModal").modal('hide');
+                    let errMsg = 'An error occurred. Please try again.';
+                    if (xhr.status === 422) { // Laravel validation error
+                        errMsg = xhr.responseJSON.message;
+                    }
+                    swal({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: errMsg,
+                        customClass: {
+                            confirmButton: 'btn btn-danger'
+                        }
+                    });
+                }
+            });
+        });
+        $('#formImport').on('submit', function (e) {
+            e.preventDefault();
+            const myFormData = new FormData(this);
+
+            var btnSubmit = $('#btn-import');
+            btnSubmit.prop('disabled', true);
+
+            $.ajax({
+                data: myFormData,
+                url: `${baseUrl}/admin/keuangan/rekening_koran/import`,
+                type: 'POST',
+                processData: false,
+                contentType: false,
+                success: function (status) {
+                    dt.draw();
+                    $("#importModal").modal('hide');
+                    swal({
+                        icon: 'success',
+                        title: `Successfully ${status}!`,
+                        text: `${title} ${status} successfully.`,
+                        customClass: {
+                            confirmButton: 'btn btn-success'
+                        }
+                    });
+                    btnSubmit.prop('disabled', false);
+                },
+                error: function (xhr) {
+                    $("#importModal").modal('hide');
                     let errMsg = 'An error occurred. Please try again.';
                     if (xhr.status === 422) { // Laravel validation error
                         errMsg = xhr.responseJSON.message;

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\admin\keuangan;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\RekeningKoranTemp; 
+use App\Imports\RekeningKoranImport;
+use Maatwebsite\Excel\Facades\Excel;    
 
 class RekeningKoranController extends Controller
 {
@@ -174,5 +176,16 @@ class RekeningKoranController extends Controller
     public function destroy(string $id)
     {
         $rekening = RekeningKoranTemp::where('id', $id)->delete();
+    }
+    public function import(Request $request){
+        Excel::import(new RekeningKoranImport, $request->file('file_excel'));
+        
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Rekening Koran Berhasil ditambah/update',
+        ], 200);
+    }
+    public function after_import(){
+
     }
 }

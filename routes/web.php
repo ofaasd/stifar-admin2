@@ -453,6 +453,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
     Route::get('/admin/keuangan/tagihan_show/{id}', [TagihanController::class, 'index']);
     Route::get('/admin/keuangan/tagihan/publish/{id}', [TagihanController::class, 'publish']);
     Route::get('/admin/keuangan/tagihan/unpublish/{id}', [TagihanController::class, 'unpublish']);
+    Route::post('/admin/keuangan/rekening_koran/import', [RekeningKoranController::class, 'import']);
 
     Route::get('attendance/report', [PresenceController::class,'report'])->name('attendance_report');
     Route::get('attendance/log', [PresenceController::class,'log'])->name('attendance_log');
