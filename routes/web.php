@@ -116,6 +116,7 @@ use App\Http\Controllers\mahasiswa\skripsi\PengajuanSidangController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiPekerjaanController;
 use App\Http\Controllers\admin\keuangan\AdminLaporPembayaranContoller;
 use App\Http\Controllers\admin\keuangan\RekeningKoranController;
+use App\Http\Controllers\admin\keuangan\RekeningKoranArsipController;
 use App\Http\Controllers\mahasiswa\skripsi\BimbinganSkripsiController;
 use App\Http\Controllers\mahasiswa\skripsi\PengajuanSkripsiController;
 use App\Http\Controllers\admin\akademik\wisuda\SettingWisudaController;
@@ -454,6 +455,11 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
     Route::get('/admin/keuangan/tagihan/publish/{id}', [TagihanController::class, 'publish']);
     Route::get('/admin/keuangan/tagihan/unpublish/{id}', [TagihanController::class, 'unpublish']);
     Route::post('/admin/keuangan/rekening_koran/import', [RekeningKoranController::class, 'import']);
+    Route::get('/admin/keuangan/rekening_koran/after_import', [RekeningKoranController::class, 'after_import']);
+    Route::get('/admin/keuangan/rekening_koran/get_nama', [RekeningKoranController::class, 'get_nama']);
+    Route::post('/admin/keuangan/rekening_koran/update_nim', [RekeningKoranController::class, 'update_nim']);
+    Route::post('/admin/keuangan/rekening_koran/simpan_pembayaran', [RekeningKoranController::class, 'simpan_pembayaran']);
+    Route::get('/admin/keuangan/rekening_koran/arsip', [RekeningKoranArsipController::class, 'index']);
 
     Route::get('attendance/report', [PresenceController::class,'report'])->name('attendance_report');
     Route::get('attendance/log', [PresenceController::class,'log'])->name('attendance_log');

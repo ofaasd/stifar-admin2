@@ -59,6 +59,7 @@ class RekeningKoranTemp extends Model
 		'transaction',
 		'ref_no',
 		'status',
+		'nim',
 		'deeted_at'
 	];
 }

@@ -16,7 +16,7 @@
 
 @section('breadcrumb-items')
     <li class="breadcrumb-item">Keuangan</li>
-    <li class="breadcrumb-item active">Lapor Bayar</li>
+    <li class="breadcrumb-item active">Arsip Rekening Koran</li>
 @endsection
 
 @section('content')
@@ -26,99 +26,8 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header pb-0 card-no-border">
-                        @if(empty($link))
-                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal" id="add-record">+ Add Rekening Koran</button>
-                        <button class="btn btn-info" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#importModal" id="import-record">+ Import RK</button>
-                        <a class="btn btn-success" href="{{url('admin/keuangan/rekening_koran/arsip')}}">Arsip Rekening Koran</a>
-                        
-                        @endif
-                        <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <form action="javascript:void(0)" id="formAdd">
-                                        @csrf
-                                        <input type="hidden" name="id" id="id">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="ModalLabel">Tambah {{$title2}}</h5>
-                                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="mb-3" id="field-nama">
-                                                <label for="post_date" class="form-label">Post Date</label>
-                                                <input type="date" class="form-control" name="post_date" id="post_date">
-                                            </div>
-                                            <div class="mb-3" id="field-nama">
-                                                <label for="eff_date" class="form-label">Eff Date</label>
-                                                <input type="date" class="form-control" name="eff_date" id="eff_date">
-                                            </div>
-                                            <div class="mb-3" id="field-nama">
-                                                <label for="cheque_no" class="form-label">Cheque No</label>
-                                                <input type="text" class="form-control" name="cheque_no" id="cheque_no">
-                                            </div>
-                                            <div class="mb-3" id="field-nama">
-                                                <label for="description" class="form-label">Description</label>
-                                                <input type="text" class="form-control" name="description" id="description">
-                                            </div>
-                                            <div class="mb-3" id="field-nama">
-                                                <label for="debit" class="form-label">Debit</label>
-                                                <input type="text" class="form-control" name="debit" id="debit">
-                                            </div>
-                                            <div class="mb-3" id="field-nama">
-                                                <label for="credit" class="form-label">Credit</label>
-                                                <input type="text" class="form-control" name="credit" id="credit">
-                                            </div>
-                                            <div class="mb-3" id="field-nama">
-                                                <label for="balance" class="form-label">Balance</label>
-                                                <input type="text" class="form-control" name="balance" id="balance">
-                                            </div>
-                                            <div class="mb-3" id="field-nama">
-                                                <label for="transaction" class="form-label">Transaction</label>
-                                                <input type="text" class="form-control" name="transaction" id="transaction">
-                                            </div>
-                                            <div class="mb-3" id="field-nama">
-                                                <label for="ref_no" class="form-label">Ref No</label>
-                                                <input type="text" class="form-control" name="ref_no" id="ref_no">
-                                            </div>
-                                            <div class="mb-3" id="field-nama">
-                                                <label for="status" class="form-label">Status</label>
-                                                <select class="form-control" name="status" id="status">
-                                                    <option value="0">Draft</option>
-                                                    <option value="1">Berhasil</option>
-                                                    <option value="2">Ditolak</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
-                                            <button class="btn btn-primary" id="btn-submit" type="submit">Simpan</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="importModal" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <form action="javascript:void(0)" id="formImport">
-                                        @csrf
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="ModalLabel">Import Rekeing Koran</h5>
-                                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="mb-3" id="field-nama">
-                                                <label for="file_excel" class="form-label">File Excel</label>
-                                                <input type="file" class="form-control" name="file_excel" id="file_excel">
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
-                                            <button class="btn btn-primary" id="btn-import" type="submit">Simpan</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
+                        <a class="btn btn-primary" href="{{url('admin/keuangan/rekening_koran')}}"> <i class="fa fa-arrow-left"></i> Rekening Koran</a>
+                        <a class="btn btn-success" href="{{url('admin/keuangan/pembayaran')}}"> Data Pembayaran</a>
                     </div>    
                     <div class="card-body">
                         <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
@@ -210,9 +119,9 @@
                     if(full.status == 0){
                         return '<span>Draft</span>';
                     }else if(full.status == 1){
-                        return '<span>Berhasil</span>';
+                        return '<span class="btn btn-success btn-sm"><i class="fa fa-check"></i></span>';
                     }else{
-                        return '<span>Ditolak</span>';
+                        return '<span class="btn btn-danger btn-sm"><i class="fa fa-ban"></i></span>';
                     }
                 }
                 },
@@ -224,10 +133,7 @@
                     orderable: false,
                     render: function render(data, type, full, meta) {
                         return (
-                        '<div class="btn-group">' +
-                        '<button class="btn btn-sm btn-primary edit-record" data-id="'
-                            .concat(full['id'], '" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal"')
-                            .concat(title, '"><i class="fa fa-pencil"></i></button>') +
+                        
                         '<button class="btn btn-sm btn-danger delete-record" data-id="'.concat(
                             full['id'],
                             '"><i class="fa fa-trash"></i></button>'

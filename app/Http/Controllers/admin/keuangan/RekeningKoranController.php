@@ -5,6 +5,9 @@ namespace App\Http\Controllers\admin\keuangan;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\RekeningKoranTemp; 
+use App\Models\PmbPesertaOnline; 
+use App\Models\Mahasiswa; 
+use App\Models\TbPembayaran; 
 use App\Imports\RekeningKoranImport;
 use Maatwebsite\Excel\Facades\Excel;    
 
@@ -16,7 +19,7 @@ class RekeningKoranController extends Controller
     {
         if (empty($request->input('length'))) {
             $title = "rekening_koran";
-            $title2 = "Laporan Rekening Koran";
+            $title2 = "Rekening Koran";
             $indexed = $this->indexed;
             return view('admin.keuangan.rek_koran.index', compact('title', 'title2', 'indexed'));
         } else {
@@ -43,24 +46,31 @@ class RekeningKoranController extends Controller
             $dir = $request->input('order.0.dir');
 
             if (empty($request->input('search.value'))) {
-                $rekening = RekeningKoranTemp::offset($start)
+                $rekening = RekeningKoranTemp::where('status',0)
+                    ->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
                     ->get();
             } else {
                 $search = $request->input('search.value');
 
-                $rekening = RekeningKoranTemp::where('id', 'LIKE', "%{$search}%")
-                    ->orWhere('nim_mahasiswa', 'LIKE', "%{$search}%")
-                    ->orWhere('atas_nama', 'LIKE', "%{$search}%")
+                $rekening = RekeningKoranTemp::where('status',0)
+                    ->where(fn($query) =>
+                        $query ->where('id', 'LIKE', "%{$search}%")
+                        ->orWhere('description', 'LIKE', "%{$search}%")
+                        ->orWhere('nim', 'LIKE', "%{$search}%")
+                    )
                     ->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
                     ->get();
 
-                $totalFiltered = RekeningKoranTemp::where('id', 'LIKE', "%{$search}%")
-                    ->orWhere('nim_mahasiswa', 'LIKE', "%{$search}%")
-                    ->orWhere('atas_nama', 'LIKE', "%{$search}%")
+                $totalFiltered = RekeningKoranTemp::where('status',0)
+                    ->where(fn($query) =>
+                        $query ->where('id', 'LIKE', "%{$search}%")
+                        ->orWhere('description', 'LIKE', "%{$search}%")
+                        ->orWhere('nim', 'LIKE', "%{$search}%")
+                    )
                     ->count();
             }
 
@@ -74,9 +84,9 @@ class RekeningKoranController extends Controller
                     $nestedData['eff_date'] = date('d-m-Y H:i', strtotime($row->eff_date)) ?? "";
                     $nestedData['cheque_no'] = $row->cheque_no ?? "";
                     $nestedData['description'] = $row->description ?? "";
-                    $nestedData['debit'] =  $row->debit ?? '';
-                    $nestedData['credit'] =  $row->credit ?? '';
-                    $nestedData['balance'] =  $row->balance ?? '';
+                    $nestedData['debit'] =  number_format($row->debit ?? 0,0,",",".");
+                    $nestedData['credit'] =  number_format($row->credit ?? 0,0,",",".");
+                    $nestedData['balance'] =  number_format($row->balance ?? 0,0,",",".");
                     $nestedData['transaction'] =  $row->transaction ?? '';
                     $nestedData['ref_no'] =  $row->ref_no ?? '';
                     $nestedData['status'] =  $row->status ?? '';
@@ -186,6 +196,78 @@ class RekeningKoranController extends Controller
         ], 200);
     }
     public function after_import(){
-
+        $title = "rekening_koran";
+        $title2 = "Proses Data Pembayaran";
+        $indexed = $this->indexed;
+        $rekening = RekeningKoranTemp::where('status',0)->get();
+        $mhs_all = Mahasiswa::all();
+        $no = 1;
+        $nopen = [];
+        $status = [];
+        $nim = [];
+        foreach($rekening as $row){
+            $nova = substr($row->description,0,16);
+            $nopen[$row->id] = substr($nova,5,9);
+            $nim[$row->id] = $row->nim;
+            if(empty($nim[$row->id])){
+                $nim[$row->id] = Mahasiswa::where('nopen',$nopen[$row->id])->first()->nim ?? '';
+            }
+            $status[$row->id] = (!empty($nim[$row->id]))?1:2;
+        }
+        return view('admin.keuangan.rek_koran.after_import', compact('title', 'title2', 'indexed','rekening','nopen','status','no','nim','mhs_all'));
+    }
+    public function get_nama(Request $request){
+        $nopen = $request->nopen;
+        $peserta = Mahasiswa::where('nopen',$nopen)->first();
+        if(empty($peserta)){
+            $nim = RekeningKoranTemp::find($request->id)->nim;
+            $peserta = Mahasiswa::where('nim',$nim)->first();
+            if(empty($peserta)){
+                $peserta  = PmbPesertaOnline::where('nopen',$nopen)->first();
+            }
+        }
+        return json_encode($peserta);
+    }
+    public function update_nim(Request $request){
+        $nopen = $request->nopen;
+        $nim = $request->nim;
+        $peserta = Mahasiswa::where('nim',$nim)->first();
+        $rekening = RekeningKoranTemp::find($request->id);
+        $rekening->nim = $nim;
+        $rekening->save();
+        if($request->boolean('simpan_nopen')){
+            $new_peserta = Mahasiswa::find($peserta->id);
+            $new_peserta->nopen = $nopen;
+            $new_peserta->save();
+        }
+    }
+    public function simpan_pembayaran(Request $request){
+        $nim = $request->nim;
+        $jumlah = $request->jumlah;
+        //id rekening koran
+        $nopen = $request->nopen;
+        $id = $request->id;
+        $status = $request->status;
+        $keterangan = $request->keterangan;
+        foreach($id as $key=>$value){
+            $rekening = RekeningKoranTemp::find($value);
+            //update nim di rekening koran
+            $rekening->nim = $nim[$key];
+            if($status[$key] == 1){
+                $pembayaran = TbPembayaran::create(
+                    [
+                        'nim' => $nim[$key],
+                        'jumlah' => $jumlah[$key],
+                        'keterangan' => $keterangan[$key],
+                        'status' => 1,
+                        'id_rekening_koran' => $rekening->id,
+                    ]
+                );
+                $rekening->id_pembayaran = $pembayaran->id;
+            }
+            $rekening->status = $status[$key];
+            $rekening->save();
+        }
+        return redirect('admin/keuangan/rekening_koran');
     }
 }

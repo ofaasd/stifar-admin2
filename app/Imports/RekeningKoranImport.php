@@ -17,14 +17,14 @@ class RekeningKoranImport implements ToModel
         return new RekeningKoranTemp([
             //
             'post_date' => $row[1],
-            'eff_date' => $row[2],
-            'cheque_no' => $row[3],
-            'description' => $row[4],
-            'debit' => (int)$row[5],
-            'credit' => (int)$row[6],
-            'balance' => (int)$row[7],
-            'transaction' => $row[8],
-            'ref_no' => $row[9],
+            'eff_date' => $row[4],
+            'cheque_no' => $row[7],
+            'description' => $row[8],
+            'debit' => (int)$row[10],
+            'credit' => (int)$row[12],
+            'balance' => (int)$row[13],
+            'transaction' => $row[14],
+            'ref_no' => $row[15],
         ]);
     }
 }
