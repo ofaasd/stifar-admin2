@@ -54,7 +54,7 @@
 
                                 </tbody>
                             </table>
-                            <a href="{{url('admin/keuangan/rekening_koran/after_import')}}" class="btn btn-primary col-md-12">Proses Data</a>
+                            
                         </div>
                         
                     </div>
