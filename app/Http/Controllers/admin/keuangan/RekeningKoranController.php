@@ -260,6 +260,7 @@ class RekeningKoranController extends Controller
                         'jumlah' => $jumlah[$key],
                         'keterangan' => $keterangan[$key],
                         'status' => 1,
+                        'tanggal_bayar' => $rekening->post_date,
                         'id_rekening_koran' => $rekening->id,
                     ]
                 );

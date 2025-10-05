@@ -117,6 +117,7 @@ use App\Http\Controllers\admin\kepegawaian\PegawaiPekerjaanController;
 use App\Http\Controllers\admin\keuangan\AdminLaporPembayaranContoller;
 use App\Http\Controllers\admin\keuangan\RekeningKoranController;
 use App\Http\Controllers\admin\keuangan\RekeningKoranArsipController;
+use App\Http\Controllers\admin\keuangan\PembayaranController;
 use App\Http\Controllers\mahasiswa\skripsi\BimbinganSkripsiController;
 use App\Http\Controllers\mahasiswa\skripsi\PengajuanSkripsiController;
 use App\Http\Controllers\admin\akademik\wisuda\SettingWisudaController;
@@ -526,6 +527,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
     Route::resource('admin/keuangan/jenis_keuangan', JenisKeuanganController::class)->name('index','keuangan');
     Route::resource('admin/keuangan/lapor_bayar', AdminLaporPembayaranContoller::class)->name('index','lapor_bayar');
     Route::resource('admin/keuangan/rekening_koran', RekeningKoranController::class)->name('index','rekening_koran');
+    Route::resource('admin/keuangan/pembayaran', PembayaranController::class)->name('index','pembayaran');
     Route::resource('admin/keuangan/tagihan', TagihanController::class)->name('index','keuangan');
     Route::resource('admin/keuangan/setting_keuangan', SettingKeuanganController::class)->name('index','setting_keuangan');
     Route::resource('admin/keuangan', KeuanganController::class)->name('index','keuangan');

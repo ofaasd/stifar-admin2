@@ -16,7 +16,7 @@
 
 @section('breadcrumb-items')
     <li class="breadcrumb-item">Keuangan</li>
-    <li class="breadcrumb-item active">Lapor Bayar</li>
+    <li class="breadcrumb-item active">Rekening Koran</li>
 @endsection
 
 @section('content')

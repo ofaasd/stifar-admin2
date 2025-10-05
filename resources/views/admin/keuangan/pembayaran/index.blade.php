@@ -8,15 +8,16 @@
 @section('style')
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/vendors/datatables.css') }}">
 <link rel="stylesheet" type="text/css" href="{{asset('assets/css/vendors/sweetalert2.css')}}">
+<link rel="stylesheet" type="text/css" href="{{asset('assets/css/vendors/select2.css')}}">
 @endsection
 
 @section('breadcrumb-title')
-    <h3>{{$title2}}</h3>
+    <h3>{{$title2}} Bulan {{$list_bulan[$bulan]}} Tahun {{$tahun}}</h3>
 @endsection
 
 @section('breadcrumb-items')
     <li class="breadcrumb-item">Keuangan</li>
-    <li class="breadcrumb-item active">Arsip Rekening Koran</li>
+    <li class="breadcrumb-item active">Pembayaran</li>
 @endsection
 
 @section('content')
@@ -26,8 +27,102 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header pb-0 card-no-border">
-                        <a class="btn btn-primary" href="{{url('admin/keuangan/rekening_koran')}}"> <i class="fa fa-arrow-left"></i> Rekening Koran</a>
-                        <a class="btn btn-success" href="{{url('admin/keuangan/pembayaran')}}"> Data Pembayaran</a>
+                        @if(empty($link))
+                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal" id="add-record">+ Add Pembayaran</button>
+                        <button class="btn btn-warning" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#filterModal" id="filter-record">Filter Pembayaran</button>
+                        
+                        @endif
+                        <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <form action="javascript:void(0)" id="formAdd">
+                                        @csrf
+                                        <input type="hidden" name="id" id="id">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="ModalLabel">Tambah {{$title2}}</h5>
+                                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="mb-3" id="field-nama">
+                                                <label for="nim" class="form-label">Mahasiswa</label>
+                                            </div>
+                                            <div class="mb-3" id="fied_column">
+                                                <select name="nim" class="select2_mhs" id="nim">
+                                                    @foreach($mhs_all as $row)
+                                                        <option value="{{$row->nim}}">{{$row->nim}} - {{$row->nama}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            
+                                            <div class="mb-3" id="field-nama">
+                                                <label for="jumlah" class="form-label">Jumlah</label>
+                                                <input type="number" class="form-control" name="jumlah" id="jumlah">
+                                            </div>
+                                            <div class="mb-3" id="field-nama">
+                                                <label for="keterangan" class="form-label">Keterangan</label>
+                                                <input type="text" class="form-control" name="keterangan" id="keterangan">
+                                            </div>
+                                            <div class="mb-3" id="field-nama">
+                                                <label for="tanggl_bayar" class="form-label">Tanggal Bayar</label>
+                                                <input type="date" class="form-control" name="tanggal_bayar" id="tanggal_bayar">
+                                            </div>
+                                            <div class="mb-3" id="field-nama">
+                                                <label for="status" class="form-label">Status</label>
+                                                <select class="form-control" name="status" id="status">
+                                                    <option value="1" >Berhasil</option>
+                                                    <option value="0">Draft</option>
+                                                    <option value="2">Ditolak</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                                            <button class="btn btn-primary" id="btn-submit" type="submit">Simpan</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModal" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <form action="" method="get" id="formFilter">
+                                        @csrf
+                                        <input type="hidden" name="id" id="id">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="ModalLabel">Filter {{$title2}}</h5>
+                                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="mb-3" id="field-nama">
+                                                <label for="nim" class="form-label">Bulan</label>
+                                            </div>
+                                            <div class="mb-3">
+                                                <select name="bulan" class="form-control" id="bulan">
+                                                    @foreach($list_bulan as $key=>$value)
+                                                        <option value="{{$key}}" {{($bulan == $key)?"selected":""}}>{{$value}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <div class="mb-3" id="field-nama">
+                                                    <label for="nim" class="form-label">Tahun</label>
+                                                </div>
+                                                <select name="tahun" class="form-control" id="tahun">
+                                                    @for($i=date('Y');$i>=(date('Y')-5);$i--)
+                                                        <option value="{{$i}}" {{($tahun == $i)?"selected":""}}>{{$i}}</option>
+                                                    @endfor
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                                            <button class="btn btn-primary" id="btn-submit" type="submit">Simpan</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>    
                     <div class="card-body">
                         <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
@@ -37,15 +132,12 @@
                                     <tr>
                                         <th></th>
                                         <th>No</th>
-                                        <th>Post Date</th>
-                                        <th>Eff Date</th>
-                                        <th>Cheque No</th>
-                                        <th>Description</th>
-                                        <th>Debit</th>
-                                        <th>Credit</th>
-                                        <th>Balance</th>
-                                        <th>Transaction</th>
-                                        <th>Ref No</th>
+                                        <th>NIM</th>
+                                        <th>Nama</th>
+                                        <th>Prodi</th>
+                                        <th>Jumlah</th>
+                                        <th>Keterangan</th>
+                                        <th>Tanggal Bayar</th>
                                         <th>Status</th>
                                         <th>Action</th>
                                     </tr>
@@ -54,7 +146,9 @@
 
                                 </tbody>
                             </table>
+                            
                         </div>
+                        
                     </div>
                 </div>
             </div>
@@ -66,9 +160,14 @@
 @section('script')
     <script src="{{ asset('assets/js/datatable/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{asset('assets/js/sweet-alert/sweetalert.min.js')}}"></script>
+    <script src="{{asset('assets/js/select2/select2.full.min.js')}}"></script>
+    <script src="{{asset('assets/js/select2/select2-custom.js')}}"></script>
 
     <script>
         $(function () {
+        $('.select2_mhs').select2({
+            dropdownParent: $('#nimModal')
+        });
         const baseUrl = {!! json_encode(url('/')) !!};
         const title = "{{strtolower($title)}}";
         const title2 = "{{ $title2 }}";
@@ -87,6 +186,10 @@
             serverSide: true,
             ajax: {
                 url: baseUrl.concat(page),
+                data: {
+                    'bulan' : $("#bulan").val(),
+                    'tahun' : $("#tahun").val(),
+                }
             },
             columns: my_data,
             columnDefs: [
@@ -112,14 +215,14 @@
                 {
                 searchable: false,
                 orderable: false,
-                targets: 11,
+                targets: 8,
                 render: function render(data, type, full, meta) {
                     if(full.status == 0){
                         return '<span>Draft</span>';
                     }else if(full.status == 1){
-                        return '<span class="btn btn-success btn-sm"><i class="fa fa-check"></i></span>';
+                        return `<span class="text-success"><i class='fa fa-check'></i></span>`;
                     }else{
-                        return '<span class="btn btn-danger btn-sm"><i class="fa fa-ban"></i></span>';
+                        return `<span class="text-danger"><i class='fa fa-ban'></i></span>`;
                     }
                 }
                 },
@@ -131,7 +234,10 @@
                     orderable: false,
                     render: function render(data, type, full, meta) {
                         return (
-                        
+                        '<div class="btn-group">' +
+                        '<button class="btn btn-sm btn-primary edit-record" data-id="'
+                            .concat(full['id'], '" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal"')
+                            .concat(title, '"><i class="fa fa-pencil"></i></button>') +
                         '<button class="btn btn-sm btn-danger delete-record" data-id="'.concat(
                             full['id'],
                             '"><i class="fa fa-trash"></i></button>'
@@ -201,8 +307,8 @@
                     $("#tambahModal").modal('hide');
                     swal({
                         icon: 'success',
-                        title: `Successfully ${status}!`,
-                        text: `${title} ${status} successfully.`,
+                        title: `Successfully Saved!`,
+                        text: `Saved successfully.`,
                         customClass: {
                             confirmButton: 'btn btn-success'
                         }

@@ -33,7 +33,8 @@ class TbPembayaran extends Model
 	protected $casts = [
 		'jumlah' => 'int',
 		'status' => 'int',
-		'id_rekening_koran' => 'int'
+		'id_rekening_koran' => 'int',
+		'tanggal_bayar' => 'datetime:Y-m-d',
 	];
 
 	protected $fillable = [
@@ -41,6 +42,7 @@ class TbPembayaran extends Model
 		'jumlah',
 		'keterangan',
 		'status',
-		'id_rekening_koran'
+		'id_rekening_koran',
+		'tanggal_bayar'
 	];
 }

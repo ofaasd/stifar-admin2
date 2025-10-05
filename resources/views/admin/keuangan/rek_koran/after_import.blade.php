@@ -100,45 +100,6 @@
                                 </div>
                             </div>
                         </form>
-                        <div class="modal fade" id="nimModal" tabindex="-1" role="dialog" aria-labelledby="importModal" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <form action="javascript:void(0)" id="formNim">
-                                        @csrf
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="ModalLabel">Update NIM Berdasarkan No Pendaftaran</h5>
-                                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <input type="hidden" name="id" id="id">
-                                            <div class="mb-3" id="field-nopen">
-                                                <label for="nopen" class="form-label">No Pendaftaran</label>
-                                                <input type="text" class="form-control" name="nopen" id="nopen" readonly>
-                                            </div>
-                                            <div class="mb-3" id="field-nama">
-                                                <label for="nama" class="form-label">Nama</label>
-                                                <input type="text" class="form-control" name="nama" id="nama" readonly>
-                                            </div>
-                                            <div class="mb-3" id="field-nim">
-                                                <label for="nim" class="form-label">NIM</label>
-                                                <select name="nim" class="select2_mhs" id="nim">
-                                                    @foreach($mhs_all as $row)
-                                                        <option value="{{$row->nim}}">{{$row->nim}} - {{$row->nama}}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="mb-3" id="field-simpan">
-                                                <input type="checkbox" class="checkbox_animated" name="simpan_nopen" id="simpan_nopen"> <label for="simpan_nopen" class="form-label">Simpan No. Pendaftaran</label>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
-                                            <button class="btn btn-primary" id="btn-add" type="submit">Simpan</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
