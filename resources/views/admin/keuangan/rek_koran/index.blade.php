@@ -110,6 +110,7 @@
                                                 <label for="file_excel" class="form-label">File Excel</label>
                                                 <input type="file" class="form-control" name="file_excel" id="file_excel">
                                             </div>
+                                            <a href="{{url('/assets/file/format_import.xlsx')}}" class="btn btn-primary">Format Import</a>
                                         </div>
                                         <div class="modal-footer">
                                             <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
@@ -297,8 +298,8 @@
                     $("#tambahModal").modal('hide');
                     swal({
                         icon: 'success',
-                        title: `Successfully ${status}!`,
-                        text: `${title} ${status} successfully.`,
+                        title: `Successfully Saved!`,
+                        text: `Saved successfully.`,
                         customClass: {
                             confirmButton: 'btn btn-success'
                         }
@@ -341,8 +342,8 @@
                     $("#importModal").modal('hide');
                     swal({
                         icon: 'success',
-                        title: `Successfully ${status}!`,
-                        text: `${title} ${status} successfully.`,
+                        title: `Successfully Saved!`,
+                        text: `Saved successfully.`,
                         customClass: {
                             confirmButton: 'btn btn-success'
                         }

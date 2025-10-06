@@ -205,16 +205,19 @@ class RekeningKoranController extends Controller
         $nopen = [];
         $status = [];
         $nim = [];
+        $nova = [];
+        $jenis_pembayaran = [];
         foreach($rekening as $row){
-            $nova = substr($row->description,0,16);
-            $nopen[$row->id] = substr($nova,5,9);
+            $nova[$row->id] = substr($row->description,0,16);
+            $nopen[$row->id] = substr($nova[$row->id],5,9);
+            $jenis_pembayaran[$row->id] = substr($nova[$row->id],-2,2);
             $nim[$row->id] = $row->nim;
             if(empty($nim[$row->id])){
                 $nim[$row->id] = Mahasiswa::where('nopen',$nopen[$row->id])->first()->nim ?? '';
             }
             $status[$row->id] = (!empty($nim[$row->id]))?1:2;
         }
-        return view('admin.keuangan.rek_koran.after_import', compact('title', 'title2', 'indexed','rekening','nopen','status','no','nim','mhs_all'));
+        return view('admin.keuangan.rek_koran.after_import', compact('title', 'title2', 'indexed','nova','jenis_pembayaran','rekening','nopen','status','no','nim','mhs_all'));
     }
     public function get_nama(Request $request){
         $nopen = $request->nopen;
@@ -260,12 +263,15 @@ class RekeningKoranController extends Controller
                         'jumlah' => $jumlah[$key],
                         'keterangan' => $keterangan[$key],
                         'status' => 1,
-                        'tanggal_bayar' => $rekening->post_date,
+                        'tanggal_bayar' => date('Y-m-d H:i', strtotime($rekening->post_date)),
                         'id_rekening_koran' => $rekening->id,
+                        'jenis_pembayaran' => $request->jenis_pembayaran[$key],
                     ]
                 );
                 $rekening->id_pembayaran = $pembayaran->id;
             }
+            $rekening->jenis_pembayaran = $request->jenis_pembayaran[$key];
+            $rekening->no_va = $request->nova[$key];
             $rekening->status = $status[$key];
             $rekening->save();
         }

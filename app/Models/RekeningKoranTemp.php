@@ -60,6 +60,8 @@ class RekeningKoranTemp extends Model
 		'ref_no',
 		'status',
 		'nim',
-		'deeted_at'
+		'deeted_at',
+		'jenis_pembayaran',
+		'no_va',
 	];
 }

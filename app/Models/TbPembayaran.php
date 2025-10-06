@@ -43,6 +43,7 @@ class TbPembayaran extends Model
 		'keterangan',
 		'status',
 		'id_rekening_koran',
-		'tanggal_bayar'
+		'tanggal_bayar',
+		'jenis_pembayaran'
 	];
 }

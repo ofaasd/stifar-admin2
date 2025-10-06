@@ -4,7 +4,7 @@ namespace App\Imports;
 
 use App\Models\RekeningKoranTemp;
 use Maatwebsite\Excel\Concerns\ToModel;
-
+use DateTime;
 class RekeningKoranImport implements ToModel
 {
     /**
@@ -14,10 +14,14 @@ class RekeningKoranImport implements ToModel
     */
     public function model(array $row)
     {
+        $date_object = DateTime::createFromFormat('m/d/y H:i', $row[1]);
+        $new_date = $date_object->format('Y-m-d H:i');
+        $date_object = DateTime::createFromFormat('m/d/y H:i', $row[3]);
+        $new_date2 = $date_object->format('Y-m-d H:i');
         return new RekeningKoranTemp([
             //
-            'post_date' => $row[1],
-            'eff_date' => $row[4],
+            'post_date' => $new_date,
+            'eff_date' => $new_date2,
             'cheque_no' => $row[7],
             'description' => $row[8],
             'debit' => (int)$row[10],
