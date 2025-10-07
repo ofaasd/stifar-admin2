@@ -183,7 +183,13 @@
                                             <div class="mb-3">
                                                 <label for="nama" class="form-label">Tahun Angkatan</label>
                                                 <select name="angkatan" class="form-control">
-                                                @for($i=(date('Y')-1); $i>=(date('Y')-11); $i--)
+                                                @php
+                                                    $tahun = date('Y');
+                                                    if(date('m') < 6){
+                                                        $tahun = (date('Y')-1);
+                                                    }
+                                                @endphp
+                                                @for($i=(date('Y')); $i>=(date('Y')-11); $i--)
                                                     <option value="{{$i}}">{{$i}}</option>
                                                 @endfor
                                                 </select>
