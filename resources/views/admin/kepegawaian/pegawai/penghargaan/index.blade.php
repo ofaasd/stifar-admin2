@@ -1,3 +1,4 @@
+
 <div class="row">
     <div class="col-md-12 mb-4">
         <button class="btn btn-primary" data-bs-toggle="modal" data-original-title="test" data-bs-target="#modalpenghargaan" id="add-penghargaan">+ Tambah</button>
@@ -55,6 +56,7 @@
                     <th>Nama penghargaan</th>
                     <th>Penyelenggara</th>
                     <th>Tanggal</th>
+                    <th>File</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -65,6 +67,11 @@
                     <td>{{$row->nama_penghargaan}}</td>
                     <td>{{$row->penyelenggara}}</td>
                     <td>{{$row->tanggal}}</td>
+                    <td>
+                       @if(!empty($row->file))
+                            <a href="{{url('assets/file/penghargaan/' . $row->file)}}" title="dokumen" target="_blank" class="text-primary"><i class="fa fa-file"></i></a>
+                        @endif 
+                    </td>
                     <td>
                         <a href="#" title="Edit" class="edit-record-penghargaan" data-id="{{$row['id']}}" data-bs-toggle="modal" data-original-title="test" data-bs-target="#modalpenghargaan"><i class="fa fa-pencil"></i></a>
                         <button class="btn btn-sm btn-icon delete-record-penghargaan text-danger" data-id="{{$row->id}}"><i class="fa fa-trash"></i></button>

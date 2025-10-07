@@ -233,6 +233,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
     Route::get('admin/admisi/verifikasi/pembayaran/gelombang/{id}', [VerifikasiController::class, 'pembayaran'])->name('pembayaran_filter_gelombang');
     Route::get('admin/admisi/verifikasi/{id}/show', [VerifikasiController::class, 'show'])->name('verifikasi_show');
     Route::get('admin/admisi/statistik', [AdmisiStatistikController::class, 'index'])->name('admisi_statistik');
+    Route::get('admin/statistik/pegawai', [AdmisiStatistikController::class, 'pegawai'])->name('pegawai_statistik');
 
     Route::get('admin/admisi/pengumuman', [PengumumanController::class, 'index'])->name('pengumuman');
     Route::get('admin/admisi/pengumuman/{id}/peserta', [PengumumanController::class, 'peserta'])->name('pengumuman_peserta');
@@ -362,6 +363,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
     Route::get('/admin/masterdata/koordinator-mk/{id}', [JadwalController::class, 'koordinatorMK']);
     Route::get('/admin/masterdata/anggota-mk/{id}', [JadwalController::class, 'anggotaMK']);
     Route::get('/admin/masterdata/jadwal/create/{id}', [JadwalController::class, 'daftarJadwal']);
+    Route::get('/admin/masterdata/jadwal/peserta/{id}', [JadwalController::class, 'peserta']);
     Route::get('/jadwal/hapus-koor/{id}', [JadwalController::class, 'hapusKoor']);
     Route::get('/jadwal/hapus/{id}', [JadwalController::class, 'hapusJadwal']);
     Route::get('/jadwal/hapus-anggota/{id}', [JadwalController::class, 'hapusAnggota']);

@@ -230,8 +230,7 @@
                     <li><a href="{{URL::to('attendance/report')}}">Absensi</a></li>
                     <li><a href="{{URL::to('working')}}">Jam Kerja Dosen</a></li>
                     {{-- <li><a href="#">Keterlambatan <label class="badge badge-light-danger">!</label></a></li> --}}
-                    <li><a href="#">Statistik <label class="badge badge-light-danger">!</label></a></li>
-                    
+                    <li><a href="{{URL::to('admin/statistik/pegawai')}}">Statistik</a></li>
                     <li><a href="{{URL::to('admin/kepegawaian/surat_izin')}}">Surat Izin</a></li>
                 </ul>
             </li>

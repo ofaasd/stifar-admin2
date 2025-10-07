@@ -114,7 +114,9 @@
                                                             <td>{{$jumlah_input_krs[$jad->id]}} / {{ ((int)$jad['kuota'] +(int)$jumlah_input_krs[$jad->id])}}</td>
                                                             <td>
                                                                 <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                                                                    #
+                                                                    <a href="{{url('admin/masterdata/jadwal/peserta/' . $jad['id'])}}" class="btn btn-primary btn-sm btn-icon edit-record" >
+                                                                        Peserta
+                                                                    </a>
                                                                     {{-- <a href="#" class="btn btn-warning btn-sm btn-icon edit-record" data-bs-toggle="modal" data-original-title="test" data-bs-target="#jadwalEdit{{ $jad['id'] }}">
                                                                         <i class="fa fa-edit"></i>
                                                                     </a> --}}

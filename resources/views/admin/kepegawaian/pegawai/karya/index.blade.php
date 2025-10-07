@@ -76,6 +76,7 @@
                     <th>Bulan</th>
                     <th>Tahun</th>
                     <th>Link</th>
+                    <th>Dokumen</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -89,8 +90,13 @@
                     <td>{{$row->nomor}}</td>
                     <td>{{$row->bulan}}</td>
                     <td>{{$row->tahun}}</td>
-                    <td>{{$row->link_url}}</td>
+                    <td><a href="{{$row->link_url}}">{{$row->link_url}}</a></td>
                     <td>
+                       @if(!empty($row->dokumen))
+                            <a href="{{url('assets/file/karya/' . $row->dokumen)}}" title="dokumen" target="_blank" class="text-primary"><i class="fa fa-file"></i></a>
+                        @endif 
+                    </td>
+                    <td> 
                         <a href="#" title="Edit" class="edit-record-karya" data-id="{{$row['id']}}" data-bs-toggle="modal" data-original-title="test" data-bs-target="#modalkarya"><i class="fa fa-pencil"></i></a>
                         <button class="btn btn-sm btn-icon delete-record-karya text-danger" data-id="{{$row->id}}"><i class="fa fa-trash"></i></button>
                     </td>

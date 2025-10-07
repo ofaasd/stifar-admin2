@@ -82,6 +82,7 @@
                     <th>Sekolah</th>
                     <th>No. Ijazah</th>
                     <th>Tanggal</th>
+                    <th>File</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -93,6 +94,11 @@
                     <td>{{$row->universitas}}</td>
                     <td>{{$row->no_ijazah}}</td>
                     <td>{{date('d-m-Y',strtotime($row->tanggal_ijazah))}}</td>
+                    <td>
+                       @if(!empty($row->dokumen))
+                            <a href="{{url('assets/file/pendidikan/' . $row->dokumen)}}" title="dokumen" target="_blank" class="text-primary"><i class="fa fa-file"></i></a>
+                        @endif 
+                    </td>
                     <td>
                         <a href="#" title="Edit" class="edit-record-pendidikan" data-id="{{$row['id']}}" data-bs-toggle="modal" data-original-title="test" data-bs-target="#modalpendidikan"><i class="fa fa-pencil"></i></a>
                         <button class="btn btn-sm btn-icon delete-record-pendidikan text-danger" data-id="{{$row->id}}"><i class="fa fa-trash"></i></button>
