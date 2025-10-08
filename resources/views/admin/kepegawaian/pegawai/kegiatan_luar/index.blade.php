@@ -78,6 +78,7 @@
                     <th>Durasi</th>
                     <th>Tanggal</th>
                     <th>Link</th>
+                    <th>File</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -90,6 +91,17 @@
                     <td>{{$row->durasi}}</td>
                     <td>{{$row->tanggal}}</td>
                     <td><a href='{{$row->link}}'>{{$row->link}}</a></td>
+                    <td>
+                        @if(!empty($row->bukti_kegiatan))
+                            <a href="{{url('assets/file/kegiatan_luar/' . $row->bukti_kegiatan)}}" title="Bukti Kegiatan" target="_blank" class="text-primary"><i class="fa fa-file"></i></a>
+                        @endif 
+                        @if(!empty($row->surat_tugas))
+                            <a href="{{url('assets/file/kegiatan_luar/' . $row->surat_tugas)}}" title="surat tugas" target="_blank" class="text-primary"><i class="fa fa-file"></i></a>
+                        @endif 
+                        @if(!empty($row->dokumen_pendukung))
+                            <a href="{{url('assets/file/kegiatan_luar/' . $row->dokumen_pendukung)}}" title="dokumen pendukung" target="_blank" class="text-primary"><i class="fa fa-file"></i></a>
+                        @endif 
+                    </td>
                     <td>
                         <a href="#" title="Edit" class="edit-record-kegiatan_luar" data-id="{{$row['id']}}" data-bs-toggle="modal" data-original-title="test" data-bs-target="#modalkegiatan_luar"><i class="fa fa-pencil"></i></a>
                         <button class="btn btn-sm btn-icon delete-record-kegiatan_luar text-danger" data-id="{{$row->id}}"><i class="fa fa-trash"></i></button>

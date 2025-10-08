@@ -431,6 +431,19 @@ class JadwalController extends Controller
         $totalMahasiswa = $angkatan->sum();
         return view('admin.akademik.jadwal.jadwal_harian', compact('title','list_pengajar', 'ta','sesi','days','ruang','mk', 'no', 'jadwal','id_prodi','prodi','nama','jumlah_input_krs', 'angkatan','totalMahasiswa'));
     }
+    public function peserta(String $id){
+        $id_tahun = TahunAjaran::where('status','Aktif')->first()->id;
+        $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
+                        ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
+                        ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
+                        ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
+                        ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
+                        ->where('jadwals.id_tahun',$id_tahun)
+                        ->where('jadwals.id',$id)->first();
+        $krs = Krs::select('mahasiswa.nama','mahasiswa.nim','krs.*','program_studi.nama_prodi')->join('mahasiswa','mahasiswa.id','=','krs.id_mhs')->join('program_studi','program_studi.id','=','mahasiswa.id_program_studi')->where('id_jadwal',$id)->where('id_tahun',$id_tahun)->get();
+        $title = 'Daftar Mahasiswa';
+        return view('admin.akademik.jadwal.peserta', compact('jadwal','krs','title'));
+    }
     public function reqJadwalHarian(Request $request){
         $id_tahun = TahunAjaran::where('status','Aktif')->first()->id;
         $hari = $request->hari;

@@ -87,7 +87,7 @@
                     <td>{!!($row->status == 1)?"<span class='btn btn-success btn-sm'>Aktif</span>":"<span class='btn btn-danger btn-sm'>Tidak Aktif</span>"!!}</td>
                     <td>
                         @if(!empty($row->dokumen))
-                        <a href="/assets/file/fungsional/{{$row->dokumen}}" target="_blank" class="btn btn-info" style="margin-top:20px">Lihat File</a>
+                        <a href="/assets/file/fungsional/{{$row->dokumen}}" target="_blank" class="btn btn-info" style="margin-top:20px"><i class="fa fa-file"></i></a>
                         @else
                         <span class="btn btn-secondary">Tidak ada file</span>
                         @endif

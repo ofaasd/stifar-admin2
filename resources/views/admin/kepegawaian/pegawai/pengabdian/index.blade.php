@@ -47,6 +47,7 @@
                     <th>No.</th>
                     <th>Nama Tempat</th>
                     <th>Tahun</th>
+                    <th>File</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -56,6 +57,11 @@
                     <td>{{++$fake_id}}</td>
                     <td>{{$row->nama_tempat}}</td>
                     <td>{{$row->tahun}}</td>
+                    <td>
+                       @if(!empty($row->dokumen))
+                            <a href="{{url('assets/file/pengabdian/' . $row->dokumen)}}" title="dokumen" target="_blank" class="text-primary"><i class="fa fa-file"></i></a>
+                        @endif 
+                    </td>
                     <td>
                         <a href="#" title="Edit" class="edit-record-pengabdian" data-id="{{$row['id']}}" data-bs-toggle="modal" data-original-title="test" data-bs-target="#modalpengabdian"><i class="fa fa-pencil"></i></a>
                         <button class="btn btn-sm btn-icon delete-record-pengabdian text-danger" data-id="{{$row->id}}"><i class="fa fa-trash"></i></button>

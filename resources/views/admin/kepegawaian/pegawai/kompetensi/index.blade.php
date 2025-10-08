@@ -59,6 +59,7 @@
                     <th>Lembaga</th>
                     <th>Tanggal</th>
                     <th>Link</th>
+                    <th>File</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -70,6 +71,11 @@
                     <td>{{$row->lembaga}}</td>
                     <td>{{$row->tanggal}}</td>
                     <td><a href='{{$row->link}}'>{{$row->link}}</a></td>
+                    <td>
+                        @if(!empty($row->bukti))
+                            <a href="{{url('assets/file/kompetensi/' . $row->bukti)}}" title="dokumen" target="_blank" class="text-primary"><i class="fa fa-file"></i></a>
+                        @endif 
+                    </td>
                     <td>
                         <a href="#" title="Edit" class="edit-record-kompetensi" data-id="{{$row['id']}}" data-bs-toggle="modal" data-original-title="test" data-bs-target="#modalkompetensi"><i class="fa fa-pencil"></i></a>
                         <button class="btn btn-sm btn-icon delete-record-kompetensi text-danger" data-id="{{$row->id}}"><i class="fa fa-trash"></i></button>

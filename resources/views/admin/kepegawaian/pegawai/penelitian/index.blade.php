@@ -126,6 +126,7 @@
                     <th>Sumber Dana</th>
                     <th>Jumlah</th>
                     <th>Penyelenggara</th>
+                    <th>File</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -139,6 +140,15 @@
                     <td>{{$row->sumber_dana}}</td>
                     <td>Rp. {{number_format($row->dana,0,",",".")}}</td>
                     <td>{{$row->penyelenggara}}</td>
+                    <td>
+                        @if(!empty($row->dokumen))
+                            <a href="{{url('assets/file/penelitian/' . $row->dokumen)}}" title="dokumen" target="_blank" class="text-primary"><i class="fa fa-file"></i></a>
+                        @endif
+                        @if(!empty($row->proposal))
+                            <a href="{{url('assets/file/penelitian/' . $row->proposal)}}" title="proposal" target="_blank" class="text-primary"><i class="fa fa-file"></i></a>
+                        @endif
+                        
+                    </td>   
                     <td>
                         <a href="#" title="Edit" class="edit-record-penelitian" data-id="{{$row['id']}}" data-bs-toggle="modal" data-original-title="test" data-bs-target="#modalpenelitian"><i class="fa fa-pencil"></i></a>
                         <button class="btn btn-sm btn-icon delete-record-penelitian text-danger" data-id="{{$row->id}}"><i class="fa fa-trash"></i></button>
