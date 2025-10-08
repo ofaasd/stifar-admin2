@@ -56,31 +56,31 @@
     <br />
     <table class="customers"  id="myTable" cellpadding="5" width="100%">
         <tr>
-            <td>Nama Lengkap</td>
+            <td><b>Nama Lengkap</b></td>
             <td>{{$pegawai->nama_lengkap}}</td>
-            <td>NIY</td>
+            <td><b>NIY</b></td>
             <td>{{$pegawai->npp}}</td>
-            <td>No. Telp</td>
-            <td>{{$pegawai->notelp}}</td>
+            <td><b>No. Telp</b></td>
+            <td>{{$pegawai->notelp ?? "-"}}</td>
             <td rowspan=3 width="80">
                 <img src='{{ (!empty($pegawai->foto))?public_path('assets/images/pegawai/' . $pegawai->foto):public_path('assets/images/user/7.jpg') }}' width="100%">
             </td>
         </tr>
         <tr>
-            <td>NIDN</td>
+            <td><b>NIDN</b></td>
             <td>{{$pegawai->nidn}}</td>
-            <td>Tempat, Tanggal Lahir</td>
+            <td><b>Tempat, Tanggal Lahir</b></td>
             <td>{{$pegawai->tempat_lahir}}, {{date('d-m-Y', strtotime($pegawai->tanggal_lahir))}}</td>
-            <td>No. HP</td>
-            <td>{{$pegawai->nohp}}</td>
+            <td><b>No. HP</b></td>
+            <td>{{$pegawai->nohp ?? '-'}}</td>
         </tr>
         <tr>
-            <td>Jenis Kelamin</td>
+            <td><b>Jenis Kelamin</b></td>
             <td>{{($pegawai->jenis_kelamin == 'L')?'Laki-laki':'Perempuan'}}</td>
-            <td>Jabatan Struktural</td>
+            <td><b>Jabatan Struktural</b></td>
             <td>{{$jabatan_struktural}}</td>
-            <td>Email</td>
-            <td>{{$pegawai->email}}</td>
+            <td><b>Email</b></td>
+            <td>{{$pegawai->email ?? '-'}}</td>
         </tr>
         <tr>
             <td>Kebangsaan</td>
