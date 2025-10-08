@@ -815,6 +815,7 @@ Route::group(['middleware' => ['auth', 'role:pegawai|super-admin']], function ()
     Route::resource('riwayat', RiwayatPegawaiController::class)->name('index', 'pegawai');
     Route::get('pegawai',[UserPegawaiController::class, 'index'] );
     Route::get('cetak_cv',[UserPegawaiController::class, 'cetak_cv'] );
+    Route::get('cetak_cv_excel',[UserPegawaiController::class, 'cetak_cv_excel'] );
     Route::resource('pegawai', UserPegawaiController::class)->name('index','pegawai');
     Route::resource('riwayat', RiwayatPegawaiController::class)->name('index','riwayat');
 

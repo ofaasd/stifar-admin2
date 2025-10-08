@@ -28,6 +28,8 @@ use Spatie\Permission\Models\Role;
 use App\Models\Prodi;
 use PDF;
 use Carbon\Carbon; 
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\CVExport;
 
 class UserPegawaiController extends Controller
 {
@@ -168,5 +170,8 @@ class UserPegawaiController extends Controller
         $pdf = PDF::loadView('pegawai/profile/cetak_cv', $data)
                     ->setPaper('a4', 'potrait');
         return $pdf->stream('CV-' . $pegawai->id . '-' . date('YmdHis'). '.pdf');
+    }
+    public function cetak_cv_excel(){
+        return Excel::download(new CVExport, 'cv.xlsx');
     }
 }

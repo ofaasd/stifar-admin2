@@ -63,7 +63,7 @@
             <td>No. Telp</td>
             <td>{{$pegawai->notelp}}</td>
             <td rowspan=3>
-                <img src='{{ (!empty($pegawai->foto))?asset('assets/images/pegawai/' . $pegawai->foto):asset('assets/images/user/7.jpg') }}' width="100%">
+                <img src='{{ (!empty($pegawai->foto))?public_path('assets/images/pegawai/' . $pegawai->foto):public_path('assets/images/user/7.jpg') }}' width="100%">
             </td>
         </tr>
         <tr>
