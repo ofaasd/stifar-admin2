@@ -70,7 +70,7 @@
                                     @include('admin.kepegawaian.pegawai._form_ubah_gambar ')
                                 </div>
                                 <div class="col-md-12 mb-4">
-                                    <a href="#" class="btn btn-primary btn-block"><i class="fa fa-print"></i> Cetak CV</a>
+                                    <a href="{{url('cetak_cv')}}" class="btn btn-primary btn-block"><i class="fa fa-print"></i> Cetak CV</a>
                                 </div>
                                 <div class="col-md-12 mb-4">
                                     <a href="#" class="btn btn-primary btn-block"><i class="fa fa-print"></i> Cetak CV Excel</a>
