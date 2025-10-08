@@ -83,11 +83,11 @@
             <td>{{$pegawai->email ?? '-'}}</td>
         </tr>
         <tr>
-            <td>Kebangsaan</td>
+            <td><b>Kebangsaan</b></td>
             <td>Indonesia</td>
-            <td>Jabatan Fungsional</td>
+            <td><b>Jabatan Fungsional</b></td>
             <td>{{$jabatan_fungsional}}</td>
-            <td>Alamat</td>
+            <td><b>Alamat</b></td>
             <td colspan=2>{{$pegawai->alamat}}</td>
         </tr>
     </table><br />
