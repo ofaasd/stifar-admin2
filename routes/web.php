@@ -703,6 +703,7 @@ Route::group(['middleware' => ['auth', 'role:mhs|super-admin']], function () {
         Route::get('/get-data-pengajuan/{id}', 'getDataPengajuanJudul')->name('getDataPengajuanJudul');
         Route::put('/{id?}', 'update')->name('update');
         Route::post('/print-sidang', 'printSidang')->name('print-sidang');
+        Route::post('/print-persetujuan-proposal', 'printPersetujuanProposal')->name('print-persetujuan-proposal');
     });
     Route::group(['prefix' => 'mahasiswa/skripsi/berkas', 'as' => 'mhs.skripsi.berkas.', 'controller' => BerkasController::class], function () {
         Route::get('/', 'index')->name('index');
@@ -768,6 +769,8 @@ Route::group(['middleware' => ['auth', 'role:pegawai|super-admin']], function ()
         Route::get('/get-detail/{idSidang}', [SidangController::class, 'getDetail'])->name('get-detail');
         Route::put('/update-jadwal/{idSidang}', [SidangController::class, 'updateJadwal'])->name('update-jadwal');
         Route::put('/update-status-jadwal/{idSidang}', [SidangController::class, 'updateStatusJadwal'])->name('update-status-jadwal');
+
+        Route::post('/print-lembar-hadir', [SidangController::class, 'printLembarHadir'])->name('print-lembar-hadir');
     });
 
     Route::prefix('akademik')->name('akademik.')->group(function () {
@@ -782,6 +785,7 @@ Route::group(['middleware' => ['auth', 'role:pegawai|super-admin']], function ()
                     Route::get('/show/{id}', [DosenBimbinganController::class, 'show'])->name('show');
                     Route::put('/update/{id}', [DosenBimbinganController::class, 'update'])->name('update');
                     Route::put('/update-status/{id}', [DosenBimbinganController::class, 'updateStatus'])->name('update-status');
+                    Route::put('/acc-sidang/{idEnkripsi}', [DosenBimbinganController::class, 'accSidang'])->name('acc-sidang');
                 });
 
                 Route::prefix('penguji')->name('penguji.')->group(function () {
