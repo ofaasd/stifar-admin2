@@ -2,13 +2,15 @@
 
 namespace App;
 
-use App\Models\MasterSkripsi;
 use Auth;
+use App\Models\MasterSkripsi;
+use Illuminate\Support\Facades\Crypt;
 
 class helpers
 {
     public static $number_key = '3EYdFkP7uhk5RX6D';
     public static $wa_api = 'X2Y7UZOZT0WVQVTG';
+
     public static function getNilaiHuruf(int $nilai)
     {
 
@@ -30,6 +32,7 @@ class helpers
             return 'E';
         }
     }
+
     public static function getKualitas(string $nilai)
     {
         if($nilai == 'A'){
@@ -51,50 +54,63 @@ class helpers
         }
     }
 
-    public function getIdMasterSkripsi(){
+    public function getIdMasterSkripsi()
+    {
         $user  = Auth::user();
         $email = $user->email;
         $nim   = explode('@', $email)[0];
         $master = MasterSkripsi::where('nim', $nim)->first();
         return $master ? $master->id : null;
     }
+
     public static function send_wa($data)
-  {
-    $number_key = self::$number_key;
-    $wa_api = self::$wa_api;
+    {
+        $number_key = self::$number_key;
+        $wa_api = self::$wa_api;
 
-    $curl = curl_init();
+        $curl = curl_init();
 
-    $dataSending = [];
-    $dataSending['api_key'] = $wa_api;
-    $dataSending['number_key'] = $number_key;
+        $dataSending = [];
+        $dataSending['api_key'] = $wa_api;
+        $dataSending['number_key'] = $number_key;
 
-    $prefix = substr($data['no_wa'], 0, 2);
-    if ($prefix == '62') {
-      $new_prefix = 0;
-      $no_wa = $new_prefix . substr($data['no_wa'], 2);
-    } else {
-      $no_wa = $data['no_wa'];
+        $prefix = substr($data['no_wa'], 0, 2);
+        if ($prefix == '62') {
+        $new_prefix = 0;
+        $no_wa = $new_prefix . substr($data['no_wa'], 2);
+        } else {
+        $no_wa = $data['no_wa'];
+        }
+        $dataSending['phone_no'] = $no_wa;
+        $dataSending['message'] = $data['pesan'];
+
+        curl_setopt_array($curl, [
+        CURLOPT_URL => 'https://api.watzap.id/v1/send_message',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_POSTFIELDS => json_encode($dataSending),
+        CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
+        ]);
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+        return $response;
     }
-    $dataSending['phone_no'] = $no_wa;
-    $dataSending['message'] = $data['pesan'];
 
-    curl_setopt_array($curl, [
-      CURLOPT_URL => 'https://api.watzap.id/v1/send_message',
-      CURLOPT_RETURNTRANSFER => true,
-      CURLOPT_ENCODING => '',
-      CURLOPT_MAXREDIRS => 10,
-      CURLOPT_TIMEOUT => 0,
-      CURLOPT_FOLLOWLOCATION => true,
-      CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-      CURLOPT_CUSTOMREQUEST => 'POST',
-      CURLOPT_POSTFIELDS => json_encode($dataSending),
-      CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
-    ]);
+    public static function encryptId($string)
+    {
+        return Crypt::encryptString($string . "stifar");
+    }
 
-    $response = curl_exec($curl);
-
-    curl_close($curl);
-    return $response;
-  }
+    public static function decryptId($string)
+    {
+        $decrypted = Crypt::decryptString($string);
+        return str_replace("stifar", "", $decrypted);
+    }
 }
