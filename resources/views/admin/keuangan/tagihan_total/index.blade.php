@@ -75,7 +75,7 @@
 
                                             <div class="mt-4">
                                                 <label for="totalJumlah" class="form-label fw-bold">Total Jumlah:</label>
-                                                <input type="text" name="total_jumlah" id="totalJumlah" class="form-control" readonly>
+                                                <input type="text" name="total_jumlah" id="total_bayar" class="form-control" readonly>
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -239,6 +239,7 @@
             $('#ModalLabel').html('Tambah ' + title2);
             $("#id").val('');
             $('#formAdd').trigger("reset");
+            $('#pembayaranTable tbody').empty(); 
         });
 
         $(document).on('click', '.edit-record', function () {
@@ -246,8 +247,26 @@
             $('#ModalLabel').html('Edit ' + title2);
 
             $.get(`${baseUrl}${page}/${id}/edit`, function (data) {
-                Object.keys(data).forEach(key => {
-                    $('#' + key).val(data[key]).trigger('change');
+                Object.keys(data[1]).forEach(key => {
+                    $('#' + key).val(data[1][key]).trigger('change');
+                });
+                $('#pembayaranTable tbody').empty(); 
+                let i = 1;
+                Object.keys(data[2]).forEach(key => {
+                    let newRow = `<tr>
+                                    <td>${i++}</td>
+                                    <td>
+                                        <select name="jenis[]" class="form-select">
+                                            <option value="">-- Pilih Jenis Pembayaran --</option>
+                                            @foreach($jenis as $jns)
+                                                <option value="{{$jns->id}}" ${data[2][key].id_jenis == {{$jns->id}} ? 'selected' : '' }>{{$jns->nama}}</option>
+                                            @endforeach    
+                                        </select>
+                                    </td>
+                                    <td><input type="number" name="jumlah[]" class="form-control jumlah-input" placeholder="Jumlah" value="${data[2][key].jumlah}" /></td>
+                                    <td><button class="btn btn-danger btn-sm">Hapus</button></td>
+                                </tr>`;
+                    $('#pembayaranTable tbody').append(newRow);
                 });
             }).fail(function (jqXHR, textStatus, errorThrown) {
                 console.error('Error fetching data:', textStatus, errorThrown);
@@ -405,7 +424,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         const tableBody = document.querySelector('#pembayaranTable tbody');
         const addRowBtn = document.getElementById('addRowBtn');
-        const totalJumlahInput = document.getElementById('totalJumlah');
+        const totalJumlahInput = document.getElementById('total_bayar');
 
         function updateTotal() {
             let total = 0;
@@ -453,7 +472,7 @@
                     </select>
                 </td>
                 <td><input type="number" name="jumlah[]" class="form-control jumlah-input" placeholder="Jumlah" /></td>
-                <td><button class="btn btn-danger btn-sm">Hapus</button></td>
+                <td><button class="btn btn-danger btn-sm">Hapus<    /button></td>
             `;
             
             tableBody.appendChild(newRow);

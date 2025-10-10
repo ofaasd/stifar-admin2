@@ -53,7 +53,6 @@ class TagihanTotalController extends Controller
                 $tagihan = Tagihan::where('status',0)
                     ->where(fn($query) =>
                         $query ->where('id', 'LIKE', "%{$search}%")
-                        ->orWhere('description', 'LIKE', "%{$search}%")
                         ->orWhere('nim', 'LIKE', "%{$search}%")
                     )
                     ->offset($start)
@@ -64,7 +63,6 @@ class TagihanTotalController extends Controller
                 $totalFiltered = Tagihan::where('status',0)
                     ->where(fn($query) =>
                         $query ->where('id', 'LIKE', "%{$search}%")
-                        ->orWhere('description', 'LIKE', "%{$search}%")
                         ->orWhere('nim', 'LIKE', "%{$search}%")
                     )
                     ->count();
@@ -109,22 +107,44 @@ class TagihanTotalController extends Controller
     {
         // Validasi data
         $id = $request->id;
-
-        $rekening = Tagihan::updateOrCreate(
-            ['id' => $id],
-            [
-                'post_date' => $request->post_date,
-                'eff_date' => $request->eff_date,
-                'cheque_no' => $request->cheque_no,
-                'description' => $request->description,
-                'debit' => $request->debit,
-                'credit' => $request->credit,
-                'balance' => $request->balance,
-                'transaction' => $request->transaction,
-                'ref_no' => $request->ref_no,
-                'status' => $request->status,
-            ]
-        );
+        $total = (int) str_replace('.', '', $request->total_jumlah);
+        
+        if($id){
+            //update the field
+            $rekening = Tagihan::updateOrCreate(
+                ['id' => $id],
+                [
+                    'nim' => $request->nim,
+                    'gelombang' => $request->gelombang,
+                    'total_bayar' => $total,
+                ]
+            );
+            $delete = DetailTagihanKeuangan::where('id_tagihan',$id)->delete();
+            foreach($request->jenis as $index => $jenis){
+                DetailTagihanKeuangan::create([
+                    'id_tagihan' => $rekening->id,
+                    'id_jenis' => $jenis,
+                    'jumlah' => $request->jumlah[$index],
+                ]);
+            }
+        }else{
+            $rekening = Tagihan::updateOrCreate(
+                ['id' => $id],
+                [
+                    'nim' => $request->nim,
+                    'gelombang' => $request->gelombang,
+                    'total_bayar' => $total,
+                ]
+            );
+            foreach($request->jenis as $index => $jenis){
+                DetailTagihanKeuangan::create([
+                    'id_tagihan' => $rekening->id,
+                    'id_jenis' => $jenis,
+                    'jumlah' => $request->jumlah[$index],
+                ]);
+            }
+        }
+        
         if($rekening){
             return response()->json([
                 'status' => 'success',
@@ -151,10 +171,11 @@ class TagihanTotalController extends Controller
      */
     public function edit(string $id)
     {
-        $gedung = Tagihan::find($id);
-
-        if ($gedung) {
-            return response()->json($gedung);
+        $tagihan = [];
+        $tagihan[1] = Tagihan::find($id);
+        $tagihan[2] = DetailTagihanKeuangan::where('id_tagihan',$id)->get();
+        if ($tagihan) {
+            return response()->json($tagihan);
         } else {
             return response()->json([
                 'status' => 'error',
@@ -177,6 +198,7 @@ class TagihanTotalController extends Controller
     public function destroy(string $id)
     {
         $rekening = Tagihan::where('id', $id)->delete();
+        $rekening = DetailTagihanKeuangan::where('id_tagihan', $id)->delete();
     }
     public function import(Request $request){
         Excel::import(new TagihanImport, $request->file('file_excel'));
