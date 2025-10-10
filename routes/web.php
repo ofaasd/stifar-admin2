@@ -118,6 +118,7 @@ use App\Http\Controllers\admin\keuangan\AdminLaporPembayaranContoller;
 use App\Http\Controllers\admin\keuangan\RekeningKoranController;
 use App\Http\Controllers\admin\keuangan\RekeningKoranArsipController;
 use App\Http\Controllers\admin\keuangan\PembayaranController;
+use App\Http\Controllers\admin\keuangan\TagihanTotalController;
 use App\Http\Controllers\mahasiswa\skripsi\BimbinganSkripsiController;
 use App\Http\Controllers\mahasiswa\skripsi\PengajuanSkripsiController;
 use App\Http\Controllers\admin\akademik\wisuda\SettingWisudaController;
@@ -172,7 +173,7 @@ Route::get('/register_mahasiswa', [LoginController::class, 'register_mahasiswa']
 Route::post('/actionRegister', [LoginController::class, 'actionRegister'])->name('actionRegister');
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 
-Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], function () {
+Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi|baak',]], function () {
     // route dosen
     Route::get('/dosen/perwalian', [DosenController::class, 'index'])->name('Perwalian');
     Route::get('/dosen/{id}/krs', [DosenController::class, 'detailKRS'])->name('detailKRS');
@@ -463,6 +464,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
     Route::post('/admin/keuangan/rekening_koran/update_nim', [RekeningKoranController::class, 'update_nim']);
     Route::post('/admin/keuangan/rekening_koran/simpan_pembayaran', [RekeningKoranController::class, 'simpan_pembayaran']);
     Route::get('/admin/keuangan/rekening_koran/arsip', [RekeningKoranArsipController::class, 'index']);
+    Route::post('/admin/keuangan/tagihan_total/import', [TagihanTotalController::class, 'import']);
 
     Route::get('attendance/report', [PresenceController::class,'report'])->name('attendance_report');
     Route::get('attendance/log', [PresenceController::class,'log'])->name('attendance_log');
@@ -530,6 +532,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi',]], functi
     Route::resource('admin/keuangan/lapor_bayar', AdminLaporPembayaranContoller::class)->name('index','lapor_bayar');
     Route::resource('admin/keuangan/rekening_koran', RekeningKoranController::class)->name('index','rekening_koran');
     Route::resource('admin/keuangan/pembayaran', PembayaranController::class)->name('index','pembayaran');
+    Route::resource('admin/keuangan/tagihan_total', TagihanTotalController::class)->name('index','tagihan_total');
     Route::resource('admin/keuangan/tagihan', TagihanController::class)->name('index','keuangan');
     Route::resource('admin/keuangan/setting_keuangan', SettingKeuanganController::class)->name('index','setting_keuangan');
     Route::resource('admin/keuangan', KeuanganController::class)->name('index','keuangan');
