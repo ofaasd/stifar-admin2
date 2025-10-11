@@ -8,7 +8,9 @@ use App\Models\Tagihan;
 use App\Models\DetailTagihanKeuangan; 
 use App\Models\Mahasiswa; 
 use App\Imports\TagihanImport;
+use App\Imports\TagihanS1Import;
 use App\Models\JenisKeuangan;
+use App\Models\Prodi;
 use Maatwebsite\Excel\Facades\Excel;  
 
 class TagihanTotalController extends Controller
@@ -22,8 +24,9 @@ class TagihanTotalController extends Controller
             $title2 = "Total Tagihan";
             $indexed = $this->indexed;
             $mahasiswa = Mahasiswa::where('status',1)->get();
+            $prodi = Prodi::all();
             $jenis = JenisKeuangan::whereNotNull('kode')->get();
-            return view('admin.keuangan.tagihan_total.index', compact('title', 'title2', 'indexed','mahasiswa','jenis'));
+            return view('admin.keuangan.tagihan_total.index', compact('title', 'title2','prodi', 'indexed','mahasiswa','jenis'));
         } else {
             $columns = [
                 1 => 'id',
@@ -201,7 +204,12 @@ class TagihanTotalController extends Controller
         $rekening = DetailTagihanKeuangan::where('id_tagihan', $id)->delete();
     }
     public function import(Request $request){
-        Excel::import(new TagihanImport, $request->file('file_excel'));
+        $jenjang = substr($request->prodi,0,2);
+        if($jenjang == 'D3'){
+            Excel::import(new TagihanImport, $request->file('file_excel'));
+        }else{
+            Excel::import(new TagihanS1Import, $request->file('file_excel'));
+        }
         
         return response()->json([
             'status' => 'success',

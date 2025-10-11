@@ -96,11 +96,23 @@
                                             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
+                                            <div class="mb-3">
+                                                <a href="{{url('/assets/file/format_import_tagihan.xlsx')}}" class="btn btn-primary">Format Import</a>
+                                                <a href="{{url('/assets/file/format_import_tagihan_s1.xlsx')}}" class="btn btn-info">Format Import S1/S2</a>
+                                            </div>
                                             <div class="mb-3" id="field-nama">
                                                 <label for="file_excel" class="form-label">File Excel</label>
                                                 <input type="file" class="form-control" name="file_excel" id="file_excel">
                                             </div>
-                                            <a href="{{url('/assets/file/format_import.xlsx')}}" class="btn btn-primary">Format Import</a>
+                                            <div class="mb-3" id="field-nama">
+                                                <label for="file_excel" class="form-label">Program Studi</label>
+                                                <select class="form-control" name="prodi" id="prodi" >
+                                                    <option value="">-- Pilih Prodi --</option>
+                                                    @foreach($prodi as $prd)
+                                                        <option value="{{$prd->id}}">{{$prd->nama_prodi}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                         </div>
                                         <div class="modal-footer">
                                             <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
@@ -472,7 +484,7 @@
                     </select>
                 </td>
                 <td><input type="number" name="jumlah[]" class="form-control jumlah-input" placeholder="Jumlah" /></td>
-                <td><button class="btn btn-danger btn-sm">Hapus<    /button></td>
+                <td><button class="btn btn-danger btn-sm">Hapus</button></td>
             `;
             
             tableBody.appendChild(newRow);
