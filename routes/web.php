@@ -777,7 +777,7 @@ Route::group(['middleware' => ['auth', 'role:pegawai|super-admin']], function ()
 
         Route::get('/get-detail/{idSidang}', [SidangController::class, 'getDetail'])->name('get-detail');
         Route::put('/update-jadwal/{idSidang}', [SidangController::class, 'updateJadwal'])->name('update-jadwal');
-        Route::put('/update-status-jadwal/{idSidang}', [SidangController::class, 'updateStatusJadwal'])->name('update-status-jadwal');
+        Route::put('/penilaian-sidang/{idSidang}', [SidangController::class, 'penilaianSidang'])->name('penilaian-sidang');
 
         Route::post('/print-daftar-hadir', [SidangController::class, 'printLembarHadir'])->name('print-daftar-hadir');
     });
