@@ -30,6 +30,7 @@
                         @if(empty($link))
                         <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal" id="add-record">+ Add Pembayaran</button>
                         <button class="btn btn-warning" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#filterModal" id="filter-record">Filter Pembayaran</button>
+                        <button class="btn btn-info" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#importModal" id="import-record">+ Import Pembayaran</button>
                         
                         @endif
                         <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
@@ -118,6 +119,30 @@
                                         <div class="modal-footer">
                                             <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
                                             <button class="btn btn-primary" id="btn-submit" type="submit">Simpan</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="importModal" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <form action="javascript:void(0)" id="formImport">
+                                        @csrf
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="ModalLabel">Import Pembayaran</h5>
+                                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="mb-3" id="field-nama">
+                                                <label for="file_excel" class="form-label">File Excel</label>
+                                                <input type="file" class="form-control" name="file_excel" id="file_excel">
+                                            </div>
+                                            <a href="{{url('/assets/file/format_import_pembayaran.xlsx')}}" class="btn btn-primary">Format Import</a>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                                            <button class="btn btn-primary" id="btn-import" type="submit">Simpan</button>
                                         </div>
                                     </form>
                                 </div>
@@ -342,7 +367,7 @@
 
             $.ajax({
                 data: myFormData,
-                url: `${baseUrl}/admin/keuangan/rekening_koran/import`,
+                url: `${baseUrl}/admin/keuangan/pembayaran/import`,
                 type: 'POST',
                 processData: false,
                 contentType: false,

@@ -119,6 +119,7 @@ use App\Http\Controllers\admin\keuangan\RekeningKoranController;
 use App\Http\Controllers\admin\keuangan\RekeningKoranArsipController;
 use App\Http\Controllers\admin\keuangan\PembayaranController;
 use App\Http\Controllers\admin\keuangan\TagihanTotalController;
+use App\Http\Controllers\admin\keuangan\StatistikKeuanganController;
 use App\Http\Controllers\mahasiswa\skripsi\BimbinganSkripsiController;
 use App\Http\Controllers\mahasiswa\skripsi\PengajuanSkripsiController;
 use App\Http\Controllers\admin\akademik\wisuda\SettingWisudaController;
@@ -465,6 +466,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi|baak',]], f
     Route::post('/admin/keuangan/rekening_koran/simpan_pembayaran', [RekeningKoranController::class, 'simpan_pembayaran']);
     Route::get('/admin/keuangan/rekening_koran/arsip', [RekeningKoranArsipController::class, 'index']);
     Route::post('/admin/keuangan/tagihan_total/import', [TagihanTotalController::class, 'import']);
+    Route::post('/admin/keuangan/pembayaran/import', [PembayaranController::class, 'import']);
 
     Route::get('attendance/report', [PresenceController::class,'report'])->name('attendance_report');
     Route::get('attendance/log', [PresenceController::class,'log'])->name('attendance_log');
@@ -535,7 +537,9 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi|baak',]], f
     Route::resource('admin/keuangan/tagihan_total', TagihanTotalController::class)->name('index','tagihan_total');
     Route::resource('admin/keuangan/tagihan', TagihanController::class)->name('index','keuangan');
     Route::resource('admin/keuangan/setting_keuangan', SettingKeuanganController::class)->name('index','setting_keuangan');
+    Route::resource('admin/keuangan/statistik', StatistikKeuanganController::class)->name('index','statistik_keuangan');
     Route::resource('admin/keuangan', KeuanganController::class)->name('index','keuangan');
+    
     Route::resource('working', WorkingHourController::class)->name('index','working_hour');
 
 

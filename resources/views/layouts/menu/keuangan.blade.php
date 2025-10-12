@@ -9,7 +9,7 @@
         <li><a href="{{URL::to('admin/keuangan/lapor_bayar')}}">Laporan Pembayaran</a></li>
         <li><a href="{{URL::to('admin/keuangan/rekening_koran')}}">Rekening Koran</a></li>
         <li><a href="{{URL::to('admin/keuangan/pembayaran')}}">Rekap Pembayaran</a></li>
-        <li><a href="#">Statistik <label class="badge badge-light-danger">!</label></a></li>
+        <li><a href="{{URL::to('admin/keuangan/statistik')}}">Statistik </a></li>
         {{-- <li><a href="#">Cetak <label class="badge   badge-light-danger">!</label></a></li> --}}
         {{-- <li><a href="#">Sync <label class="badge badge-light-danger">!</label></a></li> --}}
         {{-- <li><a href="#">Pembayaran Lain-lain <label class="badge badge-light-danger">!</label></a></li> --}}

@@ -9,6 +9,8 @@ use App\Models\PmbPesertaOnline;
 use App\Models\Mahasiswa; 
 use App\Models\Prodi; 
 use App\Models\TbPembayaran; 
+use App\Imports\PembayaranImport;
+use Maatwebsite\Excel\Facades\Excel;  
 
 class PembayaranController extends Controller
 {
@@ -213,5 +215,13 @@ class PembayaranController extends Controller
     public function destroy(string $id)
     {
         $pembayaran = TbPembayaran::where('id', $id)->delete();
+    }
+    public function import(Request $request){
+        Excel::import(new PembayaranImport, $request->file('file_excel'));
+        
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Pembayaran Berhasil ditambah/update',
+        ], 200);
     }
 }
