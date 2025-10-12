@@ -54,6 +54,7 @@ use App\Http\Controllers\admin\master\RenstraPTController;
 use App\Http\Controllers\mahasiswa\KuesionerMhsController;
 use App\Http\Controllers\pegawai\RiwayatPegawaiController;
 use App\Http\Controllers\admin\admisi\DaftarSoalController;
+use App\Http\Controllers\admin\admisi\HistoryPmbController;
 use App\Http\Controllers\admin\admisi\PengumumanController;
 use App\Http\Controllers\admin\admisi\PmbPesertaController;
 use App\Http\Controllers\admin\admisi\VerifikasiController;
@@ -70,6 +71,7 @@ use App\Http\Controllers\admin\master\JenisBarangController;
 use App\Http\Controllers\dosen\skripsi\PembimbingController;
 use App\Http\Controllers\mahasiswa\skripsi\BerkasController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiController;
+use App\Http\Controllers\admin\keuangan\PembayaranController;
 use App\Http\Controllers\admin\master\AsetKategoriController;
 use App\Http\Controllers\admin\master\AtributProdiController;
 use App\Http\Controllers\admin\master\RenstraProdiController;
@@ -87,6 +89,7 @@ use App\Http\Controllers\mahasiswa\skripsi\PengajuanController;
 use App\Http\Controllers\admin\akademik\SoalKuesionerController;
 use App\Http\Controllers\admin\berkas\BerkasMahasiswaController;
 use App\Http\Controllers\admin\keuangan\JenisKeuanganController;
+use App\Http\Controllers\admin\keuangan\RekeningKoranController;
 use App\Http\Controllers\admin\master\ProdiAkreditasiController;
 use App\Http\Controllers\admin\master\StrukturPegawaiController;
 use App\Http\Controllers\admin\admisi\BiayaPendaftaranController;
@@ -111,13 +114,11 @@ use App\Http\Controllers\dosen\skripsi\BimbinganMahasiswaController;
 use App\Http\Controllers\dosen\skripsi\PengajuanBimbinganController;
 use App\Http\Controllers\admin\admisi\VerifikasiPembayaranController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiMengajarController;
+use App\Http\Controllers\admin\keuangan\RekeningKoranArsipController;
 use App\Http\Controllers\mahasiswa\KrsController as mhsKrsController;
 use App\Http\Controllers\mahasiswa\skripsi\PengajuanSidangController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiPekerjaanController;
 use App\Http\Controllers\admin\keuangan\AdminLaporPembayaranContoller;
-use App\Http\Controllers\admin\keuangan\RekeningKoranController;
-use App\Http\Controllers\admin\keuangan\RekeningKoranArsipController;
-use App\Http\Controllers\admin\keuangan\PembayaranController;
 use App\Http\Controllers\mahasiswa\skripsi\BimbinganSkripsiController;
 use App\Http\Controllers\mahasiswa\skripsi\PengajuanSkripsiController;
 use App\Http\Controllers\admin\akademik\wisuda\SettingWisudaController;
@@ -139,6 +140,7 @@ use App\Http\Controllers\mahasiswa\skripsi\PengajuanPembimbingController;
 use App\Http\Controllers\admin\akademik\yudisium\ProsesYudisiumController;
 use App\Http\Controllers\admin\akademik\yudisium\SettingYudisiumController;
 use App\Http\Controllers\mahasiswa\AbsensiController as mhsAbsensiController;
+use App\Http\Controllers\mahasiswa\skripsi\MahasiswaPenontonSidangController;
 use App\Http\Controllers\admin\akademik\transkripIjazah\PrintIjazahController;
 use App\Http\Controllers\admin\akademik\wisuda\AdminDaftarWisudawanController;
 use App\Http\Controllers\admin\akademik\yudisium\PengesahanYudisiumController;
@@ -150,7 +152,6 @@ use App\Http\Controllers\admin\akademik\skripsi\AdminPengajuanSkripsiController;
 use App\Http\Controllers\admin\akademik\transkripIjazah\PrintTranskripController;
 use App\Http\Controllers\admin\akademik\wisuda\AdminDaftarPendaftarWisudaController;
 use App\Http\Controllers\admin\admisi\StatistikController as AdmisiStatistikController;
-use App\Http\Controllers\admin\admisi\HistoryPmbController;
 
 /*
 |--------------------------------------------------------------------------
@@ -649,6 +650,12 @@ Route::group(['middleware' => ['auth', 'role:mhs|super-admin']], function () {
                     Route::get('/', [NilaiSidangController::class, 'index'])->name('index');
                     Route::get('/show/{id}', [NilaiSidangController::class, 'show'])->name('show');
                 });
+                
+                Route::prefix('daftar-penonton-sidang')->name('daftar-penonton-sidang.')->group(function () {
+                    Route::get('/', [MahasiswaPenontonSidangController::class, 'index'])->name('index');
+                    Route::get('/show/{idEnkripsi}', [MahasiswaPenontonSidangController::class, 'show'])->name('show');
+                    Route::post('/daftar', [MahasiswaPenontonSidangController::class, 'daftar'])->name('daftar');
+                });
 
             });
             
@@ -772,7 +779,7 @@ Route::group(['middleware' => ['auth', 'role:pegawai|super-admin']], function ()
         Route::put('/update-jadwal/{idSidang}', [SidangController::class, 'updateJadwal'])->name('update-jadwal');
         Route::put('/update-status-jadwal/{idSidang}', [SidangController::class, 'updateStatusJadwal'])->name('update-status-jadwal');
 
-        Route::post('/print-lembar-hadir', [SidangController::class, 'printLembarHadir'])->name('print-lembar-hadir');
+        Route::post('/print-daftar-hadir', [SidangController::class, 'printLembarHadir'])->name('print-daftar-hadir');
     });
 
     Route::prefix('akademik')->name('akademik.')->group(function () {
@@ -788,6 +795,8 @@ Route::group(['middleware' => ['auth', 'role:pegawai|super-admin']], function ()
                     Route::put('/update/{id}', [DosenBimbinganController::class, 'update'])->name('update');
                     Route::put('/update-status/{id}', [DosenBimbinganController::class, 'updateStatus'])->name('update-status');
                     Route::put('/acc-sidang/{idEnkripsi}', [DosenBimbinganController::class, 'accSidang'])->name('acc-sidang');
+                    Route::put('/penilaian/{idEnkripsi}', [DosenBimbinganController::class, 'penilaian'])->name('penilaian');
+                    Route::put('/validasi-nilai/{idEnkripsi}', [DosenBimbinganController::class, 'validasiNilai'])->name('validasi-nilai');
                 });
 
                 Route::prefix('penguji')->name('penguji.')->group(function () {
@@ -795,6 +804,7 @@ Route::group(['middleware' => ['auth', 'role:pegawai|super-admin']], function ()
                     Route::get('/get-data', [DosenPengujiController::class, 'getData'])->name('get-data');
                     Route::get('/show/{id}', [DosenPengujiController::class, 'show'])->name('show');
                     Route::put('/update-nilai/{id}', [DosenPengujiController::class, 'updateNilai'])->name('update-nilai');
+                    Route::post('/acc/{id}', [DosenPengujiController::class, 'acc'])->name('acc');
                     Route::put('/update-status/{id}', [DosenPengujiController::class, 'updateStatus'])->name('update-status');
                 });
 
