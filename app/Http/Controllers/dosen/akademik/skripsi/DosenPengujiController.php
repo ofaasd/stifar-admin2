@@ -2,20 +2,27 @@
 
 namespace App\Http\Controllers\dosen\akademik\skripsi;
 
+use App\helpers;
 use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use App\Models\MasterSkripsi;
 use App\Models\PegawaiBiodatum;
-use App\Models\BimbinganSkripsi;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\PengajuanJudulSkripsi;
-use App\Models\PengujiSkripsi;
+use App\Models\AktorSidang;
 use App\Models\SidangSkripsi;
-use Illuminate\Support\Facades\Crypt;
 
 class DosenPengujiController extends Controller
 {
+
+    protected $helpers;
+
+    public function __construct()
+    {
+        $this->helpers = new helpers();
+    }
+
     public function index()
     {
         $data = [
@@ -37,13 +44,17 @@ class DosenPengujiController extends Controller
 
         $nppDosen = $dosen->npp;
 
+        $aktorSidang = AktorSidang::where('npp', $nppDosen)->where('as', 'penguji')->get();
+
         $data = MasterSkripsi::select([
             'master_skripsi.id',
             'mahasiswa.nim',
             'mahasiswa.nama',
             'pengajuan_judul_skripsi.judul',
             'master_ruang.nama_ruang AS namaRuang',
+            'sidang.id AS sidangId',
             'sidang.tanggal',
+            'sidang.jenis',
             'sidang.waktu_mulai AS waktuMulai',
             'sidang.waktu_selesai AS waktuSelesai',
         ])
@@ -54,10 +65,11 @@ class DosenPengujiController extends Controller
         ->whereIn('master_skripsi.status', [1, 2])
         ->where('pengajuan_judul_skripsi.status', '=', 1)
         ->whereRaw('FIND_IN_SET(?, sidang.penguji)', [$nppDosen])
-        ->orderBy('sidang.tanggal', 'asc')
+        ->orderBy('sidang.created_at', 'desc')
         ->get()
         ->map(function ($item) {
-            $item->idEnkripsi = Crypt::encryptString($item->id . "stifar");
+            $item->idEnkripsi = $this->helpers->encryptId($item->id);
+            $item->idSidangEnkripsi = $this->helpers->encryptId($item->sidangId);
             return $item;
         });
 
@@ -76,16 +88,54 @@ class DosenPengujiController extends Controller
             })
             ->addColumn('pelaksanaan', function($row) {
                 if ($row->tanggal && $row->waktuMulai && $row->waktuSelesai) {
-                    $tanggal = \Carbon\Carbon::parse($row->tanggal)->translatedFormat('d F Y');
-                    return $tanggal . ' | ' . $row->waktuMulai . ' - ' . $row->waktuSelesai;
+                    $carbonTanggal = \Carbon\Carbon::parse($row->tanggal);
+                    $hari = $carbonTanggal->translatedFormat('l'); // Nama hari
+                    $tanggal = $carbonTanggal->translatedFormat('d F Y');
+                    return $hari . ', ' . $tanggal . ' | ' . $row->waktuMulai . ' - ' . $row->waktuSelesai;
                 }
                 return '-';
             })
-            ->addColumn('actions', function($row) {
-                $btn = '<a href="' . route('akademik.skripsi.dosen.penguji.show', $row->idEnkripsi) . '" class="btn btn-sm btn-primary" id="btn-detail">Detail</a>';
+            ->addColumn('status', function($row) use ($aktorSidang, $nppDosen) {
+                // Cek apakah sudah ada data penguji untuk sidang dan npp dosen ini
+                $isAcc = $aktorSidang->where('sidang_id', $row->sidangId)->where('npp', $nppDosen)->first();
+
+                if ($isAcc) {
+                    return '<span class="badge bg-success">Menguji</span>';
+                } else {
+                    return '<span class="badge bg-warning text-dark">Pengajuan</span>';
+                }
+            })
+            ->addColumn('actions', function($row) use ($aktorSidang, $nppDosen, $dosen) {
+                // Cek apakah sudah ada data penguji untuk sidang dan npp dosen ini
+                $isAcc = $aktorSidang->where('sidang_id', $row->sidangId)->where('npp', $nppDosen)->first();
+
+                if ($isAcc) {
+                    // Jika sudah ada, tampilkan tombol Detail saja
+                    $btn = '<a href="' . route('akademik.skripsi.dosen.penguji.show', $row->idEnkripsi) . '" class="btn btn-sm btn-primary" id="btn-detail">Detail</a>';
+                } else {
+                    // Jika belum ada, tampilkan tombol Setuju dengan tooltip
+                    $sebutan = ($dosen->jenis_kelamin == 'L') ? 'Bapak' : 'Ibu';
+                    $tooltip = 'Kepada Yth : ' .
+                        $sebutan . ' ' . $dosen->nama_lengkap . ' ' .
+                        'Dosen Penguji Di tempat. ' .
+                        'Mengharap dengan hormat atas kehadiran ' . $sebutan . ' pada ' . 
+                        ($row->jenis == 1 ? 'seminar proposal' : ($row->jenis == 2 ? 'seminar hasil' : 'seminar')) . 
+                        ' untuk mahasiswa : ' .
+                        'Nama : ' . ($row->nama ?? '-') . ' ' .
+                        'NIM : ' . ($row->nim ?? '-') . ' ' .
+                        'Akan dilaksanakan pada: ' .
+                        'Hari/tanggal : ' . ($row->tanggal ? \Carbon\Carbon::parse($row->tanggal)->translatedFormat('l, d F Y') : '-') . ' ' .
+                        'Waktu : ' . ($row->waktuMulai ?? '-') . ' - ' . ($row->waktuSelesai ?? '-') . ' ' .
+                        'Tempat : ' . ($row->namaRuang ?? '-') . ' ' .
+                        'Demikian undangan ini, dimohon kesediaan ' . $sebutan . ' untuk menguji mahasiswa tersebut di atas. Atas perhatian dan kerjasamanya kami sampaikan terima kasih.';
+                    $btn = '<form method="POST" action="' . route('akademik.skripsi.dosen.penguji.acc', $row->idSidangEnkripsi) . '" style="display:inline;" id="form-acc">'
+                        . csrf_field()
+                        . '<button type="submit" class="btn btn-sm btn-success" id="btn-submit" data-bs-toggle="tooltip" data-bs-placement="top" title="' . $tooltip . '">Setuju</button>'
+                        . '</form>';
+                }
                 return $btn;
             })
-            ->rawColumns(['actions', 'mahasiswa', 'pelaksanaan'])
+            ->rawColumns(['actions', 'mahasiswa', 'pelaksanaan', 'status', 'teks']) // Agar kolom actions dapat menampilkan HTML
             ->addIndexColumn() // Menambahkan kolom DT_RowIndex
             ->make(true);
 
@@ -94,8 +144,7 @@ class DosenPengujiController extends Controller
     public function show($idEnkripsi)
     {
         try {
-            $idDekrip = Crypt::decryptString($idEnkripsi);
-            $id = str_replace("stifar", "", $idDekrip);
+            $id = $this->helpers->decryptId($idEnkripsi);
             $masterSkripsi = MasterSkripsi::find($id);
 
             if (!$masterSkripsi) {
@@ -126,10 +175,10 @@ class DosenPengujiController extends Controller
             ->first();
 
             if($sidang){
-                $sidang->idEnkripsi = Crypt::encryptString($sidang->id . "stifar");
+                $sidang->idEnkripsi = $this->helpers->encryptId($sidang->id);
             } 
 
-            $penguji = PengujiSkripsi::where('sidang_id', $sidang->id)->where('npp', $dosen->npp)->first();
+            $penguji = AktorSidang::where('sidang_id', $sidang->id)->where('npp', $dosen->npp)->first();
 
             $data = [
                 'title' => 'Detail Menguji ' . $mahasiswa->nama,
@@ -148,8 +197,7 @@ class DosenPengujiController extends Controller
 
     public function updateNilai(Request $request, $idEnkripsi)
     {
-        $idDekrip = Crypt::decryptString($idEnkripsi);
-        $id = str_replace("stifar", "", $idDekrip);
+        $id = $this->helpers->decryptId($idEnkripsi);
 
         $sidang = SidangSkripsi::find($id);
         if (!$sidang) {
@@ -157,16 +205,22 @@ class DosenPengujiController extends Controller
         }
 
         try {
-            PengujiSkripsi::updateOrCreate(
-                [
-                    'sidang_id' => $sidang->id,
-                    'npp' => PegawaiBiodatum::where('user_id', Auth::id())->first()->npp,
-                ],
-                [
-                    'nilai' => $request->input('nilai'),
-                    'catatan' => $request->input('catatan'),
-                ]
-            );
+            AktorSidang::where('sidang_id', $sidang->id)
+                ->where('npp', PegawaiBiodatum::where('user_id', Auth::id())->first()->npp)
+                ->update([
+                    'kesinambungan' => $request->kesinambungan,
+                    'kesesuaian_daftar_pustaka' => $request->kesesuaianDaftarPustaka,
+                    'keterbaruan' => $request->keterbaruan,
+                    'kejelasan_rumus' => $request->kejelasanRumus,
+                    'relevansi_latar_belakang' => $request->relevansiLatarBelakang,
+                    'penampilan_sikap' => $request->penampilanSikap,
+                    'argumen' => $request->argumen,
+                    'kesesuaian_jawaban' => $request->kesesuaianJawaban,
+                    'kedalaman_penguasaan' => $request->kedalamanPenguasaan,
+                    'jumlah_nilai' => $request->jumlahNilai,
+                    'nilai_akhir' => $request->nilaiAkhir,
+                    'catatan' => $request->catatan,
+                ]);
 
             return redirect()->back()->with('success', 'Berhasil mengupdate nilai Ujian.');
         } catch (\Exception $e) { 
@@ -176,20 +230,41 @@ class DosenPengujiController extends Controller
 
     public function updateStatus(Request $request, $idEnkripsi)
     {
-        $idDekrip = Crypt::decryptString($idEnkripsi);
-        $id = str_replace("stifar", "", $idDekrip);
-
+        $id = $this->helpers->decryptId($idEnkripsi);
         $sidang = SidangSkripsi::find($id);
         if (!$sidang) {
             return redirect()->back()->with('error', 'Data Sidang tidak ditemukan.');
         }
 
         try {
-            PengujiSkripsi::where('sidang_id', $sidang->id)
+            AktorSidang::where('sidang_id', $sidang->id)
                 ->where('npp', PegawaiBiodatum::where('user_id', Auth::id())->first()->npp)
                 ->update(['status' => 1]);
 
             return redirect()->back()->with('success', 'Berhasil mengupdate nilai Ujian.');
+        } catch (\Exception $e) { 
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    public function acc(Request $request, $idEnkripsi)
+    {
+        $id = $this->helpers->decryptId($idEnkripsi);
+        $sidang = SidangSkripsi::find($id);
+        if (!$sidang) {
+            return redirect()->back()->with('error', 'Data Sidang tidak ditemukan.');
+        }
+
+        try {
+            AktorSidang::firstOrCreate(
+                [
+                    'sidang_id' => $sidang->id,
+                    'npp' => PegawaiBiodatum::where('user_id', Auth::id())->first()->npp,
+                    'as' => 'penguji',
+                ]
+            );
+
+            return redirect()->back()->with('success', 'Berhasil, Anda telah menjadi Penguji.');
         } catch (\Exception $e) { 
             return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }

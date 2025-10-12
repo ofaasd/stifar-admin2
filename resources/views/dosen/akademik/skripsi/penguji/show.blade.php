@@ -4,7 +4,7 @@
 @section('css')
 
 @endsection
-
+    
 @section('style')
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/vendors/datatables.css') }}">
 <link rel="stylesheet" type="text/css" href="{{asset('assets/css/vendors/sweetalert2.css')}}">
@@ -59,7 +59,7 @@
                                 <li class="list-group-item"><strong>Status:</strong> 
                                     @if($sidang->status == 1)
                                         <span class="badge bg-success">Selesai</span>
-                                    @elseif($sidang->status == 2 && $penguji->status == 1)
+                                    @elseif($sidang->status == 2 && isset($penguji) && $penguji->status == 1)
                                         <span class="badge bg-info">Sudah Ternilai (Sidang Masih Berjalan)</span>
                                     @else
                                         <span class="badge bg-secondary">{{ $sidang->status_label ?? 'Belum Validasi' }}</span>
@@ -69,20 +69,64 @@
 
                             {{-- Form Input Nilai Sidang (jika tanggal sidang = hari ini) --}}
                             @if(\Carbon\Carbon::parse($sidang->tanggal)->isToday() || \Carbon\Carbon::parse($sidang->tanggal)->isPast())
-                                @if($penguji->status == 1)
+                                @if(isset($penguji) && $penguji->status == 1)
                                     <div class="mb-2">
-                                        <label class="form-label mb-1">Nilai</label>
-                                        <div class="form-control-plaintext">
-                                            <blockquote class="blockquote border-start border-3 ps-3 fst-italic text-muted">
-                                                {{ $penguji->nilai ?: '-' }}
-                                            </blockquote>
+                                        <label class="form-label fw-bold">Penulisan (15) : NILAI SEMINAR PROPOSAL</label>
+                                        <div class="row mb-2">
+                                            <div class="col">
+                                                <div>Kesinambungan penulisan dan bahasa: <strong>{{ $penguji->kesinambungan ?? '-' }}</strong></div>
+                                                <div>Kesesuaian isi dengan daftar pustaka: <strong>{{ $penguji->kesesuaian_daftar_pustaka ?? '-' }}</strong></div>
+                                            </div>
                                         </div>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label fw-bold">Isi (30)</label>
+                                        <div class="row mb-2">
+                                            <div class="col">
+                                                <div>Keterbaruan penelitian: <strong>{{ $penguji->keterbaruan ?? '-' }}</strong></div>
+                                                <div>Kejelasan rumusan masalah: <strong>{{ $penguji->kejelasan_rumus ?? '-' }}</strong></div>
+                                                <div>Relevansi antara latar belakang, rumusan masalah, dan metodologi penelitian: <strong>{{ $penguji->relevansi_latar_belakang ?? '-' }}</strong></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label fw-bold">Presentasi (10)</label>
+                                        <div class="row mb-2">
+                                            <div class="col">
+                                                <div>Penampilan dan sikap selama tanya jawab: <strong>{{ $penguji->penampilan_sikap ?? '-' }}</strong></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label fw-bold">Tanya Jawab (20)</label>
+                                        <div class="row mb-2">
+                                            <div class="col">
+                                                <div>Kemampuan menyampaikan argumentasi: <strong>{{ $penguji->argumen ?? '-' }}</strong></div>
+                                                <div>Kesesuaian antara jawaban dengan pertanyaan: <strong>{{ $penguji->kesesuaian_jawaban ?? '-' }}</strong></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label fw-bold">Pengetahuan (25)</label>
+                                        <div class="row mb-2">
+                                            <div class="col">
+                                                <div>Kedalaman penguasaan materi: <strong>{{ $penguji->kedalaman_penguasaan ?? '-' }}</strong></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label fw-bold">Jumlah (70-100)</label>
+                                        <div><strong>{{ $penguji->jumlah_nilai ?? '-' }}</strong></div>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label fw-bold">Nilai Akhir seminar proposal (70%)</label>
+                                        <div><strong>{{ $penguji->nilai_akhir ?? '-' }}</strong></div>
                                     </div>
                                     <div class="mb-2">
                                         <label class="form-label mb-1">Catatan Penguji</label>
                                         <div class="form-control-plaintext">
                                             <blockquote class="blockquote border-start border-3 ps-3 fst-italic text-muted">
-                                                {{ $penguji->catatan ?: '-' }}
+                                                {{ $penguji->catatan ?? '-' }}
                                             </blockquote>
                                         </div>
                                     </div>
@@ -91,12 +135,69 @@
                                         @csrf
                                         @method('PUT')
                                         <div class="mb-2">
-                                            <label for="nilai" class="form-label">Nilai Sidang</label>
-                                            <input type="number" name="nilai" id="nilai" class="form-control" min="0" max="100" value="{{ $penguji->nilai }}" required>
+                                            <label class="form-label fw-bold">Penulisan (15) : NILAI SEMINAR PROPOSAL</label>
+                                            <div class="row mb-2">
+                                                <div class="col">
+                                                    <label>Kesinambungan penulisan dan bahasa <span class="text-muted">(5 - 8)</span></label>
+                                                    <input type="number" name="kesinambungan" class="form-control d-inline w-auto ms-2" min="5" max="8" value="{{ old('kesinambungan', $penguji->kesinambungan ?? '') }}" required>
+                                                    <label class="ms-3">Kesesuaian isi dengan daftar pustaka <span class="text-muted">(5 - 7)</span></label>
+                                                    <input type="number" name="kesesuaianDaftarPustaka" class="form-control d-inline w-auto ms-2" min="5" max="7" value="{{ old('kesesuaianDaftarPustaka', $penguji->kesesuaian_daftar_pustaka ?? '') }}" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label class="form-label fw-bold">Isi (30)</label>
+                                            <div class="row mb-2">
+                                                <div class="col">
+                                                    <label>Keterbaruan penelitian <span class="text-muted">(8 - 10)</span></label>
+                                                    <input type="number" name="keterbaruan" class="form-control d-inline w-auto ms-2" min="8" max="10" value="{{ old('keterbaruan', $penguji->keterbaruan ?? '') }}" required>
+                                                    <label class="ms-3">Kejelasan rumusan masalah <span class="text-muted">(8 - 10)</span></label>
+                                                    <input type="number" name="kejelasanRumus" class="form-control d-inline w-auto ms-2" min="8" max="10" value="{{ old('kejelasanRumus', $penguji->kejelasan_rumus ?? '') }}" required>
+                                                    <label class="ms-3">Relevansi antara latar belakang, rumusan masalah, dan metodologi penelitian <span class="text-muted">(8 - 10)</span></label>
+                                                    <input type="number" name="relevansiLatarBelakang" class="form-control d-inline w-auto ms-2" min="8" max="10" value="{{ old('relevansiLatarBelakang', $penguji->relevansi_latar_belakang ?? '') }}" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label class="form-label fw-bold">Presentasi (10)</label>
+                                            <div class="row mb-2">
+                                                <div class="col">
+                                                    <label>Penampilan dan sikap selama tanya jawab <span class="text-muted">(5 - 10)</span></label>
+                                                    <input type="number" name="penampilanSikap" class="form-control d-inline w-auto ms-2" min="5" max="10" value="{{ old('penampilanSikap', $penguji->penampilan_sikap ?? '') }}" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label class="form-label fw-bold">Tanya Jawab (20)</label>
+                                            <div class="row mb-2">
+                                                <div class="col">
+                                                    <label>Kemampuan menyampaikan argumentasi <span class="text-muted">(8 - 10)</span></label>
+                                                    <input type="number" name="argumen" class="form-control d-inline w-auto ms-2" min="8" max="10" value="{{ old('argumen', $penguji->argumen ?? '') }}" required>
+                                                    <label class="ms-3">Kesesuaian antara jawaban dengan pertanyaan <span class="text-muted">(8 - 10)</span></label>
+                                                    <input type="number" name="kesesuaianJawaban" class="form-control d-inline w-auto ms-2" min="8" max="10" value="{{ old('kesesuaianJawaban', $penguji->kesesuaian_jawaban ?? '') }}" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label class="form-label fw-bold">Pengetahuan (25)</label>
+                                            <div class="row mb-2">
+                                                <div class="col">
+                                                    <label>Kedalaman penguasaan materi <span class="text-muted">(15 - 25)</span></label>
+                                                    <input type="number" name="kedalamanPenguasaan" class="form-control d-inline w-auto ms-2" min="15" max="25" value="{{ old('kedalamanPenguasaan', $penguji->kedalaman_penguasaan ?? '') }}" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label class="form-label fw-bold">Jumlah (70-100)</label>
+                                            <input type="number" name="jumlahNilai" class="form-control" min="70" max="100" value="{{ old('jumlahNilai', $penguji->jumlah_nilai ?? '') }}" readonly>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label class="form-label fw-bold">Nilai Akhir seminar proposal (70%)</label>
+                                            <input type="number" name="nilaiAkhir" class="form-control" min="0" max="100" value="{{ old('nilaiAkhir', $penguji->nilai_akhir ?? '') }}" readonly>
                                         </div>
                                         <div class="mb-2">
                                             <label for="catatan" class="form-label">Catatan Penguji</label>
-                                            <textarea name="catatan" id="catatan" class="form-control" rows="2">{{ $penguji->catatan }}</textarea>
+                                            <textarea name="catatan" id="catatan" class="form-control" rows="2">{{ old('catatan', $penguji->catatan ?? '') }}</textarea>
                                         </div>
                                         <button type="submit" class="btn btn-primary btn-sm btn-nilai" title="Simpan Nilai">Simpan</button>
                                     </form>
@@ -203,7 +304,7 @@
         });
 
         // Untuk banyak form dengan class .form-update-status
-        $(document).on('click', '.form-update-status button[type="submit"], .form-update-status button[name="status"]', f        benarkan, ketika di klik button submitnya baru muncul kan notifunction(e) {
+        $(document).on('click', '.form-update-status button[type="submit"], .form-update-status button[name="status"]', function(e) {
             e.preventDefault();
             var btn = $(this);
             var form = btn.closest('form');
@@ -257,7 +358,31 @@
                 }
             });
         });
+
+        let $inputs = $('[name="kesinambungan"], [name="kesesuaianDaftarPustaka"], [name="keterbaruan"], [name="kejelasanRumus"], [name="relevansiLatarBelakang"], [name="penampilanSikap"], [name="argumen"], [name="kesesuaianJawaban"], [name="kedalamanPenguasaan"]');
+        $inputs.on('input', hitungJumlah);
+
+        hitungJumlah();
     });
+
+    function hitungJumlah() {
+        let n1 = parseFloat(document.querySelector('[name="kesinambungan"]').value) || 0;
+        let n2 = parseFloat(document.querySelector('[name="kesesuaianDaftarPustaka"]').value) || 0;
+        let n3 = parseFloat(document.querySelector('[name="keterbaruan"]').value) || 0;
+        let n4 = parseFloat(document.querySelector('[name="kejelasanRumus"]').value) || 0;
+        let n5 = parseFloat(document.querySelector('[name="relevansiLatarBelakang"]').value) || 0;
+        let n6 = parseFloat(document.querySelector('[name="penampilanSikap"]').value) || 0;
+        let n7 = parseFloat(document.querySelector('[name="argumen"]').value) || 0;
+        let n8 = parseFloat(document.querySelector('[name="kesesuaianJawaban"]').value) || 0;
+        let n9 = parseFloat(document.querySelector('[name="kedalamanPenguasaan"]').value) || 0;
+
+        let jumlah = n1 + n2 + n3 + n4 + n5 + n6 + n7 + n8 + n9;
+        document.querySelector('[name="jumlahNilai"]').value = jumlah;
+
+        // Nilai akhir = jumlah * 0.7
+        let nilaiAkhir = Math.round(jumlah * 0.7 * 100) / 100;
+        document.querySelector('[name="nilaiAkhir"]').value = nilaiAkhir;
+    }
     </script>
 
 @endsection

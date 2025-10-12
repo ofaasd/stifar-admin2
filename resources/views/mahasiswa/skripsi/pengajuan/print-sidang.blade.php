@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Print Sidang</title>
+    <title>Lampiran Sidang</title>
     <style>
         body {
             font-family: 'Segoe UI', Arial, Helvetica, sans-serif;

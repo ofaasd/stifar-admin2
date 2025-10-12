@@ -57,7 +57,7 @@
                             <li><a href="{{ Route('mhs.skripsi.daftar.index') }}">Pengajuan</a></li>
                             <li><a href="{{ Route('mhs.skripsi.bimbingan.index') }}">Bimbingan</a></li>
                             {{-- <li><a href="{{Route('mhs.skripsi.berkas.index')}}">Berkas</a></li> --}}
-                            {{-- <li><a href="{{ Route('sidang.index') }}">Daftar Sidang</a></li> --}}
+                            <li><a href="{{ route('akademik.skripsi.mahasiswa.daftar-penonton-sidang.index') }}">Penonton Sidang</a></li>
                             <li><a href="{{ route('akademik.skripsi.mahasiswa.nilai-sidang.index') }}">Nilai</a></li>
                         </ul>
                     </li>

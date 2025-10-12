@@ -95,7 +95,7 @@
                                     <select class="form-select" id="pembimbing1" name="pembimbing1">
                                         <option selected disabled>Pilih Pembimbing 1</option>
                                         @forelse ($dosen as $row)
-                                            <option value="{{ $row->npp }}">
+                                            <option value="{{ $row->npp }}" {{ $row->npp == $masterSkripsi->pembimbing_1 ? 'selected' : '' }}>
                                                 {{ $row->nama }} (NPP: {{ $row->npp }}) &mdash; Kuota: {{ $row->kuota }}
                                             </option>
                                         @empty
@@ -107,7 +107,7 @@
                                     <select class="form-select" id="pembimbing2" name="pembimbing2">
                                         <option selected disabled>Pilih Pembimbing 2</option>
                                         @forelse ($dosen as $row)
-                                            <option value="{{ $row->npp }}">
+                                            <option value="{{ $row->npp }}" {{ $row->npp == $masterSkripsi->pembimbing_2 ? 'selected' : '' }}>
                                                 {{ $row->nama }} (NPP: {{ $row->npp }}) &mdash; Kuota: {{ $row->kuota }}
                                             </option>
                                         @empty

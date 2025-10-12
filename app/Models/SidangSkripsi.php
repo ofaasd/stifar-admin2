@@ -24,7 +24,7 @@ class SidangSkripsi extends Model
 
     public function penguji()
     {
-        return $this->hasMany(PengujiSkripsi::class, 'sidang_id');
+        return $this->hasMany(AktorSidang::class, 'sidang_id');
     }
     
 
