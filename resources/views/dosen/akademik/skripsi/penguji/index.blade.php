@@ -34,6 +34,7 @@
                                     <th>Mahasiswa</th>
                                     <th>Judul</th>
                                     <th>Pelaksanaan</th>
+                                    <th>Status</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -57,37 +58,76 @@
     <script>
         $(document).ready(function() {
             $('#penguji-table').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: '{{ route('akademik.skripsi.dosen.penguji.get-data') }}',
-            columns: [{
-                    data: 'DT_RowIndex',
-                    name: 'DT_RowIndex',
-                    orderable: false,
-                    searchable: false
-                },
-                {
-                    data: 'mahasiswa',
-                    name: 'mahasiswa'
-                },
-                {
-                    data: 'judul',
-                    name: 'judul'
-                },
-                {
-                    data: 'pelaksanaan',
-                    name: 'pelaksanaan'
-                },
-                {
-                    data: 'actions',
-                    name: 'actions',
-                    orderable: false,
-                    searchable: false
+                processing: true,
+                serverSide: true,
+                ajax: '{{ route('akademik.skripsi.dosen.penguji.get-data') }}',
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex',
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: 'mahasiswa',
+                        name: 'mahasiswa'
+                    },
+                    {
+                        data: 'judul',
+                        name: 'judul'
+                    },
+                    {
+                        data: 'pelaksanaan',
+                        name: 'pelaksanaan'
+                    },
+                    {
+                        data: 'status',
+                        name: 'status'
+                    },
+                    {
+                        data: 'actions',
+                        name: 'actions',
+                        orderable: false,
+                        searchable: false
+                    }
+                ],
+                language: {
+                    emptyTable: "Anda belum / tidak menjadi penguji." // Pesan ketika data kosong
                 }
-            ],
-            language: {
-                emptyTable: "Anda belum / tidak menjadi penguji." // Pesan ketika data kosong
-            }
+            });
+
+            $(document).on('submit', '#form-acc', function(e) {
+                e.preventDefault();
+                var $form = $(this);
+                var $btn = $form.find('#btn-submit');
+                swal({
+                    title: "Konfirmasi ACC",
+                    text: "Dengan menyetujui, Anda akan menjadi penguji untuk mahasiswa ini. Lanjutkan?",
+                    icon: "warning",
+                    buttons: ["Batal", "Ya, Acc"],
+                    dangerMode: true,
+                }).then(function(willValidate) {
+                    if (willValidate) {
+                        $btn.prop('disabled', true);
+                        $btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Menyimpan...');
+                        $.ajax({
+                            url: $form.attr('action'),
+                            method: 'POST',
+                            data: $form.serialize(),
+                            success: function(response) {
+                                // reload table or show success
+                                $('#penguji-table').DataTable().ajax.reload();
+                                swal("Berhasil!", "ACC berhasil disimpan.", "success");
+                            },
+                            error: function(xhr) {
+                                swal("Gagal!", "Terjadi kesalahan.", "error");
+                            },
+                            complete: function() {
+                                $btn.prop('disabled', false);
+                                $btn.html('Setuju');
+                            }
+                        });
+                    }
+                });
             });
 
             // Show loading when "Lihat Bimbingan" button is clicked

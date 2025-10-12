@@ -82,6 +82,12 @@
         @role('admin-pmb')
             @include('layouts.sidebar_pmb')
         @endrole
+        @role('admin-pmb')
+            @include('layouts.sidebar_pmb')
+        @endrole
+        @role('baak')
+            @include('layouts.sidebar_baak')
+        @endrole
 
         <!-- Page Sidebar Ends-->
         <div class="page-body">

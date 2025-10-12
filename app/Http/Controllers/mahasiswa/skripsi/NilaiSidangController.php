@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\mahasiswa\skripsi;
 
+use App\helpers;
 use App\Models\Mahasiswa;
 use App\Models\master_nilai;
 use App\Models\MasterSkripsi;
 use App\Models\SidangSkripsi;
-use App\Models\PengujiSkripsi;
+use App\Models\AktorSidang;
 use App\Models\PegawaiBiodatum;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -14,6 +15,13 @@ use Illuminate\Support\Facades\Crypt;
 
 class NilaiSidangController extends Controller
 {
+    protected $helpers;
+
+    public function __construct()
+    {
+        $this->helpers = new helpers();
+    }
+
     public function index() 
     {
         try {
@@ -29,8 +37,6 @@ class NilaiSidangController extends Controller
             if (!$mahasiswa) {
                 return redirect()->back()->with('error','Data Mahasiswa tidak ditemukan.');
             }
-
-            $this->updateValidasiSidang($nim, $user);
 
             $sidang = SidangSkripsi::select([
                 'sidang.id',
@@ -62,7 +68,7 @@ class NilaiSidangController extends Controller
             ->orderBy('sidang.created_at', 'desc')
             ->get()
             ->map(function($item) {
-                $item->idEnkripsi = Crypt::encryptString($item->id . "stifar");
+                $item->idEnkripsi = $this->helpers->encryptId($item->id);
 
                 if (!empty($item->tanggal)) {
                     $item->tanggal = \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d/m/Y');
@@ -85,7 +91,7 @@ class NilaiSidangController extends Controller
             });
 
             $data = [
-                'title' => 'Nilai Sidang Skripsi' . $mahasiswa->nama ?? '',
+                'title' => 'Nilai Sidang ' . $mahasiswa->nama ?? '',
                 'sidang' => $sidang,
             ];
         
@@ -97,8 +103,7 @@ class NilaiSidangController extends Controller
 
     public function show($idEnkripsi)
     {
-        $idDekrip = Crypt::decryptString($idEnkripsi);
-        $id = str_replace("stifar", "", $idDekrip);
+        $id = $this->helpers->decryptId($idEnkripsi);
 
         $sidang = SidangSkripsi::select([
             'sidang.id',
@@ -113,6 +118,7 @@ class NilaiSidangController extends Controller
             'sidang.kartu_bimbingan AS kartuBimbingan',
             'sidang.presentasi',
             'sidang.pendukung',
+            'sidang.nilai_akhir AS nilaiAkhir',
             'gelombang_sidang_skripsi.nama AS namaGelombang',
             'gelombang_sidang_skripsi.periode',
             'pembimbing1.nama_lengkap AS namaPembimbing1',
@@ -120,7 +126,9 @@ class NilaiSidangController extends Controller
             'pengajuan_judul_skripsi.judul',
             'pengajuan_judul_skripsi.judul_eng AS judulEnglish',
             'mahasiswa.nama',
-            'mahasiswa.nim'
+            'mahasiswa.nim',
+            'master_skripsi.pembimbing_1 AS nppPembimbing1',
+            'master_skripsi.pembimbing_2 AS nppPembimbing2',
         ])
         ->leftJoin('master_skripsi', 'sidang.skripsi_id', '=', 'master_skripsi.id')
         ->leftJoin('gelombang_sidang_skripsi', 'sidang.gelombang_id', '=', 'gelombang_sidang_skripsi.id')
@@ -134,23 +142,45 @@ class NilaiSidangController extends Controller
         ->first();
 
         $sidang->tanggal = \Carbon\Carbon::parse($sidang->tanggal)->translatedFormat('d/m/Y');
-        $npps = explode(',', $sidang->penguji);
-        $names = PegawaiBiodatum::whereIn('npp', $npps)->pluck('nama_lengkap')->toArray();
+        $nppsPenguji = explode(',', $sidang->penguji);
+        $namesPenguji = PegawaiBiodatum::whereIn('npp', $nppsPenguji)->pluck('nama_lengkap')->toArray();
         // Simpan nama penguji ke properti baru agar bisa dipakai di view
-        foreach ($names as $i => $nama) {
+        foreach ($namesPenguji as $i => $nama) {
             $sidang->{'namaPenguji' . ($i + 1)} = $nama;
         }
 
-        $sidang->npps = $npps;
+        $nppsPembimbing = array_filter([$sidang->nppPembimbing1, $sidang->nppPembimbing2]);
+        $namesPembimbing = PegawaiBiodatum::whereIn('npp', $nppsPembimbing)->pluck('nama_lengkap')->toArray();
+        // Simpan nama pembimbing ke properti baru agar bisa dipakai di view
+        foreach ($namesPembimbing as $i => $nama) {
+            $sidang->{'namaPembimbing' . ($i + 1)} = $nama;
+        }
+
+        $sidang->nppsPenguji = $nppsPenguji;
+        $sidang->nppsPembimbing = $nppsPembimbing;
+
+        // Ambil nilai penguji dari aktor_sidang
+        $nilaiPenguji = AktorSidang::where('sidang_id', $sidang->id)
+            ->whereIn('npp', $nppsPenguji)
+            ->where('as', 'penguji')
+            ->get();
+
+        // Ambil nilai pembimbing dari aktor_sidang
+        $nilaiPembimbing = AktorSidang::where('sidang_id', $sidang->id)
+            ->whereIn('npp', $nppsPembimbing)
+            ->where('as', 'pembimbing')
+            ->get();
 
         $data = [
-            'title' => 'Detail Nilai Sidang Skripsi ' . $sidang->nama ?? '',
+            'title' => 'Detail Nilai Sidang Skripsi ' . ($sidang->nama ?? ''),
             'sidang' => $sidang,
-            'nilaiPenguji' => PengujiSkripsi::where('sidang_id', $sidang->id)->whereIn('npp', $npps)->get(),
+            'nilaiPembimbing' => $nilaiPembimbing,
+            'nilaiPenguji' => $nilaiPenguji,
         ];
 
         return view('mahasiswa.skripsi.nilai.show', $data);
     }
+    
     private function updateValidasiSidang($nim, $user)
     {
         $cekMasterSkripsivalidasi = MasterSkripsi::where('nim', $nim)->where('status', 2)->first();
@@ -158,7 +188,7 @@ class NilaiSidangController extends Controller
             if($cekMasterSkripsivalidasi) {
                 $cekSidang = SidangSkripsi::where('skripsi_id', $cekMasterSkripsivalidasi->id)->where('status', 2)->first();
                 $arrPenguji = $cekSidang ? explode(',', $cekSidang->penguji) : [];
-                $penguji = PengujiSkripsi::where('sidang_id', $cekSidang->id)->whereIn('npp', $arrPenguji)->get();
+                $penguji = AktorSidang::where('sidang_id', $cekSidang->id)->whereIn('npp', $arrPenguji)->get();
 
                 // Cek apakah semua penguji sudah status 1
                 if ($penguji->count() > 0 && $penguji->every(fn($p) => $p->status == 1)) {

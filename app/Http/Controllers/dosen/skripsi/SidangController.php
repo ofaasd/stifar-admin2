@@ -3,10 +3,14 @@
 namespace App\Http\Controllers\dosen\skripsi;
 
 use App\Http\Controllers\Controller;
+use App\Models\AktorSidang;
 use App\Models\GelombangSidangSkripsi;
+use App\Models\Mahasiswa;
+use App\Models\master_nilai;
 use App\Models\MasterRuang;
 use App\Models\MasterSkripsi;
 use App\Models\PegawaiBiodatum;
+use App\Models\PenontonSidang;
 use App\Models\PreferensiSidang;
 use App\Models\SidangSkripsi;
 use App\Models\TahunAjaran;
@@ -95,6 +99,8 @@ class SidangController extends Controller
                 $query->where('gelombang_sidang_skripsi.id', $idGelombang);
             })
             ->where('pengajuan_judul_skripsi.status', 1)
+            ->where('sidang.acc_pembimbing1', 1)
+            ->where('sidang.acc_pembimbing2', 1)
             ->orderBy('sidang.created_at', 'desc')
             ->get()
             ->map(function($item) {
@@ -158,7 +164,7 @@ class SidangController extends Controller
                 })
                 ->addColumn('actions', function($row) {
                     return '<button type="button" class="btn btn-sm btn-warning" onclick="showEditJadwalModal('.$row->id.', this)">
-                        <i class="bi bi-pencil-square"></i>
+                        <i class="bi bi-eye"></i>
                     </button>';
                 })
                 ->editColumn('status', function($row) {
@@ -201,8 +207,11 @@ class SidangController extends Controller
                 'sidang.kartu_bimbingan AS kartuBimbingan',
                 'sidang.presentasi',
                 'sidang.pendukung',
+                'sidang.nilai_akhir AS nilaiAkhir',
                 'mahasiswa.nim',
                 'mahasiswa.nama',
+                'master_skripsi.pembimbing_1 AS nppPembimbing1',
+                'master_skripsi.pembimbing_2 AS nppPembimbing2',
                 'pembimbing1.nama_lengkap AS namaPembimbing1',
                 'pembimbing2.nama_lengkap AS namaPembimbing2',
             ])
@@ -237,8 +246,34 @@ class SidangController extends Controller
                 $sidang->pengujiIds = [];
             }
 
+            $nilaiPembimbing1 = null;
+            $nilaiPembimbing2 = null;
+            
+            $aktorSidang = AktorSidang::where('sidang_id', $sidang->id)->get();
+            foreach ($aktorSidang as $aktor) {
+                if ($aktor->npp == $sidang->nppPembimbing1) {
+                    $nilaiPembimbing1 = $aktor->nilai_akhir ?? 0;
+                }
+                if ($aktor->npp == $sidang->nppPembimbing2) {
+                    $nilaiPembimbing2 = $aktor->nilai_akhir ?? 0;
+                }
+            }
+
+            // Ambil nilai untuk setiap penguji (dinamis)
+            $nilaiPenguji = [];
+            if (!empty($sidang->pengujiIds)) {
+                foreach ($sidang->pengujiIds as $pengujiNpp) {
+                    $nilai = $aktorSidang->where('npp', $pengujiNpp)->first();
+                    $nilaiPenguji[$pengujiNpp] = $nilai ? $nilai->nilai_akhir : 0;
+                }
+            }
+            $sidang->nilaiPenguji = $nilaiPenguji;
+
+            $sidang->nilaiPembimbing1 = $nilaiPembimbing1;
+            $sidang->nilaiPembimbing2 = $nilaiPembimbing2;
+
             return response()->json([
-                'success' => true,
+                'success' => true, 
                 'data' => $sidang
             ]);
         } catch (\Exception $e) {
@@ -297,22 +332,159 @@ class SidangController extends Controller
         return redirect()->route('sidang.index')->with('success', 'Gelombang berhasil diperbarui');
     }
 
-    public function updateStatusJadwal(Request $request, $id)
+    public function penilaianSidang(Request $request, $id)
     {
         try {
-            $sidang = SidangSkripsi::findOrFail($id);
-            $sidang->update([
+            $sidang = SidangSkripsi::select([
+                    'sidang.id',
+                    'sidang.jenis',
+                    'sidang.skripsi_id',
+                    'sidang.nilai_akhir',
+                    'master_skripsi.nim',
+                ])
+                ->leftJoin('master_skripsi', 'sidang.skripsi_id', '=', 'master_skripsi.id')
+                ->where('sidang.id', $id)
+                ->first();
+
+            if (!$sidang) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data sidang tidak ditemukan.'
+                ], 404);
+            }
+
+            $nilaiAkhir = $request->nilai ?? null;
+
+            if($sidang->nilai_akhir)
+            {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Nilai sidang sudah diinput sebelumnya.'
+                ], 400);
+            }
+
+            // Update sidang
+            SidangSkripsi::where('id', $sidang->id)->update([
                 'status' => $request->status,
+                'nilai_akhir' => $nilaiAkhir,
             ]);
+            
+            MasterSkripsi::where('id', $sidang->skripsi_id)->update([
+                'status' => 1, // Update status skripsi menjadi 3 (selesai sidang)
+            ]);
+
+            $nhuruf = \App\helpers::getNilaiHuruf($nilaiAkhir);
+            $tahunAjaran = TahunAjaran::where('status', 'Aktif')->first();
+            $mhs = Mahasiswa::where('nim', $sidang->nim)->first();
+
+            if ($sidang->jenis == 1) {
+                master_nilai::create([
+                    'nim' => $sidang->nim,
+                    'id_matkul' => 35,
+                    'id_tahun' => $tahunAjaran ? $tahunAjaran->id : null,
+                    'id_mhs' => $mhs->user_id,
+                    'nakhir' => $nilaiAkhir,
+                    'nhuruf' => $nhuruf,
+                    'publish_tugas' => 1,
+                    'publish_uts' => 1,
+                    'publish_uas' => 1,
+                    'validasi_tugas' => 1,
+                    'validasi_uts' => 1,
+                    'validasi_uas' => 1,
+                ]);
+            } elseif ($sidang->jenis == 2) {
+                master_nilai::create([
+                    'nim' => $sidang->nim,
+                    'id_matkul' => 83,
+                    'id_tahun' => $tahunAjaran ? $tahunAjaran->id : null,
+                    'id_mhs' => $mhs->user_id,
+                    'nakhir' => $nilaiAkhir,
+                    'nhuruf' => $nhuruf,
+                    'publish_tugas' => 1,
+                    'publish_uts' => 1,
+                    'publish_uas' => 1,
+                    'validasi_tugas' => 1,
+                    'validasi_uts' => 1,
+                    'validasi_uas' => 1,
+                ]);
+            }
+
             return response()->json([
                 'success' => true,
-                'message' => 'Status sidang berhasil diperbarui.'
-            ]);
+                'message' => 'Nilai Sidang berhasil disimpan.'
+            ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage()
             ], 500);
+        }
+    }
+
+    public function printLembarHadir(Request $request)
+    {
+        try {
+            $idSidang = $request->id;
+
+            $sidang = SidangSkripsi::select([
+                'sidang.id',
+                'sidang.penguji',
+                'pengajuan_judul_skripsi.judul',
+                'mahasiswa.nama',
+                'mahasiswa.nim'
+            ])
+            ->leftJoin('master_skripsi', 'sidang.skripsi_id', '=', 'master_skripsi.id')
+            ->leftJoin('gelombang_sidang_skripsi', 'sidang.gelombang_id', '=', 'gelombang_sidang_skripsi.id')
+            ->leftJoin('master_ruang', 'sidang.ruang_id', '=', 'master_ruang.id')
+            ->leftJoin('pegawai_biodata AS pembimbing1', 'master_skripsi.pembimbing_1', '=', 'pembimbing1.npp')
+            ->leftJoin('pegawai_biodata AS pembimbing2', 'master_skripsi.pembimbing_2', '=', 'pembimbing2.npp')
+            ->leftJoin('pengajuan_judul_skripsi', 'master_skripsi.id', '=', 'pengajuan_judul_skripsi.id_master')
+            ->leftJoin('mahasiswa', 'master_skripsi.nim', '=', 'mahasiswa.nim')
+            ->where('pengajuan_judul_skripsi.status', 1)
+            ->where('sidang.id', $idSidang)
+            ->orderBy('sidang.created_at', 'desc')
+            ->first();
+
+            $penonton = [];
+            if($sidang)
+            {
+                $sidang->tanggal = \Carbon\Carbon::parse($sidang->tanggal)->translatedFormat('d/m/Y');
+                $npps = explode(',', $sidang->penguji);
+                $names = PegawaiBiodatum::whereIn('npp', $npps)->pluck('nama_lengkap')->toArray();
+                foreach ($names as $i => $nama) {
+                    $sidang->{'namaPenguji' . ($i + 1)} = $nama;
+                }
+
+                $ta = TahunAjaran::where('status', 'Aktif')->first();
+                if ($ta) {
+                    $tahunAwal = \Carbon\Carbon::parse($ta->tgl_awal)->format('Y');
+                    $tahunAkhir = \Carbon\Carbon::parse($ta->tgl_akhir)->format('Y');
+                    $sidang->ta = $tahunAwal . '/' . $tahunAkhir;
+                } else {
+                    $sidang->ta = '';
+                }
+
+                $penonton = PenontonSidang::select([
+                    'mahasiswa.nim',
+                    'mahasiswa.nama',
+                ])
+                ->leftJoin('mahasiswa', 'penonton_sidang.nim', '=', 'mahasiswa.nim')
+                ->where('id_sidang', $sidang->id)
+                ->get();
+            }
+
+            $logo = asset('assets/images/logo/upload/logo_besar.png');
+
+            // Generate PDF dengan mPDF
+            $mpdf = new \Mpdf\Mpdf();
+            $html = view('mahasiswa.skripsi.pengajuan.print-daftar-hadir', compact('sidang', 'logo', 'penonton'))->render();
+            $mpdf->WriteHTML($html);
+
+            $filename = $sidang->nim . '_daftar_hadir.pdf';
+            return response($mpdf->Output($filename, 'S'))->header('Content-Type', 'application/pdf');
+
+        }catch (\Exception $e) {
+            return response()->json(['status' => false, 'message' => $e->getMessage()], 500);
         }
     }
 

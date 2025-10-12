@@ -230,6 +230,17 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" style="max-height:70vh;overflow-y:auto;">
+                <div class="mb-2">
+                    {{-- Form download lembar daftar hadir seminar --}}
+                    <form id="form-download-daftar-hadir" action="{{ route('sidang.print-daftar-hadir') }}" method="POST" target="_blank" class="mt-3">
+                        @csrf
+                        <input type="hidden" name="id" id="input-daftar-hadir-sidang-id" value="">
+                        <button type="submit" class="btn btn-outline-info">
+                            <i class="bi bi-download"></i> Download Lembar Daftar Hadir Seminar
+                        </button>
+                    </form>
+                </div>
+                
                 <form action="" method="post" id="form-edit-jadwal">
                     @csrf
                     @method('PUT')
@@ -246,8 +257,24 @@
                             <label for="tanggalSidang" class="form-label">Tanggal Sidang</label>
                             <input type="date" class="form-control" id="tanggalSidang" name="tanggal" required>
                         </div>
-                        <div class="col-md-6 mt-2" id="view-update-status">
-                            <button type="button" class="btn btn-success btn-sm mt-4" id="btn-update-status" style="display: none">Selesai Sidang</button>
+                        <div class="col-md-6 mt-2" id="view-update-status" style="display: none;">
+                            <div class="mb-2">
+                                <label class="form-label mb-1"><strong>Pembimbing</strong></label>
+                                <div id="nilaiPembimbing" class="ps-2">
+                                    {{-- Nilai pembimbing akan muncul di sini via JS --}}
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label mb-1"><strong>Penguji</strong></label>
+                                <div id="nilaiPenguji" class="ps-2">
+                                    {{-- Nilai penguji akan muncul di sini via JS --}}
+                                </div>
+                            </div>
+                            <label for="input-nilai-sidang" class="form-label mt-2"><strong>Nilai Sidang Akhir</strong></label>
+                            <input type="number" min="0" max="100" class="form-control mb-2" id="input-nilai-sidang" placeholder="Masukkan nilai akhir">
+                            <button type="button" class="btn btn-success btn-sm mt-2" id="btn-update-status" style="display: none;" title="Klik untuk menandai sidang ini telah selesai dan menutup proses sidang">
+                                Selesai Sidang
+                            </button>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Preferensi Waktu Sidang Mahasiswa</label>
@@ -295,8 +322,8 @@
                                     <option value="{{ $row->npp }}">{{ $row->npp }} / {{ $row->nama_lengkap }}</option>
                                 @endforeach
                             </select>
-                            <div id="listPengujiTerpilih" class="mt-2"></div>
                             <small class="text-muted">Tekan Ctrl (atau Cmd di Mac) untuk memilih lebih dari satu penguji.</small>
+                            <div id="listPengujiTerpilih" class="mt-2"></div>
                         </div>
                     </div>
                     <div class="mt-2">
@@ -307,7 +334,7 @@
                             <div><strong>Pendukung:</strong> <span id="sidangPendukung"></span></div>
                         </div>
                     </div>
-                    <div class="modal-footer mt-2">
+                    <div class="modal-footer mt-2 btn-group-form-edit-jadwal">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                         <button type="submit" class="btn btn-primary btn-submit" id="btn-submit">Simpan</button>
                     </div>
@@ -316,8 +343,6 @@
         </div>
     </div>
 </div>
-<script>
-</script>
 
 <!-- Modal Edit -->
 <div class="modal fade" id="modalEditGelombang" tabindex="-1">
@@ -450,14 +475,21 @@
                 $form.find('#waktuSelesai').val(data.waktuSelesai);
                 $form.find('#ruanganSidang').val(data.ruangId);
 
-                // Tampilkan tombol update status jika hari ini >= data.tanggal
+                $('#input-daftar-hadir-sidang-id').val(data.id);
+
+                // Tampilkan tombol update status jika hari ini >= data.tanggal dan belum ada nilaiAkhir
                 const today = new Date();
                 const tanggalSidang = new Date(data.tanggal);
-                if (data.tanggal && today >= tanggalSidang) {
+                if (data.tanggal && today >= tanggalSidang && !data.nilaiAkhir) {
                     $('#view-update-status').show()
                     $('#btn-update-status')
                     .show()
                     .attr('onclick', `updateStatusSidang('${data.id}', this)`);
+                    $('#input-nilai-sidang').prop('disabled', false);
+                } else if (data.nilaiAkhir) {
+                    // Jika sudah ada nilaiAkhir, disable input dan sembunyikan tombol
+                    $('#input-nilai-sidang').val(data.nilaiAkhir).prop('disabled', true);
+                    $('#btn-update-status').hide();
                 } else {
                     $('#view-update-status').hide();
                 }
@@ -465,18 +497,58 @@
                 // Mahasiswa
                 $form.find('#mahasiswaSidang').html(`<span class="form-control-plaintext">${data.nama ? data.nama : '-'}</span>`);
 
-                // Pembimbing
+                // Pembimbing & Nilai Pembimbing
                 let pembimbingHtml = '';
+                let nilaiPembimbingHtml = '';
                 if (data.namaPembimbing1) {
-                    pembimbingHtml += `<div class="mb-1">${data.namaPembimbing1}</div>`;
+                    pembimbingHtml += `<div class="mb-1">${data.namaPembimbing1}`;
+                    if (data.nilaiPembimbing1 !== undefined && data.nilaiPembimbing1 !== null && data.nilaiPembimbing1 !== '') {
+                        pembimbingHtml += ` <span class="badge bg-success ms-2">Nilai: ${data.nilaiPembimbing1}</span>`;
+                        nilaiPembimbingHtml += `<div><strong>${data.namaPembimbing1}:</strong> <span class="badge bg-success ms-2">Nilai: ${data.nilaiPembimbing1}</span></div>`;
+                    } else {
+                        pembimbingHtml += ` <span class="badge bg-secondary ms-2">Nilai: -</span>`;
+                        nilaiPembimbingHtml += `<div><strong>${data.namaPembimbing1}:</strong> <span class="badge bg-secondary ms-2">Nilai: -</span></div>`;
+                    }
+                    pembimbingHtml += `</div>`;
                 }
                 if (data.namaPembimbing2) {
-                    pembimbingHtml += `<div>${data.namaPembimbing2}</div>`;
+                    pembimbingHtml += `<div>${data.namaPembimbing2}`;
+                    if (data.nilaiPembimbing2 !== undefined && data.nilaiPembimbing2 !== null && data.nilaiPembimbing2 !== '') {
+                        pembimbingHtml += ` <span class="badge bg-success ms-2">Nilai: ${data.nilaiPembimbing2}</span>`;
+                        nilaiPembimbingHtml += `<div><strong>${data.namaPembimbing2}:</strong> <span class="badge bg-success ms-2">Nilai: ${data.nilaiPembimbing2}</span></div>`;
+                    } else {
+                        pembimbingHtml += ` <span class="badge bg-secondary ms-2">Nilai: -</span>`;
+                        nilaiPembimbingHtml += `<div><strong>${data.namaPembimbing2}:</strong> <span class="badge bg-secondary ms-2">Nilai: -</span></div>`;
+                    }
+                    pembimbingHtml += `</div>`;
                 }
+                $form.find('#nilaiPembimbing').html(nilaiPembimbingHtml);
                 $form.find('#pembimbingSidang').html(pembimbingHtml);
 
                 // Penguji
                 $form.find('#pengujiSidang').val(data.pengujiIds);
+
+                // Nilai Penguji
+                let nilaiPengujiHtml = '';
+                let adaNilaiPenguji = false;
+                if (data.nilaiPenguji && typeof data.nilaiPenguji === 'object') {
+                    Object.entries(data.nilaiPenguji).forEach(([npp, nilai]) => {
+                        // Cari nama penguji dari select option
+                        let namaPenguji = $form.find(`#pengujiSidang option[value="${npp}"]`).text();
+                        if (!namaPenguji) namaPenguji = npp;
+                        nilaiPengujiHtml += `<div><strong>${namaPenguji}:</strong> <span class="badge bg-success ms-2">Nilai: ${nilai}</span></div>`;
+                        if (nilai !== null && nilai !== '' && nilai !== undefined) {
+                            adaNilaiPenguji = true;
+                        }
+                    });
+                }
+                // Sembunyikan tombol simpan jika ada nilai penguji
+                if (adaNilaiPenguji) {
+                    $form.find('.btn-group-form-edit-jadwal').hide();
+                } else {
+                    $form.find('.btn-group-form-edit-jadwal').show();
+                }
+                $form.find('#nilaiPenguji').html(nilaiPengujiHtml);
 
                 // Proposal
                 if (data.proposal) {
@@ -519,62 +591,67 @@
                 $('#preferensiHari').text(data.hari ? data.hari : '-');
                 $('#preferensiWaktu').text(data.waktu ? data.waktu : '-');
 
+                // Jika sudah ada nilai dari penguji, set semua elemen form readonly/disabled
+                if (adaNilaiPenguji) {
+                    // Disable semua input, select, textarea, button[type="submit"] di dalam form
+                    $form.find('input, select, textarea, button[type="submit"]').not('#input-nilai-sidang').prop('disabled', true).prop('readonly', true);
+                    // Kecualikan tombol batal dan close modal
+                    $form.find('button[data-bs-dismiss="modal"]').prop('disabled', false);
+                } else {
+                    // Enable kembali jika belum ada nilai penguji
+                    $form.find('input, select, textarea, button[type="submit"]').prop('disabled', false).prop('readonly', false);
+                }
+
                 $('#editJadwalModal').modal('show');
                 if (btn) {
                     $(btn).prop('disabled', false);
-                    btn.innerHTML = '<i class="bi bi-pencil"></i>';
+                    btn.innerHTML = '<i class="bi bi-eye"></i>';
                 }
             },
             error: function(xhr, status, error) {
-                alert('Gagal mengambil data jadwal sidang.');
+                swal("Gagal!", "Gagal mengambil data jadwal sidang.", "error");
                 if (btn) {
                     $(btn).prop('disabled', false);
-                    btn.innerHTML = '<i class="bi bi-pencil"></i>';
+                    btn.innerHTML = '<i class="bi bi-eye"></i>';
                 }
             }
         });
     }
 
-    function updateStatusSidang(id, btn) 
-    {
+    function updateStatusSidang(id, btn) {
+        var nilai = $('#input-nilai-sidang').val();
+        if (nilai === '' || nilai < 0 || nilai > 100) {
+            swal("Nilai tidak valid!", "Masukkan nilai sidang antara 0 - 100.", "warning");
+            return;
+        }
         swal({
             title: "Yakin ingin mengubah telah menyelesaikan sidang?",
-            text: "Status sidang akan diubah menjadi selesai.",
+            text: "Status sidang akan diubah menjadi selesai dan nilai akan disimpan.",
             icon: "warning",
             buttons: true,
             dangerMode: true,
         }).then((willUpdate) => {
-            if (!willUpdate) {
-                return;
-            }
-            if (btn) {
-                $(btn).prop('disabled', true);
-                btn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i> Tunggu...';
-            }
-            const url = `{{ route('sidang.update-status-jadwal', ':id') }}`.replace(':id', id);
+            if (!willUpdate) return;
+            $(btn).prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Tunggu...');
+
             $.ajax({
-                url: url,
+                url: `{{ route('sidang.penilaian-sidang', ':id') }}`.replace(':id', id),
                 type: 'POST',
                 data: {
                     _token: '{{ csrf_token() }}',
                     _method: 'PUT',
-                    status: 1
+                    status: 1,
+                    nilai: nilai
                 },
                 success: function(response) {
                     $('#editJadwalModal').modal('hide');
                     $('#jadwal-sidang-table').DataTable().ajax.reload(null, false);
                     swal("Sukses!", response.message, "success");
-                    if (btn) {
-                        $(btn).prop('disabled', false);
-                        btn.innerHTML = 'Selesai Sidang';
-                    }
+                    $(btn).prop('disabled', false).html('Selesai Sidang');
                 },
-                error: function(xhr, status, error) {
-                    alert('Gagal memperbarui status sidang.');
-                    if (btn) {
-                        $(btn).prop('disabled', false);
-                        btn.innerHTML = 'Selesai Sidang';
-                    }
+                error: function(xhr) {
+                    swal("Gagal!", "Gagal memperbarui status sidang.", "error");
+                    $(btn).prop('disabled', false).html('Selesai Sidang');
                 }
             });
         });

@@ -261,7 +261,7 @@
                                                         <span class="badge bg-secondary">Tidak Diketahui</span>
                                                     @endif
                                                 </td>
-                                                <td>
+                                                <td class="d-flex gap-2">
                                                     @if ($row->status == 1 || $row->status == 2)
                                                         <form action="{{ route('mhs.skripsi.daftar.print-sidang') }}" method="POST" class="d-inline" target="_blank">
                                                             @csrf
@@ -272,6 +272,16 @@
                                                         </form>
                                                     @else
                                                         <span class="text-muted">-</span>
+                                                    @endif
+
+                                                    @if ($row->jenis == 1 && ($row->accPembimbing1 == 1 || $row->accPembimbing2 == 1))
+                                                        <form action="{{ route('mhs.skripsi.daftar.print-persetujuan-proposal') }}" method="POST" class="d-inline" target="_blank">
+                                                            @csrf
+                                                            <input type="hidden" name="id" value="{{ $row->id }}">
+                                                            <button type="submit" class="btn btn-sm btn-outline-success ms-2" title="Download Surat Persetujuan Seminar Proposal">
+                                                                <i class="bi bi-download"></i>
+                                                            </button>
+                                                        </form>
                                                     @endif
                                                 </td>
                                             </tr>

@@ -98,86 +98,82 @@ class BimbinganController extends Controller
     
 
     public function UploadBimbingan(Request $request)
-{
-    try {
-        // Validasi input
-        $request->validate([
-            'id_master_bimbingan' => 'required|integer',
-            'keterangan' => 'nullable|string',
-            'kategori' => 'nullable|string',
-            'file' => 'nullable|mimes:pdf,doc,docx|max:2048',
-        ], [
-            'id_master_bimbingan.required' => 'ID master bimbingan harus diisi.',
-            'file.mimes' => 'File harus berupa PDF atau Word.',
-            'file.max' => 'Ukuran file maksimal 2MB.',
-        ]);
+    {
+        try {
+            // Validasi input
+            $request->validate([
+                'id_master_bimbingan' => 'required|integer',
+                'keterangan' => 'nullable|string',
+                'kategori' => 'nullable|string',
+                'file' => 'nullable|mimes:pdf,doc,docx|max:2048',
+            ], [
+                'id_master_bimbingan.required' => 'ID master bimbingan harus diisi.',
+                'file.mimes' => 'File harus berupa PDF atau Word.',
+                'file.max' => 'Ukuran file maksimal 2MB.',
+            ]);
 
-        $fileName = null;
+            $fileName = null;
 
-        // Validasi urutan kategori
-        $kategori = $request->kategori;
-        $kategoriNumber = (int) filter_var($kategori, FILTER_SANITIZE_NUMBER_INT);  // Mengambil angka dari string "Bab 2"
+            // Validasi urutan kategori
+            $kategori = $request->kategori;
+            $kategoriNumber = (int) filter_var($kategori, FILTER_SANITIZE_NUMBER_INT);  // Mengambil angka dari string "Bab 2"
 
-        // Periksa apakah bab sebelumnya sudah diunggah
-        if ($kategoriNumber > 1) {
-            $previousKategori = 'Bab ' . ($kategoriNumber - 1);
+            // Periksa apakah bab sebelumnya sudah diunggah
+            if ($kategoriNumber > 1) {
+                $previousKategori = 'Bab ' . ($kategoriNumber - 1);
 
-            $previousBimbingan = BimbinganSkripsi::where('kategori', $previousKategori)
+                $previousBimbingan = BimbinganSkripsi::where('kategori', $previousKategori)
+                    ->where('id_master_bimbingan', $request->id_master_bimbingan)
+                    ->first();
+
+                if (!$previousBimbingan) {
+                    return redirect()->back()->with('message', "Anda Belum mengunggah $previousKategori.")
+                        ->with('status', 'error');
+                }
+            }
+
+            // Mengunggah file jika ada
+            if ($request->hasFile('file')) {
+                $file = $request->file('file');
+                $fileName = time() . '_' . $file->getClientOriginalName(); 
+                $file->storeAs('bimbingan_files', $fileName, 'public');
+            }
+
+            // Mencari data bimbingan yang sesuai berdasarkan kategori dan id_master_bimbingan
+            $bimbingan = BimbinganSkripsi::where('kategori', $kategori)
                 ->where('id_master_bimbingan', $request->id_master_bimbingan)
                 ->first();
 
-            if (!$previousBimbingan) {
-                return redirect()->back()->with('message', "Anda Belum mengunggah $previousKategori.")
-                    ->with('status', 'error');
+            if ($bimbingan) {
+                $bimbingan->update([
+                    'keterangan' => $request->keterangan,
+                    'file' => $fileName,
+                    'kategori' => $kategori,
+                    'status' => 0,
+                ]);
+            } else {
+                $bimbingan = BimbinganSkripsi::create([
+                    'id_master_bimbingan' => $request->id_master_bimbingan,
+                    'file' => $fileName,
+                    'kategori' => $kategori,
+                    'status' => 0,
+                ]);
             }
-        }
 
-        // Mengunggah file jika ada
-        if ($request->hasFile('file')) {
-            $file = $request->file('file');
-            $fileName = time() . '_' . $file->getClientOriginalName(); 
-            $file->storeAs('bimbingan_files', $fileName, 'public');
-        }
-
-        // Mencari data bimbingan yang sesuai berdasarkan kategori dan id_master_bimbingan
-        $bimbingan = BimbinganSkripsi::where('kategori', $kategori)
-            ->where('id_master_bimbingan', $request->id_master_bimbingan)
-            ->first();
-
-        if ($bimbingan) {
-            $bimbingan->update([
+            // Buat Logbook Bimbingan
+            LogbookBimbingan::create([
+                'id_bimbingan' => $bimbingan->id,
                 'keterangan' => $request->keterangan,
-                'file' => $fileName,
+                'file_mhs' => $fileName,
                 'kategori' => $kategori,
+                'tgl_pengajuan' => now(),
                 'status' => 0,
             ]);
-        } else {
-            $bimbingan = BimbinganSkripsi::create([
-                'id_master_bimbingan' => $request->id_master_bimbingan,
-                'file' => $fileName,
-                'kategori' => $kategori,
-                'status' => 0,
-            ]);
+
+            return redirect()->back()->with('message', 'Bimbingan berhasil diupload')->with('status', 'success');
+
+        } catch (\Exception $e) {
+            return redirect()->back()->with('message', 'Terjadi kesalahan: ' . $e->getMessage())->with('status', 'error');
         }
-
-        // Buat Logbook Bimbingan
-        LogbookBimbingan::create([
-            'id_bimbingan' => $bimbingan->id,
-            'keterangan' => $request->keterangan,
-            'file_mhs' => $fileName,
-            'kategori' => $kategori,
-            'tgl_pengajuan' => now(),
-            'status' => 0,
-        ]);
-
-        return redirect()->back()->with('message', 'Bimbingan berhasil diupload')->with('status', 'success');
-
-    } catch (\Exception $e) {
-        return redirect()->back()->with('message', 'Terjadi kesalahan: ' . $e->getMessage())->with('status', 'error');
     }
-}
-
-    
-
-    
 }

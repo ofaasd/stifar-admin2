@@ -174,7 +174,7 @@
                     </div>
                     <div class="step">
                         <div class="step-number">2</div>
-                        <small>Judul & Abstrak</small>
+                        <small>Judul & Pembimbing</small>
                     </div>
                     <div class="step">
                         <div class="step-number">3</div>
@@ -192,20 +192,23 @@
                                 <div class="card-body">
                                     @php
                                         $syarat = 0;
-                                        if ($mhs->ipk >= 2.75) {
+                                        if ($mhs->ipk >= 2.00) {
                                             $syarat++;
                                         }
-                                        if ($mhs->totalSks >= 144) {
+                                        if ($mhs->totalSks >= 112) {
+                                            $syarat++;
+                                        }
+                                        if ($mhs->isMetopen) {
                                             $syarat++;
                                         }
                                     @endphp
-                                    <div class="requirement-item {{ $mhs->ipk >= 2.75 ? 'completed' : 'missing' }}">
+                                    <div class="requirement-item {{ $mhs->ipk >= 2.00 ? 'completed' : 'missing' }}">
                                         <div class="d-flex justify-content-between align-items-center">
                                             <div>
-                                                <strong>IPK Minimum (2.75)</strong>
+                                                <strong>IPK Minimum (2.00)</strong>
                                                 <p class="mb-0 text-muted">IPK Anda: {{ $mhs->ipk }}</p>
                                             </div>
-                                            @if ($mhs->ipk >= 2.75)
+                                            @if ($mhs->ipk >= 2.00)
                                                 <span class="badge bg-success">✓ Terpenuhi</span>
                                             @else
                                                 <span class="badge bg-danger">✗ Belum Terpenuhi</span>
@@ -213,13 +216,27 @@
                                         </div>
                                     </div>
 
-                                    <div class="requirement-item {{ $mhs->totalSks >= 144 ? 'completed' : 'missing' }}">
+                                    <div class="requirement-item {{ $mhs->totalSks >= 112 ? 'completed' : 'missing' }}">
                                         <div class="d-flex justify-content-between align-items-center">
                                             <div>
-                                                <strong>SKS Minimum (144)</strong>
+                                                <strong>SKS Minimum (112)</strong>
                                                 <p class="mb-0 text-muted">SKS Anda: {{ $mhs->totalSks ?? '-' }}</p>
                                             </div>
-                                            @if ($mhs->totalSks >= 144)
+                                            @if ($mhs->totalSks >= 112)
+                                                <span class="badge bg-success">✓ Terpenuhi</span>
+                                            @else
+                                                <span class="badge bg-danger">✗ Belum Terpenuhi</span>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <div class="requirement-item {{ $mhs->isMetopen ? 'completed' : 'missing' }}">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <strong>Mata Kuliah Metodologi Penelitian</strong>
+                                                {{-- <p class="mb-0 text-muted">SKS Anda: {{ $mhs->totalSks ?? '-' }}</p> --}}
+                                            </div>
+                                            @if ($mhs->isMetopen)
                                                 <span class="badge bg-success">✓ Terpenuhi</span>
                                             @else
                                                 <span class="badge bg-danger">✗ Belum Terpenuhi</span>
@@ -314,6 +331,35 @@
                                             <span id="abstrakCounter2" class="char-counter">0/1000</span>
                                         </div>
                                     </div>
+                                    
+                                    <div class="mb-4 row">
+                                        <div class="col-md-6 mb-2">
+                                            <label class="form-label">Pembimbing 1 <span class="text-danger">*</span></label>
+                                            <select class="form-select" id="pembimbing1">
+                                                <option selected disabled>Pilih Pembimbing 1</option>
+                                                @forelse ($pembimbing as $row)
+                                                    <option value="{{ $row->npp }}">
+                                                        {{ $row->nama }} (NPP: {{ $row->npp }}) &mdash; Kuota: {{ $row->kuota }}
+                                                    </option>
+                                                @empty
+                                                    <option disabled>Tidak ada pembimbing tersedia</option>
+                                                @endforelse
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <label class="form-label">Pembimbing 2 <span class="text-danger">*</span></label>
+                                            <select class="form-select" id="pembimbing2">
+                                                <option selected disabled>Pilih Pembimbing 2</option>
+                                                @forelse ($pembimbing as $row)
+                                                    <option value="{{ $row->npp }}">
+                                                        {{ $row->nama }} (NPP: {{ $row->npp }}) &mdash; Kuota: {{ $row->kuota }}
+                                                    </option>
+                                                @empty
+                                                    <option disabled>Tidak ada pembimbing tersedia</option>
+                                                @endforelse
+                                            </select>
+                                        </div>
+                                    </div>
 
                                 </div>
                             </div>
@@ -358,10 +404,19 @@
                                             <p id="finalAbstrak2" class="text-muted">-</p>
                                         </div>
                                     </div>
+                                    <div class="row mt-3">
+                                        <div class="col-md-6">
+                                            <h6>Pembimbing 1:</h6>
+                                            <p id="finalPembimbing1" class="text-muted">-</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6>Pembimbing 2:</h6>
+                                            <p id="finalPembimbing2" class="text-muted">-</p>
+                                        </div>
+                                    </div>
                                     <div class="alert alert-info">
                                         <i class="bi bi-info-circle me-2"></i>
-                                        <strong>Perhatian:</strong> Setelah submit, pengajuan akan dikirim ke dosen
-                                        pembimbing untuk review. Anda akan mendapat notifikasi melalui email dan sistem.
+                                        <strong>Perhatian:</strong> Setelah submit, pengajuan akan dikirim ke tim koordinator untuk review.
                                     </div>
                                     <div class="form-check mb-3">
                                         <input class="form-check-input" type="checkbox" id="confirmSubmit">
@@ -393,6 +448,8 @@
             <input type="hidden" name="judulEng2">
             <input type="hidden" name="abstrak1">
             <input type="hidden" name="abstrak2">
+            <input type="hidden" name="pembimbing1">
+            <input type="hidden" name="pembimbing2">
         </form>
     </div>
 @endsection
@@ -513,8 +570,23 @@
 
             document.getElementById('finalAbstrak1').textContent =
                 document.getElementById('abstrakSingkat1').value;
+
             document.getElementById('finalAbstrak2').textContent =
                 document.getElementById('abstrakSingkat2').value;
+
+            // Get selected option text for Pembimbing 1
+            const pembimbing1Select = document.getElementById('pembimbing1');
+            const pembimbing1Text = pembimbing1Select.options[pembimbing1Select.selectedIndex]
+                ? pembimbing1Select.options[pembimbing1Select.selectedIndex].text
+                : '-';
+            document.getElementById('finalPembimbing1').textContent = pembimbing1Text;
+
+            // Get selected option text for Pembimbing 2
+            const pembimbing2Select = document.getElementById('pembimbing2');
+            const pembimbing2Text = pembimbing2Select.options[pembimbing2Select.selectedIndex]
+                ? pembimbing2Select.options[pembimbing2Select.selectedIndex].text
+                : '-';
+            document.getElementById('finalPembimbing2').textContent = pembimbing2Text;
             
             // const jenis = document.getElementById('jenisPenelitian').value;
             // document.getElementById('finalJenis').textContent =
@@ -536,6 +608,8 @@
                     document.querySelector('[name="judulEng2"]').value = document.getElementById('judulSkripsieng2').value;
                     document.querySelector('[name="abstrak1"]').value = document.getElementById('abstrakSingkat1').value;
                     document.querySelector('[name="abstrak2"]').value = document.getElementById('abstrakSingkat2').value;
+                    document.querySelector('[name="pembimbing1"]').value = document.getElementById('pembimbing1').value;
+                    document.querySelector('[name="pembimbing2"]').value = document.getElementById('pembimbing2').value;
 
                     document.getElementById('formPengajuan').submit();
 
@@ -547,10 +621,43 @@
             });
         }
 
+        function syncSelects(changedSelect, otherSelect) 
+        {
+            // Show all options first
+            Array.from(otherSelect.options).forEach(option => {
+                option.hidden = false;
+            });
+
+            const selectedValue = changedSelect.value;
+            if (selectedValue) {
+                // Hide the selected option in the other select
+                Array.from(otherSelect.options).forEach(option => {
+                if (option.value === selectedValue) {
+                    option.hidden = true;
+                    // If the other select currently has this value, reset it
+                    if (otherSelect.value === selectedValue) {
+                    otherSelect.value = '';
+                    }
+                }
+                });
+            }
+        }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('confirmSubmit').addEventListener('change', function() {
                 document.getElementById('btnSubmit').disabled = !this.checked;
+            });
+
+            const select1 = document.getElementById('pembimbing1');
+            const select2 = document.getElementById('pembimbing2');
+
+            select1.addEventListener('change', function() {
+            syncSelects(select1, select2);
+            });
+
+            select2.addEventListener('change', function() {
+            syncSelects(select2, select1);
             });
         });
     </script>

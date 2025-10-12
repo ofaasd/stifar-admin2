@@ -66,6 +66,8 @@ class PengajuanController extends Controller
                 'sidang.jenis',
                 'master_ruang.nama_ruang AS ruangan',
                 'sidang.status',
+                'sidang.acc_pembimbing1 AS accPembimbing1',
+                'sidang.acc_pembimbing2 AS accPembimbing2',
                 'gelombang_sidang_skripsi.nama AS namaGelombang',
                 'gelombang_sidang_skripsi.periode',
                 'pembimbing1.nama_lengkap AS namaPembimbing1',
@@ -275,6 +277,67 @@ class PengajuanController extends Controller
             // Ubah nama file output menjadi nim_sidang_jenis.pdf
             $jenisSidang = $sidang->jenis == 1 ? 'terbuka' : 'tertutup';
             $filename = $sidang->nim . '_sidang_' . $jenisSidang . '.pdf';
+            return response($mpdf->Output($filename, 'S'))->header('Content-Type', 'application/pdf');
+
+        }catch (\Exception $e) {
+            return response()->json(['status' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function printPersetujuanProposal(Request $request)
+    {
+        try {
+            $idSidang = $request->id;
+
+            $sidang = SidangSkripsi::select([
+                'sidang.id',
+                'sidang.tanggal',
+                'sidang.waktu_mulai AS waktuMulai',
+                'sidang.waktu_selesai AS waktuSelesai',
+                'sidang.penguji',
+                'sidang.jenis',
+                'master_ruang.nama_ruang AS ruangan',
+                'sidang.status',
+                'gelombang_sidang_skripsi.nama AS namaGelombang',
+                'gelombang_sidang_skripsi.periode',
+                'pembimbing1.nama_lengkap AS namaPembimbing1',
+                'pembimbing2.nama_lengkap AS namaPembimbing2',
+                'pengajuan_judul_skripsi.judul',
+                'master_skripsi.pembimbing_1',
+                'master_skripsi.pembimbing_2',
+                'mahasiswa.nama',
+                'mahasiswa.nim'
+            ])
+            ->leftJoin('master_skripsi', 'sidang.skripsi_id', '=', 'master_skripsi.id')
+            ->leftJoin('gelombang_sidang_skripsi', 'sidang.gelombang_id', '=', 'gelombang_sidang_skripsi.id')
+            ->leftJoin('master_ruang', 'sidang.ruang_id', '=', 'master_ruang.id')
+            ->leftJoin('pegawai_biodata AS pembimbing1', 'master_skripsi.pembimbing_1', '=', 'pembimbing1.npp')
+            ->leftJoin('pegawai_biodata AS pembimbing2', 'master_skripsi.pembimbing_2', '=', 'pembimbing2.npp')
+            ->leftJoin('pengajuan_judul_skripsi', 'master_skripsi.id', '=', 'pengajuan_judul_skripsi.id_master')
+            ->leftJoin('mahasiswa', 'master_skripsi.nim', '=', 'mahasiswa.nim')
+            ->where('pengajuan_judul_skripsi.status', 1)
+            ->where('sidang.id', $idSidang)
+            ->orderBy('sidang.created_at', 'desc')
+            ->first();
+
+            if($sidang)
+            {
+                $sidang->tanggal = \Carbon\Carbon::parse($sidang->tanggal)->translatedFormat('d/m/Y');
+                $npps = explode(',', $sidang->penguji);
+                $names = PegawaiBiodatum::whereIn('npp', $npps)->pluck('nama_lengkap')->toArray();
+                foreach ($names as $i => $nama) {
+                    $sidang->{'namaPenguji' . ($i + 1)} = $nama;
+                }
+            }
+
+            $logo = asset('assets/images/logo/upload/logo_besar.png');
+
+            // Generate PDF dengan mPDF
+            $mpdf = new \Mpdf\Mpdf();
+            $html = view('mahasiswa.skripsi.pengajuan.print-persetujuan-sempro', compact('sidang', 'logo'))->render();
+            $mpdf->WriteHTML($html);
+
+            $filename = $sidang->nim . '_persetujuan_sempro.pdf';
             return response($mpdf->Output($filename, 'S'))->header('Content-Type', 'application/pdf');
 
         }catch (\Exception $e) {

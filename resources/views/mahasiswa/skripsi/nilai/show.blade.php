@@ -89,7 +89,7 @@
                                 <thead>
                                     <tr>
                                         <th>Penguji</th>
-                                        <th>Nilai</th>
+                                        <th>Nilai Akhir</th>
                                         <th>Catatan</th>
                                     </tr>
                                 </thead>
@@ -98,12 +98,12 @@
                                         <tr>
                                             <td>
                                                 @php
-                                                    $idx = array_search($nilai->npp, $sidang->npps);
+                                                    $idx = array_search($nilai->npp, $sidang->nppsPenguji);
                                                     $namaPenguji = $sidang->{'namaPenguji'.($idx+1)} ?? $nilai->npp;
                                                 @endphp
-                                                {{ $namaPenguji }}
+                                                {{ $namaPenguji }} <span class="badge bg-primary">Penguji</span>
                                             </td>
-                                            <td>{{ $nilai->nilai ?? '-' }}</td>
+                                            <td>{{ $nilai->nilai_akhir ?? '-' }}</td>
                                             <td>{{ $nilai->catatan ?? '-' }}</td>
                                         </tr>
                                     @empty
@@ -111,16 +111,28 @@
                                             <td colspan="3" class="text-center">Belum ada nilai penguji.</td>
                                         </tr>
                                     @endforelse
+
+                                    @if(!empty($nilaiPembimbing))
+                                        @foreach($nilaiPembimbing as $nilai)
+                                            <tr>
+                                                <td>
+                                                    @php
+                                                        $idx = array_search($nilai->npp, $sidang->nppsPembimbing);
+                                                        $namaPembimbing = $sidang->{'namaPembimbing'.($idx+1)} ?? $nilai->npp;
+                                                    @endphp
+                                                    {{ $namaPembimbing }} <span class="badge bg-success">Pembimbing</span>
+                                                </td>
+                                                <td>{{ $nilai->nilai_akhir ?? '-' }}</td>
+                                                <td>{{ $nilai->catatan ?? '-' }}</td>
+                                            </tr>
+                                        @endforeach
+                                    @endif
                                 </tbody>
-                                @if(count($nilaiPenguji) > 0)
-                                    @php
-                                        $totalNilai = collect($nilaiPenguji)->sum('nilai');
-                                        $rataRata = round($totalNilai / count($nilaiPenguji), 2);
-                                    @endphp
+                                @if(count($nilaiPenguji) > 0 || !empty($nilaiPembimbing))
                                     <tfoot>
                                         <tr>
-                                            <th colspan="1">Nilai Akhir: </th>
-                                            <th colspan="2">{{ $rataRata }}</th>
+                                            <th colspan="1">Nilai: </th>
+                                            <th colspan="2">{{ $sidang->nilaiAkhir ?? '-' }}</th>
                                         </tr>
                                     </tfoot>
                                 @endif
