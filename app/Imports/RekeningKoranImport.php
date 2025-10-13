@@ -24,9 +24,9 @@ class RekeningKoranImport implements ToModel
             'eff_date' => $new_date2,
             'cheque_no' => $row[7],
             'description' => $row[8],
-            'debit' => (int)$row[10],
-            'credit' => (int)$row[12],
-            'balance' => (int)$row[13],
+            'debit' => (int)str_replace(".","",$row[10]),
+            'credit' => (int)str_replace(".","",$row[12]),
+            'balance' => (int)str_replace(".","",$row[13]),
             'transaction' => $row[14],
             'ref_no' => $row[15],
         ]);
