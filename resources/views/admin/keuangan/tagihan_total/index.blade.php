@@ -100,7 +100,7 @@
                                                 <a href="{{url('/assets/file/format_import_tagihan.xlsx')}}" class="btn btn-primary">Format Import D3/Apoteker</a>
                                                 <a href="{{url('/assets/file/format_import_tagihan_s1.xlsx')}}" class="btn btn-info">Format Import S1/S2</a>
                                             </div>
-                                            <div class="mb-3" id="field-nama">
+                                            <div class="mb-3" id="field-nam a">
                                                 <label for="file_excel" class="form-label">File Excel</label>
                                                 <input type="file" class="form-control" name="file_excel" id="file_excel">
                                             </div>
@@ -109,7 +109,7 @@
                                                 <select class="form-control" name="prodi" id="prodi" >
                                                     <option value="">-- Pilih Prodi --</option>
                                                     @foreach($prodi as $prd)
-                                                        <option value="{{$prd->id}}">{{$prd->nama_prodi}}</option>
+                                                        <option value="{{$prd->nama_prodi}}">{{$prd->nama_prodi}}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
