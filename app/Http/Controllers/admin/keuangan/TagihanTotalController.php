@@ -205,7 +205,7 @@ class TagihanTotalController extends Controller
     }
     public function import(Request $request){
         $jenjang = substr($request->prodi,0,2);
-        if($jenjang == 'D3'){
+        if($jenjang == 'D3' || $jenjang == 'Pr'){
             Excel::import(new TagihanImport, $request->file('file_excel'));
         }else{
             Excel::import(new TagihanS1Import, $request->file('file_excel'));

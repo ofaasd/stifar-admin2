@@ -97,7 +97,7 @@
                                         </div>
                                         <div class="modal-body">
                                             <div class="mb-3">
-                                                <a href="{{url('/assets/file/format_import_tagihan.xlsx')}}" class="btn btn-primary">Format Import</a>
+                                                <a href="{{url('/assets/file/format_import_tagihan.xlsx')}}" class="btn btn-primary">Format Import D3/Apoteker</a>
                                                 <a href="{{url('/assets/file/format_import_tagihan_s1.xlsx')}}" class="btn btn-info">Format Import S1/S2</a>
                                             </div>
                                             <div class="mb-3" id="field-nama">
