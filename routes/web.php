@@ -175,7 +175,7 @@ Route::get('/register_mahasiswa', [LoginController::class, 'register_mahasiswa']
 Route::post('/actionRegister', [LoginController::class, 'actionRegister'])->name('actionRegister');
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 
-Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi|baak',]], function () {
+Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi|baak|admin-pmb',]], function () {
     // route dosen
     Route::get('/dosen/perwalian', [DosenController::class, 'index'])->name('Perwalian');
     Route::get('/dosen/{id}/krs', [DosenController::class, 'detailKRS'])->name('detailKRS');

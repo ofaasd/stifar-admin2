@@ -80,10 +80,7 @@
             @include('layouts.sidebar_mhs')
         @endrole
         @role('admin-pmb')
-            @include('layouts.sidebar_pmb')
-        @endrole
-        @role('admin-pmb')
-            @include('layouts.sidebar_pmb')
+            @include('layouts.sidebar_admin_pmb')
         @endrole
         @role('baak')
             @include('layouts.sidebar_baak')
