@@ -227,7 +227,7 @@ class VerifikasiController extends Controller
                     return response()->json('Error');
                 }
             }else{
-                return response()->json('Error | No VA tidak ada dalam bank data VA');
+                return response()->json('Error | No VA tidak ada dalam bank data VA', 401);
             }
         }elseif($request->is_verifikasi != 1){
             $peserta = PmbPesertaOnline::find($id);

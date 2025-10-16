@@ -23,6 +23,17 @@
                     <li><a href="{{ URL::to('mahasiswa') }}">Data Mahasiswa</a></li>
                 </ul>
             </li>  
+            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
+                <span><i class="fa fa-file-text"></i> Admisi</span></a>
+                <ul class="sidebar-submenu">
+                    <li><a href="{{URL::to('admin/admisi/verifikasi')}}">Verifikasi Pendaftaran</a></li>
+                    <li><a href="{{URL::to('admin/admisi/verifikasi/pembayaran')}}">Verifikasi Pembayaran</a></li>
+                    <li><a href="{{URL::to('admin/admisi/pengumuman')}}">Pengumuman Peserta</a></li> {{-- Butuh format surat pengumuman resmi dari pihak kampus --}}
+                    <li><a href="{{URL::to('admin/admisi/verifikasi_pembayaran')}}">Verifikasi Pembayaran Daftar Ulang </a></li>
+                    {{-- <li><a href="#">Berita Pendaftaran</a></li> --}}
+                    <li><a href="{{URL::to('admin/admisi/biaya_pendaftaran')}}">Biaya Pendaftaran</a></li>
+                </ul>
+            </li>
             @include('layouts.menu.keuangan')
           </ul>
         </div>
