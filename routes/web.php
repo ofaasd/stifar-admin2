@@ -100,6 +100,7 @@ use App\Http\Controllers\mahasiswa\skripsi\NilaiSidangController;
 use App\Http\Controllers\mahasiswa\skripsi\PembimbingController1;
 use App\Http\Controllers\admin\akademik\KhsController as adminKhs;
 use App\Http\Controllers\admin\akademik\PengaturanUjianController;
+use App\Http\Controllers\admin\akademik\AdminUjianController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiKaryaController;
 use App\Http\Controllers\admin\keuangan\SettingKeuanganController;
 use App\Http\Controllers\admin\master\JabatanStrukturalController;
@@ -388,6 +389,11 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi|baak|admin-
     Route::get('/admin/akademik/pengaturan-ujian', [PengaturanUjianController::class, 'index']);
     Route::get('/admin/akademik/pengaturan-ujian/prodi/{id}', [PengaturanUjianController::class, 'index']);
     Route::post('/admin/akademik/pengaturan-ujian/setjadwal', [PengaturanUjianController::class, 'setJadwalUjian']);
+    Route::get('/admin/akademik/ujian', [AdminUjianController::class, 'index']);
+    Route::post('/admin/akademik/ujian/list-mhs', [AdminUjianController::class, 'list_mhs']);
+    Route::get('/admin/akademik/ujian/{nim}', [AdminUjianController::class, 'show']);
+    Route::get('/admin/akademik/ujian/cetak_uts/{nim}', [AdminUjianController::class, 'cetak_uts']);
+    Route::get('/admin/akademik/ujian/cetak_uas/{nim}', [AdminUjianController::class, 'cetak_uas']);
 
     Route::get('/admin/akademik/kuesioner', [KuesionerController::class, 'index']);
     Route::get('/admin/akademik/list_soal/{id}', [SoalKuesionerController::class, 'index']);

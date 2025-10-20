@@ -29,14 +29,7 @@
                     <div class="card-body">
                         <div class="mt-4">
                             <div class="col-sm-4">
-                                <div class="form-group">
-                                    <label for="tahun_ajaran">Pilih Tahun Ajaran KRS</label>
-                                    <select name="tahun_ajaran" id="tahun_ajaran" class="form-control">
-                                        @foreach($tahun_ajaran as $ta)
-                                            <option value="{{ $ta['id'] }}">{{ $ta['kode_ta'] }} [ {{ $ta['tgl_awal'].' s/d '.$ta['tgl_akhir'] }} ]</option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                               
                                 @role('super-admin')
                                 <div class="form-group">
                                     <label for="tahun_ajaran">Program Studi</label>
@@ -93,7 +86,7 @@
                         </div>`);
             const baseUrl = {!! json_encode(url('/')) !!};
             $.ajax({
-                url: baseUrl+'/admin/masterdata/krs/list-mhs',
+                url: baseUrl+'/admin/akademik/ujian/list-mhs',
                 type: 'post',
                 data: {
                     ta: $('#tahun_ajaran').val(),
