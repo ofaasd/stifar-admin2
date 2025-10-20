@@ -96,7 +96,7 @@ class AdminUjianController extends Controller
                     ->get();
         $no = 1;
         $permission = MasterKeuanganMh::where('id_mahasiswa',$idmhs)->where('id_tahun_ajaran',$ta)->first();
-        return view('mahasiswa.ujian.index', compact('mhs','title', 'permission','mk', 'krs', 'no', 'ta', 'idmhs','list_ruang'));
+        return view('admin.akademik.ujian.view', compact('mhs','title', 'permission','mk', 'krs', 'no', 'ta', 'idmhs','list_ruang'));
     }
     public function cetak_uts(String $nim){
         $mhs = Mahasiswa::select('mahasiswa.nama','mahasiswa.foto_mhs', 'mahasiswa.nim', 'pegawai_biodata.nama_lengkap as dsn_wali', 'program_studi.nama_prodi')

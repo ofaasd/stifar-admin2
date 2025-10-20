@@ -78,8 +78,9 @@ class KrsController extends Controller
     public function inputadminKRS($id, $ta){
         $idmhs = $id;
         $title = 'Input KRS [Admin]';
+        $mhs = Mahasiswa::find($idmhs);
         $mk = MataKuliah::get();
-        $krs = Krs::select('krs.*', 'a.hari', 'a.kel', 'b.nama_matkul', 'b.sks_teori', 'b.sks_praktek', 'c.nama_sesi', 'd.nama_ruang')
+        $krs = Krs::select('krs.*', 'a.hari', 'a.kel', 'b.nama_matkul', 'b.sks_teori', 'b.sks_praktek', 'c.nama_sesi', 'd.nama_ruang', 'a.kode_jadwal')
                     ->leftJoin('jadwals as a', 'krs.id_jadwal', '=', 'a.id')
                     ->leftJoin('mata_kuliahs as b', 'a.id_mk', '=', 'b.id')
                     ->leftJoin('waktus as c', 'a.id_sesi', '=', 'c.id')
@@ -88,7 +89,7 @@ class KrsController extends Controller
                     ->where('krs.id_mhs',$idmhs)
                     ->get();
         $no = 1;
-        return view('admin.akademik.krs.inputkrsadmin', compact('title', 'mk', 'krs', 'no', 'ta', 'idmhs'));
+        return view('admin.akademik.krs.inputkrsadmin', compact('title', 'mk', 'krs', 'no', 'ta', 'idmhs','mhs'));
     }
     public function showJadwal(Request $request){
         $id_mk = $request->id_mk;
