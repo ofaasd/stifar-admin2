@@ -63,7 +63,7 @@ class UjianController extends Controller
         $mhs = Mahasiswa::select('mahasiswa.id','mahasiswa.nama','mahasiswa.foto_mhs', 'mahasiswa.nim', 'pegawai_biodata.nama_lengkap as dsn_wali', 'program_studi.nama_prodi')
                           ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'mahasiswa.id_dsn_wali')
                           ->leftJoin('program_studi', 'program_studi.id', '=', 'mahasiswa.id_program_studi')
-                          ->where('mahasiswa.nim', $nim)->first();
+                          ->where('mahasiswa.id', $id)->first();
         $tahun_ajaran = TahunAjaran::where('status','Aktif')->first();
         $ta = $tahun_ajaran->id;
         $thn_awal = substr($tahun_ajaran->kode_ta,0,4);
