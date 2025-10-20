@@ -99,7 +99,7 @@ class AdminUjianController extends Controller
         return view('admin.akademik.ujian.view', compact('mhs','title', 'permission','mk', 'krs', 'no', 'ta', 'idmhs','list_ruang'));
     }
     public function cetak_uts(String $nim){
-        $mhs = Mahasiswa::select('mahasiswa.nama','mahasiswa.foto_mhs', 'mahasiswa.nim', 'pegawai_biodata.nama_lengkap as dsn_wali', 'program_studi.nama_prodi')
+        $mhs = Mahasiswa::select('mahasiswa.id','mahasiswa.nama','mahasiswa.foto_mhs', 'mahasiswa.nim', 'pegawai_biodata.nama_lengkap as dsn_wali', 'program_studi.nama_prodi')
                           ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'mahasiswa.id_dsn_wali')
                           ->leftJoin('program_studi', 'program_studi.id', '=', 'mahasiswa.id_program_studi')
                           ->where('mahasiswa.nim', $nim)->first();
@@ -111,12 +111,15 @@ class AdminUjianController extends Controller
         $tahun_ajar = $thn_awal.'/'.$thn_akhir[0];
         $semester = ['', 'Ganjil', 'Genap', 'Antara'];
         $smt = substr($tahun_ajaran->kode_ta, 4);
-        $krs = Krs::select('krs.*', 'a.hari','a.kode_jadwal', 'a.kel', 'b.nama_matkul', 'b.sks_teori', 'b.sks_praktek', 'c.nama_sesi', 'd.nama_ruang')
+        $krs = Krs::select('krs.*', 'a.hari', 'a.kel', 'a.kode_jadwal', 'b.nama_matkul', 'b.sks_teori', 'b.sks_praktek','b.kode_matkul', 'c.nama_sesi', 'd.nama_ruang','tbl_jadwal_ujian.tanggal_uts', 'tbl_jadwal_ujian.jam_mulai_uts','tbl_jadwal_ujian.jam_selesai_uts','tbl_jadwal_ujian.id_ruang_uts','tbl_jadwal_ujian.tanggal_uas','tbl_jadwal_ujian.jam_mulai_uas','tbl_jadwal_ujian.jam_selesai_uas','tbl_jadwal_ujian.id_ruang_uas')
                     ->leftJoin('jadwals as a', 'krs.id_jadwal', '=', 'a.id')
                     ->leftJoin('mata_kuliahs as b', 'a.id_mk', '=', 'b.id')
                     ->leftJoin('waktus as c', 'a.id_sesi', '=', 'c.id')
                     ->leftJoin('master_ruang as d', 'a.id_ruang', '=', 'd.id')
-                    ->where(['krs.id_tahun' => $ta, 'krs.id_mhs' => $id])
+                    ->leftJoin('tbl_jadwal_ujian', 'tbl_jadwal_ujian.id_jadwal', '=', 'a.id')
+                    ->where('krs.id_tahun', $ta)
+                    ->where('id_mhs',$id)
+                    ->where('is_publish',1)
                     ->get();
         $filename = $mhs->nim.'-krs.pdf';
         $cek_foto = (!empty($mhs->foto_mhs))?'assets/images/mahasiswa/' . $mhs->foto_mhs:'assets/images/logo/logo-icon.png';
