@@ -138,7 +138,7 @@ class AdminUjianController extends Controller
     	return $pdf->download('Kartu-uts-' . $mhs->nim . '.pdf');
     }
     public function cetak_uas(String $nim){
-        $mhs = Mahasiswa::select('mahasiswa.nama','mahasiswa.foto_mhs', 'mahasiswa.nim', 'pegawai_biodata.nama_lengkap as dsn_wali', 'program_studi.nama_prodi')
+        $mhs = Mahasiswa::select('mahasiswa.nama','mahasiswa.id','mahasiswa.foto_mhs', 'mahasiswa.nim', 'pegawai_biodata.nama_lengkap as dsn_wali', 'program_studi.nama_prodi')
                           ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'mahasiswa.id_dsn_wali')
                           ->leftJoin('program_studi', 'program_studi.id', '=', 'mahasiswa.id_program_studi')
                           ->where('mahasiswa.nim', $nim)->first();
