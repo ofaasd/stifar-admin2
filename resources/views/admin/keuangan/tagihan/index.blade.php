@@ -55,33 +55,13 @@
                                             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <input type="hidden" name="id_prodi" id="id_prodi" value="{{$id}}">
-                                            <label for="tahun_ajaran">Angkatan</label>
+                                            
+                                            <label for="tahun_ajaran">Tahun Ajaran</label>
                                             <select name="tahun_ajaran" id="tahun_ajaran" class="form-control">
                                                 @foreach($ta_all as $row)
                                                 <option value="{{$row->id}}" {{($tahun_ajaran == $row->id)?"selected":""}}>{{substr($row->kode_ta,0,4)}} - {{(substr($row->kode_ta,-1,1) == 1)?"Ganjil":"Genap"}}</option>
                                                 @endforeach
                                             </select>
-
-                                            <label for="alumni">Alumni</label>
-                                            <select name="alumni" id="alumni" class="form-control">
-                                                <option value="1" {{($alumni == 1)?"selected":""}}>Yaphar</option>
-                                                <option value="2" {{($alumni == 2)?"selected":""}}>Umum</option>
-                                            </select>
-
-                                            <label for="gelombang">Gelombang</label>
-                                            <select name="gelombang" id="gelombang" class="form-control">
-                                                <option value="1" {{($gelombang == 1)?"selected":""}}>Gelombang 1</option>
-                                                <option value="2" {{($gelombang == 2)?"selected":""}}>Gelombang 2</option>
-                                                <option value="3" {{($gelombang == 3)?"selected":""}}>Gelombang 3</option>
-                                            </select>
-                                            @foreach($jenis as $row)
-                                            <div class="mb-3" id="field-nama">
-                                                <label for="jenis" class="form-label">{{$row->nama}}</label>
-                                                <input type="hidden" name="id_jenis[]" value="{{$row->id}}">
-                                                <input type="number" class="form-control" name="jenis[]" id="jenis{{$row->id}}" value="{{$jumlah_jenis[$row->id]}}">
-                                            </div>
-                                            @endforeach
                                             <div class="form-group">
                                                 <label for="tahun_ajaran">Angkatan</label>
                                                 <select name="angkatan"  id="angkatan" class="form-control">
@@ -91,14 +71,19 @@
                                                 </select>
                                             </div>
                                             <div class="form-group">
-                                                <label for="batas_waktu">Batas Waktu</label>
-                                                <input type="date" name="batas_waktu" id="batas_waktu_generate" class="form-control">
+                                                <label for="batas_waktu">Program Studi</label>
+                                                <select name="id_prodi" id="id_prodi" class="form-control">
+                                                    @foreach($prodi as $row)
+                                                     <option value="{{$row->id}}" {{(!empty($id) && $id == $row->id)?"selected":""}}>{{$row->nama_prodi}}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                             <div class="form-group">
-                                                <label for="batas_waktu">Tipe Bayar</label>
-                                                <select name="tipe_bayar" id="tipe_bayar" class="form-control">
-                                                    <option value="1">Bulanan</option>
-                                                    <option value="2">Semester</option>
+                                                <label for="periode">Bulan</label>
+                                                <select name="periode" id="periode" class="form-control">
+                                                    @foreach($list_bulan as $key=>$value)
+                                                     <option value="{{$key}}" {{(date('m') == $key)?"selected":""}}>{{$value}}</option>
+                                                    @endforeach
                                                 </select>
                                             </div>
                                         </div>
@@ -251,7 +236,25 @@
                 {
                     searchable: false,
                     orderable: false,
-                    targets: 10,
+                    targets: 11,
+                    render: function render(data, type, full) {
+                        return `<span>${full['total']}</span>`;
+
+                    }
+                },
+                {
+                    searchable: false,
+                    orderable: false,
+                    targets: 12,
+                    render: function render(data, type, full) {
+                        return `<span>${full['total_bayar']}</span>`;
+
+                    }
+                },
+                {
+                    searchable: false,
+                    orderable: false,
+                    targets: 13,
                     render: function render(data, type, full) {
                         if(full['status'] == 1){
                             return `<i class="fa fa-check text-success" title="Sudah Bayar"></i>`;
@@ -264,7 +267,7 @@
                 {
                     searchable: false,
                     orderable: false,
-                    targets: 11,
+                    targets: 14,
                     render: function render(data, type, full) {
                         if(full['is_publish'] == 1){
                             return `<i class="fa fa-check text-success" title="Sudah Publish"></i>`;

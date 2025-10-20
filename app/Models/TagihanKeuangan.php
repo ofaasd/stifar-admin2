@@ -48,5 +48,7 @@ class TagihanKeuangan extends Model
 		'id_prodi',
 		'nim',
 		'tipe_bayar',
+		'tahun',
+		'periode'
 	];
 }

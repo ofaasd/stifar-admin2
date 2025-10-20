@@ -54,7 +54,7 @@ class UjianController extends Controller
                     ->where('is_publish',1)
                     ->get();
         $no = 1;
-        $permission = MasterKeuanganMh::where('id_mahasiswa',$idmhs)->first();
+        $permission = MasterKeuanganMh::where('id_mahasiswa',$idmhs)->where('id_tahun_ajaran',$ta)->first();
         return view('mahasiswa.ujian.index', compact('mhs','title', 'permission','mk', 'krs', 'no', 'ta', 'idmhs','list_ruang'));
     }
     public function cetak_uts(){
