@@ -215,7 +215,7 @@ class DosenBimbinganController extends Controller
                 'mahasiswa' => $mahasiswa,
                 'dosen' => $dosen,
                 'pengajuanSidang' => $pengajuanSidang,
-                'penilaian' => $penilaian,
+                'penilaian' => $penilaian ?? null,
             ];
 
             return view('dosen.akademik.skripsi.bimbingan.show', $data);
