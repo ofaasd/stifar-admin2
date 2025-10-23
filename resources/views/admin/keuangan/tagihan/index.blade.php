@@ -373,8 +373,8 @@
                     $("#tambahModal").modal('hide');
                     swal({
                         icon: 'success',
-                        title: `Successfully ${status}!`,
-                        text: `${title} ${status} successfully.`,
+                        title: `Successfully Created!`,
+                        text: `Data successfully Created`,
                         customClass: {
                             confirmButton: 'btn btn-success'
                         }
@@ -416,8 +416,8 @@
                     $("#tambahModal").modal('hide');
                     swal({
                         icon: 'success',
-                        title: `Successfully ${status}!`,
-                        text: `${title} ${status} successfully.`,
+                        title: `Successfully Created !`,
+                        text: `Data Created successfully.`,
                         customClass: {
                             confirmButton: 'btn btn-success'
                         }

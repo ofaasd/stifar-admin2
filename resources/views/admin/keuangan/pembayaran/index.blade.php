@@ -376,8 +376,8 @@
                     $("#importModal").modal('hide');
                     swal({
                         icon: 'success',
-                        title: `Successfully ${status}!`,
-                        text: `${title} ${status} successfully.`,
+                        title: `Successfully Imported!`,
+                        text: `Data successfully Imported.`,
                         customClass: {
                             confirmButton: 'btn btn-success'
                         }
