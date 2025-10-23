@@ -35,6 +35,7 @@ class Tagihan extends Model
 	protected $fillable = [
 		'nim',
 		'gelombang',
-		'total_bayar'
+		'total_bayar',
+		'pembayaran',
 	];
 }

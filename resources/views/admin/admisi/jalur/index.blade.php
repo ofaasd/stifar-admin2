@@ -188,6 +188,7 @@
             });
             $('#tambahModal').on('hidden.bs.modal', function () {
                 $('#formAdd').trigger("reset");
+                $('#id').val('');
                 $(`#id_program_studi option`).prop("selected",false).trigger('change');
             });
 

@@ -168,6 +168,20 @@ class MahasiswaController extends Controller
         $user = User::where('id', $mahasiswa->user_id)->first();
 
         $dosen = PegawaiBiodatum::where('id_posisi_pegawai',1)->get();
+        $list_bulan = array(
+                1=>"Januari",
+                "Februari",
+                "Maret",
+                "April",
+                "Mei",
+                "Juni",
+                "Juli",
+                "Agustus",
+                "September",
+                "Oktober",
+                "November",
+                "Desember"
+            );
 
         return view('mahasiswa.edit', compact
         (
@@ -185,6 +199,7 @@ class MahasiswaController extends Controller
             'ipk',
             'sksAktif',
             'dosen',
+            'list_bulan',
         ));
     }
 
@@ -286,6 +301,7 @@ class MahasiswaController extends Controller
                     'hp' => $request->hp,
                     'id_dsn_wali' => $request->id_dsn_wali,
                     'user_id'=>$user_id,
+                    'bulan_awal'=>$request->bulan_awal,
                     'status' => 1,
                     'no_pisn' => $request->no_pisn ?? null,
                 ]
@@ -329,6 +345,7 @@ class MahasiswaController extends Controller
                     'email' => $request->email,
                     'hp' => $request->hp,
                     'id_dsn_wali' => $request->id_dsn_wali,
+                    'bulan_awal'=>$request->bulan_awal,
                     'status' => $request->status,
                     'no_pisn' => $request->no_pisn ?? null,
                 ]

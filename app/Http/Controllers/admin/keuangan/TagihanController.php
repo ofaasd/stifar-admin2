@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin\keuangan;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\TagihanKeuangan;
+use App\Models\TbPembayaran;
 use App\Models\DetailTagihanMh as DetailTagihanKeuangan;
 use App\Models\DetailTagihanKeuangan as DetailTagihanKeuanganTotal;
 use App\Models\JenisKeuangan;
@@ -13,6 +14,7 @@ use App\Models\TahunAjaran;
 use App\Models\Prodi;
 use App\Models\Mahasiswa;
 use App\Models\Tagihan;
+use redirect;
 
 class TagihanController extends Controller
 {
@@ -144,6 +146,45 @@ class TagihanController extends Controller
 
                 foreach ($tagihan as $index => $row) {
                     if(!empty($list_tagihan[$row->id]->total)){
+                        
+                        //ambil detail tagihan
+                        $tagihan_total = Tagihan::where('nim',$row->nim)->first();
+                        $total_bayar = $tagihan_total->pembayaran ?? 0;
+                        
+                        $detail_tagihan = DetailTagihanKeuanganTotal::where('id_tagihan',$tagihan_total->id)->get();
+                        
+                        //jika prodi D3
+                        $status_bayar = false;
+                        $new_total_tagihan = 0;
+                        $i = 1;
+                        foreach($detail_tagihan as $dt){
+                            
+                            
+                            if($dt->id_jenis == 8){
+                                $total_bayar = $total_bayar - $dt->jumlah;
+                                $new_total_tagihan += $dt->jumlah;
+                            }elseif($dt->id_jenis == 2 && $i == 1){
+                                $total_bayar = $total_bayar - $dt->jumlah;
+                                $new_total_tagihan += $dt->jumlah;
+                                $i++;
+                            }elseif($dt->id_jenis == 2 && $i > 1){
+                                //dipecah UPP per bulan
+                                $mahasiswa = Mahasiswa::where('nim',$row->nim)->first();
+                                $upp_bulan = $dt->jumlah / 30;
+                                $bulan_mhs = $mahasiswa->bulan_awal;
+                                $tahun_mhs = $mahasiswa->angkatan;
+                                $tagihan_bulan = $row->periode;
+                                $tagihan_tahun = $row->tahun;
+                                $pengurangan = ($tagihan_tahun * 12 + $tagihan_bulan) - ($tahun_mhs * 12 + $bulan_mhs);
+                                $bulanan = $upp_bulan * $pengurangan;
+                                $new_total_tagihan += $bulanan;
+                                $total_bayar = $total_bayar - $bulanan;
+                                if($total_bayar >= 0){
+                                    $status_bayar = true;
+                                }
+                            }
+                        }
+                    
                         $nestedData = [];
                         $nestedData['fake_id'] = $start + $index + 1;
                         $nestedData['id'] = $row->id;
@@ -153,9 +194,11 @@ class TagihanController extends Controller
                         foreach($jenis as $jen){
                             $nestedData[str_replace(' ', '', $jen->nama)] = $list_keu[$row->id][$jen->id];
                         }
-                        $nestedData['total'] = $list_tagihan[$row->id]->total ?? 0;
-                        $nestedData['total_bayar'] = $list_tagihan[$row->id]->total_bayar ?? 0;
-                        $nestedData['status'] = $list_tagihan[$row->id]->status ?? 0;
+                        // $nestedData['total'] = $list_tagihan[$row->id]->total ?? 0;
+                        $nestedData['total'] = $new_total_tagihan;
+                        // $nestedData['total_bayar'] = $list_tagihan[$row->id]->total_bayar ?? 0;
+                        $nestedData['total_bayar'] = $total_bayar;
+                        $nestedData['status'] = $status_bayar;
                         $nestedData['id_tagihan'] = $list_tagihan[$row->id]->id ?? 0;
                         $nestedData['is_publish'] = $list_tagihan[$row->id]->is_publish ?? 0;
                         $data[] = $nestedData;
@@ -376,5 +419,20 @@ class TagihanController extends Controller
     public function update(Request $request, TagihanKeuangan $TagihanKeuangan)
     {
         //
+    }
+    public function payment_checking(String $id_prodi){
+        //ambil data dari tagihan dengan spesific prodi 
+        $tagihan = TagihanKeuangan::where('id_prodi',$id_prodi)->get();
+        
+        foreach($tagihan as $tag){
+            $pembayaran = TbPembayaran::where('nim',$tag->nim)->sum('jumlah');
+            $total = Tagihan::where('nim',$tag->nim)->update(['pembayaran'=>$pembayaran]);
+            // echo $pembayaran . "<br>";
+            // echo $tag->nim . "<br>";
+        }
+        return redirect()->back()->with('success', 'Checking Pembayaran Selesai Dilakukan');
+    }
+    public function riwayat_pembayaran(String $nim){
+        
     }
 }

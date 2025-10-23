@@ -43,6 +43,13 @@
                         <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal" id="add-record">+ Generate {{$title2}}</button>
                         <a href="{{url("admin/keuangan/tagihan/publish/" . $id)}}" class="btn btn-success" >Publish Tagihan</a>
                         <a href="{{url("admin/keuangan/tagihan/unpublish/" . $id)}}" class="btn btn-danger" >UnPublish Tagihan</a>
+                        <a href="{{url("admin/keuangan/tagihan/payment_checking/" . $id)}}" class="btn btn-info" >Checking Pembayaran</a>
+                        @endif
+                        @if(Session::has('success'))
+                            <div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
+                                {{ Session::get('success') }}
+                                <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>  
                         @endif
                         <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
                             <div class="modal-dialog" role="document">
@@ -256,7 +263,7 @@
                     orderable: false,
                     targets: 13,
                     render: function render(data, type, full) {
-                        if(full['status'] == 1){
+                        if(full['status']){
                             return `<i class="fa fa-check text-success" title="Sudah Bayar"></i>`;
                         }else{
                             return `<i class="fa fa-times text-danger" title="Belum Bayar"></i>`;

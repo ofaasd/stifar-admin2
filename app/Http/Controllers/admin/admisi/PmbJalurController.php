@@ -158,7 +158,7 @@ class PmbJalurController extends Controller
                 foreach($id_prodi as $value){
                     $insert_jalur_prodi = PmbJalurProdi::create(
                         [
-                            'id_jalur' => $id,
+                            'id_jalur' => $jalur->id,
                             'id_program_studi' => $value,
                         ]
                     );

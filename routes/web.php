@@ -466,6 +466,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi|baak|admin-
     Route::get('/admin/keuangan/tagihan_show/{id}', [TagihanController::class, 'index']);
     Route::get('/admin/keuangan/tagihan/publish/{id}', [TagihanController::class, 'publish']);
     Route::get('/admin/keuangan/tagihan/unpublish/{id}', [TagihanController::class, 'unpublish']);
+    Route::get('/admin/keuangan/tagihan/payment_checking/{id}', [TagihanController::class, 'payment_checking']);
     Route::post('/admin/keuangan/rekening_koran/import', [RekeningKoranController::class, 'import']);
     Route::get('/admin/keuangan/rekening_koran/after_import', [RekeningKoranController::class, 'after_import']);
     Route::get('/admin/keuangan/rekening_koran/get_nama', [RekeningKoranController::class, 'get_nama']);

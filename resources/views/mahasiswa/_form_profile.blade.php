@@ -112,6 +112,17 @@
                 </div>
             </div>
         </div>
+        <div class="mb-2">
+            <label class="col-sm-12 col-form-label">Bulan Awal Kuliah<span class="text-danger">*</span> : </label>
+            <div class="col-sm-12">
+                <select class="form-control" name="bulan_awal" id="bulan_awal" required>
+                <option value="">--- Bulan Awal Kuliah --- </option>
+                    @foreach($list_bulan as $key=>$value)
+                        <option value='{{$key}}' {{(!empty($mahasiswa->bulan_awal) && $mahasiswa->bulan_awal == $key)?"selected" : "" }}>{{$value }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
     </div>
     <div class="col-md-6">
         <div class="mb-2">
@@ -220,6 +231,7 @@
                 </p>
             </div>
         </div>
+        
         <div class="mb-2">
             <label class="col-sm-10 col-form-label">Dosen Wali :</label>
             <div class="col-sm-12">
