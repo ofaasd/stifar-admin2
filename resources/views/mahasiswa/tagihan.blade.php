@@ -26,64 +26,61 @@
         <div class="row">
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
-                <div class="card mb-4">
-                    <div class="card-header bg-primary">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h5><b>{{$title}}</b></h5>
-                            </div>
+                
+                    
+                @if(!$status_bayar)
+                    <div class="card mb-4">
+                        <div class="card-header bg-primary">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h5><b>{{$title}}</b></h5>
+                                </div>
 
+                            </div>
                         </div>
-                    </div>
-                    <div class="card-body" style="padding:0">
-                        @if(!empty($list_total))
+                        <div class="card-body" style="padding:0">
                             <div class="mt-4">
                                 <div class="mt-4 col-md-6 ">
                                     <div class="mt-2"></div>
                                     <table class="table table-hover table-border-horizontal m-4" id="tablekrs">
                                         <thead>
                                             {{-- <th>No.</th> --}}
-                                            <th>Jenis Tagihan</th>
+                                            <th>Tunggakan Tagihan</th>
                                             <th>Nominal</th>
                                         </thead>
                                         <tbody>
-                                            @php $i=0; @endphp
-                                            @foreach($jenis as $row)
-                                                @php $i++;@endphp
-                                                <tr>
-                                                    {{-- <td>{{ $i }}</td> --}}
-                                                    <td>{{ $row->nama }}</td>
-                                                    <td>Rp. {{number_format($list_total[$row->id],0,",",".") }}</td>
-                                                </tr>
-                                            @endforeach
+                                            <td>Tagihan Bulanan</td>
+                                            <td>Rp. {{number_format(($new_total_tagihan-$tagihan_total->pembayaran),0,",",".")}}</td>
                                         </tbody>
                                         <tfoot>
                                             <tr>
                                                 <th>Total</th>
-                                                <th>Rp. {{number_format($tagihan->total,0,",",".")}}</th>
+                                                <th>Rp. {{number_format(($new_total_tagihan-$tagihan_total->pembayaran),0,",",".")}}</th>
                                             </tr>
-                                            <tr class="{{($tagihan->status==0) ? "bg-danger text-light" : "bg-success text-light"}}">
+                                            {{-- <tr class="{{($tagihan->status==0) ? "bg-danger text-light" : "bg-success text-light"}}">
                                                 <th class="text-white">Total Bayar</th>
                                                 <th class="text-white">Rp. {{number_format($tagihan->total_bayar,0,",",".")}}</th>
+                                            </tr> --}}
                                             <tr class="{{($tagihan->status==0) ? "bg-danger text-light" : "bg-success text-light"}}">
                                                 <th class="text-white">Status</th>
                                                 <th class="text-white">{{($tagihan->status==0) ? "Belum Lunas" : "Lunas"}}</th>
                                             </tr>
-                                            <tr class="{{($tagihan->status==0) ? "bg-danger text-light" : "bg-success text-light"}}">
+                                            {{-- <tr class="{{($tagihan->status==0) ? "bg-danger text-light" : "bg-success text-light"}}">
                                                 <th class="text-white">Batas Waktu</th>
                                                 <th class="text-white">{{date('d-m-Y',strtotime($tagihan->batas_waktu))}}</th>
-                                            </tr>
+                                            </tr> --}}
                                         </tfoot>
                                     </table>
                                 
                                 </div>
                             </div>
-                         @else
-                            <div class="alert alert-primary">Belum ada tagihan tersedia</div>
-                        @endif
+                        </div>
                     </div>
-                </div>
-            </div>
+                
+                @else
+                    <div class="alert alert-success text-center"><h5>Tidak Ada Tagihan Untuk Anda Saat Ini </h5></div>
+                @endif
+               </div>     
             <!-- Zero Configuration  Ends-->
         </div>
     </div>
