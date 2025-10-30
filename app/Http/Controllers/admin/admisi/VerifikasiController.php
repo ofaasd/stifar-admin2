@@ -171,9 +171,9 @@ class VerifikasiController extends Controller
 
         $hasil[0] = PmbPesertaOnline::where($where)->first();
         if(!empty($hasil[0]->nopen)){
-            //$cek_va = BankDataVa::where('no_va','like','%'. $hasil[0]->nopen . '%')->where('status',0)->count();
+            $cek_va = BankDataVa::where('no_va','like','%'. $hasil[0]->nopen . '%')->where('status',0)->count();
             $pmb = PmbPesertaOnline::where("nopen",$hasil[0]->nopen)->count();
-            if($pmb < 2){
+            if($cek_va > 0 && $pmb == 1){
                 $hasil[1] = 1; //tersedia
             }else{
                 $hasil[1] = 0; //tidak tersedia
