@@ -70,7 +70,7 @@
                         </div>
                     </div>
                </div>     
-            <!-- Zero Configuration  Ends-->
+            <!-- Zero Configuration Ends-->
         </div>
     </div>
 @endsection

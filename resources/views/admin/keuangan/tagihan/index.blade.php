@@ -79,12 +79,14 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="batas_waktu">Program Studi</label>
-                                                <select name="id_prodi" id="id_prodi" class="form-control">
+                                                <select name="prodi" id="prodi" class="form-control" disabled>
                                                     @foreach($prodi as $row)
                                                      <option value="{{$row->id}}" {{(!empty($id) && $id == $row->id)?"selected":""}}>{{$row->nama_prodi}}</option>
                                                     @endforeach
                                                 </select>
+                                                <input type="hidden" name="id_prodi" id="id_prodi" value="{{$id}}">
                                             </div>
+                                            @if($id == 1 || $id == 2 || $id > 4)
                                             <div class="form-group">
                                                 <label for="periode">Bulan</label>
                                                 <select name="periode" id="periode" class="form-control">
@@ -93,6 +95,7 @@
                                                     @endforeach
                                                 </select>
                                             </div>
+                                            @endif
                                         </div>
                                         <div class="modal-footer">
                                             <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>

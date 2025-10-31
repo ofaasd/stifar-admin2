@@ -101,9 +101,9 @@
             {{-- <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
                 <span><i class="fa fa-book"></i> Bimbingan</span><label class="badge badge-light-danger">!</label></a>
             </li> --}}
-            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
+            {{-- <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
                 <span><i class="fa fa-bookmark"></i> Kuesioner Kepuasan Mahasiswa</span><label class="badge badge-light-danger">!</label></a>
-            </li>
+            </li> --}}
            {{-- <li class="sidebar-list">
                 <a class="sidebar-link sidebar-title" href="#">
                     <span><i class="fa fa-support"></i> Tugas Akhir</span>
