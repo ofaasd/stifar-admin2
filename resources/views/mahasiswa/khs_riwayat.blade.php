@@ -56,6 +56,7 @@
                                     </thead>
                                     <tbody>
                                         @foreach($krs as $row_krs)
+                                            @if(!empty($nilai[$row_krs->id_jadwal][$ta][$mhs->nim]['nilai_tgs']))
                                             <tr>
                                                 <td>{{ $row_krs['kode_matkul'] }}</td>
                                                 <td>{{ $row_krs['nama_matkul'] }}</td>
@@ -65,6 +66,7 @@
                                                 <td>{{ ($nilai[$row_krs->id_jadwal][$ta][$mhs->nim]['nilai_uas'] == 0)?"-":$nilai[$row_krs->id_jadwal][$ta][$mhs->nim]['nilai_uas']}}</td>
                                                 <td>{{ $nilai[$row_krs->id_jadwal][$ta][$mhs->nim]['nilai_akhir']}} | {{ $nilai[$row_krs->id_jadwal][$ta][$mhs->nim]['nilai_huruf']}}</td>
                                             </tr>
+                                            @endif
                                         @endforeach
                                     </tbody>
                                 </table>

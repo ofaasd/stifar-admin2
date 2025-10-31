@@ -78,6 +78,9 @@
                     <li class="submenu-title"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/lapor_bayar')}}" >
                         <span> Lapor Pembayaran</a>
                     </li>
+                    <li class="submenu-title"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/riwayat_bayar')}}" >
+                        <span> Riwayat Pembayaran</a>
+                    </li>
                 </ul>
             </li>
              <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{ url('mhs/absensi')}}" >

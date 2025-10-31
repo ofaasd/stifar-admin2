@@ -609,6 +609,7 @@ Route::group(['middleware' => ['auth', 'role:mhs|super-admin']], function () {
     Route::post('mahasiswa_new', [MahasiswaController::class, 'store'])->name('input');
     Route::get('/mahasiswa/cetak-transkrip', [MahasiswaController::class, 'cetakTranskrip']);
     Route::get('/mhs/tagihan', [TagihanMhsController::class, 'index']);
+    Route::get('/mhs/riwayat_bayar', [TagihanMhsController::class, 'riwayat']);
     Route::get('/mhs/lapor_bayar', [LaporPembayaranController::class, 'create']);
     Route::post('/mhs/lapor_bayar', [LaporPembayaranController::class, 'store']);
 
