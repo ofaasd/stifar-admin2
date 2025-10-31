@@ -47,9 +47,9 @@
                             <th>Jenis Sidang</th>
                             <td>
                                 @if($data->jenis == 1)
-                                    Sidang Terbuka
+                                    Seminar Proposal
                                 @elseif($data->jenis == 2)
-                                    Sidang Tertutup
+                                    Seminar Hasil
                                 @else
                                     -
                                 @endif
