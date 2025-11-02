@@ -37,18 +37,7 @@ class PengajuanSidangController extends Controller
             $nim = $mhs->nim;
 
             $masterSkripsi = MasterSkripsi::where('nim', $nim)->where('status', 2)->first();
-
-            // Ambil gelombang yang dipilih
-            $gelombang = GelombangSidangSkripsi::select([
-                'gelombang_sidang_skripsi.*',
-                \DB::raw('(SELECT COUNT(*) FROM sidang WHERE sidang.gelombang_id = gelombang_sidang_skripsi.id) as jumlahPeserta')
-            ])->where('id', $request->gelombang_sidang_id)->first();
-
-            // Cek kuota
-            if ($gelombang && $gelombang->kuota <= $gelombang->jumlahPeserta) {
-                return redirect()->back()->with('error', 'Kuota gelombang sidang sudah terpenuhi.');
-            }
-
+            
             // Path folder
             $folder = 'berkas-sidang';
 
@@ -56,11 +45,6 @@ class PengajuanSidangController extends Controller
             $proposalFinal = $request->file('proposalFinal');
             $namaFileProposal = $nim.'_proposal_final_'.time().'.'.$proposalFinal->getClientOriginalExtension();
             $proposalFinal->move(public_path($folder), $namaFileProposal);
-
-            // Handle kartuBimbingan
-            $kartuBimbingan = $request->file('kartuBimbingan');
-            $namaFileKartu = $nim.'_kartu_bimbingan_'.time().'.'.$kartuBimbingan->getClientOriginalExtension();
-            $kartuBimbingan->move(public_path($folder), $namaFileKartu);
 
             // Handle presentasi
             $presentasi = $request->file('presentasi');
@@ -78,26 +62,17 @@ class PengajuanSidangController extends Controller
             $createData = [
                 'jenis' => $request->jenisSidang,
                 'proposal'=> $namaFileProposal,
-                'kartu_bimbingan'=> $namaFileKartu,
                 'presentasi'=> $namaFilePresentasi,
                 'pendukung'=> $namaFilePendukung,
-                'gelombang_id'  => $request->gelombang_sidang_id,
                 'skripsi_id' => $masterSkripsi->id,
                 'status' => 0,
             ];
 
             $createSidang = SidangSkripsi::create($createData);
 
-            PreferensiSidang::create([
-                'id_sidang' => $createSidang->id,
-                'id_hari' => $request->hari,
-                'id_waktu' => $request->waktu,
-                'catatan' => $request->catatanTambahan,
-            ]);
-
             return redirect()->route('mhs.skripsi.daftar.index')->with('success', 'Pengajuan sidang berhasil disimpan.');
         } catch (\Exception $e) {
-            return redirect()->route('mhs.skripsi.daftar.index')->with('error', 'Pengajuan sidang gagal disimpan: '.$e->getMessage());
+            return redirect()->route('mhs.skripsi.daftar.index')->with('error', 'Pengajuan sidang gagal disimpan: ' . $e->getMessage());
         }
     }
 }

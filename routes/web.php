@@ -664,6 +664,7 @@ Route::group(['middleware' => ['auth', 'role:mhs|super-admin']], function () {
             
         });
 
+        
     });
 
     Route::get('/mhs/absensi/history/{id_jadwal}', [mhsAbsensiController::class, 'setAbsensiSatuan'] );

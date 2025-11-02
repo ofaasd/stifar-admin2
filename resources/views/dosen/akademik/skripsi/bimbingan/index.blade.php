@@ -88,14 +88,14 @@
 
             // Show loading when "Lihat Bimbingan" button is clicked
             $(document).on('click', '#btn-bimbingan', function(e) {
-            var $btn = $(this);
-            var originalHtml = $btn.html();
-            $btn.prop('disabled', true);
-            $btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
-            setTimeout(function() {
-                $btn.prop('disabled', false);
-                $btn.html(originalHtml);
-            }, 8000);
+                var $btn = $(this);
+                var originalHtml = $btn.html();
+                $btn.prop('disabled', true);
+                $btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
+                setTimeout(function() {
+                    $btn.prop('disabled', false);
+                    $btn.html(originalHtml);
+                }, 8000);
             });
         });
     </script>

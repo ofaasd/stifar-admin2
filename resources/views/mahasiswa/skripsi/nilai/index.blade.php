@@ -46,9 +46,9 @@
                                     </td>
                                     <td>
                                         @if($row->jenis == 1)
-                                            Sidang Terbuka
+                                            Seminar Proposal
                                         @elseif($row->jenis == 2)
-                                            Sidang Tertutup
+                                            Seminar Hasil
                                         @else
                                             {{ $row->jenis }}
                                         @endif

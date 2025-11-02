@@ -22,7 +22,7 @@ class BimbinganSkripsiController extends Controller
     {
         // Ambil data skripsi mahasiswa
         $idMaster = SkripsiHelper::getIdMasterSkripsi();
-        
+
         if (!$idMaster) {
             return view('mahasiswa.skripsi.bimbingan.main', [
                 'bimbingan' => collect(),
@@ -30,7 +30,7 @@ class BimbinganSkripsiController extends Controller
             ]);
         }
 
-        $judulSkripsi = PengajuanJudulSkripsi::where('id_master', $idMaster)->where('status', 1)->first();
+        $judulSkripsi = PengajuanJudulSkripsi::where('id_master', $idMaster)->first();
 
         // Ambil semua data bimbingan mahasiswa dengan relasi
         $bimbingan = BimbinganSkripsi::select([
@@ -65,6 +65,9 @@ class BimbinganSkripsiController extends Controller
                     break;
                 case 3:
                     $item->status_label = 'Revisi';
+                    break;
+                case 4:
+                    $item->status_label = 'Ditolak';
                     break;
                 default:
                     $item->status_label = 'Unknown';
@@ -102,8 +105,9 @@ class BimbinganSkripsiController extends Controller
         try {
             $request->validate([
                 'tanggal' => 'required|date',
+                'pembimbing' => 'required',
                 'catatan' => 'required|string',
-                'topik' => 'required|string',
+                'permasalahan' => 'required|string',
                 'metode' => 'required|string',
                 'filePendukung.*' => 'nullable|file|max:2048|mimes:pdf,docx,doc,zip,rar,jpg,png',
             ]);
@@ -115,8 +119,10 @@ class BimbinganSkripsiController extends Controller
             $bimbingan = BimbinganSkripsi::create([
                 'id_master' => $idMaster,
                 'tanggal_waktu' => $request->tanggal,
-                'topik' => $request->topik,
+                'permasalahan' => $request->permasalahan,
                 'metode' => $request->metode,
+                'bimbingan_to' => $request->pembimbing,
+                'solusi_permasalahan' => null,
                 'status' => 0,
                 'catatan_mahasiswa' => $request->catatan,
                 'catatan_dosen' => null,
@@ -167,6 +173,7 @@ class BimbinganSkripsiController extends Controller
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
+            dd($e->getMessage());
             return back()->with('error', 'Terjadi kesalahan saat menyimpan data.');
         }
     }
@@ -204,7 +211,7 @@ class BimbinganSkripsiController extends Controller
         $request->validate([
             'tanggal' => 'required|date',
             'catatan' => 'required|string',
-            'topik' => 'required|string',
+            'permasalahan' => 'required|string',
             'metode' => 'required|string',
             'filePendukung.*' => 'nullable|file|max:2048|mimes:pdf,docx,doc,zip,rar,jpg,png',
         ]);
@@ -218,7 +225,7 @@ class BimbinganSkripsiController extends Controller
             // Update data bimbingan
             $bimbingan->update([
                 'tanggal_waktu' => $request->tanggal,
-                'topik' => $request->topik,
+                'permasalahan' => $request->permasalahan,
                 'metode' => $request->metode,
                 'catatan_mahasiswa' => $request->catatan,
             ]);
@@ -228,7 +235,7 @@ class BimbinganSkripsiController extends Controller
                 'id_master' => $bimbingan->id_master,
                 'nim' => Auth::user()->email,
                 'tanggal' => $request->tanggal,
-                'topik' => $request->topik
+                'permasalahan' => $request->permasalahan
             ]);
 
             // Simpan file baru jika ada
@@ -284,7 +291,9 @@ class BimbinganSkripsiController extends Controller
                 return back()->with('error', 'Data skripsi tidak ditemukan.');
             }
 
-            $logBook = BimbinganSkripsi::where('id_master', $masterSkripsi->id)->get();
+            $logBook = BimbinganSkripsi::where('id_master', $masterSkripsi->id)
+                ->whereNotNull('file_dosen')
+                ->get();
 
             $mhs = Mahasiswa::select([
                 'mahasiswa.*',

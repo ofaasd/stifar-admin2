@@ -48,9 +48,9 @@
                         <div class="mb-3">
                             <strong>Jenis Sidang:</strong> 
                                 @if($sidang->jenis == 1)
-                                    Sidang Terbuka
+                                    Seminar Proposal
                                 @elseif($sidang->jenis == 2)
-                                    Sidang Tertutup
+                                    Seminar Hasil
                                 @else
                                     -
                                 @endif

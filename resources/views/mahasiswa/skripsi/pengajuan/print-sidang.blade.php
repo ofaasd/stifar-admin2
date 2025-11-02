@@ -141,9 +141,9 @@
                 <td>:</td>
                 <td>
                     @if($sidang->jenis == 1)
-                        Sidang Terbuka
+                        Seminar Proposal
                     @elseif($sidang->jenis == 2)
-                        Sidang Tertutup
+                        Seminar Hasil
                     @else
                         -
                     @endif

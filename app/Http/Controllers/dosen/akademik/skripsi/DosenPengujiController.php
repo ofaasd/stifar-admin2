@@ -64,6 +64,7 @@ class DosenPengujiController extends Controller
         ->leftJoin('master_ruang', 'sidang.ruang_id', '=', 'master_ruang.id')
         ->whereIn('master_skripsi.status', [1, 2])
         ->where('pengajuan_judul_skripsi.status', '=', 1)
+        ->whereNotNull('sidang.tanggal')
         ->whereRaw('FIND_IN_SET(?, sidang.penguji)', [$nppDosen])
         ->orderBy('sidang.created_at', 'desc')
         ->get()
@@ -102,7 +103,7 @@ class DosenPengujiController extends Controller
                 if ($isAcc) {
                     return '<span class="badge bg-success">Menguji</span>';
                 } else {
-                    return '<span class="badge bg-warning text-dark">Pengajuan</span>';
+                    return '<span class="badge bg-warning">Pengajuan</span>';
                 }
             })
             ->addColumn('actions', function($row) use ($aktorSidang, $nppDosen, $dosen) {

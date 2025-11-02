@@ -31,7 +31,7 @@
 		setTimeout(() => {
 			btnSubmit.prop('disabled', false);
 			btnSubmit.html(oldBtnHtml);
-		}, 3000);
+		}, 10000);
 	});
 </script>
 

@@ -151,24 +151,33 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($penonton->chunk(20) as $chunk)
-                @for ($i = 0; $i < 20; $i++)
-                    <tr>
-                        @php
-                            $left = $chunk->get($i);
-                            $right = $chunk->get($i + 20);
-                        @endphp
-                        <td>{{ $i + 1 }}</td>
-                        <td>{{ $left->nim ?? '' }}</td>
-                        <td style="text-align: left;">{{ $left->nama ?? '' }}</td>
-                        <td></td>
-                        <td>{{ $i + 21 }}</td>
-                        <td>{{ $right->nim ?? '' }}</td>
-                        <td style="text-align: left;">{{ $right->nama ?? '' }}</td>
-                        <td></td>
-                    </tr>
-                @endfor
-            @endforeach
+            @if ($penonton->isEmpty())
+            <tr>
+                <td colspan="8" style="text-align:center; padding:10px;">Tidak ada data penonton.</td>
+            </tr>
+            @else
+            @php
+                $total = $penonton->count();
+                $rows = max(ceil($total / 2), 1);
+            @endphp
+
+            @for ($i = 0; $i < $rows; $i++)
+                @php
+                $left = $penonton->get($i);
+                $right = $penonton->get($i + $rows);
+                @endphp
+                <tr>
+                <td>{{ $i + 1 }}</td>
+                <td>{{ $left->nim ?? '' }}</td>
+                <td style="text-align: left;">{{ $left->nama ?? '' }}</td>
+                <td></td>
+                <td>{{ $i + 1 + $rows }}</td>
+                <td>{{ $right->nim ?? '' }}</td>
+                <td style="text-align: left;">{{ $right->nama ?? '' }}</td>
+                <td></td>
+                </tr>
+            @endfor
+            @endif
         </tbody>
     </table>
 

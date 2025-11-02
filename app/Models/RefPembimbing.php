@@ -10,5 +10,5 @@ class RefPembimbing extends Model
     use HasFactory;
 
     protected $table = 'ref_pembimbing_skripsi';
-    protected $fillable = ['nip', 'kuota','id_progdi'];
+    protected $guarded = ['id'];
 }

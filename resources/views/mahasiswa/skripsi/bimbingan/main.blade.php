@@ -39,6 +39,11 @@
                         <div class="row mb-2">
                             <div class="col-md-6">
                                 <strong>Pembimbing 1</strong>
+                                @if(!empty($masterSkripsi->acc_1) && $masterSkripsi->acc_1 == 1)
+                                    <span class="badge bg-success">Sidang <i class="bi bi-check-circle" title="Sudah disetujui"></i></span>
+                                @else
+                                    {{-- <i class="bi bi-x-circle text-secondary" title="Belum disetujui"></i> --}}
+                                @endif
                                 <ul class="list-unstyled mb-0">
                                     <li>Nama: {{ $masterSkripsi->nama_pembimbing1 ?? '-' }}</li>
                                     <li>NPP: {{ $masterSkripsi->npp_pembimbing1 ?? '-' }}</li>
@@ -47,6 +52,11 @@
                             </div>
                             <div class="col-md-6">
                                 <strong>Pembimbing 2</strong>
+                                @if(!empty($masterSkripsi->acc_2) && $masterSkripsi->acc_2 == 1)
+                                    <span class="badge bg-success">Sidang <i class="bi bi-check-circle" title="Sudah disetujui"></i></span>
+                                @else
+                                    {{-- <i class="bi bi-x-circle text-secondary" title="Belum disetujui"></i> --}}
+                                @endif
                                 <ul class="list-unstyled mb-0">
                                     <li>Nama: {{ $masterSkripsi->nama_pembimbing2 ?? '-' }}</li>
                                     <li>NPP: {{ $masterSkripsi->npp_pembimbing2 ?? '-' }}</li>
@@ -54,6 +64,12 @@
                                 </ul>
                             </div>
                         </div>
+                        @if(!empty($masterSkripsi->acc_1) && $masterSkripsi->acc_1 == 1 && !empty($masterSkripsi->acc_2) && $masterSkripsi->acc_2 == 1)
+                            <div class="alert alert-success d-flex align-items-center mt-2" role="alert">
+                                <i class="bi bi-check-circle me-2"></i>
+                                <div>Kedua pembimbing telah menyetujui. Anda dapat mengajukan sidang. <a href="{{ route('mhs.skripsi.daftar.index') }}">Disini</a></div>
+                            </div>
+                        @endif
                     </div>
                 </div>
                 <div class="card">
@@ -81,7 +97,7 @@
                                     <tr>
                                         <th>No</th>
                                         <th>Tanggal</th>
-                                        <th>Topik</th>
+                                        <th>Permasalahan</th>
                                         <th>Status</th>
                                         <th>Aksi</th>
                                     </tr>
@@ -92,7 +108,7 @@
                                             <td>{{ $index + 1 }}</td>
                                             <td>{{ \Carbon\Carbon::parse($item->tanggal_waktu)->format('d/m/Y') }}</td>
                                       
-                                            <td>{{ $item->topik }}</td>
+                                            <td>{{ $item->permasalahan }}</td>
                                             <td>
                                                 @switch($item->status)
                                                     @case(0)
@@ -109,6 +125,10 @@
 
                                                     @case(3)
                                                         <span class="badge bg-danger">Revisi</span>
+                                                    @break
+
+                                                    @case(4)
+                                                        <span class="badge bg-danger">Ditolak</span>
                                                     @break
 
                                                     @default
@@ -182,6 +202,7 @@
                                                 @if(!empty($item->bimbinganKe))
                                                     <span class="ms-2">Bimbingan Ke: {{ $item->bimbinganKe }}</span>
                                                 @endif
+                                                <span class="badge bg-{{ $item->status == 1 ? 'info' : ($item->status == 2 ? 'success' : 'danger') }} ms-2">{{ $item->status_label }}</span>
                                             </button>
                                         </h2>
                                         <div id="collapse{{ $item->id }}"
@@ -189,17 +210,27 @@
                                             aria-labelledby="heading{{ $item->id }}" data-bs-parent="#accordionBimbingan">
                                             <div class="accordion-body">
                                                 <div class="row">
-                                                    <div class="col-md-4">
-                                                        <h6>Topik:</h6>
-                                                        <p>{{ $item->topik ?? '-' }}</p>
+                                                    <div class="col-md-3">
+                                                        <h6>Permasalahan:</h6>
+                                                        <p>{{ $item->permasalahan ?? '-' }}</p>
                                                     </div>
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-3">
                                                         <h6>Catatan Mahasiswa:</h6>
                                                         <p>{{ $item->catatan_mahasiswa ?? '-' }}</p>
                                                     </div>
-                                                    <div class="col-md-4">
-                                                        <h6>Catatan Dosen:</h6>
-                                                        <p>{{ $item->catatan_dosen ?? 'Belum ada catatan dari dosen' }}</p>
+                                                    <div class="col-md-3">
+                                                        <h6>Solusi Permasalahan:</h6>
+                                                        <p>{{ $item->solusi_permasalahan ?? 'Belum ada solusi permasalahan dari dosen' }}</p>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <h6>File Dosen:</h6>
+                                                        @if(!empty($item->file_dosen))
+                                                            <a href="{{ asset('storage/' . $item->file_dosen) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                                Lihat File
+                                                            </a>
+                                                        @else
+                                                            <span class="text-muted">Tidak ada file</span>
+                                                        @endif
                                                     </div>
                                                 </div>
                                                 @if ($item->berkas && $item->berkas->count() > 0)
@@ -255,6 +286,18 @@
                                             required>
                                     </div>
                                     <div class="mb-3">
+                                        <label for="pembimbing" class="form-label">Pembimbing</label>
+                                        <select class="form-control" name="pembimbing" id="pembimbing" required>
+                                            <option value="">Pilih Pembimbing</option>
+                                            @if($masterSkripsi->npp_pembimbing1)
+                                                <option value="{{ $masterSkripsi->npp_pembimbing1 }}">{{ $masterSkripsi->nama_pembimbing1 }}</option>
+                                            @endif
+                                            @if($masterSkripsi->npp_pembimbing2)
+                                                <option value="{{ $masterSkripsi->npp_pembimbing2 }}">{{ $masterSkripsi->nama_pembimbing2 }}</option>
+                                            @endif
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
                                         <label for="metode" class="form-label">Metode</label>
                                         <select class="form-control" name="metode" id="metode" required>
                                             <option value="">Pilih Metode</option>
@@ -264,8 +307,8 @@
                                     </div>
 
                                     <div class="mb-3">
-                                        <label for="topikBimbingan" class="form-label">Topik Bimbingan</label>
-                                        <textarea class="form-control" name="topik" id="topikBimbingan" rows="3" required></textarea>
+                                        <label for="permasalahan" class="form-label">Permasalahan</label>
+                                        <textarea class="form-control" name="permasalahan" id="permasalahan" rows="3" required></textarea>
                                     </div>
 
                                     <div class="mb-3">
@@ -317,9 +360,14 @@
                                                 <td id="tglBimbingan"></td>
                                             </tr>
                                             <tr>
-                                                <td>Topik</td>
+                                                <td>Permasalahan</td>
                                                 <td>:</td>
-                                                <td id="topik"></td>
+                                                <td id="detail-permasalahan"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Solusi Permasalahan</td>
+                                                <td>:</td>
+                                                <td id="solusi-permasalahan"></td>
                                             </tr>
                                             <tr>
                                                 <td>Status</td>
@@ -439,7 +487,8 @@
                                 });
                                 $('#tglBimbingan').text(formattedTanggal);
                                 $('#tempatBimbingan').text(detail.tempat ?? '-');
-                                $('#topik').text(detail.topik ?? '-');
+                                $('#detail-permasalahan').text(detail.permasalahan ?? '-');
+                                $('#solusi-permasalahan').text(detail.solusi_permasalahan ?? '-');
                                 $('#catatanMahasiswa').html(detail.catatan_mahasiswa ?? '-');
                                 $('#catatanDosen').html(detail.catatan_dosen ?? '-');
 
@@ -562,8 +611,8 @@
                                     </select>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="editTopikBimbingan" class="form-label">Topik Bimbingan</label>
-                                    <textarea class="form-control" name="topik" id="editTopikBimbingan" rows="3" required>${detail.topik ?? ''}</textarea>
+                                    <label for="editPermasalahan" class="form-label">Topik Bimbingan</label>
+                                    <textarea class="form-control" name="permasalahan" id="editPermasalahan" rows="3" required>${detail.permasalahan ?? ''}</textarea>
                                 </div>
                                 <div class="mb-3">
                                     <label for="editCatatan" class="form-label">Catatan</label>

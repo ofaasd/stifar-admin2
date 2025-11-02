@@ -30,6 +30,7 @@
                 <div class="card-header pb-0">
                     <h5>Judul: {{ $judulSkripsi->judul }}</h5>
                     <h6 class="text-muted">Judul (English): {{ $judulSkripsi->judul_eng }}</h6>
+                    <h6 class="text-muted">Bidang Minat: {{ $judulSkripsi->bidang_minat }}</h6>
                     @if(isset($pengajuanSidang) && $pengajuanSidang)
                         <div class="alert mt-2 mb-0">
                             <strong>Pengajuan Sidang:</strong><br>
@@ -38,9 +39,9 @@
                                 <li>
                                     <b>Jenis Sidang:</b>
                                     @if($pengajuanSidang->jenis == 1)
-                                        Sidang Terbuka
+                                        Seminar Proposal
                                     @elseif($pengajuanSidang->jenis == 2)
-                                        Sidang Tertutup
+                                        Seminar Hasil
                                     @else
                                         -
                                     @endif
@@ -70,27 +71,6 @@
                                     </li>
                                 @endif
                             </ul>
-                            {{-- Form Penilaian Proposal --}}
-                            @if(!$pengajuanSidang->accSidang)
-                                @if(!empty($pengajuanSidang->idEnkripsi))
-                                    <form action="{{ route('akademik.skripsi.dosen.bimbingan.acc-sidang', $pengajuanSidang->idEnkripsi) }}" method="POST" class="mt-2 d-inline" id="form-acc-sidang">
-                                @else
-                                    <form action="#" method="POST" class="mt-2 d-inline" onsubmit="return false;">
-                                @endif
-                                    @csrf
-                                    @method('PUT')
-                                    <input type="hidden" name="pembimbingKe" value="{{ $dosen->pembimbingKe }}">
-                                    <button type="submit" class="btn btn-success btn-sm">
-                                        Setuju
-                                    </button>
-                                </form>
-                            @else
-                                @if($dosen->pembimbingKe == 1)
-                                    <span class="badge bg-success mt-2">Sidang Disetujui Pembimbing 1 Pada {{ $pengajuanSidang->acc1At ? \Carbon\Carbon::parse($pengajuanSidang->acc1At)->translatedFormat('d F Y H:i') : '-' }}</span>
-                                @elseif($dosen->pembimbingKe == 2)
-                                    <span class="badge bg-success mt-2">Sidang Disetujui Pembimbing 2 Pada {{ $pengajuanSidang->acc2At ? \Carbon\Carbon::parse($pengajuanSidang->acc2At)->translatedFormat('d F Y H:i') : '-' }}</span>
-                                @endif
-                            @endif
 
                             {{-- Form Input Nilai Tugas Akhir --}}
                             <form action="{{ route('akademik.skripsi.dosen.bimbingan.penilaian', $pengajuanSidang->idEnkripsi ?? '') }}" method="POST" class="mt-3" id="form-penilaian">
@@ -185,6 +165,38 @@
                             @endif
                         </div>
                     @endif
+                    @php
+                        $accField = 'acc_' . $dosen->pembimbingKe;
+                    @endphp
+                    @if($isSidang && $masterSkripsi->$accField == 0)
+                        <div class="mt-2">
+                            <p class="mb-2"><strong>Persetujuan Sidang:</strong></p>
+                            <form action="{{ route('akademik.skripsi.dosen.bimbingan.acc-sidang', $masterSkripsi->idEnkripsi) }}" method="POST" class="d-inline" id="form-acc-sidang">
+                                @csrf
+                                @method('PUT')
+                                <input type="hidden" name="pembimbingKe" value="{{ $dosen->pembimbingKe }}">
+                                <button type="submit" class="btn btn-success btn-sm">
+                                    <i class="fa fa-check"></i> Setujui Mahasiswa untuk Sidang
+                                </button>
+                            </form>
+                            @if($masterSkripsi->acc_1)
+                                <span class="badge bg-info mt-2">Pembimbing 1 telah menyetujui untuk maju ke sidang</span>
+                            @endif
+                            @if($masterSkripsi->acc_2)
+                                <span class="badge bg-info mt-2">Pembimbing 2 telah menyetujui untuk maju ke sidang</span>
+                            @endif
+                        </div>
+                    @else
+                        <div class="mt-2">
+                            <p class="mb-2"><strong>Status Persetujuan Sidang:</strong></p>
+                            @if($masterSkripsi->acc_1)
+                                <span class="badge bg-success mt-2">Pembimbing 1 telah menyetujui untuk maju ke sidang</span>
+                            @endif
+                            @if($masterSkripsi->acc_2)
+                                <span class="badge bg-success mt-2">Pembimbing 2 telah menyetujui untuk maju ke sidang</span>
+                            @endif
+                        </div>
+                    @endif
                 </div>
                 <div class="card-body">
                     @if($bimbingan->count())
@@ -194,8 +206,10 @@
                                     <tr>
                                         <th>Tanggal</th>
                                         <th>Berkas</th>
+                                        <th>Permasalahan</th>
                                         <th>Catatan Mahasiswa</th>
-                                        <th>Catatan Dosen</th>
+                                        <th>Solusi Permasalahan</th>
+                                        <th>File</th>
                                         <th>Status</th>
                                         <th>Aksi</th>
                                     </tr>
@@ -221,17 +235,40 @@
                                                     <span class="text-muted">Tidak ada</span>
                                                 @endif
                                             </td>
+                                            <td>{{ $item->permasalahan }}</td>
                                             <td>{{ $item->catatan_mahasiswa }}</td>
                                             <td>
-                                                @if(empty($item->catatan_dosen))
-                                                    <form action="{{ route('akademik.skripsi.dosen.bimbingan.update', $item->idEnkripsi) }}" method="POST" class="form-catatan-dosen">
+                                                @if(empty($item->solusi_permasalahan) && $item->bimbingan_to == $dosen->npp)
+                                                    <form action="{{ route('akademik.skripsi.dosen.bimbingan.update', $item->idEnkripsi) }}" method="POST" class="form-solusi-permasalahan">
                                                         @csrf
                                                         @method('PUT')
-                                                        <textarea name="catatanDosen" class="form-control form-control-sm" placeholder="Catatan dosen" rows="2"></textarea>
+                                                        <textarea name="solusiPermasalahan" class="form-control form-control-sm" placeholder="Solusi Permasalahan" rows="2"></textarea>
                                                         <button type="submit" class="btn btn-primary btn-sm mt-2 btn-submit-catatan">Simpan</button>
                                                     </form>
                                                 @else
-                                                    {{ $item->catatan_dosen }}
+                                                    {{ $item->solusi_permasalahan }}
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($item->status == 2 && $item->bimbingan_to == $dosen->npp)
+                                                    @if(empty($item->file_dosen))
+                                                        <form action="{{ route('akademik.skripsi.dosen.bimbingan.upload-revisi', $item->idEnkripsi) }}" method="POST" enctype="multipart/form-data" class="form-upload-revisi">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <input type="file" name="fileRevisi" class="form-control form-control-sm mb-2" accept=".pdf,.doc,.docx" required>
+                                                            <button type="submit" class="btn btn-primary btn-sm btn-submit-revisi">Upload File</button>
+                                                        </form>
+                                                    @else
+                                                        <a href="{{ asset('storage/' . $item->file_dosen) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                            Lihat File
+                                                        </a>
+                                                    @endif
+                                                @elseif(!empty($item->file_dosen))
+                                                    <a href="{{ asset('storage/' . $item->file_dosen) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                        Lihat File
+                                                    </a>
+                                                @else
+                                                    <span class="text-muted">-</span>
                                                 @endif
                                             </td>
                                             <td>
@@ -240,38 +277,44 @@
                                                     @elseif($item->status == 1) bg-success
                                                     @elseif($item->status == 2) bg-info
                                                     @elseif($item->status == 3) bg-warning
+                                                    @elseif($item->status == 4) bg-danger
                                                     @endif
                                                 ">
                                                     {{ $item->status_label }}
                                                 </span>
                                             </td>
                                             <td>
-                                                @if($item->status == 0)
-                                                    <form action="{{ route('akademik.skripsi.dosen.bimbingan.update-status', $item->idEnkripsi) }}" method="POST" class="d-flex gap-1 form-update-status">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <button name="status" value="1" class="btn btn-success btn-sm" title="ACC">ACC</button>
-                                                        <button name="status" value="2" class="btn btn-info btn-sm" title="Setuju">Setuju</button>
-                                                        <button name="status" value="3" class="btn btn-warning btn-sm" title="Revisi">Revisi</button>
-                                                    </form>
-                                                @elseif($item->status == 2 && $item->bimbingan_to == $dosen->npp)
-                                                    <form action="{{ route('akademik.skripsi.dosen.bimbingan.update-status', $item->idEnkripsi) }}" method="POST" class="d-flex gap-1 form-update-status">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <button name="status" value="1" class="btn btn-success btn-sm" title="ACC">ACC</button>
-                                                        <button name="status" value="3" class="btn btn-warning btn-sm" title="Revisi">Revisi</button>
-                                                    </form>
-                                                @else
-                                                    @if($item->status == 1)
-                                                        <span class="badge bg-success">ACC</span>
-                                                    @elseif($item->status == 2)
-                                                        <span class="badge bg-info">Setuju</span>
-                                                    @elseif($item->status == 3)
-                                                        <span class="badge bg-warning">Revisi</span>
+                                                @if ($item->bimbingan_to == $dosen->npp)
+                                                    @if($item->status == 0)
+                                                        <form action="{{ route('akademik.skripsi.dosen.bimbingan.update-status', $item->idEnkripsi) }}" method="POST" class="d-flex gap-1 form-update-status">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <button name="status" value="2" class="btn btn-info btn-sm" title="Setuju">Setuju</button>
+                                                            <button name="status" value="4" class="btn btn-danger btn-sm" title="Tolak">Tolak</button>
+                                                        </form>
+                                                    @elseif($item->status == 2 && $item->bimbingan_to == $dosen->npp)
+                                                        @if(!empty($item->file_dosen))
+                                                            <form action="{{ route('akademik.skripsi.dosen.bimbingan.update-status', $item->idEnkripsi) }}" method="POST" class="d-flex gap-1 form-update-status">
+                                                                @csrf
+                                                                @method('PUT')
+                                                                <button name="status" value="1" class="btn btn-success btn-sm" title="ACC">ACC</button>
+                                                                <button name="status" value="3" class="btn btn-warning btn-sm" title="Revisi">Revisi</button>
+                                                            </form>
+                                                        @else
+                                                            <span class="text-muted">Menunggu file dosen untuk tindakan</span>
+                                                        @endif
+                                                    @else
+                                                        @if($item->status == 1)
+                                                            <span class="badge bg-success">ACC</span>
+                                                        @elseif($item->status == 2)
+                                                            <span class="badge bg-info">Setuju</span>
+                                                        @elseif($item->status == 3)
+                                                            <span class="badge bg-warning">Revisi</span>
+                                                        @elseif($item->status == 4)
+                                                            <span class="badge bg-danger">Ditolak</span>
+                                                        @endif
                                                     @endif
-                                                @endif
-
-                                                @if ($item->status != 0)
+                                                @else
                                                     <p>Bimbingan dengan: {{ $item->bimbinganKe ?? '' }}</p>
                                                 @endif
                                             </td>
@@ -351,7 +394,7 @@
 
                 swal({
                 title: "Konfirmasi",
-                text: "Anda yakin ingin menyetujui pengajuan sidang ini?",
+                text: "Anda yakin ingin menyetujui mahasiswa untuk mengajukan sidang?",
                 icon: "warning",
                 buttons: ["Batal", "Ya, Setujui"],
                 dangerMode: true,
@@ -366,7 +409,7 @@
                     success: function(response) {
                         swal({
                         title: "Berhasil!",
-                        text: response.message || "Sidang berhasil disetujui.",
+                        text: response.message || "Berhasil menyetujui sidang.",
                         icon: "success",
                         timer: 2000,
                         buttons: false
@@ -490,10 +533,16 @@
                 });
             });
 
-            $(document).on('submit', '.form-catatan-dosen', function(e) {
+            $(document).on('submit', '.form-solusi-permasalahan', function(e) {
                 var $btn = $(this).find('.btn-submit-catatan');
                 $btn.prop('disabled', true);
                 $btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Menyimpan...');
+            });
+
+            $(document).on('submit', '.form-upload-revisi', function(e) {
+                var $btn = $(this).find('.btn-submit-revisi');
+                $btn.prop('disabled', true);
+                $btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Mengupload...');
             });
 
             // Untuk banyak form dengan class .form-update-status

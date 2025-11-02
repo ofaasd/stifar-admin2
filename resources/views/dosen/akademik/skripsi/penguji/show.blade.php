@@ -49,14 +49,14 @@
                                 <li class="list-group-item">
                                     <strong>Jenis Sidang:</strong>
                                     @if($sidang->jenis == 1)
-                                        Sidang Terbuka
+                                        Seminar Proposal
                                     @elseif($sidang->jenis == 2)
-                                        Sidang Tertutup
+                                        Seminar Hasil
                                     @else
                                         {{ $sidang->jenis }}
                                     @endif
                                 </li>
-                                <li class="list-group-item"><strong>Status:</strong> 
+                                {{-- <li class="list-group-item"><strong>Status:</strong> 
                                     @if($sidang->status == 1)
                                         <span class="badge bg-success">Selesai</span>
                                     @elseif($sidang->status == 2 && isset($penguji) && $penguji->status == 1)
@@ -64,11 +64,11 @@
                                     @else
                                         <span class="badge bg-secondary">{{ $sidang->status_label ?? 'Belum Validasi' }}</span>
                                     @endif
-                                </li>
+                                </li> --}}
                             </ul>
 
                             {{-- Form Input Nilai Sidang (jika tanggal sidang = hari ini) --}}
-                            @if(\Carbon\Carbon::parse($sidang->tanggal)->isToday() || \Carbon\Carbon::parse($sidang->tanggal)->isPast())
+                            {{-- @if(\Carbon\Carbon::parse($sidang->tanggal)->isToday() || \Carbon\Carbon::parse($sidang->tanggal)->isPast())
                                 @if(isset($penguji) && $penguji->status == 1)
                                     <div class="mb-2">
                                         <label class="form-label fw-bold">Penulisan (15) : NILAI SEMINAR PROPOSAL</label>
@@ -201,7 +201,6 @@
                                         </div>
                                         <button type="submit" class="btn btn-primary btn-sm btn-nilai" title="Simpan Nilai">Simpan</button>
                                     </form>
-                                    {{-- Tombol Publish dan Validasi --}}
                                     <div class="d-flex justify-content-end">
                                         <form action="{{ route('akademik.skripsi.dosen.penguji.update-status', $sidang->idEnkripsi) }}" method="POST" id="form-status-sidang">
                                             @csrf
@@ -210,7 +209,7 @@
                                         </form>
                                     </div>
                                 @endif
-                            @endif
+                            @endif --}}
                         </div>
                     @endif
                 </div>
