@@ -27,6 +27,20 @@
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
                 <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-md-6 mt-3">
+                                <table class="table">
+                                    <tr>
+                                        <td><b>Nama</b></td><td><b>: {{ $mhs['nama'] }}</b></td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>NIM</b></td><td><b>: {{ $mhs['nim'] }}</b></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                     <div class="card-body">
                         <div class="mt-4">
                             <div class="col-sm-4">
@@ -59,6 +73,7 @@
                                     <thead>
                                         <td>No.</td>
                                         <td>Kelas</td>
+                                        <td>Kode</td>
                                         <td>Nama Matakuliah</td>
                                         <!-- <td>SKS</td> -->
                                         <td>Hari, Waktu</td>
@@ -70,6 +85,7 @@
                                             <tr>
                                                 <td>{{ $no++ }}</td>
                                                 <td>{{ $row_krs['kel'] }}</td>
+                                                <td>{{ $row_krs['kode_jadwal'] }}</td>
                                                 <td>{{ $row_krs['nama_matkul'] }}</td>
                                                 <!-- <td>{{ $row_krs['sks_teori'] }}T/ {{ $row_krs['sks_praktek'] }}P</td> -->
                                                 <td>{{ $row_krs['hari'] }}, {{ $row_krs['nama_sesi'] }}</td>

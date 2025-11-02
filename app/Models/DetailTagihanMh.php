@@ -11,31 +11,32 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * Class Tagihan
+ * Class DetailTagihanMh
  * 
  * @property int $id
- * @property string $nim
- * @property string|null $gelombang
- * @property int $total_bayar
+ * @property int $id_tagihan
+ * @property int $id_jenis
+ * @property int $jumlah
  * @property Carbon|null $created_at
  * @property Carbon $updated_at
  * @property string|null $deleted_at
  *
  * @package App\Models
  */
-class Tagihan extends Model
+class DetailTagihanMh extends Model
 {
 	use SoftDeletes;
-	protected $table = 'tagihan';
+	protected $table = 'detail_tagihan_mhs';
 
 	protected $casts = [
-		'total_bayar' => 'int'
+		'id_tagihan' => 'int',
+		'id_jenis' => 'int',
+		'jumlah' => 'int'
 	];
 
 	protected $fillable = [
-		'nim',
-		'gelombang',
-		'total_bayar',
-		'pembayaran',
+		'id_tagihan',
+		'id_jenis',
+		'jumlah'
 	];
 }

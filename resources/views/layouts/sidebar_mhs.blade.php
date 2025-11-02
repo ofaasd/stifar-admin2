@@ -78,6 +78,9 @@
                     <li class="submenu-title"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/lapor_bayar')}}" >
                         <span> Lapor Pembayaran</a>
                     </li>
+                    <li class="submenu-title"><a class="sidebar-link sidebar-title" href="{{URL::to('mhs/riwayat_bayar')}}" >
+                        <span> Riwayat Pembayaran</a>
+                    </li>
                 </ul>
             </li>
              <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="{{ url('mhs/absensi')}}" >
@@ -98,9 +101,9 @@
             {{-- <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
                 <span><i class="fa fa-book"></i> Bimbingan</span><label class="badge badge-light-danger">!</label></a>
             </li> --}}
-            <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
+            {{-- <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#" >
                 <span><i class="fa fa-bookmark"></i> Kuesioner Kepuasan Mahasiswa</span><label class="badge badge-light-danger">!</label></a>
-            </li>
+            </li> --}}
            {{-- <li class="sidebar-list">
                 <a class="sidebar-link sidebar-title" href="#">
                     <span><i class="fa fa-support"></i> Tugas Akhir</span>

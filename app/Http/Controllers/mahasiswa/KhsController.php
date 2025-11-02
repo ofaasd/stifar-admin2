@@ -177,6 +177,13 @@ class KhsController extends Controller
 
             }
         }
+        // dd($nilai);
+        // foreach($krs_now as $row_krs){
+        //     //dd($nilai[$row_krs->id_jadwal][$ta][$mhs->nim]['nilai_tgs']);
+        //     echo ($nilai[$row_krs->id_jadwal][$ta][$mhs->nim]['nilai_tgs'] == 0)?"-":$nilai[$row_krs->id_jadwal][$ta][$mhs->nim]['nilai_tgs'];
+        //     echo "<br>";
+        // }
+        // exit;
         $krs = $krs_now;
         $no = 1;
         $permission = MasterKeuanganMh::where('id_mahasiswa',$idmhs)->first();

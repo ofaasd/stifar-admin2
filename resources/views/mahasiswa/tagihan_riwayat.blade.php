@@ -26,9 +26,6 @@
         <div class="row">
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
-                
-                    
-                @if(!$status_bayar)
                     <div class="card mb-4">
                         <div class="card-header bg-primary">
                             <div class="row">
@@ -40,35 +37,31 @@
                         </div>
                         <div class="card-body" style="padding:0">
                             <div class="mt-4">
-                                <div class="mt-4 col-md-6 ">
+                                <div class="mt-4 col-md-8">
                                     <div class="mt-2"></div>
                                     <table class="table table-hover table-border-horizontal m-4" id="tablekrs">
                                         <thead>
                                             {{-- <th>No.</th> --}}
-                                            <th>Tunggakan Tagihan</th>
-                                            <th>Nominal</th>
+                                            <th>Tanggal</th>
+                                            <th>Jenis Pembayaran / Keterangan</th>
+                                            <th>Jumlah</th>
                                         </thead>
                                         <tbody>
-                                            <td>Tagihan Bulanan</td>
-                                            <td>Rp. {{number_format(($new_total_tagihan-$tagihan_total->pembayaran),0,",",".")}}</td>
+                                            @php $total_pembayaran = 0; @endphp
+                                            @foreach($pembayaran as $row_pembayaran)
+                                            <tr>
+                                            <td>{{date('d-m-Y',strtotime($row_pembayaran->tanggal_bayar))}}</td>
+                                            <td>{{$list_jenis[$row_pembayaran->jenis_keuangan] ?? 'Akumulasi Pembayaran Sebelumnya'}}</td>
+                                            <td>Rp. {{number_format($row_pembayaran->jumlah,0,",",".")}}</td>
+                                            @php $total_pembayaran += $row_pembayaran->jumlah; @endphp
+                                            </tr>
+                                            @endforeach
                                         </tbody>
                                         <tfoot>
                                             <tr>
-                                                <th>Total</th>
-                                                <th>Rp. {{number_format(($new_total_tagihan-$tagihan_total->pembayaran),0,",",".")}}</th>
+                                                <th colspan="2">Total Pembayaran</th>
+                                                <th>Rp. {{number_format($total_pembayaran,0,",",".")}}</th>
                                             </tr>
-                                            {{-- <tr class="{{($tagihan->status==0) ? "bg-danger text-light" : "bg-success text-light"}}">
-                                                <th class="text-white">Total Bayar</th>
-                                                <th class="text-white">Rp. {{number_format($tagihan->total_bayar,0,",",".")}}</th>
-                                            </tr> --}}
-                                            <tr class="{{($tagihan->status==0) ? "bg-danger text-light" : "bg-success text-light"}}">
-                                                <th class="text-white">Status</th>
-                                                <th class="text-white">{{($tagihan->status==0) ? "Belum Lunas" : "Lunas"}}</th>
-                                            </tr>
-                                            {{-- <tr class="{{($tagihan->status==0) ? "bg-danger text-light" : "bg-success text-light"}}">
-                                                <th class="text-white">Batas Waktu</th>
-                                                <th class="text-white">{{date('d-m-Y',strtotime($tagihan->batas_waktu))}}</th>
-                                            </tr> --}}
                                         </tfoot>
                                     </table>
                                 
@@ -76,12 +69,8 @@
                             </div>
                         </div>
                     </div>
-                
-                @else
-                    <div class="alert alert-success text-center"><h5>Tidak Ada Tagihan Untuk Anda Saat Ini </h5></div>
-                @endif
                </div>     
-            <!-- Zero Configuration  Ends-->
+            <!-- Zero Configuration Ends-->
         </div>
     </div>
 @endsection

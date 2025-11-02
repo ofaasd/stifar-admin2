@@ -78,9 +78,10 @@ class KrsController extends Controller
     public function inputadminKRS($id, $ta){
         $idmhs = $id;
         $title = 'Input KRS [Admin]';
+        $mhs = Mahasiswa::find($idmhs);
         $mk = MataKuliah::get();
-        $krs = Krs::select('krs.*', 'a.hari', 'a.kel', 'b.nama_matkul', 'b.sks_teori', 'b.sks_praktek', 'c.nama_sesi', 'd.nama_ruang')
-                    ->leftJoin('jadwals as a', 'krs.id_jadwal', '=', 'a.id')
+        $krs = Krs::select('krs.*', 'a.hari', 'a.kel', 'b.nama_matkul', 'b.sks_teori', 'b.sks_praktek', 'c.nama_sesi', 'd.nama_ruang', 'a.kode_jadwal')
+                    ->join('jadwals as a', 'krs.id_jadwal', '=', 'a.id')
                     ->leftJoin('mata_kuliahs as b', 'a.id_mk', '=', 'b.id')
                     ->leftJoin('waktus as c', 'a.id_sesi', '=', 'c.id')
                     ->leftJoin('master_ruang as d', 'a.id_ruang', '=', 'd.id')
@@ -88,7 +89,7 @@ class KrsController extends Controller
                     ->where('krs.id_mhs',$idmhs)
                     ->get();
         $no = 1;
-        return view('admin.akademik.krs.inputkrsadmin', compact('title', 'mk', 'krs', 'no', 'ta', 'idmhs'));
+        return view('admin.akademik.krs.inputkrsadmin', compact('title', 'mk', 'krs', 'no', 'ta', 'idmhs','mhs'));
     }
     public function showJadwal(Request $request){
         $id_mk = $request->id_mk;
@@ -201,7 +202,7 @@ class KrsController extends Controller
         $semester = ['', 'Ganjil', 'Ganjil', 'Antara'];
         $smt = substr($tahun_ajaran->kode_ta, 4);
         $krs = Krs::select('krs.*', 'a.hari', 'a.kel', 'b.nama_matkul', 'b.sks_teori', 'b.sks_praktek', 'c.nama_sesi', 'd.nama_ruang')
-                    ->leftJoin('jadwals as a', 'krs.id_jadwal', '=', 'a.id')
+                    ->join('jadwals as a', 'krs.id_jadwal', '=', 'a.id')
                     ->leftJoin('mata_kuliahs as b', 'a.id_mk', '=', 'b.id')
                     ->leftJoin('waktus as c', 'a.id_sesi', '=', 'c.id')
                     ->leftJoin('master_ruang as d', 'a.id_ruang', '=', 'd.id')
