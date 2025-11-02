@@ -267,7 +267,11 @@
                     </div>
 
                     <div class="text-end mt-4">
-                        <button class="btn btn-success btn-lg" onclick="nextStep(2)">
+                        <button class="btn btn-success btn-lg" 
+                        onclick="nextStep(2)" 
+                        id="btnStep1" 
+                        {{-- {{ $syarat == 3 ? '' : 'disabled' }} --}}
+                        >
                             Lanjutkan <i class="bi bi-arrow-right ms-2"></i>
                         </button>
                     </div>
@@ -278,86 +282,184 @@
                         <div class="col-md-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h5 class="mb-0"><i class="bi bi-file-text me-2"></i>Judul dan Abstrak</h5>
+                                    <h5 class="mb-0"><i class="bi bi-file-text me-2"></i>Judul, Bidang & Pembimbing</h5>
                                 </div>
                                 <div class="card-body">
-                                    <div class="mb-4">
-                                        <label class="form-label">Judul Skripsi 1 <span class="text-danger">*</span></label>
-                                        <textarea class="form-control" rows="3" placeholder="Masukkan judul skripsi Anda..." id="judulSkripsi1"
-                                            maxlength="200" oninput="countChars('judulSkripsi1', 'judulCounter1', 200)"></textarea>
-                                        <div class="d-flex justify-content-between">
-                                            <small class="text-muted">Maksimal 200 karakter (sekitar 20 kata)</small>
-                                            <span id="judulCounter1" class="char-counter">0/200</span>
+                                    <div class="row">
+                                        <!-- Left Column - Judul 1 -->
+                                        <div class="col-md-6">
+                                            <div class="border-end pe-3">
+                                                <h5 class="mb-3 text-primary">Judul Skripsi 1</h5>
+                                                
+                                                <div class="mb-4">
+                                                    <label class="form-label">Judul Skripsi 1 <span class="text-danger">*</span></label>
+                                                    <textarea class="form-control" rows="3" placeholder="Masukkan judul skripsi Anda..." id="judulSkripsi1"
+                                                        maxlength="200" oninput="countChars('judulSkripsi1', 'judulCounter1', 200)">{{ old('judul1', '') }}</textarea>
+                                                    <div class="d-flex justify-content-between">
+                                                        <small class="text-muted">Maksimal 200 karakter (sekitar 20 kata)</small>
+                                                        <span id="judulCounter1" class="char-counter">0/200</span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="mb-4">
+                                                    <label class="form-label">Judul Skripsi (English) 1 <span class="text-danger">*</span></label>
+                                                    <textarea class="form-control" rows="3" placeholder="Masukkan judul skripsi..." id="judulSkripsieng1">{{ old('judulEng1', '') }}</textarea>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label">Bidang Minat Studi <span class="text-danger">*</span></label>
+                                                    <select class="form-select" id="bidang1" onchange="filterPembimbingByBidang('bidang1','pembimbing1','pembimbing1_2')">
+                                                        <option value="">Pilih Bidang Minat</option>
+                                                        @foreach($listBidangMinat as $row)
+                                                            <option value="{{ $row->id }}">{{ $row->nama }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="spinner-border spinner-border-sm text-primary me-2" role="status" id="checkingSpinner1" style="display:none;">
+                                                            <span class="visually-hidden">Loading...</span>
+                                                        </div>
+                                                        <small class="text-muted" id="checkingText1" style="display:none;">
+                                                            <i class="bi bi-hourglass-split me-1"></i>Sedang memeriksa persyaratan...
+                                                        </small>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Notification Area for Judul 1 -->
+                                                <div id="notif1" class="alert alert-info" style="display:none;">
+                                                    <i class="bi bi-info-circle me-2"></i>
+                                                    <strong>Status:</strong> <span id="notif1Status"></span>
+                                                    <div id="notif1Message" class="mt-2" style="display:none;">
+                                                        <strong>Pesan:</strong>
+                                                        <p class="mb-0" id="notif1Text"></p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label">Pembimbing 1 <span class="text-danger">*</span></label>
+                                                    <select class="form-select" id="pembimbing1">
+                                                        <option value="">Pilih Pembimbing 1</option>
+                                                        @forelse ($pembimbing as $row)
+                                                            <option value="{{ $row->npp }}" data-bidang="{{ $row->id_bidang_minat }}">
+                                                                {{ $row->nama }} (NPP: {{ $row->npp }}) &mdash; Kuota: {{ $row->kuota }}
+                                                            </option>
+                                                        @empty
+                                                            <option disabled>Tidak ada pembimbing tersedia</option>
+                                                        @endforelse
+                                                    </select>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label">Pembimbing 2 <span class="text-danger">*</span></label>
+                                                    <select class="form-select" id="pembimbing1_2">
+                                                        <option value="">Pilih Pembimbing 2</option>
+                                                        @forelse ($pembimbing as $row)
+                                                            <option value="{{ $row->npp }}" data-bidang="{{ $row->id_bidang_minat }}">
+                                                                {{ $row->nama }} (NPP: {{ $row->npp }}) &mdash; Kuota: {{ $row->kuota }}
+                                                            </option>
+                                                        @empty
+                                                            <option disabled>Tidak ada pembimbing tersedia</option>
+                                                        @endforelse
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="mb-4">
-                                        <label class="form-label">Judul Skripsi (English) 1 <span class="text-danger">*</span></label>
-                                        <textarea class="form-control" rows="3" placeholder="Masukkan judul skripsi..." id="judulSkripsieng1"></textarea>
-                                    </div>
-                                    <div class="mb-4">
-                                        <label class="form-label">Judul Skripsi 2 <span class="text-danger">*</span></label>
-                                        <textarea class="form-control" rows="3" placeholder="Masukkan judul skripsi Anda..." id="judulSkripsi2"
-                                            maxlength="200"></textarea>
-                                        <div class="d-flex justify-content-between">
-                                            <small class="text-muted">Maksimal 200 karakter (sekitar 20 kata)</small>
-                                            <span id="judulCounter2" class="char-counter">0/200</span>
+
+                                        <!-- Right Column - Judul 2 -->
+                                        <div class="col-md-6">
+                                            <div class="ps-3">
+                                                <h5 class="mb-3 text-primary">Judul Skripsi 2</h5>
+                                                
+                                                <div class="mb-4">
+                                                    <label class="form-label">Judul Skripsi 2 <span class="text-danger">*</span></label>
+                                                    <textarea class="form-control" rows="3" placeholder="Masukkan judul skripsi Anda..." id="judulSkripsi2"
+                                                        maxlength="200" oninput="countChars('judulSkripsi2', 'judulCounter2', 200)">{{ old('judul2', '') }}</textarea>
+                                                    <div class="d-flex justify-content-between">
+                                                        <small class="text-muted">Maksimal 200 karakter (sekitar 20 kata)</small>
+                                                        <span id="judulCounter2" class="char-counter">0/200</span>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="mb-4">
+                                                    <label class="form-label">Judul Skripsi (English) 2 <span class="text-danger">*</span></label>
+                                                    <textarea class="form-control" rows="3" placeholder="Masukkan judul skripsi..." id="judulSkripsieng2">{{ old('judulEng2', '') }}</textarea>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label">Bidang Minat Studi <span class="text-danger">*</span></label>
+                                                    <select class="form-select" id="bidang2" onchange="filterPembimbingByBidang('bidang2','pembimbing2','pembimbing2_2')">
+                                                        <option value="">Pilih Bidang Minat</option>
+                                                        @foreach($listBidangMinat as $row)
+                                                            <option value="{{ $row->id }}">{{ $row->nama }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+
+                                                <!-- Notification Area for Judul 2 -->
+                                                <div id="notif2" class="alert alert-info" style="display:none;">
+                                                    <i class="bi bi-info-circle me-2"></i>
+                                                    <strong>Status:</strong> <span id="notif2Status"></span>
+                                                    <div id="notif2Message" class="mt-2" style="display:none;">
+                                                        <strong>Pesan:</strong>
+                                                        <p class="mb-0" id="notif2Text"></p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="spinner-border spinner-border-sm text-primary me-2" role="status" id="checkingSpinner2" style="display:none;">
+                                                            <span class="visually-hidden">Loading...</span>
+                                                        </div>
+                                                        <small class="text-muted" id="checkingText2" style="display:none;">
+                                                            <i class="bi bi-hourglass-split me-1"></i>Sedang memeriksa persyaratan...
+                                                        </small>
+                                                    </div>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label">Pembimbing 1 <span class="text-danger">*</span></label>
+                                                    <select class="form-select" id="pembimbing2">
+                                                        <option value="">Pilih Pembimbing 1</option>
+                                                        @forelse ($pembimbing as $row)
+                                                            <option value="{{ $row->npp }}" data-bidang="{{ $row->id_bidang_minat }}">
+                                                                {{ $row->nama }} (NPP: {{ $row->npp }}) &mdash; Kuota: {{ $row->kuota }}
+                                                            </option>
+                                                        @empty
+                                                            <option disabled>Tidak ada pembimbing tersedia</option>
+                                                        @endforelse
+                                                    </select>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label">Pembimbing 2 <span class="text-danger">*</span></label>
+                                                    <select class="form-select" id="pembimbing2_2">
+                                                        <option value="">Pilih Pembimbing 2</option>
+                                                        @forelse ($pembimbing as $row)
+                                                            <option value="{{ $row->npp }}" data-bidang="{{ $row->id_bidang_minat }}">
+                                                                {{ $row->nama }} (NPP: {{ $row->npp }}) &mdash; Kuota: {{ $row->kuota }}
+                                                            </option>
+                                                        @empty
+                                                            <option disabled>Tidak ada pembimbing tersedia</option>
+                                                        @endforelse
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="mb-4">
-                                        <label class="form-label">Judul Skripsi (English) 2 <span class="text-danger">*</span></label>
-                                        <textarea class="form-control" rows="3" placeholder="Masukkan judul skripsi..." id="judulSkripsieng2"></textarea>
                                     </div>
 
+                                    <hr class="my-4">
+
+                                    <!-- Single abstract for both titles -->
                                     <div class="mb-4">
-                                        <label class="form-label">Abstrak Singkat 1<span
-                                                class="text-danger">*</span></label>
+                                        <label class="form-label">Abstrak Singkat (untuk kedua judul)<span class="text-danger">*</span></label>
                                         <textarea class="form-control" rows="6"
-                                            placeholder="Tuliskan abstrak singkat penelitian Anda (latar belakang, tujuan, metode, hasil yang diharapkan)..."
-                                            id="abstrakSingkat1" maxlength="1000" oninput="countChars('abstrakSingkat1', 'abstrakCounter1', 1000)"></textarea>
+                                            placeholder="Tuliskan abstrak singkat penelitian Anda ..."
+                                            id="abstrakSingkat" maxlength="1000" oninput="countChars('abstrakSingkat', 'abstrakCounter1', 1000)">{{ old('abstrak', '') }}</textarea>
                                         <div class="d-flex justify-content-between">
                                             <small class="text-muted">Maksimal 1000 karakter</small>
                                             <span id="abstrakCounter1" class="char-counter">0/1000</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="mb-4">
-                                        <label class="form-label">Abstrak Singkat 2<span
-                                                class="text-danger">*</span></label>
-                                        <textarea class="form-control" rows="6"
-                                            placeholder="Tuliskan abstrak singkat penelitian Anda (latar belakang, tujuan, metode, hasil yang diharapkan)..."
-                                            id="abstrakSingkat2" maxlength="1000" oninput="countChars('abstrakSingkat2', 'abstrakCounter2', 1000)"></textarea>
-                                        <div class="d-flex justify-content-between">
-                                            <small class="text-muted">Maksimal 1000 karakter</small>
-                                            <span id="abstrakCounter2" class="char-counter">0/1000</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="mb-4 row">
-                                        <div class="col-md-6 mb-2">
-                                            <label class="form-label">Pembimbing 1 <span class="text-danger">*</span></label>
-                                            <select class="form-select" id="pembimbing1">
-                                                <option selected disabled>Pilih Pembimbing 1</option>
-                                                @forelse ($pembimbing as $row)
-                                                    <option value="{{ $row->npp }}">
-                                                        {{ $row->nama }} (NPP: {{ $row->npp }}) &mdash; Kuota: {{ $row->kuota }}
-                                                    </option>
-                                                @empty
-                                                    <option disabled>Tidak ada pembimbing tersedia</option>
-                                                @endforelse
-                                            </select>
-                                        </div>
-                                        <div class="col-md-6 mb-2">
-                                            <label class="form-label">Pembimbing 2 <span class="text-danger">*</span></label>
-                                            <select class="form-select" id="pembimbing2">
-                                                <option selected disabled>Pilih Pembimbing 2</option>
-                                                @forelse ($pembimbing as $row)
-                                                    <option value="{{ $row->npp }}">
-                                                        {{ $row->nama }} (NPP: {{ $row->npp }}) &mdash; Kuota: {{ $row->kuota }}
-                                                    </option>
-                                                @empty
-                                                    <option disabled>Tidak ada pembimbing tersedia</option>
-                                                @endforelse
-                                            </select>
                                         </div>
                                     </div>
 
@@ -385,33 +487,30 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="judul-preview mb-4">
-                                        <h6 class="text-muted mb-2">Judul Skripsi 1 & 2:</h6>
+                                        <h6 class="text-muted mb-2">Judul Skripsi 1:</h6>
                                         <h4 id="finalJudulPreview1" class="text-success">-</h4>
+                                        <p><strong>Bidang Minat:</strong> <span id="finalBidang1">-</span></p>
                                         <hr>
+                                        <h6 class="text-muted mb-2">Judul Skripsi 2:</h6>
                                         <h4 id="finalJudulPreview2" class="text-success">-</h4>
+                                        <p><strong>Bidang Minat:</strong> <span id="finalBidang2">-</span></p>
                                     </div>
                                     <div class="row">
-                                        {{-- <div class="col-md-6">
-                                            <h6>Detail Penelitian:</h6>
-                                            <p><strong>Jenis Penelitian:</strong> <span id="finalJenis">-</span></p>
-                                        </div> --}}
-                                        <div class="col-md-6">
-                                            <h6>Abstrak 1:</h6>
-                                            <p id="finalAbstrak1" class="text-muted">-</p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <h6>Abstrak 2:</h6>
-                                            <p id="finalAbstrak2" class="text-muted">-</p>
+                                        <div class="col-md-12">
+                                            <h6>Abstrak Singkat:</h6>
+                                            <p id="finalAbstrak" class="text-muted">-</p>
                                         </div>
                                     </div>
                                     <div class="row mt-3">
                                         <div class="col-md-6">
-                                            <h6>Pembimbing 1:</h6>
-                                            <p id="finalPembimbing1" class="text-muted">-</p>
+                                            <h6>Pembimbing Judul 1:</h6>
+                                            <p><strong>Pembimbing 1:</strong> <span id="finalPembimbing1">-</span></p>
+                                            <p><strong>Pembimbing 2:</strong> <span id="finalPembimbing1_2">-</span></p>
                                         </div>
                                         <div class="col-md-6">
-                                            <h6>Pembimbing 2:</h6>
-                                            <p id="finalPembimbing2" class="text-muted">-</p>
+                                            <h6>Pembimbing Judul 2:</h6>
+                                            <p><strong>Pembimbing 1:</strong> <span id="finalPembimbing2">-</span></p>
+                                            <p><strong>Pembimbing 2:</strong> <span id="finalPembimbing2_2">-</span></p>
                                         </div>
                                     </div>
                                     <div class="alert alert-info">
@@ -442,14 +541,17 @@
         </div>
         <form id="formPengajuan" method="POST" action="{{ route('mhs.pengajuan.judul.store') }}">
             @csrf
+            <input type="hidden" name="bidang1">
             <input type="hidden" name="judul1">
             <input type="hidden" name="judulEng1">
+            <input type="hidden" name="bidang2">
             <input type="hidden" name="judul2">
             <input type="hidden" name="judulEng2">
-            <input type="hidden" name="abstrak1">
-            <input type="hidden" name="abstrak2">
             <input type="hidden" name="pembimbing1">
+            <input type="hidden" name="pembimbing1_2">
             <input type="hidden" name="pembimbing2">
+            <input type="hidden" name="pembimbing2_2">
+            <input type="hidden" name="abstrak">
         </form>
     </div>
 @endsection
@@ -495,7 +597,7 @@
             document.querySelector(`.step:nth-child(${to})`).classList.add('active');
             document.querySelector(`.step:nth-child(${to})`).classList.remove('completed');
 
-            // Remove active from future steps
+            // Remove active from future steps 
             for (let i = to + 1; i <= 3; i++) {
                 document.querySelector(`.step:nth-child(${i})`).classList.remove('active', 'completed');
             }
@@ -508,8 +610,7 @@
             case 2:
                 const judul1 = document.getElementById('judulSkripsi1').value.trim();
                 const judul2 = document.getElementById('judulSkripsi2').value.trim();
-                const abstrak1 = document.getElementById('abstrakSingkat1').value.trim();
-                const abstrak2 = document.getElementById('abstrakSingkat2').value.trim();
+                const abstrak = document.getElementById('abstrakSingkat').value.trim();
 
                 if (!judul1) {
                 swal('Judul 1 skripsi harus diisi!', '', 'warning');
@@ -528,15 +629,11 @@
                 swal('Judul 2 terlalu pendek! Minimal 10 karakter.', '', 'warning');
                 return false;
                 }
-                if (!abstrak1) {
-                swal('Abstrak singkat 1 harus diisi!', '', 'warning');
+                if (!abstrak) {
+                swal('Abstrak singkat harus diisi!', '', 'warning');
                 return false;
                 }
-
-                if (!abstrak2) {
-                swal('Abstrak singkat 2 harus diisi!', '', 'warning');
-                return false;
-                }
+                
                 return true;
             default:
                 return true;
@@ -565,32 +662,51 @@
             document.getElementById('finalJudulPreview1').textContent =
                 document.getElementById('judulSkripsi1').value;
 
+            const bidang1Select = document.getElementById('bidang1');
+            const bidang1Text = bidang1Select.options[bidang1Select.selectedIndex]
+                ? bidang1Select.options[bidang1Select.selectedIndex].text
+                : '-';
+            document.getElementById('finalBidang1').textContent = bidang1Text;
+
             document.getElementById('finalJudulPreview2').textContent =
                 document.getElementById('judulSkripsi2').value;
 
-            document.getElementById('finalAbstrak1').textContent =
-                document.getElementById('abstrakSingkat1').value;
+            const bidang2Select = document.getElementById('bidang2');
+            const bidang2Text = bidang2Select.options[bidang2Select.selectedIndex]
+                ? bidang2Select.options[bidang2Select.selectedIndex].text
+                : '-';
+            document.getElementById('finalBidang2').textContent = bidang2Text;
 
-            document.getElementById('finalAbstrak2').textContent =
-                document.getElementById('abstrakSingkat2').value;
+            document.getElementById('finalAbstrak').textContent =
+                document.getElementById('abstrakSingkat').value;
 
-            // Get selected option text for Pembimbing 1
+            // Get selected option text for Pembimbing 1 - Judul 1
             const pembimbing1Select = document.getElementById('pembimbing1');
             const pembimbing1Text = pembimbing1Select.options[pembimbing1Select.selectedIndex]
                 ? pembimbing1Select.options[pembimbing1Select.selectedIndex].text
                 : '-';
             document.getElementById('finalPembimbing1').textContent = pembimbing1Text;
 
-            // Get selected option text for Pembimbing 2
+            // Get selected option text for Pembimbing 2 - Judul 1
+            const pembimbing1_2Select = document.getElementById('pembimbing1_2');
+            const pembimbing1_2Text = pembimbing1_2Select.options[pembimbing1_2Select.selectedIndex]
+                ? pembimbing1_2Select.options[pembimbing1_2Select.selectedIndex].text
+                : '-';
+            document.getElementById('finalPembimbing1_2').textContent = pembimbing1_2Text;
+
+            // Get selected option text for Pembimbing 1 - Judul 2
             const pembimbing2Select = document.getElementById('pembimbing2');
             const pembimbing2Text = pembimbing2Select.options[pembimbing2Select.selectedIndex]
                 ? pembimbing2Select.options[pembimbing2Select.selectedIndex].text
                 : '-';
             document.getElementById('finalPembimbing2').textContent = pembimbing2Text;
-            
-            // const jenis = document.getElementById('jenisPenelitian').value;
-            // document.getElementById('finalJenis').textContent =
-            //     jenis ? jenis.charAt(0).toUpperCase() + jenis.slice(1).replace('_', ' ') : '-';
+
+            // Get selected option text for Pembimbing 2 - Judul 2
+            const pembimbing2_2Select = document.getElementById('pembimbing2_2');
+            const pembimbing2_2Text = pembimbing2_2Select.options[pembimbing2_2Select.selectedIndex]
+                ? pembimbing2_2Select.options[pembimbing2_2Select.selectedIndex].text
+                : '-';
+            document.getElementById('finalPembimbing2_2').textContent = pembimbing2_2Text;
         }
 
         function submitPengajuan() {
@@ -602,15 +718,21 @@
                 dangerMode: true,
             }).then(function(willSubmit) {
                 if (willSubmit) {
+                    document.querySelector('[name="bidang1"]').value = document.getElementById('bidang1').value;
                     document.querySelector('[name="judul1"]').value = document.getElementById('judulSkripsi1').value;
                     document.querySelector('[name="judulEng1"]').value = document.getElementById('judulSkripsieng1').value;
+                    document.querySelector('[name="bidang2"]').value = document.getElementById('bidang2').value;
                     document.querySelector('[name="judul2"]').value = document.getElementById('judulSkripsi2').value;
                     document.querySelector('[name="judulEng2"]').value = document.getElementById('judulSkripsieng2').value;
-                    document.querySelector('[name="abstrak1"]').value = document.getElementById('abstrakSingkat1').value;
-                    document.querySelector('[name="abstrak2"]').value = document.getElementById('abstrakSingkat2').value;
+                    
                     document.querySelector('[name="pembimbing1"]').value = document.getElementById('pembimbing1').value;
+                    document.querySelector('[name="pembimbing1_2"]').value = document.getElementById('pembimbing1_2').value;
+                    
                     document.querySelector('[name="pembimbing2"]').value = document.getElementById('pembimbing2').value;
+                    document.querySelector('[name="pembimbing2_2"]').value = document.getElementById('pembimbing2_2').value;
 
+                    document.querySelector('[name="abstrak"]').value = document.getElementById('abstrakSingkat').value;
+                    
                     document.getElementById('formPengajuan').submit();
 
                     // Tombol loading
@@ -643,21 +765,145 @@
             }
         }
 
+        function filterPembimbingByBidang(bidangSelectId, pembimbingSelectId, pembimbing2SelectId) {
+            const bidangSelect = document.getElementById(bidangSelectId);
+            const pembimbingSelect = document.getElementById(pembimbingSelectId);
+            const pembimbing2Select = document.getElementById(pembimbing2SelectId);
+            const selectedBidang = bidangSelect.value;
+
+            if(!selectedBidang == "") {
+                // Determine which spinner/text to show
+                let spinnerId, checkingTextId;
+                if (bidangSelectId === 'bidang1') {
+                    spinnerId = 'checkingSpinner1';
+                    checkingTextId = 'checkingText1';
+                } else {
+                    spinnerId = 'checkingSpinner2';
+                    checkingTextId = 'checkingText2';
+                }
+
+                const spinner = document.getElementById(spinnerId);
+                const checkingText = document.getElementById(checkingTextId);
+
+                // Show spinner and checking text
+                spinner.style.display = 'inline-block';
+                checkingText.style.display = 'inline-block';
+
+                pembimbingSelect.disabled = true;
+                pembimbing2Select.disabled = true;
+
+                $.ajax({
+                    url: "{{ route('mhs.pengajuan.judul.cek-bidang-minat') }}",
+                    method: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        idBidangMinat: selectedBidang
+                    },
+                    success: function(response) {
+                        // Hide spinner and checking text
+                        spinner.style.display = 'none';
+                        checkingText.style.display = 'none';
+
+                        // Update notification for the selected bidang
+                        let notifId, statusId, messageId, textId;
+                        if (bidangSelectId === 'bidang1') {
+                            notifId = 'notif1';
+                            statusId = 'notif1Status';
+                            messageId = 'notif1Message';
+                            textId = 'notif1Text';
+                        } else {
+                            notifId = 'notif2';
+                            statusId = 'notif2Status';
+                            messageId = 'notif2Message';
+                            textId = 'notif2Text';
+                        }
+
+                        const notifDiv = document.getElementById(notifId);
+                        const statusSpan = document.getElementById(statusId);
+                        const messageDiv = document.getElementById(messageId);
+                        const textP = document.getElementById(textId);
+
+                        if (response.isValid) {
+                            pembimbingSelect.disabled = false;
+                            pembimbing2Select.disabled = false;
+
+                            notifDiv.className = 'alert alert-success';
+                            notifDiv.style.display = 'block';
+                            statusSpan.textContent = 'Memenuhi Mata Kuliah Prasyarat';
+                            messageDiv.style.display = 'none';
+                        } else {
+                            pembimbingSelect.disabled = true;
+                            pembimbing2Select.disabled = true;
+
+                            notifDiv.className = 'alert alert-warning';
+                            notifDiv.style.display = 'block';
+                            statusSpan.textContent = 'Tidak Memenuhi Mata Kuliah Prasyarat';
+                            messageDiv.style.display = 'block';
+                            textP.textContent = response.message + ' (' + response.matkul + ': ' + response.nilai + ')';
+                        }
+
+                        // Reset selections
+                        pembimbingSelect.value = '';
+                        pembimbing2Select.value = '';
+
+                        // Filter pembimbing 1
+                        Array.from(pembimbingSelect.options).forEach(option => {
+                        if (option.value === '') {
+                            option.style.display = '';
+                        } else if (selectedBidang === '' || option.getAttribute('data-bidang') === selectedBidang) {
+                            option.style.display = '';
+                        } else {
+                            option.style.display = 'none';
+                        }
+                        });
+
+                        // Filter pembimbing 2
+                        Array.from(pembimbing2Select.options).forEach(option => {
+                        if (option.value === '') {
+                            option.style.display = '';
+                        } else if (selectedBidang === '' || option.getAttribute('data-bidang') === selectedBidang) {
+                            option.style.display = '';
+                        } else {
+                            option.style.display = 'none';
+                        }
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        // Hide spinner and checking text on error
+                        spinner.style.display = 'none';
+                        checkingText.style.display = 'none';
+
+                        console.log('====================================');
+                        console.log(xhr);
+                        console.log('====================================');
+                        swal('Error', 'Terjadi kesalahan saat memeriksa dosen pembimbing.', 'error');
+                    }
+                });
+
+                // Re-sync the selects after filtering
+                syncSelects(pembimbingSelect, pembimbing2Select);
+            }
+        }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('confirmSubmit').addEventListener('change', function() {
-                document.getElementById('btnSubmit').disabled = !this.checked;
+            document.getElementById('btnSubmit').disabled = !this.checked;
             });
 
-            const select1 = document.getElementById('pembimbing1');
-            const select2 = document.getElementById('pembimbing2');
+            // Get all pembimbing selects
+            const pembimbing1 = document.getElementById('pembimbing1');
+            const pembimbing1_2 = document.getElementById('pembimbing1_2');
+            const pembimbing2 = document.getElementById('pembimbing2');
+            const pembimbing2_2 = document.getElementById('pembimbing2_2');
 
-            select1.addEventListener('change', function() {
-            syncSelects(select1, select2);
+            const allSelects = [pembimbing1, pembimbing1_2, pembimbing2, pembimbing2_2];
+
+            // Add change listeners to all selects
+            allSelects.forEach(select => {
+            select.addEventListener('change', function() {
+                syncAllSelects(select, allSelects);
             });
-
-            select2.addEventListener('change', function() {
-            syncSelects(select2, select1);
             });
         });
     </script>

@@ -22,9 +22,15 @@
     <div id="pengajuan" class="content-section">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2><i class="bi bi-file-earmark-plus me-2"></i>Pengajuan</h2>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#pengajuanModal">
-                <i class="bi bi-plus-circle me-2"></i>Buat Pengajuan Baru
-            </button>
+            @if($mhs->is_skripsi == 0)
+                <button class="btn btn-primary" disabled>
+                    <i class="bi bi-lock me-2"></i>Belum diizinkan pengajuan skripsi
+                </button>
+            @else
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#pengajuanModal">
+                    <i class="bi bi-plus-circle me-2"></i>Buat Pengajuan Baru
+                </button>
+            @endif
         </div>
 
         <!-- Pengajuan Tabs -->
@@ -55,7 +61,7 @@
                         <h5 class="mb-0">Riwayat Pengajuan Dosen Pembimbing</h5>
                     </div>
                     <div class="card-body">
-                        @if ($dataDosbim)
+                        @if ($dataDosbim && count($dataDosbim) > 0)
                             <div class="table-responsive">
                                 <table class="table table-hover">
                                     <thead>
@@ -68,38 +74,39 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>{{ $dataDosbim->created_at->translatedFormat('d F Y') }}</td>
-                                            <td>
-                                                <strong>Pembimbing 1:</strong> {{ $dataDosbim->nama_pembimbing1 }}<br>
-                                                <strong>Pembimbing 2:</strong> {{ $dataDosbim->nama_pembimbing2 }}
-                                            </td>
-                                            <td>
-                                                @if ($dataDosbim->status == 0)
-                                                    <span class="badge bg-warning">Menunggu</span>
-                                                @elseif ($dataDosbim->status == 1 || $dataDosbim->status == 2)
-                                                    <span class="badge bg-success">Disetujui</span>
-                                                @else
-                                                    <span class="badge bg-secondary">Tidak Diketahui</span>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @if ($dataDosbim->status == 0)
-                                                    Menunggu persetujuan dosen
-                                                @elseif ($dataDosbim->status == 1 || $dataDosbim->status == 2)
-                                                    Pengajuan disetujui dosen
-                                                @else
-                                                    Status tidak diketahui
-                                                @endif
-                                            </td>
-
-                                            <td>
-                                                <button class="btn btn-sm btn-outline-primary"
-                                                    onclick="lihatDetail('dosbim1')">
-                                                    <i class="bi bi-eye"></i> Detail
-                                                </button>
-                                            </td>
-                                        </tr>
+                                        @foreach ($dataDosbim as $dosbim)
+                                            <tr>
+                                                <td>{{ \Carbon\Carbon::parse($dosbim->created_at)->format('d/m/Y') }}</td>
+                                                <td>
+                                                    <strong>Pembimbing 1:</strong> {{ $dosbim->nama_pembimbing1 }}<br>
+                                                    <strong>Pembimbing 2:</strong> {{ $dosbim->nama_pembimbing2 }}
+                                                </td>
+                                                <td>
+                                                    @if ($dosbim->status == 0)
+                                                        <span class="badge bg-warning">Menunggu</span>
+                                                    @elseif ($dosbim->status == 1 || $dosbim->status == 2)
+                                                        <span class="badge bg-success">Disetujui</span>
+                                                    @else
+                                                        <span class="badge bg-secondary">Tidak Diketahui</span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if ($dosbim->status == 0)
+                                                        Menunggu persetujuan dosen
+                                                    @elseif ($dosbim->status == 1 || $dosbim->status == 2)
+                                                        Pengajuan disetujui dosen
+                                                    @else
+                                                        Status tidak diketahui
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-primary"
+                                                        onclick="lihatDetail('{{ $dosbim->id }}')">
+                                                        <i class="bi bi-eye"></i> Detail
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -148,15 +155,6 @@
                                                         <a href="{{ route('mhs.skripsi.daftar.show', [$judul->idEnkripsi, 0]) }}" class="btn btn-sm btn-outline-primary ms-2">
                                                             <i class="bi bi-eye"></i> Detail
                                                         </a>
-                                                        <a href="{{ route('mhs.skripsi.daftar.show', [$judul->idEnkripsi, 1]) }}" class="btn btn-sm btn-outline-warning ms-2">
-                                                            <i class="bi bi-pencil-square"></i> Edit
-                                                        </a>
-                                                        @if (empty($judul->latar_belakang) || empty($judul->rumusan_masalah) || empty($judul->tujuan) || empty($judul->metodologi) || empty($judul->jenis_penelitian))
-                                                            <span class="text-danger ms-2">
-                                                                <i class="bi bi-exclamation-triangle"></i>
-                                                                Segera lengkapi data skripsi (Latar Belakang, Rumusan Masalah, Tujuan, Metodologi, Jenis Penelitian)
-                                                            </span>
-                                                        @endif
                                                     @endif
                                                 </td>
                                                 <td>
@@ -194,11 +192,12 @@
                 </div>
             </div>
 
-            <!-- Pengajuan Sidang -->
+            <!-- Pengajuan Sidang (Edit dari sidang itu) -->
             <div class="tab-pane fade" id="sidang" role="tabpanel">
                 <div class="card">
-                    <div class="card-header">
+                    <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">Riwayat Pengajuan Sidang</h5>
+                        {{-- Tidak ada tombol global "Ajukan", edit dilakukan dari baris sidang --}}
                     </div>
                     <div class="card-body">
                         @if (isset($sidang) && count($sidang) > 0)
@@ -254,34 +253,51 @@
                                                 </td>
                                                 <td>
                                                     @if ($row->jenis == 1)
-                                                        <span class="badge bg-success">Sidang Terbuka</span>
+                                                        <span class="badge bg-success">Seminar Proposal</span>
                                                     @elseif ($row->jenis == 2)
-                                                        <span class="badge bg-warning">Sidang Tertutup</span>
+                                                        <span class="badge bg-warning">Seminar Hasil</span>
                                                     @else
                                                         <span class="badge bg-secondary">Tidak Diketahui</span>
                                                     @endif
                                                 </td>
-                                                <td class="d-flex gap-2">
+                                                <td class="d-flex gap-2 align-items-center">
                                                     @if ($row->status == 1 || $row->status == 2)
                                                         <form action="{{ route('mhs.skripsi.daftar.print-sidang') }}" method="POST" class="d-inline" target="_blank">
                                                             @csrf
                                                             <input type="hidden" name="id" value="{{ $row->id }}">
-                                                            <button type="submit" class="btn btn-sm btn-outline-success ms-2" title="Download Surat Pengantar Sidang">
+                                                            <button type="submit" class="btn btn-sm btn-outline-success" title="Download Surat Pengantar Sidang">
                                                                 <i class="bi bi-download"></i>
                                                             </button>
                                                         </form>
-                                                    @else
-                                                        <span class="text-muted">-</span>
                                                     @endif
 
                                                     @if ($row->jenis == 1 && ($row->accPembimbing1 == 1 || $row->accPembimbing2 == 1))
                                                         <form action="{{ route('mhs.skripsi.daftar.print-persetujuan-proposal') }}" method="POST" class="d-inline" target="_blank">
                                                             @csrf
                                                             <input type="hidden" name="id" value="{{ $row->id }}">
-                                                            <button type="submit" class="btn btn-sm btn-outline-success ms-2" title="Download Surat Persetujuan Seminar Proposal">
+                                                            <button type="submit" class="btn btn-sm btn-outline-success" title="Download Surat Persetujuan Seminar Proposal">
                                                                 <i class="bi bi-download"></i>
                                                             </button>
                                                         </form>
+                                                    @endif
+
+                                                    {{-- Tombol Edit: buka modal pengeditan untuk baris ini --}}
+                                                    @if (is_null($row->tanggal)) {{-- tidak bisa edit jika sudah selesai --}}
+                                                        <button
+                                                            type="button"
+                                                            class="btn btn-sm btn-outline-primary"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#edit-sidang-modal"
+                                                            data-id="{{ $row->idEnkripsi }}"
+                                                            data-tanggal="{{ $row->tanggal }}"
+                                                            data-waktu-mulai="{{ $row->waktuMulai }}"
+                                                            data-waktu-selesai="{{ $row->waktuSelesai }}"
+                                                            data-ruang-id="{{ $row->ruang_id ?? '' }}"
+                                                            data-jenis="{{ $row->jenis }}"
+                                                            title="Submit Waktu Sidang"
+                                                            onclick="openEditSidangModal(this)">
+                                                            <i class="bi bi-clock"></i>
+                                                        </button>
                                                     @endif
                                                 </td>
                                             </tr>
@@ -298,6 +314,77 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Modal: Submit Waktu Sidang -->
+            <div class="modal fade" id="edit-sidang-modal" tabindex="-1" aria-labelledby="editSidangLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <form id="form-submit-sidang" action="#" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" name="id" id="edit-sidang-id">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editSidangLabel">Submit Waktu Sidang</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="edit-sidang-tanggal" class="form-label">Tanggal</label>
+                                    <input type="date" class="form-control" id="edit-sidang-tanggal" name="tanggal" required>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="edit-sidang-waktu-mulai" class="form-label">Waktu Mulai</label>
+                                        <input type="time" class="form-control" id="edit-sidang-waktu-mulai" name="waktuMulai" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="edit-sidang-waktu-selesai" class="form-label">Waktu Selesai</label>
+                                        <input type="time" class="form-control" id="edit-sidang-waktu-selesai" name="waktuSelesai" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="edit-sidang-ruang" class="form-label">Ruangan</label>
+                                    <select name="idRuang" id="edit-sidang-ruang" class="form-select" required>
+                                        <option value="">Pilih Ruang</option>
+                                        @if(isset($ruang) && count($ruang) > 0)
+                                            @foreach($ruang as $r)
+                                                <option value="{{ $r->id }}">{{ $r->nama_ruang ?? $r->nama }}</option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                <button type="submit" class="btn btn-primary" id="btn-submit">Simpan</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <script>
+                function openEditSidangModal(btn) {
+                    var $btn = $(btn);
+                    var id = $btn.data('id');
+                    var tanggal = $btn.data('tanggal') || '';
+                    var waktuMulai = $btn.data('waktu-mulai') || '';
+                    var waktuSelesai = $btn.data('waktu-selesai') || '';
+                    var ruangId = $btn.data('ruang-id') || '';
+                    var jenis = $btn.data('jenis') || '';
+
+                    $('#edit-sidang-id').val(id);
+                    $('#edit-sidang-tanggal').val(tanggal);
+                    $('#edit-sidang-waktu-mulai').val(waktuMulai);
+                    $('#edit-sidang-waktu-selesai').val(waktuSelesai);
+                    $('#edit-sidang-ruang').val(ruangId);
+                    $('#edit-sidang-jenis').val(jenis);
+
+                    // atur action form ke route update (ganti __id__ dengan id)
+                    var urlTemplate = "{{ route('mhs.skripsi.daftar.input-waktu-sidang', ['id' => '__id__']) }}";
+                    $('#form-submit-sidang').attr('action', urlTemplate.replace('__id__', id));
+                }
+            </script>
         </div>
     </div>
 
@@ -333,13 +420,23 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <div class="card h-100 pengajuan-option">
-                                <a href="{{ route('mhs.pengajuan.sidang.index') }}" class="card h-100 pengajuan-option">
-                                    <div class="card-body text-center">
-                                        <i class="bi bi-calendar-check fs-1 text-warning mb-3"></i>
-                                        <h6>Sidang</h6>
-                                        <small class="text-muted">Ajukan sidang proposal/skripsi</small>
+                                @if($isAllowSidang)
+                                    <a href="{{ route('mhs.pengajuan.sidang.index') }}" class="card h-100 pengajuan-option">
+                                        <div class="card-body text-center">
+                                            <i class="bi bi-calendar-check fs-1 text-warning mb-3"></i>
+                                            <h6>Sidang</h6>
+                                            <small class="text-muted">Ajukan sidang proposal/skripsi</small>
+                                        </div>
+                                    </a>
+                                @else
+                                    <div class="card h-100 pengajuan-option opacity-75">
+                                        <div class="card-body text-center">
+                                            <i class="bi bi-lock fs-1 text-secondary mb-3"></i>
+                                            <h6>Sidang</h6>
+                                            <small class="text-muted">Belum diizinkan untuk sidang</small>
+                                        </div>
                                     </div>
-                                </a>
+                                @endif
                             </div>
                         </div>
                     </div>

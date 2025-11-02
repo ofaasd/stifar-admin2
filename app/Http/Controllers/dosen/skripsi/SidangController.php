@@ -20,11 +20,6 @@ class SidangController extends Controller
 {
     public function index()
     {   
-        $gelombang = GelombangSidangSkripsi::select([
-            'gelombang_sidang_skripsi.*',
-            \DB::raw('(SELECT COUNT(*) FROM sidang WHERE sidang.gelombang_id = gelombang_sidang_skripsi.id) as jumlahPeserta')
-        ])->get();
-
         $tahunAjaran = TahunAjaran::all();
         $ruang = MasterRuang::all();
         $pegawai = PegawaiBiodatum::all();
@@ -44,7 +39,7 @@ class SidangController extends Controller
         })
         ->get();
 
-        return view('dosen.skripsi.sidang.index', compact('gelombang', 'tahunAjaran', 'ruang', 'pegawai', 'mahasiswaSkripsi'));
+        return view('dosen.skripsi.sidang.index', compact('tahunAjaran', 'ruang', 'pegawai', 'mahasiswaSkripsi'));
     }
     public function store(Request $request)
     {
@@ -95,12 +90,7 @@ class SidangController extends Controller
             ->leftJoin('pegawai_biodata AS pembimbing2', 'master_skripsi.pembimbing_2', '=', 'pembimbing2.npp')
             ->leftJoin('pengajuan_judul_skripsi', 'master_skripsi.id', '=', 'pengajuan_judul_skripsi.id_master')
             ->leftJoin('mahasiswa', 'master_skripsi.nim', '=', 'mahasiswa.nim')
-            ->when($idGelombang !== null, function ($query) use ($idGelombang) {
-                $query->where('gelombang_sidang_skripsi.id', $idGelombang);
-            })
             ->where('pengajuan_judul_skripsi.status', 1)
-            ->where('sidang.acc_pembimbing1', 1)
-            ->where('sidang.acc_pembimbing2', 1)
             ->orderBy('sidang.created_at', 'desc')
             ->get()
             ->map(function($item) {
@@ -108,7 +98,9 @@ class SidangController extends Controller
                 if (!empty($item->tanggal)) {
                     $carbonTanggal = \Carbon\Carbon::parse($item->tanggal);
                     $item->tanggal = $carbonTanggal->translatedFormat('d/m/Y');
-                    if (($carbonTanggal->isToday() || $carbonTanggal->isPast()) && $item->status != 1) {
+                    if ($carbonTanggal->isToday()) {
+                        $item->tanggal .= ' <span class="badge badge-info">Sidang hari ini</span>';
+                    }else if ($carbonTanggal->isPast() && $item->status != 1) {
                         $item->tanggal .= ' <span class="badge badge-success">Waktu sudah terlewati</span>';
                     }
                 }
@@ -132,15 +124,21 @@ class SidangController extends Controller
                 ->addColumn('pembimbing', function($row) {
                     $list = '';
                     $pembimbings = [];
+                    $npps = [];
+
                     if ($row->namaPembimbing1) {
                         $pembimbings[] = $row->namaPembimbing1;
+                        $npps[] = $row->pembimbing_1 ?? '-';
                     }
                     if ($row->namaPembimbing2) {
                         $pembimbings[] = $row->namaPembimbing2;
+                        $npps[] = $row->pembimbing_2 ?? '-';
                     }
+
                     if (count($pembimbings) > 0) {
                         foreach ($pembimbings as $i => $name) {
-                            $list .= '<strong>' . ($i + 1) . '</strong>. ' . $name . '<br>';
+                            $npp = isset($npps[$i]) ? $npps[$i] : '-';
+                            $list .= '<strong>' . ($i + 1) . '</strong>. ' . $name . ' <small>(' . $npp . ')</small><br>';
                         }
                         return $list;
                     } else {
@@ -151,11 +149,13 @@ class SidangController extends Controller
                     if (empty($row->penguji)) {
                         return '-';
                     }
-                    $npps = explode(',', $row->penguji);
-                    $names = PegawaiBiodatum::whereIn('npp', $npps)->pluck('nama_lengkap')->toArray();
+                    $npps = array_filter(array_map('trim', explode(',', $row->penguji)));
+                    $pegawais = PegawaiBiodatum::whereIn('npp', $npps)->get()->keyBy('npp');
                     $list = '';
-                    foreach ($names as $i => $name) {
-                        $list .= '<strong>'.($i + 1) . '</strong>. ' . $name . '<br>';
+                    foreach ($npps as $i => $npp) {
+                        $pegawai = $pegawais->has($npp) ? $pegawais->get($npp) : null;
+                        $name = $pegawai ? $pegawai->nama_lengkap : '-';
+                        $list .= '<strong>' . ($i + 1) . '</strong>. ' . $name . ' <small>(' . $npp . ')</small><br>';
                     }
                     return $list;
                 })
@@ -195,7 +195,6 @@ class SidangController extends Controller
         try {
             $sidang = SidangSkripsi::select([
                 'sidang.id',
-                'sidang.gelombang_id AS gelombangId',
                 'sidang.tanggal',
                 'sidang.waktu_mulai AS waktuMulai',
                 'sidang.waktu_selesai AS waktuSelesai',
@@ -204,7 +203,6 @@ class SidangController extends Controller
                 'sidang.status',
                 'sidang.jenis',
                 'sidang.proposal',
-                'sidang.kartu_bimbingan AS kartuBimbingan',
                 'sidang.presentasi',
                 'sidang.pendukung',
                 'sidang.nilai_akhir AS nilaiAkhir',
@@ -222,23 +220,6 @@ class SidangController extends Controller
             ->where('sidang.id', $id)
             ->first();
 
-            $preferensiSidang = PreferensiSidang::select([
-                'preferensi_sidang.catatan',
-                'ref_hari_sidang.nama AS hari',
-                'ref_waktu_sidang.nama AS waktu',
-            ])
-            ->leftJoin('ref_hari_sidang', 'ref_hari_sidang.id','=', 'preferensi_sidang.id_hari')
-            ->leftJoin('ref_waktu_sidang', 'ref_waktu_sidang.id','=', 'preferensi_sidang.id_waktu')
-            ->where('preferensi_sidang.id_sidang', $sidang->id)
-            ->first();
-
-            // Gabungkan data preferensi ke $sidang
-            if ($sidang && $preferensiSidang) {
-                $sidang->catatan = $preferensiSidang->catatan;
-                $sidang->hari = $preferensiSidang->hari;
-                $sidang->waktu = $preferensiSidang->waktu;
-            }
-
             // Tambahkan pengujiIds (array NPP penguji)
             if ($sidang && !empty($sidang->penguji)) {
                 $sidang->pengujiIds = explode(',', $sidang->penguji);
@@ -246,18 +227,7 @@ class SidangController extends Controller
                 $sidang->pengujiIds = [];
             }
 
-            $nilaiPembimbing1 = null;
-            $nilaiPembimbing2 = null;
-            
             $aktorSidang = AktorSidang::where('sidang_id', $sidang->id)->get();
-            foreach ($aktorSidang as $aktor) {
-                if ($aktor->npp == $sidang->nppPembimbing1) {
-                    $nilaiPembimbing1 = $aktor->nilai_akhir ?? 0;
-                }
-                if ($aktor->npp == $sidang->nppPembimbing2) {
-                    $nilaiPembimbing2 = $aktor->nilai_akhir ?? 0;
-                }
-            }
 
             // Ambil nilai untuk setiap penguji (dinamis)
             $nilaiPenguji = [];
@@ -268,9 +238,6 @@ class SidangController extends Controller
                 }
             }
             $sidang->nilaiPenguji = $nilaiPenguji;
-
-            $sidang->nilaiPembimbing1 = $nilaiPembimbing1;
-            $sidang->nilaiPembimbing2 = $nilaiPembimbing2;
 
             return response()->json([
                 'success' => true, 

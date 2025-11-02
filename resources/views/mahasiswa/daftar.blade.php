@@ -40,11 +40,73 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-body">
-                        @if (!isset($isAlumni))
-                            <div class="col-md-12 mb-4">
-                                <a class="btn btn-primary" href="{{ URL::to('mahasiswa/create')}}">Tambah mahasiswa</a>
+                        <div class="row mb-3">
+                            <div class="col-md-6 d-flex align-items-center">
+                                @if (!isset($isAlumni))
+                                    <a class="btn btn-primary" href="{{ URL::to('mahasiswa/create')}}">Tambah mahasiswa</a>
+                                @endif
                             </div>
-                        @endif
+                            <div class="col-md-6 d-flex justify-content-end align-items-center">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Aksi
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalCetakKTM">Cetak KTM</a></li>
+                                        <!-- Tambah aksi lainnya di sini -->
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal Cetak KTM -->
+                        <div class="modal fade" id="modalCetakKTM" tabindex="-1" aria-labelledby="modalCetakKTMLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <form class="modal-content" method="POST" action="{{ route('cetak-ktm') }}" target="_blank">
+                                    @csrf
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="modalCetakKTMLabel">Cetak KTM</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label for="pilihan" class="form-label">Pilihan</label>
+                                            <select id="pilihan" name="pilihan" class="form-select" required>
+                                                <option value="prodi">Prodi</option>
+                                                <option value="angkatan">Angkatan</option>
+                                            </select>
+                                        </div>
+
+                                        <div id="form-prodi" class="mb-3">
+                                            <label for="spesifik-prodi" class="form-label">Pilih Prodi</label>
+                                            <select id="spesifik-prodi" name="spesifik" class="form-select">
+                                                @foreach($prodi as $prod)
+                                                    <option value="{{ $prod->id }}">{{ $nama[$prod->id] ?? ($prod->nama ?? $prod->kode) }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <div id="form-angkatan" class="mb-3" style="display:none;">
+                                            <label for="spesifik-angkatan" class="form-label">Tahun Angkatan</label>
+                                            <select id="spesifik-angkatan" name="spesifik" class="form-select">
+                                                @foreach($angkatan as $ang)
+                                                    <option value="{{ $ang }}">{{ $ang }}</option>
+                                                @endforeach
+                                            </select>
+                                            <div class="form-text">Pilih tahun angkatan jika memilih "Angkatan".</div>
+                                        </div>
+
+                                        <div class="alert alert-warning mt-3" role="alert">
+                                            <strong>Catatan:</strong> Jika jumlah data sangat banyak, proses pembuatan atau pengunduhan KTM dapat memakan waktu cukup lama. Harap bersabar dan jangan menutup jendela ini sampai proses selesai.
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                                        <button type="submit" class="btn btn-primary" id="btn-submit">Cetak</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
 
                         <div class="table-responsive tbl-mhs">
 
@@ -78,6 +140,27 @@
                 });
                 refresh_mahasiswa(0);
             }
+
+
+            $('#pilihan').on('change', function(){
+                const val = $(this).val();
+                if (val === 'prodi') {
+                    $('#form-prodi').show();
+                    $('#form-angkatan').hide();
+                    $('#spesifik-angkatan').prop('selectedIndex', 0).prop('disabled', true).prop('required', false);
+                    $('#spesifik-prodi').prop('disabled', false).prop('required', true);
+                } else {
+                    $('#form-prodi').hide();
+                    $('#form-angkatan').show();
+                    $('#spesifik-prodi').prop('selectedIndex', 0).prop('disabled', true).prop('required', false);
+                    $('#spesifik-angkatan').prop('disabled', false).prop('required', true);
+                }
+            });
+
+            // Inisialisasi default saat modal dibuka
+            $('#modalCetakKTM').on('show.bs.modal', function () {
+                $('#pilihan').trigger('change');
+            });
         });
 
         function refresh_mahasiswa(id){

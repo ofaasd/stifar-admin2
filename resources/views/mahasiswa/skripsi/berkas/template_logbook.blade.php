@@ -106,7 +106,8 @@
                     <tr>
                         <th>No.</th>
                         <th>Tanggal</th>
-                        <th>Topik</th>
+                        <th>Permasalahan</th>
+                        <th>Solusi Permasalahan</th>
                         <th>Status</th>
                         <th>Catatan Mahasiswa</th>
                         <th>Catatan Dosen</th>
@@ -119,18 +120,17 @@
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ \Carbon\Carbon::parse($row->tanggal_waktu)->format('d/m/Y') }}</td>
-                            <td>{{ $row->topik }}</td>
+                            <td>{{ $row->permasalahan }}</td>
+                            <td>{{ $row->solusi_permasalahan }}</td>
                             <td>
-                                @if($row->status == 0)
-                                    <span class="badge bg-warning">Menunggu</span>
-                                @elseif($row->status == 1)
+                                @if($row->status == 1)
                                     <span class="badge bg-success">ACC</span>
                                 @elseif($row->status == 2)
                                     <span class="badge bg-primary">Setuju</span>
                                 @elseif($row->status == 3)
                                     <span class="badge bg-info">Revisi</span>
                                 @else
-                                    <span class="badge bg-secondary">Unknown</span>
+                                    {{-- <span class="badge bg-secondary">Unknown</span> --}}
                                 @endif
                             </td>
                             <td>{{ $row->catatan_mahasiswa }}</td>
@@ -140,7 +140,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" style="text-align: center;">Data logbook tidak tersedia.</td>
+                            <td colspan="9" style="text-align: center;">Data logbook tidak tersedia.</td>
                         </tr>
                     @endforelse
                 </tbody>

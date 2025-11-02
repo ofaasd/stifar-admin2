@@ -6,8 +6,6 @@ use App\Models\Mahasiswa;
 use App\Models\AktorSidang;
 use Illuminate\Http\Request;
 use App\Models\MasterSkripsi;
-use App\Models\SidangSkripsi;
-use App\Models\BerkasBimbingan;
 use App\Models\PegawaiBiodatum;
 use App\Models\BimbinganSkripsi;
 use App\Http\Controllers\Controller;
@@ -24,6 +22,7 @@ class DosenBimbinganController extends Controller
         ];
         return view('dosen.akademik.skripsi.bimbingan.index', $data);
     }
+    
     public function getData()
     {
         $cekUser = PegawaiBiodatum::where('user_id', Auth::id())->first();
@@ -95,7 +94,18 @@ class DosenBimbinganController extends Controller
                 return redirect()->back()->with('error', 'Data skripsi tidak ditemukan.');
             }
 
-            $judulSkripsi = PengajuanJudulSkripsi::where('id_master', $masterSkripsi->id)->where('status', 1)->first();
+            if ($masterSkripsi) {
+                $masterSkripsi->idEnkripsi = Crypt::encryptString($masterSkripsi->id . "stifar");
+            }
+
+            $judulSkripsi = PengajuanJudulSkripsi::select([
+                'pengajuan_judul_skripsi.*',
+                'master_bidang_minat.nama AS bidang_minat',
+            ])
+            ->where('id_master', $masterSkripsi->id)
+            ->where('status', 1)
+            ->leftJoin('master_bidang_minat', 'pengajuan_judul_skripsi.id_bidang_minat', '=', 'master_bidang_minat.id')
+            ->first();
 
             $cekUser = PegawaiBiodatum::where('user_id', Auth::id())->first();
             if(!$cekUser){
@@ -151,6 +161,8 @@ class DosenBimbinganController extends Controller
                         break;
                     case 3:
                         $item->status_label = 'Revisi';
+                    case 4:
+                        $item->status_label = 'Ditolak';
                         break;
                     default:
                         $item->status_label = 'Unknown';
@@ -159,54 +171,11 @@ class DosenBimbinganController extends Controller
                 return $item;
             });
 
+            // kalo sudah ada 6 bimbingan dengan file_dosen tidak null, maka bisa sidang
+            $isSidang = $bimbingan->whereNotNull('file_dosen')
+                ->count() >= 6 ? true : false;
+
             $mahasiswa = Mahasiswa::where('nim', $masterSkripsi->nim)->first();
-
-            // Cek apakah id master skripsi ada di tabel sidang skripsi
-            $pengajuanSidang = SidangSkripsi::select([
-                'sidang.id',
-                'sidang.tanggal',
-                'sidang.waktu_mulai AS waktuMulai',
-                'sidang.waktu_selesai AS waktuSelesai',
-                'sidang.penguji',
-                'sidang.status',
-                'sidang.jenis',
-                'sidang.proposal',
-                'sidang.kartu_bimbingan AS kartuBimbingan',
-                'sidang.presentasi',
-                'sidang.pendukung',
-                'sidang.acc_pembimbing1 AS accPembimbing1',
-                'sidang.acc_pembimbing2 AS accPembimbing2',
-                'sidang.acc1_at AS acc1At',
-                'sidang.acc2_at AS acc2At',
-                'gelombang_sidang_skripsi.nama AS namaGelombang',
-                'master_ruang.nama_ruang AS namaRuang',
-            ])
-            ->leftJoin('gelombang_sidang_skripsi', 'sidang.gelombang_id', '=', 'gelombang_sidang_skripsi.id')
-            ->leftJoin('master_ruang', 'sidang.ruang_id', '=', 'master_ruang.id')
-            ->where('sidang.skripsi_id', $masterSkripsi->id)
-            ->orderBy('sidang.created_at', 'desc')
-            ->first();
-
-            if($pengajuanSidang)
-            {
-                $pengajuanSidang->accSidang = false;
-                $pengajuanSidang->idEnkripsi = Crypt::encryptString($pengajuanSidang->id . "stifar");
-                
-                if ($pengajuanSidang) {
-                    if ($pembimbingKe == 1 && $pengajuanSidang->accPembimbing1 == 0) {
-                        $pengajuanSidang->accSidang = false;
-                    } elseif ($pembimbingKe == 2 && $pengajuanSidang->accPembimbing2 == 0) {
-                        $pengajuanSidang->accSidang = false;
-                    } else {
-                        $pengajuanSidang->accSidang = true;
-                    }
-                }
-
-                $penilaian = AktorSidang::where('sidang_id', $pengajuanSidang->id)
-                ->where('npp', $dosen->npp)
-                ->where('as', 'pembimbing')
-                ->first();
-            }
 
             $data = [
                 'title' => 'Detail Bimbingan ' . $mahasiswa->nama . ' (' . $mahasiswa->nim . ')',
@@ -214,8 +183,8 @@ class DosenBimbinganController extends Controller
                 'judulSkripsi' => $judulSkripsi,
                 'mahasiswa' => $mahasiswa,
                 'dosen' => $dosen,
-                'pengajuanSidang' => $pengajuanSidang,
-                'penilaian' => $penilaian ?? null,
+                'isSidang' => $isSidang,
+                'masterSkripsi' => $masterSkripsi,
             ];
 
             return view('dosen.akademik.skripsi.bimbingan.show', $data);
@@ -236,10 +205,10 @@ class DosenBimbinganController extends Controller
 
         try {
             $request->validate([
-                'catatanDosen' => 'nullable|string',
+                'solusiPermasalahan' => 'nullable|string',
             ]);
 
-            $bimbingan->catatan_dosen = $request->input('catatanDosen', $bimbingan->catatan_dosen);
+            $bimbingan->solusi_permasalahan = $request->input('solusiPermasalahan', $bimbingan->solusi_permasalahan);
             $bimbingan->save();
 
             return redirect()->back()->with('success', 'Data bimbingan berhasil diperbarui.');
@@ -298,18 +267,18 @@ class DosenBimbinganController extends Controller
         $idDekrip = Crypt::decryptString($idEnkripsi);
         $id = str_replace("stifar", "", $idDekrip);
 
-        $sidang = SidangSkripsi::find($id);
-        if (!$sidang) {
-            return redirect()->back()->with('error', 'Data sidang tidak ditemukan.');
+        $masterSkripsi = MasterSkripsi::find($id);
+        if (!$masterSkripsi) {
+            return redirect()->back()->with('error', 'Data Skripsi tidak ditemukan.');
         }
 
         try {
-            $sidang->update([
-                'acc_pembimbing' . $request->pembimbingKe => 1,
-                'acc' . $request->pembimbingKe . '_at' => now(),
+            $masterSkripsi->update([
+                'acc_' . $request->pembimbingKe => 1,
+                'acc_' . $request->pembimbingKe . '_at' => now(),
             ]);
 
-            return response()->json(['success' => true, 'message' => 'Sidang berhasil disetujui.']);
+            return response()->json(['success' => true, 'message' => 'Berhasil menyetujui Mahasiswa untuk sidang.']);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
         }
@@ -391,6 +360,36 @@ class DosenBimbinganController extends Controller
             }
         } catch (\Exception $e) {
             return response()->json(['error' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function uploadRevisi(Request $request, $idEnkripsi)
+    {
+        $idDekrip = Crypt::decryptString($idEnkripsi);
+        $id = str_replace("stifar", "", $idDekrip);
+
+        $bimbingan = BimbinganSkripsi::find($id);
+        if (!$bimbingan) {
+            return redirect()->back()->with('error', 'Data bimbingan tidak ditemukan.');
+        }
+
+        try {
+            $request->validate([
+                'fileRevisi' => 'required|file|mimes:pdf,doc,docx|max:2048',
+            ]);
+
+            if ($request->hasFile('fileRevisi')) {
+                $file = $request->file('fileRevisi');
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                $filePath = $file->storeAs('bimbingan_revisi', $fileName, 'public');
+
+                $bimbingan->file_dosen = $filePath;
+                $bimbingan->save();
+            }
+
+            return redirect()->back()->with('success', 'File revisi berhasil diunggah.');
+        } catch (\Exception $e) { 
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
 }

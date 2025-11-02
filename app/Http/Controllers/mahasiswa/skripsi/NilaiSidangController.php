@@ -207,7 +207,7 @@ class NilaiSidangController extends Controller
 
                     switch($cekSidang->status) {
                         case 1:
-                            // sidang terbuka
+                            // seminar proposal
                             master_nilai::updateOrCreate(
                                 [
                                     'nim' => $nim,

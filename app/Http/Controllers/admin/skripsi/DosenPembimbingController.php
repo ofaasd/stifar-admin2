@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\RefPembimbing;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Models\MasterBidangMinat;
 use App\Models\PegawaiBiodatum;
 
 class DosenPembimbingController extends Controller
@@ -20,7 +21,8 @@ class DosenPembimbingController extends Controller
     {
         // Mengambil data dosen pembimbing dengan kuota yang tidak 0 dan join ke tabel pegawai
         $data = RefPembimbing::join('pegawai_biodata as pegawai', 'pegawai.npp', '=', 'ref_pembimbing_skripsi.nip')
-            ->select('pegawai.nama_lengkap AS nama', 'pegawai.npp', 'kuota')
+            ->leftJoin('master_bidang_minat as bidang_minat', 'bidang_minat.id', '=', 'ref_pembimbing_skripsi.id_bidang_minat')
+            ->select('pegawai.nama_lengkap AS nama', 'pegawai.npp', 'kuota', 'bidang_minat.nama AS bidangMinat')
             ->get();
 
         // Jika data kosong, kirim response dengan pesan khusus
@@ -37,7 +39,7 @@ class DosenPembimbingController extends Controller
         return \DataTables::of($data)
             ->addIndexColumn() // Menambahkan kolom DT_RowIndex
             ->addColumn('button', function ($row) {
-                return '<button class="btn btn-primary btn-sm edit-btn text-light" data-id="' . $row->npp . '" >Edit Kuota</button>';
+                return '<button id="btn-edit" class="btn btn-primary btn-sm edit-btn text-light" data-id="' . $row->npp . '" >Edit</button>';
             })
             ->rawColumns(['button'])
             ->make(true);
@@ -60,7 +62,11 @@ class DosenPembimbingController extends Controller
     {
         $arrPembimbing = RefPembimbing::pluck('nip')->toArray();
         $data = PegawaiBiodatum::select('npp', 'nama_lengkap')->whereNotIn('npp', $arrPembimbing)->orderBy('nama_lengkap','asc')->get();
-        return response()->json($data);
+        $bidangMinat = MasterBidangMinat::orderBy('nama', 'asc')->get();
+        return response()->json([
+            'dosen' => $data,
+            'bidangMinat' => $bidangMinat
+        ]);
     }
 
     public function accDosen(Request $request)
@@ -95,16 +101,19 @@ class DosenPembimbingController extends Controller
         // Ambil data dosen pembimbing berdasarkan nip
         $dosen = RefPembimbing::where('nip', $npp)
             ->join('pegawai_biodata AS pegawai','pegawai.npp', '=', 'ref_pembimbing_skripsi.nip')
-            ->select('pegawai.nama_lengkap','pegawai.npp','kuota')
+            ->leftJoin('master_bidang_minat as bidang_minat', 'bidang_minat.id', '=', 'ref_pembimbing_skripsi.id_bidang_minat')
+            ->select('pegawai.nama_lengkap','pegawai.npp','kuota', 'bidang_minat.nama AS bidangMinat', 'bidang_minat.id AS idBidangMinat')
             ->firstOrFail();
-    if($dosen){
-        return response()->json([
-            'npp' => $dosen->npp . ' - ' . $dosen->nama_lengkap,
-            'kuota' => $dosen->kuota
-        ]);
-    }else{
-        return response()->json(['message' => 'Dosen Pembimbing Tidak Ditemukan'], 404);
-    }
+        if($dosen){
+            return response()->json([
+                'npp' => $dosen->npp . ' - ' . $dosen->nama_lengkap,
+                'kuota' => $dosen->kuota,
+                'bidangMinat' => $dosen->bidangMinat,
+                'idBidangMinat' => $dosen->idBidangMinat,
+            ]);
+        }else{
+            return response()->json(['message' => 'Dosen Pembimbing Tidak Ditemukan'], 404);
+        }
     }
     
 
@@ -113,7 +122,8 @@ class DosenPembimbingController extends Controller
         // Validasi input
         $request->validate([
             'nip' => 'required|string|max:255',
-            'kuota' => 'required|integer|min:0'
+            'kuota' => 'required|integer|min:0',
+            'idBidangMinat' => 'nullable|integer|exists:master_bidang_minat,id'
         ]);
         $nipFull = $request->input('nip'); // Contoh: "020399004 - Achmad Wildan, ST.,M.T"
         $nip = explode(' - ', $nipFull)[0]; // Ambil bagian sebelum " - "
@@ -122,7 +132,10 @@ class DosenPembimbingController extends Controller
             // Menggunakan updateOrCreate untuk menyederhanakan logika penyimpanan
             RefPembimbing::updateOrCreate(
                 ['nip' => $nip],
-                ['kuota' => $request->input('kuota')]
+                [
+                    'kuota' => $request->input('kuota'),
+                    'id_bidang_minat' => $request->input('idBidangMinat')
+                 ]
             );
 
             return response()->json(['success' => 'Kuota berhasil diperbarui']);

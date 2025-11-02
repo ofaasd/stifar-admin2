@@ -69,7 +69,36 @@ class AdminPengajuanSkripsiController extends Controller
                 }
                 $judulArr[] = $icon . ' ' . $row->judul . '<br>' . $icon . ' ' . $row->judulEnglish;
             }
+            
             $first = $rows->first();
+            $actions = '';
+            if ($first->status == 0) {
+                $actions = '<a href="' . route('show-skripsi', ['idMasterSkripsi' => $first->idMasterEnkripsi]) . '" class="btn btn-primary btn-sm text-light">Detail</a>';
+            } else {
+                foreach ($rows as $r) {
+                    switch ($r->status) {
+                        case 1:
+                            $badge = '<span class="badge bg-success">ACC</span>';
+                            break;
+                        case 2:
+                            $badge = '<span class="badge bg-warning text-dark">Revisi</span>';
+                            break;
+                        case 3:
+                            $badge = '<span class="badge bg-danger">Ditolak</span>';
+                            break;
+                        case 4:
+                            $badge = '<span class="badge bg-info text-dark">Pergantian Judul</span>';
+                            break;
+                        default:
+                            $badge = '<span class="badge bg-secondary">Tidak Diketahui</span>';
+                            break;
+                    }
+                    $actions .= '<div class="mb-1">'
+                        . $badge . ' '
+                        . '</div>';
+                }
+            }
+
             $data[] = [
                 'nim' => $nim,
                 'nama' => $first->nama,
@@ -77,13 +106,7 @@ class AdminPengajuanSkripsiController extends Controller
                 'pembimbing1' => $first->pembimbing1,
                 'pembimbing2' => $first->pembimbing2,
                 'status' => $first->status,
-                'actions' => ($first->status == 0)
-                    ? '<a href="' . route('show-skripsi', ['idMasterSkripsi' => $first->idMasterEnkripsi]) . '" class="btn btn-primary btn-sm text-light">Detail</a>'
-                    : ($first->status == 1 ? '<span class="badge bg-success">ACC</span>'
-                        : ($first->status == 2 ? '<span class="badge bg-warning text-dark">Revisi</span>'
-                        : ($first->status == 3 ? '<span class="badge bg-danger">Ditolak</span>'
-                        : ($first->status == 4 ? '<span class="badge bg-info text-dark">Pergantian Judul</span>'
-                        : '<span class="badge bg-secondary">Tidak Diketahui</span>')))),
+                'actions' => $actions,
             ];
         }
 
@@ -121,10 +144,22 @@ class AdminPengajuanSkripsiController extends Controller
     {
         try {
             $idMaster = $request->input('idMaster');
-            $judulSkripsi = PengajuanJudulSkripsi::where('id_master', $idMaster)->get();
-            $masterSkripsi = MasterSkripsi::find($idMaster);
+            $masterSkripsi = MasterSkripsi::where('id', $idMaster)->first();
+            $nim = $masterSkripsi->nim;
+            $masterSkripsi2Id = MasterSkripsi::where('nim', $nim)
+                ->where('status', 0)
+                ->where('id', '!=', $idMaster)
+                ->value('id');
 
-            // Hitung jumlah status yang 1
+            // Gabungkan idMaster dengan masterSkripsi2Id
+            $idMasterArray = [$idMaster];
+            if ($masterSkripsi2Id) {
+                $idMasterArray[] = $masterSkripsi2Id;
+            }
+
+            $judulSkripsi = PengajuanJudulSkripsi::whereIn('id_master', $idMasterArray)->get();
+
+            // Hitung jumlah status yang 1 (ACC)
             $countStatus1 = 0;
             $judulAccId = null;
             foreach ($judulSkripsi as $judul) {
@@ -135,6 +170,7 @@ class AdminPengajuanSkripsiController extends Controller
                 }
             }
 
+            // Validasi: hanya boleh 1 judul yang ACC
             if ($countStatus1 > 1) {
                 return response()->json([
                     'success' => false,
@@ -142,46 +178,78 @@ class AdminPengajuanSkripsiController extends Controller
                 ], 400);
             }
 
+            // Jika ada 1 judul ACC, pastikan judul lain ditolak (status 3)
             if ($countStatus1 == 1) {
-                // Pastikan judul lain harus status 3 (Ditolak)
                 foreach ($judulSkripsi as $judul) {
                     $status = $request->input('statusJudul' . $judul->id);
                     if ($judul->id != $judulAccId && $status != 3) {
                         return response()->json([
                             'success' => false,
-                            'message' => 'Hanya 1 judul yang bisa disimpan'
+                            'message' => 'Jika 1 judul diterima (ACC), judul lainnya harus ditolak.'
                         ], 400);
                     }
                 }
             }
 
+            // Update setiap judul skripsi
             foreach ($judulSkripsi as $judul) {
                 $catatan = $request->input('catatanJudul' . $judul->id);
                 $status = $request->input('statusJudul' . $judul->id);
 
-                if ($status == 1) {
-                    $masterSkripsi->update([
-                        'status' => 2
-                    ]);
-                }
-
-                // Update catatan dan status judul skripsi
+                // Update catatan dan status
                 $judul->catatan = $catatan;
                 $judul->status = $status;
                 $judul->save();
-            }
 
-            // Update pembimbing jika dipilih
-            $pembimbing1 = $request->input('pembimbing1');
-            $pembimbing2 = $request->input('pembimbing2');
-            if ($pembimbing1 || $pembimbing2) {
-                if ($pembimbing1) {
-                    $masterSkripsi->pembimbing_1 = $pembimbing1;
+                // Jika judul ini yang ACC (status 1), update master skripsi
+                if ($status == 1) {
+                    $pembimbing1 = $request->input('pembimbing1_' . $judul->id);
+                    $pembimbing2 = $request->input('pembimbing2_' . $judul->id);
+
+                    $kuotaPembimbing1 = RefPembimbing::where('nip', $pembimbing1)->value('kuota') ?? 0;
+                    $kuotaPembimbing2 = RefPembimbing::where('nip', $pembimbing2)->value('kuota') ?? 0;
+
+                    $pembimbing1Count = MasterSkripsi::where(function($q) use ($pembimbing1) {
+                        $q->where('pembimbing_1', $pembimbing1)
+                          ->orWhere('pembimbing_2', $pembimbing1);
+                    })->where('status', '!=', 1)->count();
+
+                    $pembimbing2Count = MasterSkripsi::where(function($q) use ($pembimbing2) {
+                        $q->where('pembimbing_1', $pembimbing2)
+                          ->orWhere('pembimbing_2', $pembimbing2);
+                    })->where('status', '!=', 1)->count();
+
+                    if ($kuotaPembimbing1 <= $pembimbing1Count) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Kuota pembimbing 1 telah penuh.'
+                        ], 400);
+                    }
+
+                    if ($kuotaPembimbing2 <= $pembimbing2Count) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Kuota pembimbing 2 telah penuh.'
+                        ], 400);
+                    }
+                    
+                    MasterSkripsi::where('id', $judul->id_master)->update([
+                        'status' => 2, // Status master berubah menjadi ACC
+                        'pembimbing_1' => $pembimbing1,
+                        'pembimbing_2' => $pembimbing2,
+                    ]);
+                    PengajuanJudulSkripsi::where('id', $judul->id)->update([
+                        'status' => 1,
+                    ]);
+                }else{
+                    MasterSkripsi::where('id', $judul->id_master)->update([
+                        'status' => 3, // Status master berubah menjadi Ditolak selain yang acc
+                    ]);
+                    
+                    PengajuanJudulSkripsi::where('id', $judul->id)->update([
+                        'status' => 3,
+                    ]);
                 }
-                if ($pembimbing2) {
-                    $masterSkripsi->pembimbing_2 = $pembimbing2;
-                }
-                $masterSkripsi->save();
             }
 
             return response()->json([
@@ -205,11 +273,35 @@ class AdminPengajuanSkripsiController extends Controller
         $id = str_replace("stifar", "", $idDekrip);
 
         $masterSkripsi = MasterSkripsi::where('id', $id)->first();
-        $judulSkripsi = PengajuanJudulSkripsi::where('id_master', $id)->get();
         $mahasiswa = Mahasiswa::where('nim', $masterSkripsi->nim)->first();
+        $nim = $masterSkripsi->nim;
+        $masterSkripsi2 = MasterSkripsi::where('nim', $nim)
+            ->where('status', 0)
+            ->where('id', '!=', $id)
+            ->first();
+
+        // Ambil id_master dari kedua masterSkripsi
+        $idMasterArray = [$masterSkripsi->id];
+        if ($masterSkripsi2) {
+            $idMasterArray[] = $masterSkripsi2->id;
+        }
+
+        $judulSkripsi = PengajuanJudulSkripsi::select([
+            'pengajuan_judul_skripsi.*',
+            'master_skripsi.pembimbing_1',
+            'master_skripsi.pembimbing_2',
+            'master_bidang_minat.nama AS nama_bidang_minat',
+        ])
+        ->leftJoin('master_skripsi', 'pengajuan_judul_skripsi.id_master', '=', 'master_skripsi.id')
+        ->leftJoin('master_bidang_minat', 'pengajuan_judul_skripsi.id_bidang_minat', '=', 'master_bidang_minat.id')
+        ->whereIn('pengajuan_judul_skripsi.id_master', $idMasterArray)
+        ->get();
+
+        $arrBidangMinat = $judulSkripsi->pluck('id_bidang_minat')->unique()->values()->all();
+
         $dosen = RefPembimbing::leftJoin('pegawai_biodata as pegawai', 'pegawai.npp', '=', 'ref_pembimbing_skripsi.nip')
-        ->select('pegawai.nama_lengkap AS nama', 'pegawai.npp', 'ref_pembimbing_skripsi.kuota', 'ref_pembimbing_skripsi.id_progdi')
-        ->where('pegawai.id_progdi', $mahasiswa->id_program_studi)
+        ->select('pegawai.nama_lengkap AS nama', 'pegawai.npp', 'ref_pembimbing_skripsi.kuota', 'ref_pembimbing_skripsi.id_progdi', 'ref_pembimbing_skripsi.id_bidang_minat')
+        ->whereIn('ref_pembimbing_skripsi.id_bidang_minat', $arrBidangMinat)
         ->get();
 
         $data = [

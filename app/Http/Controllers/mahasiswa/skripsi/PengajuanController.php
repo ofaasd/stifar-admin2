@@ -1,12 +1,16 @@
 <?php
 namespace App\Http\Controllers\mahasiswa\skripsi;
 
+use App\helpers;
+
 use App\Models\Mahasiswa;
+use App\Models\AktorSidang;
+use App\Models\MasterRuang;
 use Illuminate\Http\Request;
 use App\Models\MasterSkripsi;
 use App\Models\SidangSkripsi;
-use App\Http\Controllers\Controller;
 use App\Models\PegawaiBiodatum;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\PengajuanJudulSkripsi;
 use Illuminate\Support\Facades\Crypt;
@@ -14,11 +18,19 @@ use App\Models\PengajuanBerkasSkripsi;
 
 class PengajuanController extends Controller
 {
+    protected $helpers;
+
+    public function __construct()
+    {
+        $this->helpers = new helpers();
+    }
+
     public function index()
     {
         $user  = Auth::user();
         $email = $user->email;
         $nim   = explode('@', $email)[0];
+        $mhs = Mahasiswa::where('nim', $nim)->first();
         $dataDosbim = MasterSkripsi::where('nim', $nim)
         ->leftJoin('pegawai_biodata AS pegawai1', 'pegawai1.npp', '=', 'master_skripsi.pembimbing_1')
         ->leftJoin('pegawai_biodata AS pegawai2', 'pegawai2.npp', '=', 'master_skripsi.pembimbing_2')
@@ -32,9 +44,12 @@ class PengajuanController extends Controller
             'pegawai2.email1 as email_pembimbing2'
         )
         ->latest()
-        ->first();
+        ->get();
+
+        $arrIdMaster = $dataDosbim->pluck('id')->toArray();
+        
         if($dataDosbim){
-            $dataJudul = PengajuanJudulSkripsi::where('id_master', $dataDosbim->id)
+            $dataJudul = PengajuanJudulSkripsi::whereIn('id_master', $arrIdMaster)
                 ->orderByRaw('status = 1 DESC') // status 1 dulu
                 ->latest() // created_at desc
                 ->take(2)
@@ -45,78 +60,92 @@ class PengajuanController extends Controller
                 });
         }
     
-        if ($dataDosbim) {
-            // ambil semua berkas terkait
-            $berkas = PengajuanBerkasSkripsi::where('id_master', $dataDosbim->id)->get();
+        // if ($dataDosbim) {
+        //     // ambil semua berkas terkait
+        //     $berkas = PengajuanBerkasSkripsi::where('id_master', $dataDosbim->id)->get();
         
-            // masukkan ke array dalam 1 row
-            $dataDosbim->berkas = $berkas->mapWithKeys(function ($b) {
-                return [
-                    strtolower($b->kategori) => $b->nama_file
-                ];
-            });
-        }
+        //     // masukkan ke array dalam 1 row
+        //     $dataDosbim->berkas = $berkas->mapWithKeys(function ($b) {
+        //         return [
+        //             strtolower($b->kategori) => $b->nama_file
+        //         ];
+        //     });
+        // }
 
         $sidang = SidangSkripsi::select([
-                'sidang.id',
-                'sidang.tanggal',
-                'sidang.waktu_mulai AS waktuMulai',
-                'sidang.waktu_selesai AS waktuSelesai',
-                'sidang.penguji',
-                'sidang.jenis',
-                'master_ruang.nama_ruang AS ruangan',
-                'sidang.status',
-                'sidang.acc_pembimbing1 AS accPembimbing1',
-                'sidang.acc_pembimbing2 AS accPembimbing2',
-                'gelombang_sidang_skripsi.nama AS namaGelombang',
-                'gelombang_sidang_skripsi.periode',
-                'pembimbing1.nama_lengkap AS namaPembimbing1',
-                'pembimbing2.nama_lengkap AS namaPembimbing2',
-                'pengajuan_judul_skripsi.judul',
-                'master_skripsi.pembimbing_1',
-                'master_skripsi.pembimbing_2',
-                'mahasiswa.nama',
-                'mahasiswa.nim'
-            ])
-            ->leftJoin('master_skripsi', 'sidang.skripsi_id', '=', 'master_skripsi.id')
-            ->leftJoin('gelombang_sidang_skripsi', 'sidang.gelombang_id', '=', 'gelombang_sidang_skripsi.id')
-            ->leftJoin('master_ruang', 'sidang.ruang_id', '=', 'master_ruang.id')
-            ->leftJoin('pegawai_biodata AS pembimbing1', 'master_skripsi.pembimbing_1', '=', 'pembimbing1.npp')
-            ->leftJoin('pegawai_biodata AS pembimbing2', 'master_skripsi.pembimbing_2', '=', 'pembimbing2.npp')
-            ->leftJoin('pengajuan_judul_skripsi', 'master_skripsi.id', '=', 'pengajuan_judul_skripsi.id_master')
-            ->leftJoin('mahasiswa', 'master_skripsi.nim', '=', 'mahasiswa.nim')
-            ->where('pengajuan_judul_skripsi.status', 1)
-            ->where('master_skripsi.nim', $nim)
-            ->orderBy('sidang.created_at', 'desc')
-            ->get()
-            ->map(function($item) {
-                // Format tanggal menjadi "12 September 2025"
-                if (!empty($item->tanggal)) {
-                    $item->tanggal = \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d/m/Y');
-                }
+            'sidang.id',
+            'sidang.tanggal',
+            'sidang.waktu_mulai AS waktuMulai',
+            'sidang.waktu_selesai AS waktuSelesai',
+            'sidang.penguji',
+            'sidang.jenis',
+            'master_ruang.nama_ruang AS ruangan',
+            'sidang.status',
+            'gelombang_sidang_skripsi.nama AS namaGelombang',
+            'gelombang_sidang_skripsi.periode',
+            'pembimbing1.nama_lengkap AS namaPembimbing1',
+            'pembimbing2.nama_lengkap AS namaPembimbing2',
+            'pengajuan_judul_skripsi.judul',
+            'master_skripsi.pembimbing_1',
+            'master_skripsi.pembimbing_2',
+            'mahasiswa.nama',
+            'mahasiswa.nim'
+        ])
+        ->leftJoin('master_skripsi', 'sidang.skripsi_id', '=', 'master_skripsi.id')
+        ->leftJoin('gelombang_sidang_skripsi', 'sidang.gelombang_id', '=', 'gelombang_sidang_skripsi.id')
+        ->leftJoin('master_ruang', 'sidang.ruang_id', '=', 'master_ruang.id')
+        ->leftJoin('pegawai_biodata AS pembimbing1', 'master_skripsi.pembimbing_1', '=', 'pembimbing1.npp')
+        ->leftJoin('pegawai_biodata AS pembimbing2', 'master_skripsi.pembimbing_2', '=', 'pembimbing2.npp')
+        ->leftJoin('pengajuan_judul_skripsi', 'master_skripsi.id', '=', 'pengajuan_judul_skripsi.id_master')
+        ->leftJoin('mahasiswa', 'master_skripsi.nim', '=', 'mahasiswa.nim')
+        ->where('pengajuan_judul_skripsi.status', 1)
+        ->where('master_skripsi.nim', $nim)
+        ->orderBy('sidang.created_at', 'desc')
+        ->get()
+        ->map(function($item) {
+            $item->idEnkripsi = Crypt::encryptString($item->id . "stifar");
 
-                // Ambil nama penguji dari npp yang dipisahkan koma
-                if (!empty($item->penguji)) {
-                    $npps = explode(',', $item->penguji);
-                    $names = PegawaiBiodatum::whereIn('npp', $npps)->pluck('nama_lengkap')->toArray();
-                    // Simpan nama penguji ke properti baru agar bisa dipakai di view
-                    foreach ($names as $i => $nama) {
-                        $item->{'namaPenguji' . ($i + 1)} = $nama;
-                    }
-                    $item->jmlPenguji = count($names);
-                } else {
-                    $item->namaPenguji1 = '-';
-                    $item->namaPenguji2 = '-';
-                }
-                    
+            // Format tanggal menjadi "12 September 2025"
+            if (!empty($item->tanggal)) {
+                $item->tanggal = \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d/m/Y');
+            }
+            
+            $aktorSidang = AktorSidang::where('as', 'penguji')->get();
 
-                return $item;
-            });
+            // Ambil nama penguji dari npp yang dipisahkan koma
+        if (!empty($item->penguji)) {
+                $npps = array_filter(array_map('trim', explode(',', $item->penguji)));
+                $namesByNpp = PegawaiBiodatum::whereIn('npp', $npps)->pluck('nama_lengkap', 'npp')->toArray();
+
+                foreach ($npps as $i => $npp) {
+                    $nama = $namesByNpp[$npp] ?? '-';
+                    $isAcc = $aktorSidang->contains(function($v) use ($item, $npp) {
+                        return isset($v->sidang_id, $v->npp) && $v->sidang_id == $item->id && $v->npp == $npp;
+                    });
+                    // tambahkan icon checklist jika ada
+                    $item->{'namaPenguji' . ($i + 1)} = $isAcc ? $nama . ' ✅ ' : $nama;
+                }
+                $item->jmlPenguji = count($npps);
+            } else {
+                $item->namaPenguji1 = '-';
+                $item->namaPenguji2 = '-';
+            }
+                
+
+            return $item;
+        });
+
+        $isAllowSidang = MasterSkripsi::where('nim', $nim)->where('status', 2)->where('acc_1', 1)->where('acc_2', 1)->exists();
+
+        $ruang = MasterRuang::all();
 
         return view('mahasiswa.skripsi.pengajuan.index', [
             'dataDosbim' => $dataDosbim,
             'dataJudul' => $dataJudul ?? [],
             'sidang' => $sidang,
+            'mhs' => $mhs,
+            'isAllowSidang' => $isAllowSidang,
+            'ruang' => $ruang,
         ]);
     }
 
@@ -169,7 +198,14 @@ class PengajuanController extends Controller
         $idDekrip = Crypt::decryptString($idEnkripsi);
         $id = str_replace("stifar", "", $idDekrip);
         
-        $judul = PengajuanJudulSkripsi::find($id);
+        $judul = PengajuanJudulSkripsi::select(
+            'pengajuan_judul_skripsi.*',
+            'master_bidang_minat.nama AS bidangMinat'
+        )
+        ->where('pengajuan_judul_skripsi.id',$id)
+        ->leftJoin('master_bidang_minat', 'pengajuan_judul_skripsi.id_bidang_minat', '=', 'master_bidang_minat.id')
+        ->first();
+        
         $masterSkripsi = MasterSkripsi::where('master_skripsi.id', $judul->id_master)
         ->leftJoin('pegawai_biodata AS pegawai1', 'pegawai1.npp', '=', 'master_skripsi.pembimbing_1')
         ->leftJoin('pegawai_biodata AS pegawai2', 'pegawai2.npp', '=', 'master_skripsi.pembimbing_2')
@@ -216,6 +252,30 @@ class PengajuanController extends Controller
             ]);
 
             return response()->json(['status' => true, 'message' => 'Update successful']);
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function inputWaktuSidang(Request $request, $idEnkripsi)
+    {
+        try {
+            $id = $this->helpers->decryptId($idEnkripsi);
+            $sidang = SidangSkripsi::find($id);
+
+            if (!$sidang) {
+                return response()->json(['status' => false, 'message' => 'Sidang not found'], 404);
+            }
+
+            $sidang->update([
+                'tanggal' => $request->tanggal,
+                'waktu_mulai' => $request->waktuMulai,
+                'waktu_selesai' => $request->waktuSelesai,
+                'ruang_id' => $request->idRuang,
+            ]);
+
+            // return response()->json(['status' => true, 'message' => 'Waktu sidang updated successfully']);
+            return redirect()->back()->with('success', 'Waktu sidang updated successfully');
         } catch (\Exception $e) {
             return response()->json(['status' => false, 'message' => $e->getMessage()], 500);
         }

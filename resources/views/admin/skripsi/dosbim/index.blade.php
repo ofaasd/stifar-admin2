@@ -35,6 +35,7 @@
                                     <th>#</th>
                                     <th>Npp</th>
                                     <th>Nama Dosen</th>
+                                    <th>Bidang Minat</th>
                                     <th>Kuota</th>
                                     <th>Action</th>
                                 </tr>
@@ -59,11 +60,16 @@
                             </div>
 
                             <div class="col-md-12 position-relative">
+                                <label class="form-label" for="bidang-minat">Bidang Minat</label>
+                                <input class="form-control" name="bidangMinat" id="bidang-minat" placeholder="Please select">
+                            </div>
+
+                            <div class="col-md-12 position-relative">
                                 <label class="form-label" for="validationTooltip03">Kuota</label>
                                 <input class="form-control" name="kuota" id="kuotaDosen" type="number" required="">
                             </div>
                             <div class="col-12">
-                                <button class="btn btn-primary" type="submit">Submit form</button>
+                                <button class="btn btn-primary" id="btn-submit" type="submit">Submit</button>
                             </div>
                         </form>
                     </div>
@@ -80,9 +86,13 @@
     <script src="{{ asset('assets/js/select2/tagify.js') }}"></script>
     <script src="{{ asset('assets/js/select2/select3-custom.js') }}"></script>
     <script>
+
         $(document).ready(function() {
             var nip = $("#npp");
             var tagify;
+
+            var bidangMinat = $("#bidang-minat");
+            var tagifyBidangMinat;
 
             // Fungsi untuk menginisialisasi Tagify
             function initializeTagify() {
@@ -94,30 +104,66 @@
                     maxItems: 50,
                     }
                 });
+
+                tagifyBidangMinat = new Tagify(bidangMinat[0], {
+                    enforceWhitelist: true,
+                    mode: "select",
+                    whitelist: [],
+                    dropdown: {
+                    maxItems: 50,
+                    }
+                });
             }
 
+            function initializeBidangMinatTagify() {
+                tagifyBidangMinat = new Tagify(bidangMinat[0], {
+                    enforceWhitelist: true,
+                    mode: "select",
+                    whitelist: [],
+                    dropdown: {
+                    maxItems: 50,
+                    }
+                });
+            }
 
             // Ambil data dan update whitelist Tagify
             $(document).on('click', '#tambahDosbim', function() {
+                if (tagify) {
+                    tagify.destroy();
+                }
+
+                if (tagifyBidangMinat) {
+                    tagifyBidangMinat.destroy();
+                }
+
                 nip.val('');
                 nip.prop('disabled', false);
                 initializeTagify();
                 $('#kuotaDosen').val('');
-
                 $.ajax({
                     url: '{{ route('admin.pembimbing.getNppDosen') }}',
                     method: 'GET',
                     success: function(response) {
+                        let dosen = response.dosen;
+                        let bidangMinat = response.bidangMinat;
                         // Mengambil data dari respons dan menyiapkan whitelist untuk Tagify
-                        var whitelistData = response.map(function(response) {
+                        var whitelistData = dosen.map(function(data) {
                             return {
-                                value: response.npp + ' - ' + response.nama_lengkap
+                                value: data.npp + ' - ' + data.nama_lengkap
                             };
                         });
 
                         // Update whitelist Tagify setelah data tersedia
                         tagify.whitelist = whitelistData;
                         tagify.addTags(whitelistData.map(item => item.value));
+
+                        tagifyBidangMinat.whitelist = bidangMinat.map(function(data) {
+                            return {
+                                value: data.nama,
+                                id: data.id
+                            };
+                        });
+                        tagifyBidangMinat.addTags(bidangMinat.map(item => item.id));
                     },
                     error: function(xhr) {
                         alert('Terjadi kesalahan saat mengambil data');
@@ -131,6 +177,16 @@
                 if (tagify) {
                     tagify.destroy();
                 }
+
+                var $btn = $(this);
+                var originalHtml = $btn.html();
+                $btn.prop('disabled', true);
+                $btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
+                setTimeout(function() {
+                    $btn.prop('disabled', false);
+                    $btn.html(originalHtml);
+                }, 10000);
+
                 $.ajax({
                     url: '{{ route('admin.pembimbing.editDosen', '') }}/' + npp,
                     method: 'GET',
@@ -138,7 +194,30 @@
                         $('#npp').val(response.npp);
                         $('#npp').prop('disabled', true);
                         $('#kuotaDosen').val(response.kuota);
-                        $('#FormModal').modal('show');
+                        initializeBidangMinatTagify();
+                        
+                        $.ajax({
+                            url: '{{ route('admin.pembimbing.getNppDosen') }}',
+                            method: 'GET',
+                            success: function(bidangMinatResponse) {
+                                let bidangMinatList = bidangMinatResponse.bidangMinat;
+                                
+                                tagifyBidangMinat.whitelist = bidangMinatList.map(function(data) {
+                                    return {
+                                        value: data.nama,
+                                        id: data.id
+                                    };
+                                });
+                                
+                                // Set nilai yang sesuai dengan response.bidangMinat
+                                let selectedBidangMinat = bidangMinatList.find(item => item.id == response.bidangMinat);
+                                if (selectedBidangMinat) {
+                                    tagifyBidangMinat.addTags([selectedBidangMinat.nama]);
+                                }
+                                
+                                $('#FormModal').modal('show');
+                            }
+                        });
                     },
                     error: function(xhr) {
                         console.log('Error:', xhr.responseJSON?.message || 'An error occurred');
@@ -166,6 +245,10 @@
                         name: 'nama'
                     },
                     {
+                        data: 'bidangMinat',
+                        name: 'bidangMinat'
+                    },
+                    {
                         data: 'kuota',
                         name: 'kuota'
                     },
@@ -186,6 +269,7 @@
 
                 // Ambil nilai dari Tagify jika ada, atau gunakan nilai input langsung jika tidak ada
                 var nip = '';
+                var bidangMinat = 0;
 
                 if (tagify && tagify.value.length > 0) {
                     var nipTagify = tagify.value; // Ambil nilai dari Tagify
@@ -194,10 +278,23 @@
                     nip = $('#npp').val(); // Fallback ke nilai input biasa jika Tagify kosong
                 }
 
+                if (tagifyBidangMinat && tagifyBidangMinat.value.length > 0) {
+                    var bidangMinatTagify = tagifyBidangMinat.value;
+                    var selectedBidangMinat = tagifyBidangMinat.whitelist.find(item => item.value === bidangMinatTagify[0].value);
+                    bidangMinat = selectedBidangMinat ? selectedBidangMinat.id : 0;
+                } else {
+                    bidangMinat = $('#bidang-minat').val(); // Fallback ke nilai input biasa jika Tagify kosong
+                }
+
+                console.log('====================================');
+                console.log(bidangMinat);
+                console.log('====================================');
+
                 // Siapkan data untuk dikirim
                 var formData = {
                     nip: nip, // Masukkan NIP yang sudah dibersihkan
                     kuota: $('#kuotaDosen').val(),
+                    idBidangMinat: bidangMinat,
                     _token: '{{ csrf_token() }}'
                 };
 
@@ -207,12 +304,12 @@
                     data: formData, // Serializes form data
                     success: function(response) {
                         if (response.success) {
-                            swal("Success", "Berhasil Update Kuota Dosen", "success");
+                            swal("Success", "Berhasil Update Dosen Pembimbing", "success");
                             $('#FormModal').modal('hide'); // Tutup modal
                             $('#pembimbing-table').DataTable().ajax
                         .reload(); // Reload DataTables
                         } else {
-                            swal("Error", "Gagal Update Kuota Dosen", "error");
+                            swal("Error", "Gagal Update Dosen Pembimbing", "error");
                         }
                     },
                     error: function(xhr) {

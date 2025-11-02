@@ -59,6 +59,7 @@ class DosenController extends Controller
         $idmhs = $mhs->id;
         $tahun_ajaran = TahunAjaran::where('status','Aktif')->first();
         $ta = $tahun_ajaran->id;
+        $isSkripsi = false;
 
         $title = 'Pengajuan KRS';
         $kd_prodi_mhs = Prodi::where('id',$mhs->id_program_studi)->first()->kode_prodi;
@@ -72,6 +73,11 @@ class DosenController extends Controller
                     ->where('krs.id_tahun', $ta)
                     ->where('id_mhs',$idmhs)
                     ->get();
+
+        $isSkripsi = $mhs->is_skripsi == 0 && $krs->contains(function($item) {
+            return stripos($item->nama_matkul, 'skripsi') !== false;
+        }) ? true : false;
+
         $no = 1;
         $program_studi = Prodi::all();
         $prodi = [];
@@ -79,7 +85,7 @@ class DosenController extends Controller
             $prodi[$row->id] = $row->nama_prodi;
         }
         // $permission = MasterKeuanganMh::where('id_mahasiswa',$idmhs)->first();
-        return view('dosen._detail_krs_mhs', compact('mhs','title', 'mk', 'krs', 'no', 'ta', 'idmhs', 'prodi'));
+        return view('dosen._detail_krs_mhs', compact('mhs','title', 'mk', 'krs', 'no', 'ta', 'idmhs', 'prodi', 'isSkripsi'));
     }
     public function valiKrsSatuan(Request $request){
         if ($request->tipe == 1) {
@@ -91,6 +97,11 @@ class DosenController extends Controller
     }
     public function valiKrs(Request $request){
         Krs::where(['id_mhs' => $request->idmhs, 'id_tahun' => $request->ta])->update([ 'is_publish' => 1]);
+        return json_encode(['status' => 200 ]);
+    }
+
+    public function izinkanSkripsi(Request $request){
+        Mahasiswa::where('id', $request->idmhs)->update([ 'is_skripsi' => 1]);
         return json_encode(['status' => 200 ]);
     }
 }

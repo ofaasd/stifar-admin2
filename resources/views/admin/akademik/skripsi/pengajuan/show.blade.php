@@ -31,10 +31,10 @@
                     <strong>NIM:</strong> {{ $mahasiswa->nim }}
                 </div>
                 <div class="card-body">
+
                     <form id="form-judul" action="{{ route('store-pengajuan-skripsi') }}" method="POST">
                         @csrf
                         <div class="row">
-                            @csrf
                             <input type="hidden" name="idMaster" value="{{ $masterSkripsi->id }}">
                             @foreach ($judulSkripsi as $index => $row)
                                 <div class="col-md-6">
@@ -70,10 +70,12 @@
                                             <i class="bi {{ $icon }} {{ $iconClass }} ms-2" title="{{ $iconTitle }}"></i>
                                         </div>
                                         <div class="card-body">
-                                            <p><strong>Abstrak:</strong> {{ $row->abstrak }}</p>
                                             <div class="mb-2">
-                                                <label for="catatan-judul-{{ $row->id }}" class="form-label"><strong>Catatan:</strong></label>
-                                                <textarea id="catatan-judul-{{ $row->id }}" name="catatanJudul{{ $row->id }}" class="form-control" rows="2" placeholder="Tulis catatan Judul {{ $index+1 }} disini" {{ $row->status == 3 ? 'disabled' : '' }}></textarea>
+                                                <strong>Bidang Minat:</strong> {{ $row->nama_bidang_minat ?? '-' }}
+                                            </div>
+                                            <div class="mb-2">
+                                                <label for="catatan-judul-{{ $row->id }}" class="form-label"><strong>Catatan:</strong> <span class="text-danger">*</span></label>
+                                                <textarea id="catatan-judul-{{ $row->id }}" name="catatanJudul{{ $row->id }}" class="form-control" rows="2" placeholder="Tulis catatan Judul {{ $index+1 }} disini" {{ $row->status == 3 ? 'disabled' : 'required aria-required="true"' }}></textarea>
                                             </div>
                                             <input type="hidden" name="statusJudul{{ $row->id }}" id="status-judul-{{ $row->id }}" value="{{ $row->status }}">
                                             <div class="d-flex gap-2 mb-2">
@@ -82,43 +84,51 @@
                                                 <button type="button" class="btn btn-warning btn-sm btn-revisi" data-index="{{ $row->id }}">Revisi</button>
                                             </div>
                                             <div id="status-label-{{ $row->id }}"></div>
+
+                                            <!-- Pembimbing per Judul -->
+                                            <div class="mt-3 pembimbing-section-{{ $row->id }}" style="display:none;">
+                                                <h6>Pilih Pembimbing:</h6>
+                                                <div class="mb-2">
+                                                    <label class="form-label">Pembimbing 1</label>
+                                                    <select class="form-select pembimbing1" name="pembimbing1_{{ $row->id }}" data-judul="{{ $row->id }}">
+                                                        <option selected disabled>Pilih Pembimbing 1</option>
+                                                        @forelse ($dosen->where('id_bidang_minat', $row->id_bidang_minat) as $d)
+                                                            <option value="{{ $d->npp }}" {{ $row->pembimbing_1 == $d->npp ? 'selected' : '' }}>
+                                                                {{ $d->nama }} (NPP: {{ $d->npp }}) &mdash; Kuota: {{ $d->kuota }}
+                                                            </option>
+                                                        @empty
+                                                            <option disabled>Tidak ada pembimbing tersedia</option>
+                                                        @endforelse
+                                                    </select>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label class="form-label">Pembimbing 2</label>
+                                                    <select class="form-select pembimbing2" name="pembimbing2_{{ $row->id }}" data-judul="{{ $row->id }}">
+                                                        <option selected disabled>Pilih Pembimbing 2</option>
+                                                        @forelse ($dosen->where('id_bidang_minat', $row->id_bidang_minat) as $d)
+                                                            <option value="{{ $d->npp }}" {{ $row->pembimbing_2 == $d->npp ? 'selected' : '' }}>
+                                                                {{ $d->nama }} (NPP: {{ $d->npp }}) &mdash; Kuota: {{ $d->kuota }}
+                                                            </option>
+                                                        @empty
+                                                            <option disabled>Tidak ada pembimbing tersedia</option>
+                                                        @endforelse
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             @endforeach
                         </div>
-                        <!-- Pilih Pembimbing -->
-                        <div class="mt-4" id="pembimbing-section" style="display:none;">
-                            <h6>Pilih Pembimbing:</h6>
-                            <div class="row">
-                                <div class="col-md-6 mb-2">
-                                    <select class="form-select" id="pembimbing1" name="pembimbing1">
-                                        <option selected disabled>Pilih Pembimbing 1</option>
-                                        @forelse ($dosen as $row)
-                                            <option value="{{ $row->npp }}" {{ $row->npp == $masterSkripsi->pembimbing_1 ? 'selected' : '' }}>
-                                                {{ $row->nama }} (NPP: {{ $row->npp }}) &mdash; Kuota: {{ $row->kuota }}
-                                            </option>
-                                        @empty
-                                            <option disabled>Tidak ada pembimbing tersedia</option>
-                                        @endforelse
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mb-2">
-                                    <select class="form-select" id="pembimbing2" name="pembimbing2">
-                                        <option selected disabled>Pilih Pembimbing 2</option>
-                                        @forelse ($dosen as $row)
-                                            <option value="{{ $row->npp }}" {{ $row->npp == $masterSkripsi->pembimbing_2 ? 'selected' : '' }}>
-                                                {{ $row->nama }} (NPP: {{ $row->npp }}) &mdash; Kuota: {{ $row->kuota }}
-                                            </option>
-                                        @empty
-                                            <option disabled>Tidak ada pembimbing tersedia</option>
-                                        @endforelse
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
                         <button type="submit" class="btn btn-primary mt-2 btn-submit">Simpan</button>
                     </form>
+
+                    <!-- Abstrak Umum -->
+                    @if ($judulSkripsi->isNotEmpty())
+                        <div class="mt-3">
+                            <p><strong>Abstrak:</strong> {{ $judulSkripsi->first()->abstrak }}</p>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -135,7 +145,7 @@
         // 1. Tombol disabled sebelum catatan diisi
         $('[id^=catatan-judul-]').each(function() {
             var index = $(this).attr('id').split('-')[2];
-            var btns = $('.btn-setujui[data-index="'+index+'"], .btn-tolak[data-index="'+index+'"], .btn-revisi[data-index="'+index+'"], .btn-pergantian[data-index="'+index+'"]');
+            var btns = $('.btn-setujui[data-index="'+index+'"], .btn-tolak[data-index="'+index+'"], .btn-revisi[data-index="'+index+'"]');
             btns.prop('disabled', true);
 
             $(this).on('input', function() {
@@ -147,42 +157,42 @@
             });
         });
 
-        // 2. Pilihan pembimbing 2 otomatis menghilangkan dosen yang dipilih di pembimbing 1
-        var $select1 = $('#pembimbing1');
-        var $select2 = $('#pembimbing2');
-
-        $select1.on('change', function() {
+        // 2. Pilihan pembimbing 2 otomatis menghilangkan dosen yang dipilih di pembimbing 1 (per judul)
+        $('.pembimbing1').on('change', function() {
+            var judulId = $(this).data('judul');
             var selectedNpp = $(this).val();
+            var $select2 = $('.pembimbing2[data-judul="'+judulId+'"]');
+            
             $select2.find('option').show();
             if (selectedNpp) {
-            $select2.find('option[value="'+selectedNpp+'"]').hide();
-            if ($select2.val() === selectedNpp) {
-                $select2.val('');
-            }
+                $select2.find('option[value="'+selectedNpp+'"]').hide();
+                if ($select2.val() === selectedNpp) {
+                    $select2.val('');
+                }
             }
         });
 
-        $select2.on('change', function() {
+        $('.pembimbing2').on('change', function() {
+            var judulId = $(this).data('judul');
             var selectedNpp = $(this).val();
+            var $select1 = $('.pembimbing1[data-judul="'+judulId+'"]');
+            
             $select1.find('option').show();
             if (selectedNpp) {
-            $select1.find('option[value="'+selectedNpp+'"]').hide();
-            if ($select1.val() === selectedNpp) {
-                $select1.val('');
-            }
+                $select1.find('option[value="'+selectedNpp+'"]').hide();
+                if ($select1.val() === selectedNpp) {
+                    $select1.val('');
+                }
             }
         });
 
-        // 3. Ubah value input hidden status sesuai tombol yang diklik dan tampilkan status
-        function updatePembimbingSection() {
-            var accExist = false;
-            $('[id^=status-judul-]').each(function() {
-                if ($(this).val() == '1') accExist = true;
-            });
-            if (accExist) {
-                $('#pembimbing-section').show();
+        // 3. Update pembimbing section per judul
+        function updatePembimbingSection(index) {
+            var status = $('#status-judul-' + index).val();
+            if (status == '1') {
+                $('.pembimbing-section-' + index).show();
             } else {
-                $('#pembimbing-section').hide();
+                $('.pembimbing-section-' + index).hide();
             }
         }
 
@@ -198,45 +208,56 @@
         $('#form-judul').on('submit', function(e) {
             e.preventDefault();
             var form = $(this);
-            var formData = form.serialize();
 
-            var $btn = $('.btn-submit');
-            var originalText = $btn.html();
-            $btn.prop('disabled', true);
-            $btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Please Wait...');
+            // Tampilkan konfirmasi sebelum submit
+            swal({
+                title: "Konfirmasi",
+                text: "Yakin ingin menyimpan pengajuan ini?",
+                icon: "warning",
+                buttons: ["Batal", "Ya, Simpan"],
+                dangerMode: true,
+            }).then(function(willSave) {
+                if (!willSave) return;
 
-            $.ajax({
-                url: form.attr('action'),
-                method: form.attr('method'),
-                data: formData,
-                dataType: 'json',
-                beforeSend: function() {
-                    form.find('button[type=submit]').prop('disabled', true).text('Menyimpan...');
-                },
-                success: function(response) {
-                    $btn.prop('disabled', false);
-                    $btn.html(originalText);
-                    swal({
-                        title: "Berhasil!",
-                        text: response.message || "Data berhasil disimpan.",
-                        icon: "success",
-                        timer: 2000,
-                        buttons: false
-                    });
-                    window.location.href = "{{ route('pengajuan-skripsi') }}";
-                },
-                error: function(xhr) {
-                    swal({
-                        title: "Gagal!",
-                        text: xhr.responseJSON?.message || "Terjadi kesalahan.",
-                        icon: "error",
-                        timer: 2000,
-                        buttons: false
-                    });
-                },
-                complete: function() {
-                    form.find('button[type=submit]').prop('disabled', false).text('Simpan');
-                }
+                var formData = form.serialize();
+
+                var $btn = $('.btn-submit');
+                var originalText = $btn.html();
+                $btn.prop('disabled', true);
+                $btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Please Wait...');
+
+                $.ajax({
+                    url: form.attr('action'),
+                    method: form.attr('method'),
+                    data: formData,
+                    dataType: 'json',
+                    success: function(response) {
+                        $btn.prop('disabled', false);
+                        $btn.html(originalText);
+                        swal({
+                            title: "Berhasil!",
+                            text: response.message || "Data berhasil disimpan.",
+                            icon: "success",
+                            timer: 2000,
+                            buttons: false
+                        });
+                        window.location.href = "{{ route('pengajuan-skripsi') }}";
+                    },
+                    error: function(xhr) {
+                        console.log('====================================');
+                        console.log(xhr);
+                        console.log('====================================');
+                        $btn.prop('disabled', false);
+                        $btn.html(originalText);
+                        swal({
+                            title: "Gagal!",
+                            text: xhr.responseJSON?.message || "Terjadi kesalahan.",
+                            icon: "error",
+                            timer: 2000,
+                            buttons: false
+                        });
+                    }
+                });
             });
         });
 
@@ -244,23 +265,26 @@
             var index = $(this).data('index');
             $('#status-judul-' + index).val(1);
             setStatusLabel(index, 1);
-            updatePembimbingSection();
+            updatePembimbingSection(index);
         });
         $('.btn-tolak').on('click', function() {
             var index = $(this).data('index');
             $('#status-judul-' + index).val(3);
             setStatusLabel(index, 3);
-            updatePembimbingSection();
+            updatePembimbingSection(index);
         });
         $('.btn-revisi').on('click', function() {
             var index = $(this).data('index');
             $('#status-judul-' + index).val(2);
             setStatusLabel(index, 2);
-            updatePembimbingSection();
+            updatePembimbingSection(index);
         });
 
         // Inisialisasi awal
-        updatePembimbingSection();
+        $('[id^=status-judul-]').each(function() {
+            var index = $(this).attr('id').split('-')[2];
+            updatePembimbingSection(index);
+        });
     });
     </script>
 

@@ -12,6 +12,6 @@ class SkripsiHelper
         $user  = Auth::user();
         $email = $user->email;
         $nim   = explode('@', $email)[0];
-        return MasterSkripsi::where('nim', $nim)->value('id');
+        return MasterSkripsi::where('nim', $nim)->where('status', 2)->value('id');
     }
 }

@@ -10,7 +10,7 @@ class MasterSkripsi extends Model
     use HasFactory;
 
     protected $table = 'master_skripsi';
-    protected $fillable = ['id','nim','pembimbing_1','pembimbing_2','status'];
+    protected $guarded = ['id'];
 
     public function sidang()
     {

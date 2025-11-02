@@ -69,6 +69,17 @@
                             <div class="mt-4">
                                 <h5>KRS diajukan : </h5>
                                 <a href="#" onclick="validasiSemua({{ $idmhs }}, {{ $ta }})" class="btn btn-success btn-sm" style="float:right;"><i class="fa fa-check"></i> Validasi Semua</a>
+                                @if ($isSkripsi)
+                                    <button type="button" onclick="izinkanSkripsi({{ $idmhs }})" class="btn btn-warning btn-sm" style="float:right; margin-right: 10px;">
+                                        <i class="fa fa-graduation-cap"></i> Izinkan Skripsi
+                                    </button>
+                                @elseif($mhs->is_skripsi == 1)
+                                    
+                                @else
+                                    <button type="button" class="btn btn-secondary btn-sm" style="float:right; margin-right: 10px;" disabled title="Tombol akan aktif jika mahasiswa/i mengambil mata kuliah skripsi">
+                                        <i class="fa fa-graduation-cap"></i> Izinkan Skripsi
+                                    </button>
+                                @endif
                                 <table class="table">
                                     <thead>
                                         <td>No.</td>
@@ -155,6 +166,34 @@
                     $("#showJadwal").html(res)
                 }
             })
+        }
+        function izinkanSkripsi(idmhs){
+            swal({
+                title: "Konfirmasi",
+                text: "Izinkan mahasiswa ini untuk skripsi?",
+                icon: "warning",
+                buttons: ["Batal", "Ya, izinkan"],
+                dangerMode: true,
+            }).then((confirm) => {
+                if (confirm) {
+                    $.ajax({
+                        url: baseUrl+'/dosen/izinkan-skripsi',
+                        type: 'post',
+                        data: {
+                            idmhs: idmhs,
+                        },
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        success: function(res){
+                            swal("Berhasil", "Mahasiswa diizinkan untuk skripsi.", "success").then(function(){
+                                location.reload();
+                            });
+                        },
+                        error: function(){
+                            swal("Gagal", "Terjadi kesalahan. Silakan coba lagi.", "error");
+                        }
+                    })
+                }
+            });
         }
         function validasiSatuan(id, tipe){
             $.ajax({
