@@ -605,4 +605,24 @@ class TagihanController extends Controller
     public function riwayat_pembayaran(String $nim){
         
     }
+    public function cetak_tagihan(String $id){
+        $tagihan = Mahasiswa::where('id_program_studi',$id)
+                    ->orderBy($order, $dir)
+                    ->get();
+                
+        // $data = [
+        //     'logo' => public_path('/assets/images/logo/logo-icon.png'),
+        //     'jadwal' => $jadwal,
+        //     'no' => $no,
+        //     'dosen' => $id_dsn,
+        //     'tahun_ajar' => $tahun_ajar,
+        //     'smt' => $smt,
+        //     'semester' => $semester,
+        //     'nama_kepala' => $nama_kepala,
+        //     'jumlah_input_krs' => $jumlah_input_krs,
+        // ];
+        // $pdf = PDF::loadView('admin/akademik/jadwal/cetak_krm', $data)
+        //             ->setPaper('a4', 'potrait');
+        // return $pdf->stream('KRM-' . $id_dsn->npp . '-' . date('YmdHis'). '.pdf');
+    }
 }
