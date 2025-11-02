@@ -45,13 +45,33 @@
             </td>
             <td width="90%" style="padding-left: 30px;">
                 <center>
-                    <b>SEKOLAH TINGGI ILMU FARMASI YAYASAN PHARMASI SEMARANG</b>
+                    <b>SEKOLAH TINGGI ILMU FARMASI SEMARANG</b>
+                    <br>Alamat : Jl. Letnan Jendral Sarwo Edie Wibowo Km. 1, Plamongan Sari, Kec. Pedurungan, Kota Semarang
+                    <br>Email : admin@sistifar.id
+                    <br>Website : https://stifar.ac.id
                 </center>
             </td>
         </tr>
     </table>
-    <table width="100%" align="left"  cellpadding="5">
-        <tr><th>Kartu Rencana Mengajar (KRM)</th></tr>
+    <hr>
+    <center><b>Kartu Rencana Mengajar (KRM)</b></center>
+    <br>
+    <table width="100%">
+        <tr>
+            <td>Nama</td>
+            <td>:</td>
+            <td>{{ $dosen->nama_lengkap }}</td>
+        </tr>
+        <tr>
+            <td>NIY</td>
+            <td>:</td>
+            <td>{{ $dosen->npp }}</td>
+        </tr>
+         <tr>
+            <td>Semester</td>
+            <td>:</td>
+            <td>{{ $semester[$smt] }} - {{ $tahun_ajar }}</td>
+        </tr>
     </table>
     <br />
     <table class="customers"  id="myTable" cellpadding="5">
@@ -84,6 +104,27 @@
             @endforeach
         </tbody>
     </table>
-    
+    <table width="100%">
+        <tr>
+            <td></td>
+            <td></td>
+            <td><center>Semarang, {{ date("d M Y") }}</center></td>
+        </tr>
+        <tr>
+            <td width="33%"><center></center></td>
+            <td width="33%"><center></center></td>
+            <td width="33%"><center>Kepala Program Studi</center></td>
+        </tr>
+        <tr>
+            <td><center><br><br><br></center></td>
+            <td><center></center></td>
+            <td><center></center></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td><center>{{$nama_kepala}}</center></td>
+        </tr>
+    </table>
 </body>
 </html>

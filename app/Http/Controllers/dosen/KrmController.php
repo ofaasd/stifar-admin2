@@ -758,14 +758,32 @@ class KrmController extends Controller
         foreach($jadwal as $row){
             $jumlah_input_krs[$row->id] = Krs::where('id_jadwal',$row->id)->count();
         }
+        $tahun_ajaran = TahunAjaran::where('status','Aktif')->first();
+        $ta = $tahun_ajaran->id;
+        $thn_awal = explode('-', $tahun_ajaran->tgl_awal);
+        $thn_akhir = explode('-', $tahun_ajaran->tgl_akhir);
+        $tahun_ajar = $thn_awal[0].'-'.$thn_akhir[0];
+        $semester = ['', 'Ganjil', 'Ganjil', 'Antara'];
+        $smt = substr($tahun_ajaran->kode_ta, 4);
+        $jabatan = JabatanStruktural::where('prodi_id',$id_dsn->id_progdi)->where('jabatan','like','%'.'Kepala'.'%')->first();
+        
+        $nama_kepala = "...";
+        if(!empty($jabatan)){
+            $nama_kepala =  PegawaiBiodatum::where('id', $jabatan->id_pegawai)->first()->nama_lengkap;
+        }
         $data = [
             'logo' => public_path('/assets/images/logo/logo-icon.png'),
             'jadwal' => $jadwal,
             'no' => $no,
+            'dosen' => $id_dsn,
+            'tahun_ajar' => $tahun_ajar,
+            'smt' => $smt,
+            'semester' => $semester,
+            'nama_kepala' => $nama_kepala,
             'jumlah_input_krs' => $jumlah_input_krs,
         ];
         $pdf = PDF::loadView('admin/akademik/jadwal/cetak_krm', $data)
                     ->setPaper('a4', 'potrait');
-        return $pdf->stream('KRM-' . $id_dsn . '-' . date('YmdHis'). '.pdf');
+        return $pdf->stream('KRM-' . $id_dsn->npp . '-' . date('YmdHis'). '.pdf');
     }
 }
