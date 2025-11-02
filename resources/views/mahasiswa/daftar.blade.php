@@ -70,30 +70,24 @@
                                     </div>
                                     <div class="modal-body">
                                         <div class="mb-3">
-                                            <label for="pilihan" class="form-label">Pilihan</label>
-                                            <select id="pilihan" name="pilihan" class="form-select" required>
-                                                <option value="prodi">Prodi</option>
-                                                <option value="angkatan">Angkatan</option>
-                                            </select>
-                                        </div>
-
-                                        <div id="form-prodi" class="mb-3">
                                             <label for="spesifik-prodi" class="form-label">Pilih Prodi</label>
-                                            <select id="spesifik-prodi" name="spesifik" class="form-select">
+                                            <select id="spesifik-prodi" name="prodi" class="form-select" required>
+                                                <option value="" disabled selected>Pilih Prodi...</option>
                                                 @foreach($prodi as $prod)
                                                     <option value="{{ $prod->id }}">{{ $nama[$prod->id] ?? ($prod->nama ?? $prod->kode) }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
 
-                                        <div id="form-angkatan" class="mb-3" style="display:none;">
+                                        <div id="form-angkatan" class="mb-3">
                                             <label for="spesifik-angkatan" class="form-label">Tahun Angkatan</label>
-                                            <select id="spesifik-angkatan" name="spesifik" class="form-select">
+                                            <select id="spesifik-angkatan" name="angkatan" class="form-select" required>
+                                                <option value="" disabled selected>Pilih Angkatan...</option>
                                                 @foreach($angkatan as $ang)
                                                     <option value="{{ $ang }}">{{ $ang }}</option>
                                                 @endforeach
                                             </select>
-                                            <div class="form-text">Pilih tahun angkatan jika memilih "Angkatan".</div>
+                                            <div class="form-text">Pilih tahun angkatan dan prodi untuk mencetak KTM.</div>
                                         </div>
 
                                         <div class="alert alert-warning mt-3" role="alert">
@@ -140,27 +134,6 @@
                 });
                 refresh_mahasiswa(0);
             }
-
-
-            $('#pilihan').on('change', function(){
-                const val = $(this).val();
-                if (val === 'prodi') {
-                    $('#form-prodi').show();
-                    $('#form-angkatan').hide();
-                    $('#spesifik-angkatan').prop('selectedIndex', 0).prop('disabled', true).prop('required', false);
-                    $('#spesifik-prodi').prop('disabled', false).prop('required', true);
-                } else {
-                    $('#form-prodi').hide();
-                    $('#form-angkatan').show();
-                    $('#spesifik-prodi').prop('selectedIndex', 0).prop('disabled', true).prop('required', false);
-                    $('#spesifik-angkatan').prop('disabled', false).prop('required', true);
-                }
-            });
-
-            // Inisialisasi default saat modal dibuka
-            $('#modalCetakKTM').on('show.bs.modal', function () {
-                $('#pilihan').trigger('change');
-            });
         });
 
         function refresh_mahasiswa(id){
