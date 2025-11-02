@@ -94,8 +94,6 @@ class TagihanController extends Controller
 
             if (empty($request->input('search.value'))) {
                 $tagihan = Mahasiswa::where('id_program_studi',$id)
-                    ->offset($start)
-                    ->limit($limit)
                     ->orderBy($order, $dir)
                     ->get();
             } else {
@@ -107,8 +105,6 @@ class TagihanController extends Controller
                                     ->orWhere('nim', 'LIKE', "%{$search}%")
                                     ->orWhere('nama', 'LIKE', "%{$search}%");
                             })
-                            ->offset($start)
-                            ->limit($limit)
                             ->orderBy($order, $dir)
                             ->get();
 
@@ -118,8 +114,6 @@ class TagihanController extends Controller
                                     ->orWhere('nim', 'LIKE', "%{$search}%")
                                     ->orWhere('nama', 'LIKE', "%{$search}%");
                             })
-                            ->offset($start)
-                            ->limit($limit)
                             ->orderBy($order, $dir)
                             ->count();
             }
@@ -128,30 +122,29 @@ class TagihanController extends Controller
             $list_keu = [];
             $list_tagihan = [];
             $tahun = TahunAjaran::where('status','Aktif')->first();
-
-                foreach($tagihan as $tag){
-                    if($id = 1||$id == 2){
-                        $real_tagihan = TagihanKeuangan::where('nim',$tag->nim)->where('id_tahun',$tahun->id)->where('periode',date('m'))->where('tahun',date('Y'));
-                    }else{
-                        $real_tagihan = TagihanKeuangan::where('nim',$tag->nim)->where('id_tahun',$tahun->id);
+            
+            foreach($tagihan as $tag){
+                
+                if($id == 1|| $id == 2 || $id == 5){
+                    $real_tagihan = TagihanKeuangan::where('nim',$tag->nim)->where('id_tahun',$tahun->id)->where('periode',date('m'))->where('tahun',date('Y'));
+                }elseif($id == 3 || $id == 4){
+                    $real_tagihan = TagihanKeuangan::where('nim',$tag->nim)->where('id_tahun',$tahun->id);
+                }
+                if($real_tagihan->count() > 0){
+                    $list_tagihan[$tag->id] = $real_tagihan->first();
+                    $id_tagihan = $list_tagihan[$tag->id]->id;
+                    foreach($jenis as $jen){
+                        $list_keu[$tag->id][$jen->id] = DetailTagihanKeuangan::where('id_tagihan',$id_tagihan)->where('id_jenis',$jen->id)->first()->jumlah ?? 0;
                     }
-                        
-                    if($real_tagihan->count() > 0){
-                        $list_tagihan[$tag->id] = $real_tagihan->first();
-                        $id_tagihan = $list_tagihan[$tag->id]->id;
-                        foreach($jenis as $jen){
-                            $list_keu[$tag->id][$jen->id] = DetailTagihanKeuangan::where('id_tagihan',$id_tagihan)->where('id_jenis',$jen->id)->first()->jumlah ?? 0;
-                        }
-                    }else{
-                        foreach($jenis as $jen){
-                            $list_keu[$tag->id][$jen->id] = 0;
-                        }
+                }else{
+                    foreach($jenis as $jen){
+                        $list_keu[$tag->id][$jen->id] = 0;
                     }
                 }
-            
+            }
+            // dd($list_tagihan);
             foreach ($tagihan as $index => $row) {
                 if(!empty($list_tagihan[$row->id]->total)){
-                    
                     //ambil detail tagihan
                     $tagihan_total = Tagihan::where('nim',$row->nim)->first();
                     $total_bayar = $tagihan_total->pembayaran ?? 0;
@@ -198,11 +191,12 @@ class TagihanController extends Controller
                             }
                         }else{
                             $detail_tagihan = DetailTagihanKeuanganTotal::where('id_tagihan',$tagihan_total->id)->get();
+                            $i = 0;
                             foreach($detail_tagihan as $dt){
-                                if($dt->id_jenis == 2){
+                                if($dt->id_jenis == 2 && $i == 0){
                                     $new_total_tagihan += $dt->jumlah;
                                     $total_bayar = $total_bayar - $dt->jumlah;
-                                    
+                                    $i++;
                                 }elseif($dt->id_jenis == 8){
                                     $new_total_tagihan += $dt->jumlah;
                                     $total_bayar = $total_bayar - $dt->jumlah;
@@ -270,6 +264,7 @@ class TagihanController extends Controller
             foreach($mhs as $row){
                 $tagihan = TagihanKeuangan::where('nim',$row->nim)->where('id_tahun',$ta->id)->where('periode',$periode)->where('tahun',date('Y'));
                 if($tagihan->count() > 0){
+                    
                     $tagihan = $tagihan->first();
                     $new_tagihan = TagihanKeuangan::find($tagihan->id);
                     $detail_delete = DetailTagihanKeuangan::where('id_tagihan',$tagihan->id)->delete();
@@ -290,21 +285,26 @@ class TagihanController extends Controller
                         );
                         $total += $upp_bagi;
                     }elseif($prodi->jenjang == 'S1' || $prodi->jenjang == 'S2'){
+                    
                         $tagihan_total = Tagihan::where('nim',$row->nim)->first();
                         //ambil data upp
-
+                        
                         //cek semester dulu 
 
                         //jika semester 1 tambhkan biaya registrasi
                         $tahun_masuk = (string)$row->angkatan . "1";
                         if($ta->kode_ta == (int)$tahun_masuk){
                             if(!empty($tagihan_total)){
+                                
                                 $detail_tagihan = DetailTagihanKeuanganTotal::where('id_tagihan',$tagihan_total->id)->orderBy('id','desc')->get();
+                                
                                 $biaya = 0;
                                 $i = 0;
+                                
                                 $destroy = DetailTagihanKeuangan::where('id_tagihan',$tagihan->id)->delete();
                                 foreach($detail_tagihan as $dt){
                                     if($dt->id_jenis == 8){
+                                        
                                         //kurangi upp
                                         $biaya += $dt->jumlah;
                                         $new_detail = DetailTagihanKeuangan::create(
@@ -314,7 +314,7 @@ class TagihanController extends Controller
                                                 'jumlah' => $dt->jumlah,
                                             ]
                                         );
-                                    }elseif($dt->jenis == 2 && $i == 0){
+                                    }elseif($dt->id_jenis == 2 && $i == 0){
                                         $biaya += $dt->jumlah;
                                         $new_detail = DetailTagihanKeuangan::create(
                                             [
@@ -328,6 +328,7 @@ class TagihanController extends Controller
                                 }
                                 
                                 $total += $biaya;
+                                
                             }
                         }else{
                             if(!empty($tagihan_total)){
@@ -336,7 +337,7 @@ class TagihanController extends Controller
                                 $i = 0;
                                 $destroy = DetailTagihanKeuangan::where('id_tagihan',$tagihan->id)->delete();
                                 foreach($detail_tagihan as $dt){
-                                    if($dt->jenis == 2 && $i == 0){
+                                    if($dt->id_jenis == 2 && $i == 0){
                                         $biaya += $dt->jumlah;
                                         $new_detail = DetailTagihanKeuangan::create(
                                             [
@@ -422,7 +423,7 @@ class TagihanController extends Controller
                                                 'jumlah' => $dt->jumlah,
                                             ]
                                         );
-                                    }elseif($dt->jenis == 2 && $i == 0){
+                                    }elseif($dt->id_jenis == 2 && $i == 0){
                                         $biaya += $dt->jumlah;
                                         $new_detail = DetailTagihanKeuangan::create(
                                             [
@@ -442,7 +443,7 @@ class TagihanController extends Controller
                                 $biaya = 0;
                                 $i = 0;
                                 foreach($detail_tagihan as $dt){
-                                    if($dt->jenis == 2 && $i == 0){
+                                    if($dt->id_jenis == 2 && $i == 0){
                                         $biaya += $dt->jumlah;
                                         $new_detail = DetailTagihanKeuangan::create(
                                             [
