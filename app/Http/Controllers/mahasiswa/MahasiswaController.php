@@ -590,47 +590,44 @@ class MahasiswaController extends Controller
 
     public function cetakKtm(Request $request)
     {
-        $pilihan = $request->pilihan;
-        $spesifik = $request->spesifik;
+        $prodi = $request->prodi;
+        $angkatan = $request->angkatan;
 
-        $query = Mahasiswa::select(
-                'mahasiswa.nama',
-                'mahasiswa.nim',
-                'mahasiswa.agama',
-                'mahasiswa.tempat_lahir AS tempatLahir',
-                'mahasiswa.tgl_lahir AS tanggalLahir',
-                'mahasiswa.alamat',
-                'mahasiswa.angkatan',
-                'mahasiswa.foto_mhs AS fotoMahasiswa',
-                'mahasiswa.created_at AS createdAt',
-                'program_studi.nama_prodi AS programStudi'
+        // Ambil hanya kolom yang diperlukan, gunakan kondisi with when() untuk Efisiensi query
+        $mahasiswa = Mahasiswa::query()
+            ->select(
+                'nim',
+                'nama',
+                'agama',
+                'tempat_lahir as tempatLahir',
+                'tgl_lahir as tanggalLahir',
+                'alamat',
+                'angkatan',
+                'foto_mhs as fotoMahasiswa',
+                'created_at as createdAt',
+                'id_program_studi'
             )
-            ->leftJoin('mahasiswa_berkas_pendukung', 'mahasiswa_berkas_pendukung.nim', '=', 'mahasiswa.nim')
-            ->leftJoin('program_studi', 'program_studi.id', '=', 'mahasiswa.id_program_studi');
+            ->when($prodi, fn($q) => $q->where('id_program_studi', $prodi))
+            ->when($angkatan, fn($q) => $q->where('angkatan', $angkatan))
+            ->orderBy('nama')
+            ->get();
 
-        if($pilihan == 'prodi'){
-            $mahasiswa = $query->where('mahasiswa.id_program_studi', $spesifik)->get();
-        }elseif($pilihan == 'angkatan'){
-            $mahasiswa = $query->where('mahasiswa.angkatan', $spesifik)->get();
-        }else{
-            return redirect()->back()->with('error', 'Pilihan tidak valid.');
-        }
-
-        // Pastikan $mahasiswa adalah collection dan tidak kosong
         if ($mahasiswa->isEmpty()) {
             return redirect()->back()->with('error', 'Data mahasiswa tidak ditemukan untuk kriteria yang dipilih.');
         }
-        
-        // Kirim data ke view
+
+        // Ambil nama prodi hanya jika diperlukan (lebih cepat daripada join jika data sedikit)
+        $fileNameSpesifik = '-';
+        if (!empty($prodi)) {
+            $fileNameSpesifik = Prodi::where('id', $prodi)->value('nama_prodi') ?? '-';
+        }
+
         $pdf = Pdf::loadView('mahasiswa.ktm.index', [
             'data' => $mahasiswa,
         ]);
 
-        $fileNameSpesifik = ($pilihan == 'prodi') ? Prodi::where('id', $spesifik)->first()->nama_prodi : $spesifik;
+        $fileName = 'KTM-' . ucwords($angkatan ?: '-') . '-' . $fileNameSpesifik . '.pdf';
 
-        $fileName = 'KTM-'. ucwords($pilihan) . '-'. $fileNameSpesifik .'.pdf';
-
-        // Tampilkan inline di browser
         return $pdf->stream($fileName);
     }
 

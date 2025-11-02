@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <title>{{ 'Yudisium-' . $gelombang->nama  }}</title>
+    {{-- <title>{{ 'Yudisium-' . $gelombang->nama  }}</title> --}}
     <style>
         body { font-family: 'Times New Roman', serif; font-size: 16px; line-height: 1.15; }
         .contai-portrait { width: 100%; }
@@ -27,6 +27,22 @@
     </style>
 </head>
 <body>
+    <table width="100%">
+        <tr>
+            <td width="10%">
+                <img src="{{ $logo }}" alt="logo-stifar" style="width: 100px;"/>
+            </td>
+            <td width="90%" style="padding-left: 30px;">
+                <center>
+                    <b>SEKOLAH TINGGI ILMU FARMASI SEMARANG</b>
+                    <br>Alamat : Jl. Letnan Jendral Sarwo Edie Wibowo Km. 1, Plamongan Sari, Kec. Pedurungan, Kota Semarang
+                    <br>Email : admin@sistifar.id
+                    <br>Website : https://stifar.ac.id
+                </center>
+            </td>
+        </tr>
+    </table>
+    <hr>
     <div class="contai-portrait">
         <section class="section-1">
             <div class="header mb-2">

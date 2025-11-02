@@ -188,6 +188,7 @@ class CetakYudisiumController extends Controller
             'sidang.tanggal AS tanggalSidang'
             ])
         ->get();
+        
         if ($data->isEmpty()) {
             return redirect()->back()->with('error', 'No data found for this gelombang');
         }
