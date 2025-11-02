@@ -27,6 +27,22 @@
     </style>
 </head>
 <body>
+    <table width="100%">
+        <tr>
+            <td width="10%">
+                <img src="{{ $logo }}" alt="logo-stifar" style="width: 100px;"/>
+            </td>
+            <td width="90%" style="padding-left: 30px;">
+                <center>
+                    <b>SEKOLAH TINGGI ILMU FARMASI SEMARANG</b>
+                    <br>Alamat : Jl. Letnan Jendral Sarwo Edie Wibowo Km. 1, Plamongan Sari, Kec. Pedurungan, Kota Semarang
+                    <br>Email : admin@sistifar.id
+                    <br>Website : https://stifar.ac.id
+                </center>
+            </td>
+        </tr>
+    </table>
+    <hr>
     <div class="contai-portrait">
         <section class="section-1">
             <div class="header mb-2">
