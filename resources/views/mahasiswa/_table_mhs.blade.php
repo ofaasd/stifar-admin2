@@ -23,9 +23,6 @@
     <td>{{ $nama[$row_mhs['id_program_studi']] }}</td>
     <td>{{ $row_mhs['status'] == 1? 'Aktif':'Tidak Aktif' }}</td>
     <td class="d-flex gap-1">
-        <a href="{{ URL::to('/mahasiswa/ktm/' . $row_mhs['nimEnkripsi']) }}" target="_blank" class="btn btn-success btn-xs">
-          <i class="fa fa-id-card"></i>
-        </a>
         <a href="{{ URL::to('/mahasiswa/detail/' . $row_mhs['nim']) }}" class="btn btn-warning btn-xs">
           <i class="fa fa-eye"></i>
         </a>

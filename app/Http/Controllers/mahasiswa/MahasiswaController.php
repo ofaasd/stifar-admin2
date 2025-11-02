@@ -38,13 +38,14 @@ class MahasiswaController extends Controller
         $prodi = Prodi::all();
         $jumlah = [];
         $nama = [];
+        $angkatan = $mhs->whereNotNull('angkatan')->where('angkatan', '!=', '')->pluck('angkatan')->unique();
 
         foreach($prodi as $row){
             $jumlah[$row->id] = Mahasiswa::where('id_program_studi',$row->id)->count();
             $nama_prodi = explode(' ',$row->nama_prodi);
             $nama[$row->id] = $nama_prodi[0] . " " . $nama_prodi[1];
         }
-        return view('mahasiswa.daftar', compact('title', 'mhs', 'no', 'prodi','jumlah','nama'));
+        return view('mahasiswa.daftar', compact('title', 'mhs', 'no', 'prodi','jumlah','nama', 'angkatan'));
     }
 
     public function get_mhs(Request $request)
@@ -587,14 +588,12 @@ class MahasiswaController extends Controller
         // }
     }
 
-    public function cetakKtm(string $nimEnkrip)
+    public function cetakKtm(Request $request)
     {
-        // Dekripsi NIM
-        $nimDekrip = Crypt::decryptString($nimEnkrip);
-        $nim = str_replace("stifar", "", $nimDekrip);
+        $pilihan = $request->pilihan;
+        $spesifik = $request->spesifik;
 
-        // Ambil data mahasiswa
-        $mahasiswa = Mahasiswa::select(
+        $query = Mahasiswa::select(
                 'mahasiswa.nama',
                 'mahasiswa.nim',
                 'mahasiswa.agama',
@@ -604,17 +603,22 @@ class MahasiswaController extends Controller
                 'mahasiswa.angkatan',
                 'mahasiswa.foto_mhs AS fotoMahasiswa',
                 'mahasiswa.created_at AS createdAt',
-                // 'mahasiswa_berkas_pendukung.foto_sistem AS fotoSistem',
                 'program_studi.nama_prodi AS programStudi'
             )
-            ->where('mahasiswa.nim', $nim)
             ->leftJoin('mahasiswa_berkas_pendukung', 'mahasiswa_berkas_pendukung.nim', '=', 'mahasiswa.nim')
-            ->leftJoin('program_studi', 'program_studi.id', '=', 'mahasiswa.id_program_studi')
-            ->first();
+            ->leftJoin('program_studi', 'program_studi.id', '=', 'mahasiswa.id_program_studi');
 
-        if(!$mahasiswa->fotoMahasiswa)
-        {
-            return response()->json(['message' => 'Foto tidak ditemukan, silahkan update foto profil.']);
+        if($pilihan == 'prodi'){
+            $mahasiswa = $query->where('mahasiswa.id_program_studi', $spesifik)->get();
+        }elseif($pilihan == 'angkatan'){
+            $mahasiswa = $query->where('mahasiswa.angkatan', $spesifik)->get();
+        }else{
+            return redirect()->back()->with('error', 'Pilihan tidak valid.');
+        }
+
+        // Pastikan $mahasiswa adalah collection dan tidak kosong
+        if ($mahasiswa->isEmpty()) {
+            return redirect()->back()->with('error', 'Data mahasiswa tidak ditemukan untuk kriteria yang dipilih.');
         }
 
         // Kirim data ke view
@@ -623,7 +627,7 @@ class MahasiswaController extends Controller
         ]);
 
         // Tampilkan inline di browser
-        return $pdf->stream('KTM-'. $mahasiswa->nim .'.pdf');
+        return $pdf->stream('KTM-'. $pilihan . '-'. $spesifik .'.pdf');
     }
 
     public function cetakTranskripNilai(Request $request)
