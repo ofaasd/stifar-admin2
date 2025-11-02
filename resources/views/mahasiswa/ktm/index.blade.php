@@ -218,48 +218,48 @@
     <div class="card-container">
         @foreach($data as $item)
             <div class="student-wrapper" style="margin-bottom: 6px;">
-            <div class="id-card id-card-front">
-                <img src="assets/images/mahasiswa/template-ktm/depan.jpg" style="width: 8.56cm; height: 5.398cm;" />
-                <div class="photo-area">
-                @php
-                    $photoPath = $item->fotoMahasiswa ? public_path('assets/images/mahasiswa/' . $item->fotoMahasiswa) : null;
-                @endphp
+                <div class="id-card id-card-front">
+                    <img src="assets/images/mahasiswa/template-ktm/depan.jpg" style="width: 8.56cm; height: 5.398cm;" />
+                    <div class="photo-area">
+                    @php
+                        $photoPath = $item->fotoMahasiswa ? public_path('assets/images/mahasiswa/' . $item->fotoMahasiswa) : null;
+                    @endphp
 
-                @if($photoPath && file_exists($photoPath))
-                    <img src="data:image/{{ pathinfo($photoPath, PATHINFO_EXTENSION) }};base64,{{ base64_encode(file_get_contents($photoPath)) }}" />
-                @endif
+                    @if($photoPath && file_exists($photoPath))
+                        <img src="data:image/{{ pathinfo($photoPath, PATHINFO_EXTENSION) }};base64,{{ base64_encode(file_get_contents($photoPath)) }}" />
+                    @endif
+                    </div>
+                    
+                    <p class="form-field nama-field">{{ $item->nama }}</p>
+                    <p class="form-field nim-field">{{ $item->nim }}</p>
+                    <p class="form-field program-field">{{ $item->programStudi ?? '-' }}</p>
+                    <p class="form-field agama-field">{{ $agamaList[$item->agama] ?? 'Tidak diketahui' }}</p>
+                    <p class="form-field tempat-lahir-field">{{ $item->tempatLahir }}</p>
+                    <p class="form-field tanggal-lahir-field">{{ \Carbon\Carbon::parse($item->tanggalLahir)->format('d-m-Y') }}</p>
+                    <p class="form-field alamat-field">{{ $item->alamat }}</p>
+                    <p class="form-field masa-berlaku-field">{{ Carbon::parse($item->createdAt)->addYears(5)->translatedFormat('d F Y') }}</p>
                 </div>
                 
-                <p class="form-field nama-field">{{ $item->nama }}</p>
-                <p class="form-field nim-field">{{ $item->nim }}</p>
-                <p class="form-field program-field">{{ $item->programStudi ?? '-' }}</p>
-                <p class="form-field agama-field">{{ $agamaList[$item->agama] ?? 'Tidak diketahui' }}</p>
-                <p class="form-field tempat-lahir-field">{{ $item->tempatLahir }}</p>
-                <p class="form-field tanggal-lahir-field">{{ \Carbon\Carbon::parse($item->tanggalLahir)->format('d-m-Y') }}</p>
-                <p class="form-field alamat-field">{{ $item->alamat }}</p>
-                <p class="form-field masa-berlaku-field">{{ Carbon::parse($item->createdAt)->addYears(5)->translatedFormat('d F Y') }}</p>
-            </div>
-            
-            <div class="id-card id-card-back">
-                <img src="assets/images/mahasiswa/template-ktm/belakang.jpg" style="width: 8.56cm; height: 5.398cm;" />
-                <div class="barcode-area">
-                <div class="barcode-wrapper">
-                    <div style="height: 46px; width: 156px; overflow: hidden; color:#2f2f2f">
-                    <div style="transform: scale(1.6); transform-origin: left top; color:#2f2f2f">
-                        {!! str_replace('black', '#2f2f2f', DNS1D::getBarcodeHTML($item->nim, 'C128', 1, 100)) !!}
+                <div class="id-card id-card-back">
+                    <img src="assets/images/mahasiswa/template-ktm/belakang.jpg" style="width: 8.56cm; height: 5.398cm;" />
+                    <div class="barcode-area">
+                    <div class="barcode-wrapper">
+                        <div style="height: 46px; width: 156px; overflow: hidden; color:#2f2f2f">
+                        <div style="transform: scale(1.6); transform-origin: left top; color:#2f2f2f">
+                            {!! str_replace('black', '#2f2f2f', DNS1D::getBarcodeHTML($item->nim, 'C128', 1, 100)) !!}
+                        </div>
+                        </div>
+
+                        <p class="nim-text">{{ $item->nim }}</p>
                     </div>
                     </div>
 
-                    <p class="nim-text">{{ $item->nim }}</p>
+                    <div class="location-date-area">
+                    <div>
+                        <p class="location-input">{{ \Carbon\Carbon::parse($item->createdAt)->translatedFormat('F Y') }}</p>
+                    </div>
+                    </div>
                 </div>
-                </div>
-
-                <div class="location-date-area">
-                <div>
-                    <p class="location-input">{{ \Carbon\Carbon::parse($item->createdAt)->translatedFormat('F Y') }}</p>
-                </div>
-                </div>
-            </div>
             </div>
 
             @if(!$loop->last && $loop->iteration % 2 == 0)

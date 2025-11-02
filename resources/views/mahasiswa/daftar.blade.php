@@ -147,11 +147,13 @@
                 if (val === 'prodi') {
                     $('#form-prodi').show();
                     $('#form-angkatan').hide();
-                    $('#spesifik-angkatan').prop('selectedIndex',0);
+                    $('#spesifik-angkatan').prop('selectedIndex', 0).prop('disabled', true).prop('required', false);
+                    $('#spesifik-prodi').prop('disabled', false).prop('required', true);
                 } else {
                     $('#form-prodi').hide();
                     $('#form-angkatan').show();
-                    $('#spesifik-prodi').prop('selectedIndex',0);
+                    $('#spesifik-prodi').prop('selectedIndex', 0).prop('disabled', true).prop('required', false);
+                    $('#spesifik-angkatan').prop('disabled', false).prop('required', true);
                 }
             });
 

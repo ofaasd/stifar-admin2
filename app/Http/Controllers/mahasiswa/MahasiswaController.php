@@ -620,14 +620,18 @@ class MahasiswaController extends Controller
         if ($mahasiswa->isEmpty()) {
             return redirect()->back()->with('error', 'Data mahasiswa tidak ditemukan untuk kriteria yang dipilih.');
         }
-
+        
         // Kirim data ke view
         $pdf = Pdf::loadView('mahasiswa.ktm.index', [
             'data' => $mahasiswa,
         ]);
 
+        $fileNameSpesifik = ($pilihan == 'prodi') ? Prodi::where('id', $spesifik)->first()->nama_prodi : $spesifik;
+
+        $fileName = 'KTM-'. ucwords($pilihan) . '-'. $fileNameSpesifik .'.pdf';
+
         // Tampilkan inline di browser
-        return $pdf->stream('KTM-'. $pilihan . '-'. $spesifik .'.pdf');
+        return $pdf->stream($fileName);
     }
 
     public function cetakTranskripNilai(Request $request)
