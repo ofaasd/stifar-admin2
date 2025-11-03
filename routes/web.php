@@ -795,6 +795,7 @@ Route::group(['middleware' => ['auth', 'role:pegawai|super-admin']], function ()
         Route::put('/penilaian-sidang/{idSidang}', [SidangController::class, 'penilaianSidang'])->name('penilaian-sidang');
 
         Route::post('/print-daftar-hadir', [SidangController::class, 'printLembarHadir'])->name('print-daftar-hadir');
+        Route::post('/print-peserta', [SidangController::class, 'printPeserta'])->name('print-peserta');
     });
 
     Route::prefix('akademik')->name('akademik.')->group(function () {

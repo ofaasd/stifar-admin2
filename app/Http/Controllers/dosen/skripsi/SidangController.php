@@ -455,6 +455,62 @@ class SidangController extends Controller
         }
     }
 
+    public function printPeserta(Request $request)
+    {
+        try {
+            $sidang = SidangSkripsi::select([
+                'sidang.id',
+                'sidang.tanggal',
+                'sidang.waktu_mulai AS waktuMulai',
+                'sidang.waktu_selesai AS waktuSelesai',
+                'sidang.penguji',
+                'master_ruang.nama_ruang AS ruangan',
+                'sidang.status',
+                'gelombang_sidang_skripsi.nama AS namaGelombang',
+                'gelombang_sidang_skripsi.periode',
+                'pembimbing1.nama_lengkap AS namaPembimbing1',
+                'pembimbing2.nama_lengkap AS namaPembimbing2',
+                'pengajuan_judul_skripsi.judul',
+                'master_skripsi.pembimbing_1',
+                'master_skripsi.pembimbing_2',
+                'mahasiswa.nama',
+                'mahasiswa.nim'
+            ])
+            ->leftJoin('master_skripsi', 'sidang.skripsi_id', '=', 'master_skripsi.id')
+            ->leftJoin('gelombang_sidang_skripsi', 'sidang.gelombang_id', '=', 'gelombang_sidang_skripsi.id')
+            ->leftJoin('master_ruang', 'sidang.ruang_id', '=', 'master_ruang.id')
+            ->leftJoin('pegawai_biodata AS pembimbing1', 'master_skripsi.pembimbing_1', '=', 'pembimbing1.npp')
+            ->leftJoin('pegawai_biodata AS pembimbing2', 'master_skripsi.pembimbing_2', '=', 'pembimbing2.npp')
+            ->leftJoin('pengajuan_judul_skripsi', 'master_skripsi.id', '=', 'pengajuan_judul_skripsi.id_master')
+            ->leftJoin('mahasiswa', 'master_skripsi.nim', '=', 'mahasiswa.nim')
+            ->where('pengajuan_judul_skripsi.status', 1)
+            ->orderBy('sidang.created_at', 'desc')
+            ->get()
+            ->map(function($item) {
+                // Format tanggal menjadi "12 September 2025"
+                if (!empty($item->tanggal)) {
+                    $carbonTanggal = \Carbon\Carbon::parse($item->tanggal);
+                    $item->tanggal = $carbonTanggal->translatedFormat('d/m/Y');
+                }
+
+                return $item;
+            });
+
+            $logo = asset('assets/images/logo/upload/logo_besar.png');
+
+            // Generate PDF dengan mPDF
+            $mpdf = new \Mpdf\Mpdf();
+            $html = view('dosen.skripsi.sidang.print', compact('sidang', 'logo'))->render();
+            $mpdf->WriteHTML($html);
+
+            $filename = 'Peserta-Sidang.pdf';
+            return response($mpdf->Output($filename, 'S'))->header('Content-Type', 'application/pdf');
+
+        }catch (\Exception $e) {
+            return response()->json(['status' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
     public function destroy(GelombangSidangSkripsi $gelombang)
     {
         $gelombang->delete();

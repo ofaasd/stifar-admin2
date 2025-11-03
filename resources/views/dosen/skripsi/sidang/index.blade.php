@@ -20,6 +20,12 @@
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="card-title mb-0">Jadwal Sidang</h5>
+            <form action="{{ route('sidang.print-peserta') }}" method="POST" target="_blank" class="m-0">
+            @csrf
+            <button type="submit" class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-printer me-1"></i> Cetak Peserta Sidang
+            </button>
+            </form>
         </div>
         <div class="card-body">
             <div class="table-responsive">
