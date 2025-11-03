@@ -35,31 +35,32 @@ class TagihanMhsController extends Controller
             $status_bayar = false;
             $new_total_tagihan = 0;
             $i = 1;
-            
-            foreach($detail_tagihan as $dt){
-                if($dt->id_jenis == 8){
-                    $total_bayar = $total_bayar - $dt->jumlah;
-                    $new_total_tagihan += $dt->jumlah;
-                    
-                }elseif($dt->id_jenis == 2 && $i == 1){
-                    $total_bayar = $total_bayar - $dt->jumlah;
-                    $new_total_tagihan += $dt->jumlah;
-                    $i++;
-                    
-                }elseif($dt->id_jenis == 2 && $i > 1){
-                    //dipecah UPP per bulan
-                    $mahasiswa = Mahasiswa::where('nim',$nim)->first();
-                    $upp_bulan = $dt->jumlah / 30;
-                    $bulan_mhs = $mahasiswa->bulan_awal;
-                    $tahun_mhs = $mahasiswa->angkatan;
-                    $tagihan_bulan = date('m');
-                    $tagihan_tahun = date('Y');
-                    $pengurangan = ($tagihan_tahun * 12 + $tagihan_bulan) - ($tahun_mhs * 12 + $bulan_mhs);
-                    $bulanan = $upp_bulan * $pengurangan;
-                    $new_total_tagihan += $bulanan;
-                    $total_bayar = $total_bayar - $bulanan;
-                    if($total_bayar >= 0){
-                        $status_bayar = true;
+            if($mhs->id_program_studi == 1 || $mhs->id_program_studi == 2){
+                foreach($detail_tagihan as $dt){
+                    if($dt->id_jenis == 8){
+                        $total_bayar = $total_bayar - $dt->jumlah;
+                        $new_total_tagihan += $dt->jumlah;
+                        
+                    }elseif($dt->id_jenis == 2 && $i == 1){
+                        $total_bayar = $total_bayar - $dt->jumlah;
+                        $new_total_tagihan += $dt->jumlah;
+                        $i++;
+                        
+                    }elseif($dt->id_jenis == 2 && $i > 1){
+                        //dipecah UPP per bulan
+                        $mahasiswa = Mahasiswa::where('nim',$nim)->first();
+                        $upp_bulan = $dt->jumlah / 30;
+                        $bulan_mhs = $mahasiswa->bulan_awal;
+                        $tahun_mhs = $mahasiswa->angkatan;
+                        $tagihan_bulan = date('m');
+                        $tagihan_tahun = date('Y');
+                        $pengurangan = ($tagihan_tahun * 12 + $tagihan_bulan) - ($tahun_mhs * 12 + $bulan_mhs);
+                        $bulanan = $upp_bulan * $pengurangan;
+                        $new_total_tagihan += $bulanan;
+                        $total_bayar = $total_bayar - $bulanan;
+                        if($total_bayar >= 0){
+                            $status_bayar = true;
+                        }
                     }
                 }
             }
