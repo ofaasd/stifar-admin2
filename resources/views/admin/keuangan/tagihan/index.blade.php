@@ -220,6 +220,7 @@
         const dt = $("#basic-1").DataTable({
             processing: true,
             serverSide: true,
+            paging: false,
             ajax: {
                 url: baseUrl.concat(page),
             },

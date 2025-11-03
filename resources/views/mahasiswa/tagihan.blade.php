@@ -61,9 +61,9 @@
                                                 <th class="text-white">Total Bayar</th>
                                                 <th class="text-white">Rp. {{number_format($tagihan->total_bayar,0,",",".")}}</th>
                                             </tr> --}}
-                                            <tr class="{{($tagihan->status==0) ? "bg-danger text-light" : "bg-success text-light"}}">
+                                            <tr class="{{(!empty($tagihan->status) && $tagihan->status==0) ? "bg-danger text-light" : "bg-success text-light"}}">
                                                 <th class="text-white">Status</th>
-                                                <th class="text-white">{{($tagihan->status==0) ? "Belum Lunas" : "Lunas"}}</th>
+                                                <th class="text-white">{{(!empty($tagihan->status) && $tagihan->status==0) ? "Belum Lunas" : "Lunas"}}</th>
                                             </tr>
                                             {{-- <tr class="{{($tagihan->status==0) ? "bg-danger text-light" : "bg-success text-light"}}">
                                                 <th class="text-white">Batas Waktu</th>
