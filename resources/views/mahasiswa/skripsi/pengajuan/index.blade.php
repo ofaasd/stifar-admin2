@@ -271,11 +271,11 @@
                                                         </form>
                                                     @endif
 
-                                                    @if ($row->jenis == 1 && ($row->accPembimbing1 == 1 || $row->accPembimbing2 == 1))
+                                                    @if ($row->status == 1 || $row->status == 2)
                                                         <form action="{{ route('mhs.skripsi.daftar.print-persetujuan-proposal') }}" method="POST" class="d-inline" target="_blank">
                                                             @csrf
                                                             <input type="hidden" name="id" value="{{ $row->id }}">
-                                                            <button type="submit" class="btn btn-sm btn-outline-success" title="Download Surat Persetujuan Seminar Proposal">
+                                                            <button type="submit" class="btn btn-sm btn-outline-success" title="Download Surat Persetujuan Seminar">
                                                                 <i class="bi bi-download"></i>
                                                             </button>
                                                         </form>

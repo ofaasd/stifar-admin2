@@ -329,14 +329,15 @@ class PengajuanController extends Controller
 
             $logo = asset('assets/images/logo/upload/logo_besar.png');
 
+            $jenisSidang = $sidang->jenis == 1 ? 'terbuka' : 'tertutup';
             // Generate PDF dengan mPDF
+            $filename = $sidang->nim . '_sidang_' . $jenisSidang . '.pdf';
+
             $mpdf = new \Mpdf\Mpdf();
-            $html = view('mahasiswa.skripsi.pengajuan.print-sidang', compact('sidang', 'logo'))->render();
+            $html = view('mahasiswa.skripsi.pengajuan.print-sidang', compact('sidang', 'logo', 'filename'))->render();
             $mpdf->WriteHTML($html);
 
             // Ubah nama file output menjadi nim_sidang_jenis.pdf
-            $jenisSidang = $sidang->jenis == 1 ? 'terbuka' : 'tertutup';
-            $filename = $sidang->nim . '_sidang_' . $jenisSidang . '.pdf';
             return response($mpdf->Output($filename, 'S'))->header('Content-Type', 'application/pdf');
 
         }catch (\Exception $e) {

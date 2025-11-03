@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lampiran Sidang</title>
+    <title>{{ $filename }}</title>
     <style>
         body {
             font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
@@ -163,11 +163,6 @@
                 <td>Ruang</td>
                 <td>:</td>
                 <td>{{ $sidang->ruangan }}</td>
-            </tr>
-            <tr>
-                <td>Gelombang</td>
-                <td>:</td>
-                <td>{{ $sidang->namaGelombang }} ({{ $sidang->periode }})</td>
             </tr>
             <tr>
                 <td>Penguji</td>
