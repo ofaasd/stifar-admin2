@@ -403,6 +403,12 @@ class AdminPengajuanSkripsiController extends Controller
         $html = view('admin.akademik.skripsi.pengajuan.print', compact('pengajuan', 'logo'))->render();
         $mpdf->WriteHTML($html);
 
-        return response($mpdf->Output('pengajuan_judul_skripsi.pdf', 'S'))->header('Content-Type', 'application/pdf');
+        // Buat nama file yang unik dan sertakan header Content-Disposition agar browser menyimpan dengan nama yang benar
+        $filename = 'Pengajuan-Judul-Skripsi-' . date('Ymd_His') . '.pdf';
+        $pdfContent = $mpdf->Output($filename, 'S');
+
+        return response($pdfContent, 200)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
     }
 }

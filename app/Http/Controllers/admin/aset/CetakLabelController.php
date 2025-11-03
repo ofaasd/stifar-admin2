@@ -55,7 +55,7 @@ class CetakLabelController extends Controller
                 return response()->json("tidak ditemukan");
             }
 
-            $logo = asset('assets/images/logo/upload/logo_besar.png');
+            $logo = public_path('/assets/images/logo/logo-icon.png');
 
             $title = str_replace(' ', '', $title);
             $pdf = Pdf::loadView('admin.aset.cetak-label.label-pdf', compact('data', 'title', 'logo'));
