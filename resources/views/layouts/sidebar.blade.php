@@ -150,12 +150,12 @@
                     </li>
                     <li>
                         <a class="submenu-title" href="#">
-                            <span>Ujian</span>
+                            <span>Nilai</span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
-                            <li><a href="{{Url::to('admin/akademik/pengaturan-ujian')}}">Pengaturan</a></li>{{--  Ada menu untuk toggle ujian sedang dibuka atau ditutup--}}
-                            <li><a href="{{Url::to('admin/akademik/ujian')}}">Kartu Ujian</a></li>{{--  Ada menu untuk toggle ujian sedang dibuka atau ditutup--}}
                             <li><a href="{{Url::to('admin/akademik/nilai')}}">Input Nilai</a></li>
+                            <li><a href="{{Url::to('admin/akademik/pengaturan-ujian')}}">Pengaturan Ujian</a></li>
+                            <li><a href="{{Url::to('admin/akademik/ujian')}}">Kartu Ujian</a></li>
                         </ul>
                     </li>
                      {{-- <li><a href="#">Semester Antara <label class="badge badge-light-danger">!</label></a></li> --}}

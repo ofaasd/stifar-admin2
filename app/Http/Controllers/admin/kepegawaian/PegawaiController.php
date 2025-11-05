@@ -76,6 +76,7 @@ class PegawaiController extends Controller
      */
     public function store(Request $request)
     {
+        
         $id = $request->id;
         if(empty($id)){
             $user = User::create(
@@ -124,6 +125,8 @@ class PegawaiController extends Controller
                     'nama_pasangan' => $request->nama_pasangan,
                     'jumlah_anak' => $request->junmlah_anak,
                     'pekerjaan_pasangan' => $request->pekerjaan_pasangan,
+                    'tempat_lahir' => $request->tempat_lahir,
+                    'tanggal_lahir' => $request->tanggal_lahir,
                     'user_id'=>$user_id,
                 ]
             );
@@ -160,6 +163,8 @@ class PegawaiController extends Controller
                     'tgl_lahir_pasangan' => $request->tgl_lahir_pasangan,
                     'jumlah_anak' => $request->jumlah_anak,
                     'pekerjaan_pasangan' => $request->pekerjaan_pasangan,
+                    'tempat_lahir' => $request->tempat_lahir,
+                    'tanggal_lahir' => $request->tanggal_lahir,
                 ]
             );
             return response()->json('updated');

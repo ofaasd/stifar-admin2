@@ -96,6 +96,7 @@
                                                         <th>Status</th> --}}
                                                         <th>T/P</th>
                                                         <th>Kuota</th>
+                                                        <th>RPS</th>
                                                         <th>Aksi</th>
                                                     </tr>
                                                 </thead>
@@ -112,6 +113,13 @@
                                                             <td>{{ $jad['status'] }}</td> --}}
                                                             <td>{{ $jad['tp'] }}</td>
                                                             <td>{{$jumlah_input_krs[$jad->id]}} / {{ ((int)$jad['kuota'] +(int)$jumlah_input_krs[$jad->id])}}</td>
+                                                            <td>
+                                                                 @if(empty($jad['rps']))
+                                                                        <div class="alert alert-danger">Empty</div>
+                                                                @else
+                                                                    <a href="{{url('/assets/file/rps/' . $jad->rps)}}" class="btn btn-primary" target="_blank">RPS</a>
+                                                                @endif
+                                                            </td>
                                                             <td>
                                                                 <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                                                                     <a href="{{url('admin/masterdata/jadwal/peserta/' . $jad['id'])}}" class="btn btn-primary btn-sm btn-icon edit-record" >

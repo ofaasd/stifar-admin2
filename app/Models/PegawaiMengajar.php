@@ -38,7 +38,7 @@ class PegawaiMengajar extends Model
 	protected $casts = [
 		'id_pegawai' => 'int',
 		'tahun' => 'int',
-		'sks' => 'int'
+		'sks' => 'float'
 	];
 
 	protected $fillable = [

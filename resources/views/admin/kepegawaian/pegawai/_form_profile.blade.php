@@ -30,7 +30,7 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="mb-2">
-                    <label class="col-sm-12 col-form-label">Jabatan Fungsional : </label>
+                    <label class="col-sm-12 col-form-label">Jabatan Akademik : </label>
                     <div class="col-sm-12">
                         <select class="form-control" name="jabatan_fungsional" id="jabatan_fungsional" required>
                             @if (!is_null($curr_jabatan_fungsional))
@@ -137,6 +137,22 @@
                     @endforeach
 
                 </select>
+            </div>
+        </div>
+        <div class="mb-2">
+            <label class="col-sm-12 col-form-label">Tempat Lahir: </label>
+            <div class="col-sm-12">
+                <div class="input-group d-flex align-items-center">
+                    <i class="icofont icofont-location-pin px-1"></i><input type="text" name="tempat_lahir" class="form-control" id="tempat_lahir"  value="{{$pegawai->tempat_lahir ?? ''}}">
+                </div>
+            </div>
+        </div>
+        <div class="mb-2">
+            <label class="col-sm-12 col-form-label">Tanggal Lahir: {{$pegawai->tanggal_lahir}}</label>
+            <div class="col-sm-12">
+                <div class="input-group">
+                    <input type="date" name="tanggal_lahir" class="form-control" id="tanggal_lahir"  value="{{date('Y-m-d',strtotime($pegawai->tanggal_lahir ?? '')) }}">
+                </div>
             </div>
         </div>
         <div class="form-group row mb-2">

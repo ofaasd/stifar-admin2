@@ -101,6 +101,21 @@
                                 </div>
                                 <hr>
                             </div>
+                            <div class="mb-2">
+                                <div class="view-toefl">
+                                    <label class="col-sm-12 col-form-label">File Toefl : </label>
+                                    <p class="fs-4" style="display: {{ isset($berkas) ? ($berkas->file_toefl ? 'block' : 'none') : 'none' }}">
+                                        <i class="fa fa-check-square-o text-success"></i> | 
+                                        <a href="#" id="edit-toefl"><i class="fa fa-pencil text-dark"></i></a>
+                                    </p>
+                                </div>
+                                <div class="col-sm-12" id="input-toefl" style="display: {{ isset($berkas) ? ($berkas->file_toefl ? 'none' : 'block') : 'block' }}">
+                                    <div class="input-group">
+                                        <input type="file" name="file_toefl" class="form-control" aria-describedby="inputGroupPrepend">
+                                    </div>
+                                </div>
+                                <hr>
+                            </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-2">
@@ -177,6 +192,10 @@
             $('#edit-akte').on('click', function(e) {
                 e.preventDefault();
                 $('#input-akte').toggle();
+            });
+            $('#edit-toefl').on('click', function(e) {
+                e.preventDefault();
+                $('#input-toefl').toggle();
             });
 
             $('#edit-ijazah-depan').on('click', function(e) {

@@ -769,7 +769,7 @@ Route::group(['middleware' => ['auth', 'role:mhs|super-admin']], function () {
 
     //Route::post('admin/admisi/peserta/daftar_kota',[PmbPesertaController::class, 'daftar_kota'] )->name('daftar_kota');
 });
-Route::group(['middleware' => ['auth', 'role:pegawai|super-admin']], function () {
+Route::group(['middleware' => ['auth', 'role:pegawai|admin-prodi|super-admin']], function () {
 
     Route::prefix('skripsi')->as('koor.skripsi.')->controller(SkripsiController::class)->group(function () {
         Route::get('/', 'index')->name('index');
@@ -955,15 +955,15 @@ Route::group(['middleware' => ['auth', 'role:pegawai|super-admin']], function ()
 
     Route::post('/dosen/absensi/save_absensi_new', [KrmController::class, 'saveAbsensiNew'] );
 });
-Route::group(['middleware' => ['auth', 'role:mhs|pegawai|super-admin']], function () {
+Route::group(['middleware' => ['auth', 'role:mhs|admin-prodi|pegawai|super-admin']], function () {
     Route::post('admin/admisi/peserta/daftar_kota', [PmbPesertaController::class, 'daftar_kota'])->name('daftar_kota_pegawai');
 });
-Route::group(['middleware' => ['auth', 'role:mhs|pegawai|super-admin']], function () {
+Route::group(['middleware' => ['auth', 'role:mhs|pegawai|admin-prodi|super-admin']], function () {
     Route::get('dosen/cetak_absensi/{id}', [KrmController::class, 'cetakPertemuan']);
     Route::get('dosen/cetak_jurnal_uts/{id}', [KrmController::class, 'cetakJurnalUts']);
     Route::get('dosen/cetak_jurnal_uts/{id}/{status}', [KrmController::class, 'cetakJurnalUts']);
 });
 
-Route::group(['middleware' => ['auth', 'role:admin-prodi|pegawai|super-admin']], function () {
+Route::group(['middleware' => ['auth', 'role:admin-prodi|pegawai|admin-prodi|super-admin']], function () {
     Route::get('dosen/nilai/{id}/input', [KrmController::class, 'daftarMhsNilai']);
 });

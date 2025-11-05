@@ -32,7 +32,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="sks" class="form-label">SKS</label>
-                                <input type="number" name="sks" id="sks_mengajar" class="form-control">
+                                <input type="number" name="sks" id="sks_mengajar" class="form-control" step="any">
                             </div>
                             <div class="mb-3">
                                 <label for="tahun" class="form-label">Tahun</label>

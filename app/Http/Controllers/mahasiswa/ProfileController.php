@@ -44,6 +44,7 @@ class ProfileController extends Controller
         ->first();
         
         $program_studi = Prodi::all();
+        $curr_prodi = Prodi::where('id',$mahasiswa->id_program_studi)->first();
         $prodi = [];
         foreach($program_studi as $row){
             $prodi[$row->id] = $row->nama_prodi;
@@ -77,7 +78,7 @@ class ProfileController extends Controller
 
         $user = User::where('id',$mahasiswa->user_id)->first();
 
-        return view('mahasiswa.edit_user', compact('dosen_wali','user','status','dosen','kecamatan','wilayah','kota','title', 'mahasiswa','prodi','agama'));
+        return view('mahasiswa.edit_user', compact('dosen_wali','user','status','dosen','kecamatan','wilayah','kota','title', 'mahasiswa','prodi','agama','curr_prodi'));
     }
     public function heregistrasi(){
         $mhs = Mahasiswa::where('user_id',Auth::id())->first();
