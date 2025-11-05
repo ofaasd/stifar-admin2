@@ -27,14 +27,54 @@
             <div class="card">
                 <div class="card-body">
                     <div class="mb-3">
-                        <form action="{{ route('print-pengajuan-skripsi') }}" method="POST" target="_blank">
-                            @csrf
-                            <button type="submit" class="btn btn-success">
-                                <i class="fa fa-download"></i> Download Pengajuan Skripsi
-                            </button>
-                        </form>
+                        <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#filterModal">
+                            <i class="fa fa-filter"></i> Filter Cetak
+                        </button>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="filterModalLabel">Filter Pengajuan Skripsi</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                                    </div>
+
+                                    <form action="{{ route('print-pengajuan-skripsi') }}" method="POST" target="_blank" class="row g-2 align-items-end">
+                                        @csrf
+                                        <div class="modal-body">
+                                            <div class="col-12">
+                                                <label for="status" class="form-label">Status</label>
+                                                <select name="status" id="status" class="form-select">
+                                                    <option value="all">Semua</option>
+                                                    @foreach ($statusPengajuan as $value => $label)
+                                                        <option value="{{ $value }}">{{ $label }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+
+                                            <div class="col-12">
+                                                <label for="from_date" class="form-label">Dari Tanggal</label>
+                                                <input type="date" name="fromDate" id="from_date" class="form-control">
+                                            </div>
+
+                                            <div class="col-12">
+                                                <label for="to_date" class="form-label">Sampai Tanggal</label>
+                                                <input type="date" name="toDate" id="to_date" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                            <button type="submit" class="btn btn-success">
+                                                <i class="fa fa-download"></i> Download
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    {{-- <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#FormModal" id="tambahDosbim"></button> --}}
                     <div class="table-responsive">
                         <table class="display" id="pengajuan-table">
                             <thead>
@@ -42,7 +82,7 @@
                                     <th>#</th>
                                     <th>Mahasiswa</th>
                                     <th>Judul</th>
-                                    {{-- <th>Pembimbing</th> --}}
+                                    <th>Tanggal Pengajuan</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -149,6 +189,10 @@
                     {
                         data: 'judul',
                         name: 'judul'
+                    },
+                    {
+                        data: 'waktu',
+                        name: 'waktu'
                     },
                     {
                         data: 'actions',

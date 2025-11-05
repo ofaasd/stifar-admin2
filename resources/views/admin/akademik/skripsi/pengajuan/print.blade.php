@@ -65,7 +65,7 @@
         </tr>
     </table>
     <hr>
-    <center><b>Daftar Mahasiswa Pengajuan Judul</b></center>
+    <center><b>{{ $title }}</b></center>
     <br>
     <div class="container">
         <div class="table-responsive">
