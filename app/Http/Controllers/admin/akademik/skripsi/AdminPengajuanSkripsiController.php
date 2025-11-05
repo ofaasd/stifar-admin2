@@ -8,6 +8,7 @@ use App\Models\MasterSkripsi;
 use App\Models\RefPembimbing;
 use App\Http\Controllers\Controller;
 use App\Models\PengajuanJudulSkripsi;
+use App\Models\Prodi;
 use Illuminate\Support\Facades\Crypt;
 
 class AdminPengajuanSkripsiController extends Controller
@@ -31,15 +32,20 @@ class AdminPengajuanSkripsiController extends Controller
                 return [$status => $statusLabels[$status] ?? 'Tidak Diketahui'];
             })->toArray();
 
+        $prodi = Prodi::all();
+
         $data = [
             'title' => 'Pengajuan Judul Skripsi',
             'statusPengajuan' => $statusPengajuan,
+            'prodi' => $prodi
         ];   
         return view('admin.akademik.skripsi.pengajuan.index', $data);
     }
 
-    public function getData()
+    public function getData(Request $request)
     {
+        $prodi = $request->input('prodi') ?? null;
+
         // Ambil semua pengajuan judul skripsi, join mahasiswa dan master_skripsi
         $pengajuan = PengajuanJudulSkripsi::select([
                 'pengajuan_judul_skripsi.id',
@@ -56,6 +62,9 @@ class AdminPengajuanSkripsiController extends Controller
             ])
             ->leftJoin('master_skripsi', 'pengajuan_judul_skripsi.id_master', '=', 'master_skripsi.id')
             ->leftJoin('mahasiswa', 'master_skripsi.nim', '=', 'mahasiswa.nim')
+            ->when($prodi !== null, function ($query) use ($prodi) {
+                return $query->where('mahasiswa.id_program_studi', $prodi);
+            })
             ->orderBy('master_skripsi.created_at', 'desc')
             ->get()
             ->map(function ($item) {

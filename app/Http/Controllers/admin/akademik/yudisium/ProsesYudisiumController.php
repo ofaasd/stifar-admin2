@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\admin\akademik\yudisium;
 
+use App\Models\Prodi;
 use App\Models\Mahasiswa;
 use App\Models\TbYudisium;
 use App\Models\master_nilai;
 use Illuminate\Http\Request;
 use App\Models\DaftarWisudawan;
 use App\Models\GelombangYudisium;
-use App\Http\Controllers\Controller;
 use App\Models\TbGelombangWisuda;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Crypt;
 
 class ProsesYudisiumController extends Controller
@@ -102,7 +103,9 @@ class ProsesYudisiumController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-            return view('admin.akademik.yudisium.proses.index', compact('title', 'title2', 'data','indexed', 'mhs', 'gelombang'));
+            $prodi = Prodi::all();
+
+            return view('admin.akademik.yudisium.proses.index', compact('title', 'title2', 'data','indexed', 'mhs', 'gelombang', 'prodi'));
         }else{
             $columns = [
                 1 => 'id',
@@ -129,7 +132,8 @@ class ProsesYudisiumController extends Controller
                         'gelombang_yudisium.nama as namaGelombang',
                         'gelombang_yudisium.tanggal_pengesahan as tanggalPengesahan',
                         'mahasiswa.nama AS namaMahasiswa',
-                        'mahasiswa.foto_yudisium AS fotoYudisium'
+                        'mahasiswa.foto_yudisium AS fotoYudisium',
+                        'mahasiswa.id_program_studi'
                     ]) 
                     ->leftJoin('mahasiswa', 'tb_yudisium.nim', '=', 'mahasiswa.nim')
                     ->leftJoin('gelombang_yudisium', 'tb_yudisium.id_gelombang_yudisium', '=', 'gelombang_yudisium.id');
@@ -138,10 +142,15 @@ class ProsesYudisiumController extends Controller
             $gelombangWisuda = TbGelombangWisuda::get();
 
             $filterGelombang = $request->input('filtergelombang') ?? null;
+            $filterProdi = $request->input('filterprodi') ?? null;
 
-            if (empty($request->input('search.value')) || !empty($filterGelombang)) {
+            if (empty($request->input('search.value')) || !empty($filterGelombang) || !empty($filterProdi)) {
                 if ($filterGelombang != '') {
                     $query->where('tb_yudisium.id_gelombang_yudisium', $filterGelombang);
+                }
+
+                if ($filterProdi != '') {
+                    $query->where('mahasiswa.id_program_studi', $filterProdi);
                 }
 
                 $proses = $query
@@ -206,6 +215,7 @@ class ProsesYudisiumController extends Controller
                 $proses = $query
                     ->where('tb_yudisium.nim', 'LIKE', "%{$search}%")
                     ->orWhere('tb_yudisium.id_gelombang_yudisium', $filterGelombang)
+                    ->orWhere('mahasiswa.id_program_studi', $filterProdi)
                     ->orWhere('gelombang_yudisium.periode', 'LIKE', "%{$search}%")
                     ->offset($start)
                     ->limit($limit)
@@ -258,6 +268,7 @@ class ProsesYudisiumController extends Controller
                 $totalFiltered = $query
                     ->where('tb_yudisium.nim', 'LIKE', "%{$search}%")
                     ->orWhere('tb_yudisium.id_gelombang_yudisium', $filterGelombang)
+                    ->orWhere('mahasiswa.id_program_studi', $filterProdi)
                     ->orWhere('gelombang_yudisium.periode', 'LIKE', "%{$search}%")
                     ->count();
             }

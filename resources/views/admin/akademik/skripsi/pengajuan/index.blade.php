@@ -27,16 +27,30 @@
             <div class="card">
                 <div class="card-body">
                     <div class="mb-3">
-                        <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#filterModal">
-                            <i class="fa fa-filter"></i> Filter Cetak
-                        </button>
+                        <div class="d-flex flex-wrap align-items-end mb-3">
+                            <div>
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#filterModal">
+                                    <i class="fa fa-print"></i> Cetak
+                                </button>
+                            </div>
+
+                            <div class="ms-auto" style="min-width:260px;">
+                                <label for="prodiSelect" class="form-label mb-1 small text-muted">Program Studi</label>
+                                <select id="prodiSelect" class="form-select form-select-sm" onchange="loadPengajuan(this.value)">
+                                    <option value="">Semua Prodi</option>
+                                    @foreach($prodi as $row)
+                                        <option value="{{ $row->id }}">{{ $row->nama_prodi }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
 
                         <!-- Modal -->
                         <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="filterModalLabel">Filter Pengajuan Skripsi</h5>
+                                        <h5 class="modal-title" id="filterModalLabel">Cetak Pengajuan Skripsi</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                                     </div>
 
@@ -104,6 +118,8 @@
     <script src="{{ asset('assets/js/select2/select3-custom.js') }}"></script>
     <script>
         $(document).ready(function() {
+            loadPengajuan(null);
+
             var nip = $("#nip");
             var tagify;
 
@@ -171,40 +187,9 @@
                 });
             });
 
-
-            $('#pengajuan-table').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: '{{ route('get-data-skripsi') }}',
-                columns: [{
-                        data: 'DT_RowIndex',
-                        name: 'DT_RowIndex',
-                        orderable: false,
-                        searchable: false
-                    },
-                    {
-                        data: 'mahasiswa',
-                        name: 'mahasiswa'
-                    },
-                    {
-                        data: 'judul',
-                        name: 'judul'
-                    },
-                    {
-                        data: 'waktu',
-                        name: 'waktu'
-                    },
-                    {
-                        data: 'actions',
-                        name: 'actions',
-                        orderable: false,
-                        searchable: false
-                    }
-                ],
-                language: {
-                    emptyTable: "Tidak ada data yang tersedia." // Pesan ketika data kosong
-                }
-            });
+            // Contoh pemanggilan:
+            // loadPengajuan('all');
+            // atau loadPengajuan($('#prodiSelect').val());
 
             $('#formDosbim').on('submit', function(e) {
                 e.preventDefault(); // Mencegah default form submission
@@ -248,5 +233,53 @@
             });
 
         });
+
+        function loadPengajuan(prodi) {
+            // Destroy existing instance if any
+            if ($.fn.dataTable.isDataTable('#pengajuan-table')) {
+                $('#pengajuan-table').DataTable().destroy();
+                $('#pengajuan-table tbody').empty();
+            }
+
+            return $('#pengajuan-table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: '{{ route('get-data-skripsi') }}',
+                    data: {
+                        prodi: prodi
+                    }
+                },
+                columns: [
+                    {
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex',
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: 'mahasiswa',
+                        name: 'mahasiswa'
+                    },
+                    {
+                        data: 'judul',
+                        name: 'judul'
+                    },
+                    {
+                        data: 'waktu',
+                        name: 'waktu'
+                    },
+                    {
+                        data: 'actions',
+                        name: 'actions',
+                        orderable: false,
+                        searchable: false
+                    }
+                ],
+                language: {
+                    emptyTable: "Tidak ada data yang tersedia."
+                }
+            });
+        }
     </script>
 @endsection

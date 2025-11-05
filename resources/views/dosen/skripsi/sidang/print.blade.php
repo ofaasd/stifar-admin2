@@ -74,7 +74,7 @@
         </tr>
     </table>
     <hr>
-    <center><b>Daftar Peserta Sidang</b></center>
+    <center><b>{{ $title }}</b></center>
     <br>
 
     <div class="container">

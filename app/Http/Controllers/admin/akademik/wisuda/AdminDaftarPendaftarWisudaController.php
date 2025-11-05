@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\admin\akademik\wisuda;
 
+use App\Models\Prodi;
+use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use App\Models\DaftarWisudawan;
 use App\Models\TbGelombangWisuda;
-use App\Http\Controllers\Controller;
-use App\Models\Mahasiswa;
-use App\Models\MahasiswaBerkasPendukung;
 use App\Models\TbPembayaranWisuda;
+use App\Http\Controllers\Controller;
+use App\Models\MahasiswaBerkasPendukung;
 
 class AdminDaftarPendaftarWisudaController extends Controller
 {
@@ -26,8 +27,9 @@ class AdminDaftarPendaftarWisudaController extends Controller
                 ->whereNotIn('nim', DaftarWisudawan::pluck('nim'))
                 ->get();
             $gelombang = TbGelombangWisuda::all();
+            $prodi = Prodi::all();
             $indexed = $this->indexed;
-            return view('admin.akademik.wisuda.daftar-pendaftar-wisuda.index', compact('title', 'title2','indexed', 'gelombang', 'mhs'));
+            return view('admin.akademik.wisuda.daftar-pendaftar-wisuda.index', compact('title', 'title2','indexed', 'gelombang', 'mhs', 'prodi'));
         }else{
             $columns = [
                 1 => 'id',
@@ -55,6 +57,7 @@ class AdminDaftarPendaftarWisudaController extends Controller
                 'tb_daftar_wisudawan.id_gelombang_wisuda',
                 'mahasiswa.nim',
                 'mahasiswa.nama',
+                'mahasiswa.id_program_studi',
                 'mahasiswa.foto_yudisium AS fotoMhs',
                 'tb_daftar_wisudawan.status AS statusDaftar',
                 'tb_gelombang_wisuda.nama AS gelombangWisuda',
@@ -70,10 +73,15 @@ class AdminDaftarPendaftarWisudaController extends Controller
             ->leftJoin('tb_pembayaran_wisuda', 'tb_daftar_wisudawan.nim', '=', 'tb_pembayaran_wisuda.nim');
 
             $filterGelombang = $request->input('filtergelombang') ?? null;
+            $filterProdi = $request->input('filterprodi') ?? null;
 
-            if (empty($request->input('search.value'))  || !empty($filterGelombang)) {
+            if (empty($request->input('search.value'))  || !empty($filterGelombang) || !empty($filterProdi)) {
                 if ($filterGelombang != '') {
                     $query->where('tb_daftar_wisudawan.id_gelombang_wisuda', $filterGelombang);
+                }
+
+                if ($filterProdi != '') {
+                    $query->where('mahasiswa.id_program_studi', $filterProdi);
                 }
 
                 $pendaftar = $query->offset($start)

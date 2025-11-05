@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers\dosen\skripsi;
 
-use App\Http\Controllers\Controller;
-use App\Models\AktorSidang;
-use App\Models\GelombangSidangSkripsi;
+use App\Models\Prodi;
 use App\Models\Mahasiswa;
-use App\Models\master_nilai;
+use App\Models\AktorSidang;
 use App\Models\MasterRuang;
-use App\Models\MasterSkripsi;
-use App\Models\PegawaiBiodatum;
-use App\Models\PenontonSidang;
-use App\Models\PreferensiSidang;
-use App\Models\SidangSkripsi;
 use App\Models\TahunAjaran;
+use App\Models\master_nilai;
 use Illuminate\Http\Request;
+use App\Models\MasterSkripsi;
+use App\Models\SidangSkripsi;
+use App\Models\PenontonSidang;
+use App\Models\PegawaiBiodatum;
+use App\Models\PreferensiSidang;
+use App\Http\Controllers\Controller;
+use App\Models\GelombangSidangSkripsi;
 
 class SidangController extends Controller
 {
@@ -23,6 +24,7 @@ class SidangController extends Controller
         $tahunAjaran = TahunAjaran::all();
         $ruang = MasterRuang::all();
         $pegawai = PegawaiBiodatum::all();
+        $prodi = Prodi::all();
         
         $mahasiswaSkripsi = MasterSkripsi::select([
             'mahasiswa.nim',
@@ -39,7 +41,17 @@ class SidangController extends Controller
         })
         ->get();
 
-        return view('dosen.skripsi.sidang.index', compact('tahunAjaran', 'ruang', 'pegawai', 'mahasiswaSkripsi'));
+        $sidang = SidangSkripsi::all();
+        $statusSidang = $sidang->pluck('status')->unique()->mapWithKeys(function ($item) {
+            $labels = [
+                0 => 'Pengajuan',
+                1 => 'Selesai',
+                2 => 'Diterima',
+            ];
+            return [$item => $labels[$item] ?? 'Unknown'];
+        });
+
+        return view('dosen.skripsi.sidang.index', compact('tahunAjaran', 'ruang', 'pegawai', 'mahasiswaSkripsi', 'statusSidang', 'prodi'));
     }
     public function store(Request $request)
     {
@@ -62,9 +74,11 @@ class SidangController extends Controller
         }
     }
 
-    public function getDataPeserta($idGelombang = null)
+    public function getDataPeserta(Request $request)
     {
         try {
+            $prodi = $request->input('prodi') ?? null;
+
             $data = SidangSkripsi::select([
                 'sidang.id',
                 'sidang.tanggal',
@@ -91,6 +105,9 @@ class SidangController extends Controller
             ->leftJoin('pengajuan_judul_skripsi', 'master_skripsi.id', '=', 'pengajuan_judul_skripsi.id_master')
             ->leftJoin('mahasiswa', 'master_skripsi.nim', '=', 'mahasiswa.nim')
             ->where('pengajuan_judul_skripsi.status', 1)
+            ->when($prodi !== null, function ($query) use ($prodi) {
+                return $query->where('mahasiswa.id_program_studi', $prodi);
+            })
             ->orderBy('sidang.created_at', 'desc')
             ->get()
             ->map(function($item) {
@@ -160,7 +177,7 @@ class SidangController extends Controller
                     return $list;
                 })
                 ->addColumn('waktu', function($row) {
-                    return $row->waktuMulai . ' - ' . $row->waktuSelesai;
+                    return $row->ruangan . ' (' . $row->waktuMulai . ' - ' . $row->waktuSelesai . ')';
                 })
                 ->addColumn('actions', function($row) {
                     return '<button type="button" class="btn btn-sm btn-warning" onclick="showEditJadwalModal('.$row->id.', this)">
@@ -458,7 +475,17 @@ class SidangController extends Controller
     public function printPeserta(Request $request)
     {
         try {
-            $sidang = SidangSkripsi::select([
+            $status = $request->status;
+            $jenis = $request->jenis;
+            $fromDate = $request->fromDate;
+            $toDate = $request->toDate;
+
+            if($toDate < $fromDate)
+            {
+                return redirect()->back()->with('error', 'Tanggal akhir tidak boleh lebih kecil dari tanggal awal.');
+            }
+
+            $querySidang = SidangSkripsi::select([
                 'sidang.id',
                 'sidang.tanggal',
                 'sidang.waktu_mulai AS waktuMulai',
@@ -484,8 +511,22 @@ class SidangController extends Controller
             ->leftJoin('pengajuan_judul_skripsi', 'master_skripsi.id', '=', 'pengajuan_judul_skripsi.id_master')
             ->leftJoin('mahasiswa', 'master_skripsi.nim', '=', 'mahasiswa.nim')
             ->where('pengajuan_judul_skripsi.status', 1)
-            ->orderBy('sidang.created_at', 'desc')
-            ->get()
+            ->orderBy('sidang.created_at', 'desc');
+
+            if ($status && $status != 'all') {
+                $querySidang->where('sidang.status', $status);
+            }
+            if ($jenis && $jenis != 'all') {
+                $querySidang->where('sidang.jenis', $jenis);
+            }
+            if ($fromDate) {
+                $querySidang->whereDate('sidang.tanggal', '>=', $fromDate);
+            }
+            if ($toDate) {
+                $querySidang->whereDate('sidang.tanggal', '<=', $toDate);
+            }
+
+            $sidang = $querySidang->get()
             ->map(function($item) {
                 // Format tanggal menjadi "12 September 2025"
                 if (!empty($item->tanggal)) {
@@ -498,9 +539,40 @@ class SidangController extends Controller
 
             $logo = asset('assets/images/logo/upload/logo_besar.png');
 
+            $title = "Daftar Peserta Sidang";
+            $parts = [];
+
+            if (!empty($status) && $status !== 'all') {
+                $statusLabels = [
+                    0 => 'Pengajuan',
+                    1 => 'Selesai',
+                    2 => 'Diterima',
+                ];
+                $parts[] = 'Status: ' . ($statusLabels[$status] ?? $status);
+            }
+
+            if (!empty($jenis) && $jenis !== 'all') {
+                $jenisLabel = [
+                    1 => 'Seminar Proposal',
+                    2 => 'Seminar Proposal',
+                ];
+                $parts[] = 'Jenis: ' . ($jenisLabel[$jenis] ?? $jenis);
+            }
+
+            if (!empty($fromDate) && !empty($toDate)) {
+                $parts[] = 'Periode: ' . \Carbon\Carbon::parse($fromDate)->translatedFormat('d/m/Y') . ' - ' . \Carbon\Carbon::parse($toDate)->translatedFormat('d/m/Y');
+            } elseif (!empty($fromDate)) {
+                $parts[] = 'Mulai: ' . \Carbon\Carbon::parse($fromDate)->translatedFormat('d/m/Y');
+            } elseif (!empty($toDate)) {
+                $parts[] = 'Sampai: ' . \Carbon\Carbon::parse($toDate)->translatedFormat('d/m/Y');
+            }
+
+            if (!empty($parts)) {
+                $title .= ' — ' . implode(' | ', $parts);
+            }
             // Generate PDF dengan mPDF
             $mpdf = new \Mpdf\Mpdf();
-            $html = view('dosen.skripsi.sidang.print', compact('sidang', 'logo'))->render();
+            $html = view('dosen.skripsi.sidang.print', compact('sidang', 'logo', 'title'))->render();
             $mpdf->WriteHTML($html);
 
             $filename = 'Peserta-Sidang.pdf';

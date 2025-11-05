@@ -19,13 +19,71 @@
 <div class="container-fluid">
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="card-title mb-0">Jadwal Sidang</h5>
-            <form action="{{ route('sidang.print-peserta') }}" method="POST" target="_blank" class="m-0">
-            @csrf
-            <button type="submit" class="btn btn-outline-primary btn-sm">
-                <i class="bi bi-printer me-1"></i> Cetak Peserta Sidang
+            <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#filterModal">
+                <i class="fa fa-print"></i> Cetak
             </button>
-            </form>
+            <div class="ms-auto" style="min-width:260px;">
+                <label for="prodiSelect" class="form-label mb-1 small text-muted">Program Studi</label>
+                <select id="prodiSelect" class="form-select form-select-sm" onchange="initJadwalSidangTable(this.value)">
+                    <option value="">Semua Prodi</option>
+                    @foreach($prodi as $row)
+                        <option value="{{ $row->id }}">{{ $row->nama_prodi }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="filterModalLabel">Cetak Sidang</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                        </div>
+
+                        <form action="{{ route('sidang.print-peserta') }}" method="POST" target="_blank" class="row g-2 align-items-end">
+                            @csrf
+                            <div class="modal-body">
+                                <div class="col-12">
+                                    <label for="status" class="form-label">Status</label>
+                                    <select name="status" id="status" class="form-select">
+                                        <option value="all">Semua</option>
+                                        @foreach ($statusSidang as $value => $label)
+                                            <option value="{{ $value }}">{{ $label }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="col-12">
+                                    <label for="jenis" class="form-label">Jenis Sidang</label>
+                                    <select name="jenis" id="jenis" class="form-select">
+                                        <option value="all">Semua</option>
+                                        <option value="1">Seminar Proposal</option>
+                                        <option value="2">Seminar Hasil</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-12">
+                                    <label for="from_date" class="form-label">Dari Tanggal</label>
+                                    <input type="date" name="fromDate" id="from_date" class="form-control">
+                                </div>
+
+                                <div class="col-12">
+                                    <label for="to_date" class="form-label">Sampai Tanggal</label>
+                                    <input type="date" name="toDate" id="to_date" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fa fa-download"></i> Download
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -35,7 +93,6 @@
                             <th>No</th>
                             <th>Tanggal</th>
                             <th>Waktu</th>
-                            <th>Ruangan</th>
                             <th>Mahasiswa</th>
                             <th>Pembimbing</th>
                             <th>Penguji</th>
@@ -304,31 +361,6 @@
         });
     });
 
-    function initJadwalSidangTable(idGelombang = null) {
-        let ajaxUrl = '{{ route("sidang.get-data-peserta") }}';
-        if (idGelombang) {
-            ajaxUrl = '{{ url("sidang/get-data-peserta") }}' + '/' + idGelombang;
-        }
-        $('#jadwal-sidang-table').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: ajaxUrl,
-            columns: [
-                { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-                { data: 'tanggal', name: 'tanggal' },
-                { data: 'waktu', name: 'waktu' },
-                { data: 'ruangan', name: 'ruangan' },
-                { data: 'mahasiswa', name: 'mahasiswa' },
-                { data: 'pembimbing', name: 'pembimbing' },
-                { data: 'penguji', name: 'penguji' },
-                { data: 'status', name: 'status' },
-                { data: 'actions', name: 'actions', orderable: false, searchable: false }
-            ],
-            language: {
-                emptyTable: "Tidak ada data sidang."
-            }
-        });
-    }
 
     function showEditJadwalModal(id, btn = null) 
     {
@@ -529,6 +561,38 @@
                     $(btn).prop('disabled', false).html('Simpan nilai dan selesai sidang');
                 }
             });
+        });
+    }
+
+    function initJadwalSidangTable(prodi) {
+        // Destroy existing instance if any
+        if ($.fn.dataTable.isDataTable('#jadwal-sidang-table')) {
+            $('#jadwal-sidang-table').DataTable().destroy();
+            $('#jadwal-sidang-table tbody').empty();
+        }
+
+        return $('#jadwal-sidang-table').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: '{{ route('sidang.get-data-peserta') }}',
+                data: {
+                    prodi: prodi
+                }
+            },
+            columns: [
+                { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
+                { data: 'tanggal', name: 'tanggal' },
+                { data: 'waktu', name: 'waktu' },
+                { data: 'mahasiswa', name: 'mahasiswa' },
+                { data: 'pembimbing', name: 'pembimbing' },
+                { data: 'penguji', name: 'penguji' },
+                { data: 'status', name: 'status' },
+                { data: 'actions', name: 'actions', orderable: false, searchable: false }
+            ],
+            language: {
+                emptyTable: "Tidak ada data sidang."
+            }
         });
     }
 </script>
