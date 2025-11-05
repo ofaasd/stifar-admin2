@@ -108,20 +108,20 @@
                 <td>{{ $no++ }}</td>
                 <td>{{ $row_krs['kode_matkul'] }}</td>
                 <td>{{ $row_krs['nama_matkul'] }}</td>
-                <td>{{ $nilai[$row_krs->id_jadwal][$ta][$mhs->nim]['nilai_akhir']}}</td>
-                <td>{{ $nilai[$row_krs->id_jadwal][$ta][$mhs->nim]['nilai_huruf']}}</td>
-                <td>{{ $row_krs['sks_praktek'] + $row_krs['sks_teori'] }}</td>
-                <td>{{ $kualitas }}</td>
+                <td align="center">{{ $nilai[$row_krs->id_jadwal][$ta][$mhs->nim]['nilai_huruf']}}</td>
+                <td align="center">{{ $nilai[$row_krs->id_jadwal][$ta][$mhs->nim]['nilai_akhir']}}</td>
+                <td align="center">{{ $row_krs['sks_praktek'] + $row_krs['sks_teori'] }}</td>
+                <td align="center">{{ $kualitas }}</td>
             </tr>
             @endforeach
             <tr>
                 <td colspan="5" style="text-align: center">
                     Total
                 </td>
-                <td>
+                <td align="center">
                     <span>{{$t+$p}}</span>
                 </td>
-                <td>{{$total_kualitas}}</td>
+                <td align="center">{{$total_kualitas}}</td>
             </tr>
             <tr>
                 <td colspan=10>

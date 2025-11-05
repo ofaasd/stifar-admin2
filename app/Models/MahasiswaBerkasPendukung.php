@@ -40,6 +40,7 @@ class MahasiswaBerkasPendukung extends Model
 		'akte',
 		'ijazah_depan',
 		'ijazah_belakang',
-		'foto_sistem'
+		'foto_sistem',
+		'file_toefl'
 	];
 }

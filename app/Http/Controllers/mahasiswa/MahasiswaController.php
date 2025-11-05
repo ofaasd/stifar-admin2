@@ -270,6 +270,7 @@ class MahasiswaController extends Controller
 
     public function store(Request $request){
         $id = $request->id;
+        // dd($request->nilai_toefl);
         if(empty($id)){
         //create user
         $email = $request->nim . "@mhs.stifar.id";
@@ -319,6 +320,7 @@ class MahasiswaController extends Controller
                     'bulan_awal'=>$request->bulan_awal,
                     'status' => 1,
                     'no_pisn' => $request->no_pisn ?? null,
+                    'nilai_toefl'=>$request->nilai_toefl ?? null,
                 ]
             );
             $data = [
@@ -362,6 +364,7 @@ class MahasiswaController extends Controller
                     'id_dsn_wali' => $request->id_dsn_wali,
                     'bulan_awal'=>$request->bulan_awal,
                     'status' => $request->status,
+                    'nilai_toefl'=>$request->nilai_toefl ?? null,
                     'no_pisn' => $request->no_pisn ?? null,
                 ]
             );

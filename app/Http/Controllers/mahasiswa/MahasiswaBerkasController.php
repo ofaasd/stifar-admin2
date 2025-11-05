@@ -4,6 +4,7 @@ namespace App\Http\Controllers\mahasiswa;
 
 use App\Models\Mahasiswa;
 use App\Models\TahunAjaran;
+use App\Models\Prodi;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -26,13 +27,15 @@ class MahasiswaBerkasController extends Controller
         }
 
         $berkas = MahasiswaBerkasPendukung::where("nim", $mahasiswa->nim)->latest()->first();
+        $curr_prodi = Prodi::where('id',$mahasiswa->id_program_studi)->first();
 
         $data = [
             'mahasiswa' => $mahasiswa,
             'title' => $title,
             'berkas' => $berkas,
+            'curr_prodi' => $curr_prodi,
         ];
-
+        $curr_prodi = Prodi::where('id',$mahasiswa->id_program_studi)->first();
         $ta = TahunAjaran::where("status", "Aktif")->first();
         if($berkas){
             if($berkas->id_ta != $ta->id){
@@ -51,6 +54,7 @@ class MahasiswaBerkasController extends Controller
             'akte' => 'akte',
             'ijazah_depan' => 'ijazah_depan',
             'ijazah_belakang' => 'ijazah_belakang',
+            'file_toefl' => 'file_toefl',
         ];
 
         $validatedData = $request->validate(array_fill_keys(array_keys($fields), 'mimes:jpg,jpeg|max:5012'));

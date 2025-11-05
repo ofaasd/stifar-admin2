@@ -185,6 +185,16 @@
                 </div>
             </div>
         </div>
+        @if($curr_prodi->jenjang = "Profesi")
+        <div class="mb-2">
+            <label class="col-sm-12 col-form-label">Nilai Toefl: </label>
+            <div class="col-sm-12">
+                <div class="input-group">
+                    <input type="number" name="nilai_toefl" class="form-control" id="nilai_toefl"  value="{{$mahasiswa->nilai_toefl ?? ''}}">
+                </div>
+            </div>
+        </div>
+        @endif
         @if($mahasiswa->is_yudisium == 1)
             <div class="mb-2">
                 <label class="col-sm-10 col-form-label font-weight-bold text-primary">Nomor PISN :</label>
