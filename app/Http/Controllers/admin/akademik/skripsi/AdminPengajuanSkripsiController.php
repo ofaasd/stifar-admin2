@@ -17,8 +17,23 @@ class AdminPengajuanSkripsiController extends Controller
      */
     public function index()
     {
+        $pengajuanJudul = PengajuanJudulSkripsi::all();
+        $statusLabels = [
+            0 => 'Pengajuan',
+            1 => 'ACC',
+            2 => 'Revisi',
+            3 => 'Ditolak',
+            4 => 'Pergantian Judul',
+        ];
+
+        $statusPengajuan = $pengajuanJudul->pluck('status')->unique()->sort()->values()
+            ->mapWithKeys(function($status) use ($statusLabels) {
+                return [$status => $statusLabels[$status] ?? 'Tidak Diketahui'];
+            })->toArray();
+
         $data = [
             'title' => 'Pengajuan Judul Skripsi',
+            'statusPengajuan' => $statusPengajuan,
         ];   
         return view('admin.akademik.skripsi.pengajuan.index', $data);
     }
@@ -37,6 +52,7 @@ class AdminPengajuanSkripsiController extends Controller
                 'master_skripsi.pembimbing_1 AS pembimbing1',
                 'master_skripsi.pembimbing_2 AS pembimbing2',
                 'pengajuan_judul_skripsi.status',
+                'pengajuan_judul_skripsi.created_at',
             ])
             ->leftJoin('master_skripsi', 'pengajuan_judul_skripsi.id_master', '=', 'master_skripsi.id')
             ->leftJoin('mahasiswa', 'master_skripsi.nim', '=', 'mahasiswa.nim')
@@ -106,6 +122,7 @@ class AdminPengajuanSkripsiController extends Controller
                 'pembimbing1' => $first->pembimbing1,
                 'pembimbing2' => $first->pembimbing2,
                 'status' => $first->status,
+                'waktu' => $first->created_at->format('d/m/Y H:i'),
                 'actions' => $actions,
             ];
         }
@@ -341,29 +358,49 @@ class AdminPengajuanSkripsiController extends Controller
 
     public function print(Request $request)
     {
-        $pengajuan = PengajuanJudulSkripsi::select([
-                'pengajuan_judul_skripsi.id',
-                'pengajuan_judul_skripsi.id_master',
-                'pengajuan_judul_skripsi.judul',
-                'pengajuan_judul_skripsi.judul_eng AS judulEnglish',
-                'pengajuan_judul_skripsi.abstrak',
-                'master_skripsi.nim',
-                'mahasiswa.nama AS nama',
-                'pengajuan_judul_skripsi.status',
-                'pb1.nama_lengkap AS pembimbing1',
-                'pb2.nama_lengkap AS pembimbing2',  
-            ])
-            ->leftJoin('master_skripsi', 'pengajuan_judul_skripsi.id_master', '=', 'master_skripsi.id')
-            ->leftJoin('pegawai_biodata as pb1', 'pb1.npp', '=', 'master_skripsi.pembimbing_1')
-            ->leftJoin('pegawai_biodata as pb2', 'pb2.npp', '=', 'master_skripsi.pembimbing_2')
-            ->leftJoin('mahasiswa', 'master_skripsi.nim', '=', 'mahasiswa.nim')
-            ->orderBy('master_skripsi.created_at', 'desc')
-            ->get()
-            ->map(function ($item) {
-                $item->idMasterEnkripsi = Crypt::encryptString($item->id_master . "stifar");
-                return $item;
-            })
-            ->groupBy('nim');
+        $status = $request->status;
+        $fromDate = $request->fromDate;
+        $toDate = $request->toDate;
+
+        if($toDate < $fromDate)
+        {
+            return redirect()->back()->with('error', 'Tanggal akhir tidak boleh lebih kecil dari tanggal awal.');
+        }
+        
+        $queryPengajuan = PengajuanJudulSkripsi::select([
+            'pengajuan_judul_skripsi.id',
+            'pengajuan_judul_skripsi.id_master',
+            'pengajuan_judul_skripsi.judul',
+            'pengajuan_judul_skripsi.judul_eng AS judulEnglish',
+            'pengajuan_judul_skripsi.abstrak',
+            'master_skripsi.nim',
+            'mahasiswa.nama AS nama',
+            'pengajuan_judul_skripsi.status',
+            'pb1.nama_lengkap AS pembimbing1',
+            'pb2.nama_lengkap AS pembimbing2',  
+        ])
+        ->leftJoin('master_skripsi', 'pengajuan_judul_skripsi.id_master', '=', 'master_skripsi.id')
+        ->leftJoin('pegawai_biodata as pb1', 'pb1.npp', '=', 'master_skripsi.pembimbing_1')
+        ->leftJoin('pegawai_biodata as pb2', 'pb2.npp', '=', 'master_skripsi.pembimbing_2')
+        ->leftJoin('mahasiswa', 'master_skripsi.nim', '=', 'mahasiswa.nim')
+        ->orderBy('master_skripsi.created_at', 'desc');
+
+        if ($status && $status != 'all') {
+            $queryPengajuan->where('pengajuan_judul_skripsi.status', $status);
+        }
+        if ($fromDate) {
+            $queryPengajuan->whereDate('pengajuan_judul_skripsi.created_at', '>=', $fromDate);
+        }
+        if ($toDate) {
+            $queryPengajuan->whereDate('pengajuan_judul_skripsi.created_at', '<=', $toDate);
+        }
+
+        $pengajuan = $queryPengajuan->get()
+        ->map(function ($item) {
+            $item->idMasterEnkripsi = Crypt::encryptString($item->id_master . "stifar");
+            return $item;
+        })
+        ->groupBy('nim');
 
         $data = [];
         foreach ($pengajuan as $nim => $rows) {
@@ -398,9 +435,36 @@ class AdminPengajuanSkripsiController extends Controller
 
         $logo = asset('assets/images/logo/upload/logo_besar.png');
 
+        $title = "Laporan Pengajuan Judul Skripsi";
+
+        // Tambahkan filter ke title jika ada
+        $parts = [];
+
+        $statusLabels = [
+            0 => 'Pengajuan',
+            1 => 'ACC',
+            2 => 'Revisi',
+            3 => 'Ditolak',
+            4 => 'Pergantian Judul',
+        ];
+
+        if (!empty($status) && $status !== 'all') {
+            $statusText = $statusLabels[(int)$status] ?? 'Tidak Diketahui';
+            $parts[] = "Status: " . $statusText;
+        }
+        if (!empty($fromDate) || !empty($toDate)) {
+            $from = $fromDate ? date('d/m/Y', strtotime($fromDate)) : '';
+            $to = $toDate ? date('d/m/Y', strtotime($toDate)) : '';
+            $periode = trim($from . ($from && $to ? " s/d " : "") . $to);
+            $parts[] = "Periode: " . ($periode ?: '-');
+        }
+        if (!empty($parts)) {
+            $title .= " - " . implode(" | ", $parts);
+        }
+
         // Generate PDF dengan mPDF
         $mpdf = new \Mpdf\Mpdf();
-        $html = view('admin.akademik.skripsi.pengajuan.print', compact('pengajuan', 'logo'))->render();
+        $html = view('admin.akademik.skripsi.pengajuan.print', compact('pengajuan', 'logo', 'title'))->render();
         $mpdf->WriteHTML($html);
 
         // Buat nama file yang unik dan sertakan header Content-Disposition agar browser menyimpan dengan nama yang benar

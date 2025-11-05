@@ -248,6 +248,7 @@
                     <li><a href="{{URL::to('admin/aset/barang')}}">Barang</a></li>
                     {{-- <li><a href="{{URL::to('admin/aset/pengajuan')}}">Pengajuan <label class="badge badge-light-danger">!</label></a></li> --}}
                     {{-- <li><a href="#">Monev <label class="badge badge-light-danger">!</label></a></li> --}}
+                    <li><a href="{{URL::to('admin/aset/cetak')}}">Cetak</a></li>
                     <li><a href="{{URL::to('admin/aset/cetak-label')}}">Cetak Label</a></li>
                 </ul>
             </li>
