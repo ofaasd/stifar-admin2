@@ -575,7 +575,7 @@ class SidangController extends Controller
             $html = view('dosen.skripsi.sidang.print', compact('sidang', 'logo', 'title'))->render();
             $mpdf->WriteHTML($html);
 
-            $filename = 'Peserta-Sidang.pdf';
+            $filename = $title . '.pdf';
             return response($mpdf->Output($filename, 'S'))->header('Content-Type', 'application/pdf');
 
         }catch (\Exception $e) {

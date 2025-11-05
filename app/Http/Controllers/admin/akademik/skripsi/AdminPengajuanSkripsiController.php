@@ -477,7 +477,7 @@ class AdminPengajuanSkripsiController extends Controller
         $mpdf->WriteHTML($html);
 
         // Buat nama file yang unik dan sertakan header Content-Disposition agar browser menyimpan dengan nama yang benar
-        $filename = 'Pengajuan-Judul-Skripsi-' . date('Ymd_His') . '.pdf';
+        $filename = $title . '.pdf';
         $pdfContent = $mpdf->Output($filename, 'S');
 
         return response($pdfContent, 200)
