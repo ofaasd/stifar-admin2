@@ -23,10 +23,19 @@ class BimbinganSkripsiController extends Controller
         // Ambil data skripsi mahasiswa
         $idMaster = SkripsiHelper::getIdMasterSkripsi();
 
+        $title = "Bimbingan";
+
         if (!$idMaster) {
+            $bimbingan = collect();
+            $judulSkripsi = null;
+            $masterSkripsi = null;
+
             return view('mahasiswa.skripsi.bimbingan.main', [
-                'bimbingan' => collect(),
-                'message' => 'Anda belum terdaftar dalam sistem skripsi.'
+                'bimbingan' => $bimbingan,
+                'message' => 'Anda belum terdaftar dalam sistem skripsi.',
+                'judulSkripsi' => $judulSkripsi,
+                'masterSkripsi' => $masterSkripsi,
+                'title' => $title
             ]);
         }
 
@@ -96,7 +105,6 @@ class BimbinganSkripsiController extends Controller
             $masterSkripsi->nimEnkripsi = Crypt::encryptString($masterSkripsi->nim . "stifar");
         }
 
-        $title = "Bimbingan";
         return view('mahasiswa.skripsi.bimbingan.main', compact('bimbingan', 'judulSkripsi', 'masterSkripsi', 'title'));
     }
 

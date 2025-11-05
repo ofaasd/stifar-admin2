@@ -75,9 +75,15 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="card-title mb-0">Jadwal Bimbingan</h5>
-                        <a href="{{ route('mhs.skripsi.bimbingan.download-logbook', ['nimEnkripsi' => $masterSkripsi->nimEnkripsi]) }}" class="btn btn-outline-success btn-sm ms-2" target="_blank">
-                            <i class="bi bi-download"></i> Download Logbook
-                        </a>
+                        @if(!empty($masterSkripsi) && !empty($masterSkripsi->nimEnkripsi))
+                            <a href="{{ route('mhs.skripsi.bimbingan.download-logbook', ['nimEnkripsi' => $masterSkripsi->nimEnkripsi]) }}" class="btn btn-outline-success btn-sm ms-2" target="_blank">
+                                <i class="bi bi-download"></i> Download Logbook
+                            </a>
+                        @else
+                            <button class="btn btn-outline-secondary btn-sm ms-2" disabled title="Logbook tidak tersedia">
+                                <i class="bi bi-download"></i> Download Logbook
+                            </button>
+                        @endif
                         @if(empty($judulSkripsi))
                             <div class="alert alert-warning mb-0" role="alert">
                                 <i class="bi bi-exclamation-circle"></i>
@@ -289,11 +295,11 @@
                                         <label for="pembimbing" class="form-label">Pembimbing</label>
                                         <select class="form-control" name="pembimbing" id="pembimbing" required>
                                             <option value="">Pilih Pembimbing</option>
-                                            @if($masterSkripsi->npp_pembimbing1)
-                                                <option value="{{ $masterSkripsi->npp_pembimbing1 }}">{{ $masterSkripsi->nama_pembimbing1 }}</option>
+                                            @if(isset ($masterSkripsi) && $masterSkripsi->npp_pembimbing1)
+                                                <option value="{{ $masterSkripsi->npp_pembimbing1 ?? '#' }}">{{ $masterSkripsi->nama_pembimbing1 ?? '-' }}</option>
                                             @endif
-                                            @if($masterSkripsi->npp_pembimbing2)
-                                                <option value="{{ $masterSkripsi->npp_pembimbing2 }}">{{ $masterSkripsi->nama_pembimbing2 }}</option>
+                                            @if(isset ($masterSkripsi) && $masterSkripsi->npp_pembimbing2)
+                                                <option value="{{ $masterSkripsi->npp_pembimbing2 ?? '#' }}">{{ $masterSkripsi->nama_pembimbing2 ?? '-' }}</option>
                                             @endif
                                         </select>
                                     </div>
