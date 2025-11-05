@@ -236,8 +236,22 @@ class MahasiswaController extends Controller
         );
         $dosen = PegawaiBiodatum::where('id_posisi_pegawai',1)->get();
         $user = '';
+        $list_bulan = array(
+                1=>"Januari",
+                "Februari",
+                "Maret",
+                "April",
+                "Mei",
+                "Juni",
+                "Juli",
+                "Agustus",
+                "September",
+                "Oktober",
+                "November",
+                "Desember"
+            );
 
-        return view('mahasiswa.create', compact('user','status','dosen','kecamatan','wilayah','kota','title', 'mahasiswa','prodi','agama'));
+        return view('mahasiswa.create', compact('user','status','dosen','kecamatan','wilayah','kota','title', 'mahasiswa','prodi','agama','list_bulan'));
     }
 
     public function detail($nim){
