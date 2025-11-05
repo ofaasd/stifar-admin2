@@ -228,11 +228,18 @@ class KeuanganController extends Controller
         $mhs = Mahasiswa::where('user_id',0)->orderBy('id','asc')->limit(1)->first();
         $start = Mahasiswa::where('id','>=',$mhs->id)->get();
         foreach($start as $row){
-            $user = User::create([
-                'name' => $row->nama,
-                'email' => $row->nim . "@mhs.stifar.id",
-                'password' => Hash::make($row->nim . "stifar")
-            ]);
+            $user = User::where('email',$row->nim . "@mhs.stifar.id")->first();
+            if($user){
+                continue;
+            }else{
+                //
+                $user = User::create([
+                    'name' => $row->nama,
+                    'email' => $row->nim . "@mhs.stifar.id",
+                    'password' => Hash::make($row->nim . "stifar")
+                ]);
+            }
+            
             $id = $user->id;
             $update_mahasiswa = Mahasiswa::find($row->id);
             $update_mahasiswa->user_id = $id;
