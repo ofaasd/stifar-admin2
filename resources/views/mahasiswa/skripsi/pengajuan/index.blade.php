@@ -209,7 +209,6 @@
                                             <th>Tanggal</th>
                                             <th>Waktu</th>
                                             <th>Ruangan</th>
-                                            <th>Mahasiswa</th>
                                             <th>Judul</th>
                                             <th>Pembimbing</th>
                                             <th>Penguji</th>
@@ -225,7 +224,6 @@
                                                 <td>{{ $row->tanggal }}</td>
                                                 <td>{{ $row->waktuMulai }} - {{ $row->waktuSelesai }}</td>
                                                 <td>{{ $row->ruangan }}</td>
-                                                <td>{{ $row->nim ?? '-' }} - {{ $row->nama ?? '-' }}</td>
                                                 <td>{{ $row->judul ?? '-' }}</td>
                                                 <td>
                                                     <ul class="list-unstyled mb-0">
