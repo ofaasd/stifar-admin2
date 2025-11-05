@@ -361,6 +361,11 @@ class AdminPengajuanSkripsiController extends Controller
         $status = $request->status;
         $fromDate = $request->fromDate;
         $toDate = $request->toDate;
+
+        if($toDate < $fromDate)
+        {
+            return redirect()->back()->with('error', 'Tanggal akhir tidak boleh lebih kecil dari tanggal awal.');
+        }
         
         $queryPengajuan = PengajuanJudulSkripsi::select([
             'pengajuan_judul_skripsi.id',
@@ -442,7 +447,7 @@ class AdminPengajuanSkripsiController extends Controller
             3 => 'Ditolak',
             4 => 'Pergantian Judul',
         ];
-        
+
         if (!empty($status) && $status !== 'all') {
             $statusText = $statusLabels[(int)$status] ?? 'Tidak Diketahui';
             $parts[] = "Status: " . $statusText;
