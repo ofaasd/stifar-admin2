@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\PegawaiBerkasPendukung;
 use App\Models\TahunAjaran;
+use App\Models\Prodi;
 
 class DosenBerkasController extends Controller
 {
@@ -28,13 +29,15 @@ class DosenBerkasController extends Controller
         }
 
         $berkas = PegawaiBerkasPendukung::where("id_pegawai", $dosen->id)->latest()->first();
+        $curr_prodi = Prodi::where("id", $dosen->id_progdi)->first();
 
         $title = 'Berkas ' . $dosen->nama_lengkap;
 
         $data = [
             'dosen' => $dosen,
             'title' => $title,
-            'berkas'    => $berkas
+            'berkas' => $berkas,
+            'curr_prodi' => $curr_prodi,
         ];
 
         $ta = TahunAjaran::where("status", "Aktif")->first();

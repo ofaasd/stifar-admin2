@@ -227,7 +227,7 @@
                                 </div>
                                 <hr>
                             </div>
-                            @if($data['curr_prodi']->jenjang == 'Apoteker')
+                            @if($curr_prodi->jenjang == 'Apoteker')
                                 <div class="mb-2">
                                     <div class="view-serdik-kepala-guru-besar">
                                         <label class="col-sm-12 col-form-label">Nilai Toefl: </label>
