@@ -27,7 +27,15 @@ class KhsController extends Controller
     //
     public function index(Request $request){
       $title = "Daftar Mahasiswa";
-      $mhs = Mahasiswa::get();
+      $curr_id = 0;
+      if(Auth::user()->hasRole('admin-prodi')){
+        $pegawai = PegawaiBiodatum::where('user_id',Auth::user()->id)->first();
+        $curr_prodi = Prodi::find($pegawai->id_progdi);
+        $mhs = Mahasiswa::where('id_program_studi', $curr_prodi->id)->get();
+      }else{
+        $mhs = Mahasiswa::get();
+      }
+      
       $no = 1;
       $prodi = Prodi::all();
       $jumlah = [];
