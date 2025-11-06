@@ -111,20 +111,22 @@ class PembayaranController extends Controller
             if (!empty($pembayaran)) {
                 foreach ($pembayaran as $index => $row) {
                     $mahasiswa = Mahasiswa::where('nim',$row->nim)->first();
-                    $prodi = Prodi::find($mahasiswa->id_program_studi);
-                    $nestedData = [];
-                    $nestedData['fake_id'] = $start + $index + 1;
-                    $nestedData['id'] = $row->id;
-                    $nestedData['tanggal_bayar'] = date('d-m-Y H:i', strtotime($row->tanggal_bayar)) ?? "";
-                    
-                    $nestedData['nim'] = $row->nim ?? "";
-                    $nestedData['nama'] = $mahasiswa->nama ?? "";
-                    $nestedData['prodi'] = $prodi->nama_prodi ?? "";
-                    $nestedData['description'] = $row->description ?? "";
-                    $nestedData['jumlah'] =  number_format($row->jumlah ?? 0,0,",",".");
-                    $nestedData['keterangan'] =  $row->keterangan ?? '';
-                    $nestedData['status'] =  $row->status ?? '';
-                    $data[] = $nestedData;
+                    if(!empty($mahasiswa)){
+                        $prodi = Prodi::find($mahasiswa->id_program_studi);
+                        $nestedData = [];
+                        $nestedData['fake_id'] = $start + $index + 1;
+                        $nestedData['id'] = $row->id;
+                        $nestedData['tanggal_bayar'] = date('d-m-Y H:i', strtotime($row->tanggal_bayar)) ?? "";
+                        
+                        $nestedData['nim'] = $row->nim ?? "";
+                        $nestedData['nama'] = $mahasiswa->nama ?? "";
+                        $nestedData['prodi'] = $prodi->nama_prodi ?? "";
+                        $nestedData['description'] = $row->description ?? "";
+                        $nestedData['jumlah'] =  number_format($row->jumlah ?? 0,0,",",".");
+                        $nestedData['keterangan'] =  $row->keterangan ?? '';
+                        $nestedData['status'] =  $row->status ?? '';
+                        $data[] = $nestedData;
+                    }
                 }
             }
 
