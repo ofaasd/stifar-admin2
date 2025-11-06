@@ -16,6 +16,7 @@ class MataKuliah extends Model
         'ruang_teori',
         'ruang_praktek',
         'sks_teori',
+        'id_bidang_minat',
         'sks_praktek',
         'semester',
         'status_mk',

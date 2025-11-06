@@ -115,6 +115,7 @@ use App\Http\Controllers\dosen\skripsi\PengajuanBimbinganController;
 use App\Http\Controllers\admin\admisi\VerifikasiPembayaranController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiMengajarController;
 use App\Http\Controllers\admin\keuangan\RekeningKoranArsipController;
+use App\Http\Controllers\admin\master\akademik\BidangMinatController;
 use App\Http\Controllers\mahasiswa\KrsController as mhsKrsController;
 use App\Http\Controllers\mahasiswa\skripsi\PengajuanSidangController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiPekerjaanController;
@@ -325,6 +326,9 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi|baak|admin-
     Route::resource('admin/masterdata/aset/jenis-kendaraan', JenisKendaaranController::class)->name('index', 'jenis-kendaraan');
     Route::resource('admin/masterdata/aset/merk-kendaraan', MerkKendaraanController::class)->name('index', 'merk-kendaraan');
     Route::resource('admin/masterdata/aset/vendor', VendorController::class)->name('index', 'vendor');
+    
+    // Route Master Akademik
+    Route::resource('admin/masterdata/akademik/bidang-minat', BidangMinatController::class)->name('index', 'bidang-minat');
 
     // route MahasiswaModel
     Route::resource('/mahasiswa/prestasi', PrestasiController::class)->name('index', 'mahasiswa');

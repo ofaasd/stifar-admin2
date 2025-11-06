@@ -109,6 +109,17 @@
                                                             </select>
                                                         </div>
                                                         <div class="form-group mt-2">
+                                                            <label for="bidang-minat">Bidang Minat :</label>
+                                                            <select name="id_bidang_minat" id="id_bidang_minat" class="form-control" required="">
+                                                                <option value="#" selected>Pilih Bidang Minat</option>
+                                                                @foreach($bidangMinat as $row)
+                                                                    <option value="{{ $row->id }}">
+                                                                        {{ $row->nama ?? '' }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group mt-2">
                                                             <label for="status">Status :</label>
                                                             <select class="form-control" name="status" id="status">
                                                                 <option disabled selected>Pilih Status</option>
@@ -238,6 +249,17 @@
                                                                                     <option value="Wajib" {{ $mk['status_mk'] == 'Wajib' ? 'selected=""':'' }}>Wajib</option>
                                                                                     <option value="Pilihan" {{ $mk['status_mk'] == 'Pilihan' ? 'selected=""':'' }}>Pilihan</option>
                                                                                     <option value="Lainnya" {{ $mk['status_mk'] == 'Lainnya' ? 'selected=""':'' }}>Lainnya</option>
+                                                                                </select>
+                                                                            </div>
+                                                                            <div class="form-group mt-2">
+                                                                                <label for="bidang-minat">Bidang Minat :</label>
+                                                                                <select name="id_bidang_minat" id="id_bidang_minat_{{ $mk['kode_matkul'] }}" class="form-control" required="">
+                                                                                    <option value="#" selected>Pilih Bidang Minat</option>
+                                                                                    @foreach($bidangMinat as $row)
+                                                                                        <option value="{{ $row->id }}" {{ (isset($mk['id_bidang_minat']) && $mk['id_bidang_minat'] == $row->id) ? 'selected' : '' }}>
+                                                                                            {{ $row->nama ?? '' }}
+                                                                                        </option>
+                                                                                    @endforeach
                                                                                 </select>
                                                                             </div>
                                                                             <div class="form-group mt-2">

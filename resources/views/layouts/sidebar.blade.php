@@ -42,6 +42,14 @@
                             <li><a href="{{URL::to('admin/masterdata/prodi/renstra/1')}}">Renstra</a></li>
                         </ul>
                     </li>
+                    <li>
+                        <a class="submenu-title" href="#">
+                            <span>Akademik</span>
+                        </a>
+                        <ul class="nav-sub-childmenu submenu-content">
+                            <li><a href="{{URL::to('admin/masterdata/akademik/bidang-minat')}}">Bidang Minat</a></li>
+                        </ul>
+                    </li>
                     <li><a href="{{URL::to('admin/masterdata/ta')}}">Tahun Ajaran</a></li>
                     <!-- <li><a href="#">Jenjang</a></li> -->
                     <li><a href="{{URL::to('admin/masterdata/jabatan_struktural')}}">Jabatan</a></li>
