@@ -601,7 +601,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi|baak|admin-
     Route::post('/admin/alumni/cetak-ijazah', [AlumniController::class, 'cetakIjazah']);
 });
 
-Route::group(['middleware' => ['auth', 'role:mhs|super-admin']], function () {
+Route::group(['middleware' => ['auth', 'role:mhs|super-admin|admin-prodi']], function () {
     Route::get('/mhs/dashboard', [DashboardController::class, 'mhs'])->name('dashboard_mahasiswa');
 
     Route::get('/mahasiswa/detail/{nim}', [MahasiswaController::class, 'detail']);
@@ -628,7 +628,7 @@ Route::group(['middleware' => ['auth', 'role:mhs|super-admin']], function () {
     Route::get('mhs/input_krs', [mhsKrsController::class, 'input'])->name('input');
     Route::get('mhs/riwayat_krs', [mhsKrsController::class, 'riwayat'])->name('riwayat_krs');
     Route::get('/admin/masterdata/krs/admin/hapus/{id}', [KrsController::class, 'hapusadminKRS']);
-    Route::post('/admin/masterdata/krs/list-jadwal', [KrsController::class, 'showJadwal']);
+    // Route::post('/admin/masterdata/krs/list-jadwal', [KrsController::class, 'showJadwal']);
     Route::get('/admin/masterdata/krs/admin/download/{id}', [KrsController::class, 'downloadkrs']);
     Route::get('/admin/masterdata/krs/input/{id}/{mhs}', [KrsController::class, 'tambahadminKRS']);
 
