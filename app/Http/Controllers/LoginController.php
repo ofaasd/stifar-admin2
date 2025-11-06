@@ -123,7 +123,7 @@ class LoginController extends Controller
                 }
             }elseif($role[0] == "pegawai"){
                 $pegawai = PegawaiBiodatum::where('user_id',Auth::user()->id)->first();
-                $berkas = PegawaiBerkasPendukung::where("id_pegawai", $pegawai->id_pegawai)->latest()->first();
+                $berkas = PegawaiBerkasPendukung::where("id_pegawai", $pegawai->id)->latest()->first();
 
                 $redirect = redirect('dsn/dashboard');
                 if ($ta->id != optional($berkas)->id_ta) {
