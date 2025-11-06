@@ -458,7 +458,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi|baak|admin-
     Route::get('/admin/masterdata/krs/admin/input/{id}/{ta}', [KrsController::class, 'inputadminKRS']);
     Route::get('/admin/masterdata/krs/admin/hapus/{id}', [KrsController::class, 'hapusadminKRS']);
     Route::get('/admin/masterdata/krs/input/{id}/{mhs}', [KrsController::class, 'tambahadminKRS']);
-    Route::post('/admin/masterdata/krs/list-jadwal', [KrsController::class, 'showJadwal']);
+    // Route::post('/admin/masterdata/krs/list-jadwal', [KrsController::class, 'showJadwal']);
 
     Route::get('/admin/keuangan/generate_mhs', [KeuanganController::class, 'generate_mhs']);
     Route::get('/admin/keuangan/generate_angkatan', [KeuanganController::class, 'generate_angkatan']);
@@ -628,7 +628,7 @@ Route::group(['middleware' => ['auth', 'role:mhs|super-admin|admin-prodi']], fun
     Route::get('mhs/input_krs', [mhsKrsController::class, 'input'])->name('input');
     Route::get('mhs/riwayat_krs', [mhsKrsController::class, 'riwayat'])->name('riwayat_krs');
     Route::get('/admin/masterdata/krs/admin/hapus/{id}', [KrsController::class, 'hapusadminKRS']);
-    // Route::post('/admin/masterdata/krs/list-jadwal', [KrsController::class, 'showJadwal']);
+    
     Route::get('/admin/masterdata/krs/admin/download/{id}', [KrsController::class, 'downloadkrs']);
     Route::get('/admin/masterdata/krs/input/{id}/{mhs}', [KrsController::class, 'tambahadminKRS']);
 
@@ -959,8 +959,9 @@ Route::group(['middleware' => ['auth', 'role:pegawai|admin-prodi|super-admin']],
 
     Route::post('/dosen/absensi/save_absensi_new', [KrmController::class, 'saveAbsensiNew'] );
 });
-Route::group(['middleware' => ['auth', 'role:mhs|admin-prodi|pegawai|super-admin']], function () {
+Route::group(['middleware' => ['auth', 'role:mhs|admin-prodi|pegawai|super-admin|baak|admin-pmb']], function () {
     Route::post('admin/admisi/peserta/daftar_kota', [PmbPesertaController::class, 'daftar_kota'])->name('daftar_kota_pegawai');
+    Route::post('/admin/masterdata/krs/list-jadwal', [KrsController::class, 'showJadwal']);
 });
 Route::group(['middleware' => ['auth', 'role:mhs|pegawai|admin-prodi|super-admin']], function () {
     Route::get('dosen/cetak_absensi/{id}', [KrmController::class, 'cetakPertemuan']);
