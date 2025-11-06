@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\MataKuliah;
 use App\Models\KelompokMataKuliah;
+use App\Models\MasterBidangMinat;
 use App\Models\Rumpun;
 use App\Models\Prodi;
 use Auth;
@@ -28,7 +29,8 @@ class MatkulController extends Controller
         $kelompok = KelompokMatakuliah::get();
         $rumpun = Rumpun::get();
         $no = 1;
-        return view('admin.akademik.Matakuliah.index', compact('title', 'mk', 'kelompok', 'rumpun', 'no', 'list_mk', 'list_kode_mk'));
+        $bidangMinat = MasterBidangMinat::all();
+        return view('admin.akademik.Matakuliah.index', compact('title', 'mk', 'kelompok', 'rumpun', 'no', 'list_mk', 'list_kode_mk', 'bidangMinat'));
     }
 
     public function simpanMK(Request $request)
@@ -51,6 +53,7 @@ class MatkulController extends Controller
                     'sks_teori' => $request->sks_teori,
                     'sks_praktek' => $request->sks_praktek,
                     'status_mk' => $request->status_mk,
+                    'id_bidang_minat' => $request->id_bidang_minat,
                     'rumpun' => $request->rumpun,
                     'prasyarat1' => $request->prasyarat1,
                     'rps' => $filename,
@@ -69,6 +72,7 @@ class MatkulController extends Controller
                     'sks_teori' => $request->sks_teori,
                     'sks_praktek' => $request->sks_praktek,
                     'status_mk' => $request->status_mk,
+                    'id_bidang_minat' => $request->id_bidang_minat,
                     'prasyarat1' => $request->prasyarat1,
                     'rumpun' => $request->rumpun,
                     'status' => $request->status
@@ -99,6 +103,7 @@ class MatkulController extends Controller
                 'sks_teori' => $request->sks_teori,
                 'sks_praktek' => $request->sks_praktek,
                 'status_mk' => $request->status_mk,
+                'id_bidang_minat' => $request->id_bidang_minat,
                 'rumpun' => $request->rumpun,
                 'rps' => $filename,
                 'rps_log' => date('Y-m-d H:i:s'),
@@ -115,6 +120,7 @@ class MatkulController extends Controller
                 'sks_teori' => $request->sks_teori,
                 'sks_praktek' => $request->sks_praktek,
                 'status_mk' => $request->status_mk,
+                'id_bidang_minat' => $request->id_bidang_minat,
                 'rumpun' => $request->rumpun,
                 'prasyarat1' => $request->prasyarat1,
                 'status' => $request->status
