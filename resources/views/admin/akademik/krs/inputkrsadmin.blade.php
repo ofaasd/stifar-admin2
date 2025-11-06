@@ -49,10 +49,14 @@
                                     <input type="number" value="{{ $ta }}" id="ta" hidden="" />
                                     <input type="number" value="{{ $idmhs }}" id="idmhs" hidden="" />
                                     <select name="matakuliah" onchange="getmk()" id="matakuliah" class="form-control js-example-basic-single">
-                                        <option value="" disabled selected>Pilih Matakuliah</option>
-                                        @foreach($mk as $row)
-                                            <option value="{{ $row['id'] }}">Kode Matakuliah : {{ $row['kode_matkul'] }} | Nama Matakuliah : {{ $row['nama_matkul'] }} | Semester : {{ $row['semester'] ?? '-' }} | Status : {{ $row['status_mk'] ?? '-' }}</option>
-                                        @endforeach
+                                        <option value="" selected>Pilih Matakuliah</option>
+                                        @if(!empty($mk))
+                                            @foreach($mk as $value)
+                                                @foreach($value as $row)
+                                                    <option value="{{ $row['id'] }}">Kode Matakuliah : {{ $row['kode_matkul'] }} | Nama Matakuliah : {{ $row['nama_matkul'] }} | Semester : {{ $row['semester'] ?? '-' }} | Status : {{ $row['status_mk'] ?? '-' }}</option>
+                                                @endforeach
+                                            @endforeach
+                                        @endif
                                     </select>
                                 </div>
                             </div>
