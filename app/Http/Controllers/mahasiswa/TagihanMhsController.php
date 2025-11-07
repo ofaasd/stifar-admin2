@@ -32,7 +32,7 @@ class TagihanMhsController extends Controller
             $detail_tagihan = DetailTagihanKeuanganTotal::where('id_tagihan',$tagihan_total->id)->get();
             
             //jika prodi D3
-            $status_bayar = false;
+            $status_bayar = true;
             $new_total_tagihan = 0;
             $i = 1;
             if($mhs->id_program_studi == 1 || $mhs->id_program_studi == 2){
@@ -59,14 +59,14 @@ class TagihanMhsController extends Controller
                         $new_total_tagihan += $bulanan;
                         $total_bayar = $total_bayar - $bulanan;
                         if($total_bayar >= 0){
-                            $status_bayar = true;
+                            $status_bayar = false;
                         }
                     }
                 }
             }
         }else{
             $new_total_tagihan = 0;
-            $status_bayar = true;
+            $status_bayar = false;
         }
         return view('mahasiswa.tagihan', compact('title','mhs','tagihan', 'jenis','new_total_tagihan','status_bayar','tagihan_total'));
     }
