@@ -49,10 +49,14 @@
                                     <input type="number" value="{{ $ta }}" id="ta" hidden="" />
                                     <input type="number" value="{{ $idmhs }}" id="idmhs" hidden="" />
                                     <select name="matakuliah" onchange="getmk()" id="matakuliah" class="form-control js-example-basic-single">
-                                        <option value="" disabled selected>Pilih Matakuliah</option>
-                                        @foreach($mk as $row)
-                                            <option value="{{ $row['id'] }}">Kode Matakuliah : {{ $row['kode_matkul'] }} | Nama Matakuliah : {{ $row['nama_matkul'] }} | Semester : {{ $row['semester'] ?? '-' }} | Status : {{ $row['status_mk'] ?? '-' }}</option>
-                                        @endforeach
+                                        <option value="" selected>Pilih Matakuliah</option>
+                                        @if(!empty($mk))
+                                            @foreach($mk as $value)
+                                                @foreach($value as $row)
+                                                    <option value="{{ $row['id'] }}">Kode Matakuliah : {{ $row['kode_matkul'] }} | Nama Matakuliah : {{ $row['nama_matkul'] }} | Semester : {{ $row['semester'] ?? '-' }} | Status : {{ $row['status_mk'] ?? '-' }}</option>
+                                                @endforeach
+                                            @endforeach
+                                        @endif
                                     </select>
                                 </div>
                             </div>
@@ -78,6 +82,7 @@
                                         <!-- <td>SKS</td> -->
                                         <td>Hari, Waktu</td>
                                         <td>Ruang</td>
+                                        <td>Validasi</td>
                                         <td>Aksi</td>
                                     </thead>
                                     <tbody>
@@ -90,6 +95,7 @@
                                                 <!-- <td>{{ $row_krs['sks_teori'] }}T/ {{ $row_krs['sks_praktek'] }}P</td> -->
                                                 <td>{{ $row_krs['hari'] }}, {{ $row_krs['nama_sesi'] }}</td>
                                                 <td>{{ $row_krs['nama_ruang'] }}</td>
+                                                <td>{!!($row_krs->is_publish == 0)?'<p class="btn btn-secondary" style="font-size:8pt;">Menunggu Validasi Dosen Wali</p>':'<p class="btn btn-success" style="font-size:8pt;">Sudah Divalidasi</p>'!!}</td>
                                                 <td>
                                                     <a href="{{ url('admin/masterdata/krs/admin/hapus/'.$row_krs['id']) }}" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Hapus</a>
                                                 </td>

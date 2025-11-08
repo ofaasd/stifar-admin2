@@ -51,7 +51,7 @@ class TagihanController extends Controller
             $title = "tagihan";
             $title2 = "Tagihan";
             $list_bulan = array(
-                "Januari",
+                1=>"Januari",
                 "Februari",
                 "Maret",
                 "April",
@@ -361,7 +361,7 @@ class TagihanController extends Controller
                     $new_tagihan->save();
 
                 }else{
-                    if($id == 1 || $id == 2){
+                    if($id_prodi == 1 || $id_prodi == 2 || $id_prodi == 5){
                        $tagihan = TagihanKeuangan::create(
                             [
                                 'id_tahun' => $ta->id,
