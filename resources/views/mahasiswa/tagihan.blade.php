@@ -39,6 +39,9 @@
                             </div>
                         </div>
                         <div class="card-body" style="padding:0">
+                            <div class="alert alert-primary">
+                                Validasi pembayaran dilakukan dihari kerja, jika ada ketidaksesuaian dalam nominal pembayaran silahkan dapat menghubungi bagian keuangan.
+                            </div>
                             <div class="mt-4">
                                 <div class="mt-4 col-md-6 ">
                                     <div class="mt-2"></div>
