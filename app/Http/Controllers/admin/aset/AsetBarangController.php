@@ -62,7 +62,7 @@ class AsetBarangController extends Controller
                     'master_jenis_barang.kode AS kodeJenisBarang',
                     DB::raw('DATE(aset_barang.pemeriksaan_terakhir) AS pemeriksaanTerakhir')
                 ])
-                ->leftJoin('master_ruang', 'master_ruang.nama_ruang', '=', 'aset_barang.kode_ruang')
+                ->leftJoin('master_ruang', DB::raw("REPLACE(master_ruang.nama_ruang, ' ', '')"), '=', 'aset_barang.kode_ruang')
                 ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'aset_barang.id_penanggung_jawab')
                 ->leftJoin('master_jenis_barang', 'master_jenis_barang.kode', '=', 'aset_barang.kode_jenis_barang')
                 ->offset($start)

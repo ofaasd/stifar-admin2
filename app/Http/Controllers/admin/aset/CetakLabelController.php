@@ -56,9 +56,10 @@ class CetakLabelController extends Controller
             }
 
             $logo = public_path('/assets/images/logo/logo-icon.png');
+            $headerLabel = public_path('/assets/images/logo/header-label.png');
 
             $title = str_replace(' ', '', $title);
-            $pdf = Pdf::loadView('admin.aset.cetak-label.label-pdf', compact('data', 'title', 'logo'));
+            $pdf = Pdf::loadView('admin.aset.cetak-label.label-pdf', compact('data', 'title', 'logo', 'headerLabel'));
             return response()->json([
                 'message'   => 'Berhasil cetak',
                 'pdf' => base64_encode($pdf->output()),
