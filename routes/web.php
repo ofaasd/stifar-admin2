@@ -474,6 +474,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi|baak|admin-
     Route::post('/admin/keuangan/rekening_koran/update_nim', [RekeningKoranController::class, 'update_nim']);
     Route::post('/admin/keuangan/rekening_koran/simpan_pembayaran', [RekeningKoranController::class, 'simpan_pembayaran']);
     Route::get('/admin/keuangan/rekening_koran/arsip', [RekeningKoranArsipController::class, 'index']);
+    Route::get('/admin/keuangan/rekening_koran/arsip/{id}', [RekeningKoranArsipController::class, 'edit']);
     Route::post('/admin/keuangan/tagihan_total/import', [TagihanTotalController::class, 'import']);
     Route::post('/admin/keuangan/tagihan/cetak/{id}', [TagihanTotalController::class, 'cetak']);
     Route::post('/admin/keuangan/pembayaran/import', [PembayaranController::class, 'import']);

@@ -102,4 +102,15 @@ class RekeningKoranArsipController extends Controller
             ]);
         }
     }
+    public function edit($id)
+    {
+        $rek = RekeningKoranTemp::find($id);
+        if ($rek) {
+            $rek->status = 0; //undo arsip
+            $rek->save();
+            return redirect('/admin/keuangan/rekening_koran/arsip')->with('success', 'Rekening Koran berhasil di-undo dari arsip.');
+        } else {
+            return redirect('/admin/keuangan/rekening_koran/arsip')->with('error', 'Rekening Koran tidak ditemukan.');
+        }
+    }
 }

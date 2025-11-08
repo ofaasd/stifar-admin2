@@ -30,6 +30,7 @@
                         <a class="btn btn-success" href="{{url('admin/keuangan/pembayaran')}}"> Data Pembayaran</a>
                     </div>    
                     <div class="card-body">
+                        
                         <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
                         <div class="table-responsive">
                             <table class="display" id="basic-1">
@@ -130,13 +131,21 @@
                     searchable: false,
                     orderable: false,
                     render: function render(data, type, full, meta) {
-                        return (
-                        
-                        '<button class="btn btn-sm btn-danger delete-record" data-id="'.concat(
-                            full['id'],
-                            '"><i class="fa fa-trash"></i></button>'
-                        )
-                        );
+                        if(full.status == 2){
+                            return (
+                                '<div class="btn-group"><a href="'.concat(baseUrl).concat(page, '/').concat(full['id'], '" class="btn btn-sm btn-primary" title="Undo Arsip"><i class="fa fa-undo"></i></a>')
+                                .concat('<button class="btn btn-sm btn-danger delete-record" data-id="').concat(
+                                    full['id'],
+                                    '"><i class="fa fa-trash"></i></button></div>'
+                                )
+                            );
+                        }else{
+                            return ('<button class="btn btn-sm btn-danger delete-record" data-id="').concat(
+                                    full['id'],
+                                    '"><i class="fa fa-trash"></i></button></div>'
+                            );
+                                
+                        }
                     }
                 }
 
