@@ -689,9 +689,9 @@ class TagihanController extends Controller
     }
     public function payment_checking(String $id_prodi){
         //ambil data dari tagihan dengan spesific prodi 
-        $tagihan = TagihanKeuangan::where('id_prodi',$id_prodi)->get();
-        
-        foreach($tagihan as $tag){
+        //$tagihan = TagihanKeuangan::where('id_prodi',$id_prodi)->get();
+        $mhs = Mahasiswa::where('id_program_studi',$id_prodi)->get();
+        foreach($mhs as $tag){
             $pembayaran = TbPembayaran::where('nim',$tag->nim)->sum('jumlah');
             $total = Tagihan::where('nim',$tag->nim)->update(['pembayaran'=>$pembayaran]);
             // echo $pembayaran . "<br>";
