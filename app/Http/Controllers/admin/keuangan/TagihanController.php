@@ -285,6 +285,8 @@ class TagihanController extends Controller
                                 }
                             }
                         }elseif($id == 5){
+                            echo "masuk sini";
+                            exit;
                             $detail_tagihan = DetailTagihanKeuanganTotal::where('id_tagihan',$tagihan_total->id)->get();
                             foreach($detail_tagihan as $dt){
                                 

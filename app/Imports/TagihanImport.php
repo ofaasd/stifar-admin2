@@ -16,40 +16,93 @@ class TagihanImport implements ToCollection
     public function collection(Collection $rows)
     {
         foreach ($rows as $row){
-            $tagihan = Tagihan::create([
-                'gelombang' => $row[0],
-                'nim' => $row[2],
-                'total_bayar' => $row[3],
-            ]);
-            $mahasiswa = Mahasiswa::where('nim',$row[2])->update(['nopen' => $row[1]]);
-            if($tagihan){
-                $array = ['Registrasi','UPP','UPP'];
-                foreach($array as $key=>$vaue){
-                    if($key == 0){
-                        $detail = DetailTagihanKeuangan::create([
-                            'id_tagihan' => $tagihan->id,
-                            'id_jenis' => 8,
-                            'jumlah' => $row[4],
-                            
-                        ]);
-                    }elseif($key == 1){
-                        if(is_int($row[5])){
+            
+            $cek_tagihan = Tagihan::where('nim',$row[2])->count();
+            if($cek_tagihan == 0){
+                
+                echo "masuk sini";
+                exit;
+                $tagihan = Tagihan::create([
+                    'gelombang' => $row[0],
+                    'nim' => $row[2],
+                    'total_bayar' => $row[3],
+                ]);
+                $mahasiswa = Mahasiswa::where('nim',$row[2])->update(['nopen' => $row[1]]);
+                if($tagihan){
+                    $array = ['Registrasi','UPP','UPP'];
+                    foreach($array as $key=>$vaue){
+                        if($key == 0){
                             $detail = DetailTagihanKeuangan::create([
                                 'id_tagihan' => $tagihan->id,
-                                'id_jenis' => 2,
-                                'jumlah' => $row[5],
-                                
-                            ]); 
-                        }
-                        
-                    }elseif($key == 2){
-                        if(is_int($row[6])){
-                            $detail = DetailTagihanKeuangan::create([
-                                'id_tagihan' => $tagihan->id,
-                                'id_jenis' => 2,
-                                'jumlah' => $row[6],
+                                'id_jenis' => 8,
+                                'jumlah' => $row[4],
                                 
                             ]);
+                        }elseif($key == 1){
+                            if(is_int($row[5])){
+                                $detail = DetailTagihanKeuangan::create([
+                                    'id_tagihan' => $tagihan->id,
+                                    'id_jenis' => 2,
+                                    'jumlah' => $row[5],
+                                    
+                                ]); 
+                            }
+                            
+                        }elseif($key == 2){
+                            if(is_int($row[6])){
+                                $detail = DetailTagihanKeuangan::create([
+                                    'id_tagihan' => $tagihan->id,
+                                    'id_jenis' => 2,
+                                    'jumlah' => $row[6],
+                                    
+                                ]);
+                            }
+                        }
+                    }
+                }
+            }else{
+                // $tagihan = Tagihan::create([
+                //     'gelombang' => $row[0],
+                //     'nim' => $row[2],
+                //     'total_bayar' => $row[3],
+                // ]);
+                $tagihan = Tagihan::where('nim',$row[2])->update([
+                    'gelombang' => $row[0],
+                    'total_bayar' => $row[3],
+                ]);
+                $new_tagihan = Tagihan::where('nim',$row[2])->first();
+                $detail = DetailTagihanKeuangan::where('id_tagihan',$new_tagihan->id)->delete();
+                
+                $mahasiswa = Mahasiswa::where('nim',$row[2])->update(['nopen' => $row[1]]);
+                if($tagihan){
+                    $array = ['Registrasi','UPP','UPP'];
+                    foreach($array as $key=>$vaue){
+                        if($key == 0){
+                            $detail = DetailTagihanKeuangan::create([
+                                'id_tagihan' => $new_tagihan->id,
+                                'id_jenis' => 8,
+                                'jumlah' => $row[4],
+                                
+                            ]);
+                        }elseif($key == 1){
+                            if(is_int($row[5])){
+                                $detail = DetailTagihanKeuangan::create([
+                                    'id_tagihan' => $new_tagihan->id,
+                                    'id_jenis' => 2,
+                                    'jumlah' => $row[5],
+                                    
+                                ]); 
+                            }
+                            
+                        }elseif($key == 2){
+                            if(is_int($row[6])){
+                                $detail = DetailTagihanKeuangan::create([
+                                    'id_tagihan' => $new_tagihan->id,
+                                    'id_jenis' => 2,
+                                    'jumlah' => $row[6],
+                                    
+                                ]);
+                            }
                         }
                     }
                 }
