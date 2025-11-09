@@ -285,8 +285,7 @@ class TagihanController extends Controller
                                 }
                             }
                         }elseif($id == 5){
-                            echo "masuk sini";
-                            exit;
+                           
                             $detail_tagihan = DetailTagihanKeuanganTotal::where('id_tagihan',$tagihan_total->id)->get();
                             foreach($detail_tagihan as $dt){
                                 
@@ -350,13 +349,13 @@ class TagihanController extends Controller
                     $nestedData['prodi'] = $nama[$row->id_program_studi];
                     foreach($jenis as $jen){
                         if($jen->id == 1){
-                            $nestedData[str_replace(' ', '', $jen->nama)] = $dpp;
+                            $nestedData[str_replace(' ', '', $jen->nama)] = "RP. " . number_format($dpp, 0, ',', '.');
                         }elseif($jen->id == 2){
-                            $nestedData[str_replace(' ', '', $jen->nama)] = $upp_semester;
+                            $nestedData[str_replace(' ', '', $jen->nama)] = "RP. " . number_format($upp_semester, 0, ',', '.');
                         }elseif($jen->id == 6){
-                            $nestedData[str_replace(' ', '', $jen->nama)] = $upp_bulan;
+                            $nestedData[str_replace(' ', '', $jen->nama)] = "RP. " . number_format($upp_bulan, 0, ',', '.');
                         }else{
-                            $nestedData[str_replace(' ', '', $jen->nama)] = $list_keu[$row->id][$jen->id];
+                            $nestedData[str_replace(' ', '', $jen->nama)] = "RP. " . number_format($list_keu[$row->id][$jen->id], 0, ',', '.');
                         }
                         
                     }
