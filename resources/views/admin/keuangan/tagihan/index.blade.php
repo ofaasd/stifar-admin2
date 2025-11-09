@@ -120,7 +120,7 @@
                                         @foreach($jenis as $row)
                                         <th>{{$row->nama}}</th>
                                         @endforeach
-                                        <th>Total</th>
+                                        <th>Total Tagihan</th>
                                         <th>Total Bayar</th>
                                         <th>Status</th>
                                         <th>Publish</th>
@@ -247,18 +247,14 @@
                 {
                     searchable: false,
                     orderable: false,
-                    targets: 11,
-                    render: function render(data, type, full) {
-                        return `<span>${full['total']}</span>`;
-
-                    }
-                },
-                {
-                    searchable: false,
-                    orderable: false,
                     targets: 12,
                     render: function render(data, type, full) {
-                        return `<span>${full['total_bayar']}</span>`;
+                        const rupiah = new Intl.NumberFormat('id-ID', {
+                            style: 'currency',
+                            currency: 'IDR',
+                            minimumFractionDigits: 0
+                        }).format(Number(full['total'] ?? 0));
+                        return `<span>${rupiah}</span>`;
 
                     }
                 },
@@ -266,6 +262,20 @@
                     searchable: false,
                     orderable: false,
                     targets: 13,
+                    render: function render(data, type, full) {
+                        const rupiah = new Intl.NumberFormat('id-ID', {
+                            style: 'currency',
+                            currency: 'IDR',
+                            minimumFractionDigits: 0
+                        }).format(Number(full['total_bayar'] ?? 0));
+                        return `<span>${rupiah}</span>`;
+
+                    }
+                },
+                {
+                    searchable: false,
+                    orderable: false,
+                    targets: 14,
                     render: function render(data, type, full) {
                         if(full['status']){
                             return `<i class="fa fa-check text-success" title="Sudah Bayar"></i>`;
@@ -278,7 +288,7 @@
                 {
                     searchable: false,
                     orderable: false,
-                    targets: 14,
+                    targets: 15,
                     render: function render(data, type, full) {
                         if(full['is_publish'] == 1){
                             return `<i class="fa fa-check text-success" title="Sudah Publish"></i>`;

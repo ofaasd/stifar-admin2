@@ -36,7 +36,7 @@ class TagihanController extends Controller
             $nama[$row->id] = $nama_prodi[0] . " " . $nama_prodi[1];
         }
         if (empty($request->input('length'))) {
-            $jenis = JenisKeuangan::whereIn('id',[1,2,9,10,11,12])->get();
+            $jenis = JenisKeuangan::whereIn('id',[1,2,6,9,10,11,12])->get();
             $indexed = $this->indexed;
             $angkatan = Mahasiswa::select("angkatan")->distinct()->orderBy('angkatan','desc')->get();
             $jumlah_jenis = [];
@@ -94,12 +94,14 @@ class TagihanController extends Controller
 
             if (empty($request->input('search.value'))) {
                 $tagihan = Mahasiswa::where('id_program_studi',$id)
+                    ->where('angkatan','>=','2025')
                     ->orderBy($order, $dir)
                     ->get();
             } else {
                 $search = $request->input('search.value');
 
                 $tagihan = Mahasiswa::where('id_program_studi', $id)
+                            ->where('angkatan','>=','2025')
                             ->where(function ($query) use ($search) {
                                 $query->where('id', 'LIKE', "%{$search}%")
                                     ->orWhere('nim', 'LIKE', "%{$search}%")
@@ -109,6 +111,7 @@ class TagihanController extends Controller
                             ->get();
 
                 $totalFiltered = Mahasiswa::where('id_program_studi', $id)
+                            ->where('angkatan','>=','2025')
                             ->where(function ($query) use ($search) {
                                 $query->where('id', 'LIKE', "%{$search}%")
                                     ->orWhere('nim', 'LIKE', "%{$search}%")
@@ -144,20 +147,103 @@ class TagihanController extends Controller
             }
             // dd($list_tagihan);
             foreach ($tagihan as $index => $row) {
-                if(!empty($list_tagihan[$row->id]->total)){
-                    //ambil detail tagihan
+                $upp_bulan = 0;
+                $upp_semester = 0;
+                $dpp = 0;
+                // if(!empty($list_tagihan[$row->id]->total)){
+                //     //ambil detail tagihan
+                //     $tagihan_total = Tagihan::where('nim',$row->nim)->first();
+                //     $total_bayar = $tagihan_total->pembayaran ?? 0;
+                    
+                    
+                    
+                    
+                //     //jika prodi D3
+                //     $status_bayar = false;
+                //     $new_total_tagihan = 0;
+                //     $i = 1;
+                //     if(!empty($tagihan_total->id)){                        
+                //         if($id == 1 || $id == 2){
+                //             $detail_tagihan = DetailTagihanKeuanganTotal::where('id_tagihan',$tagihan_total->id)->get();
+                //             foreach($detail_tagihan as $dt){
+                                
+                                
+                //                 if($dt->id_jenis == 8){
+                //                     $total_bayar = $total_bayar - $dt->jumlah;
+                //                     $new_total_tagihan += $dt->jumlah;
+                                    
+                //                 }elseif($dt->id_jenis == 2 && $i == 1){
+                //                     $total_bayar = $total_bayar - $dt->jumlah;
+                //                     $new_total_tagihan += $dt->jumlah;
+                //                     $i++;
+                                    
+                //                 }elseif($dt->id_jenis == 2 && $i > 1){
+                //                     //dipecah UPP per bulan
+                //                     $mahasiswa = Mahasiswa::where('nim',$row->nim)->first();
+                //                     $upp_bulan = $dt->jumlah / 30;
+                //                     $bulan_mhs = $mahasiswa->bulan_awal;
+                //                     $tahun_mhs = $mahasiswa->angkatan;
+                //                     $tagihan_bulan = $list_tagihan[$row->id]->periode;
+                //                     $tagihan_tahun = $list_tagihan[$row->id]->tahun;
+                //                     $pengurangan = ($tagihan_tahun * 12 + $tagihan_bulan) - ($tahun_mhs * 12 + $bulan_mhs);
+                //                     $bulanan = $upp_bulan * $pengurangan;
+                //                     $new_total_tagihan += $bulanan;
+                //                     $total_bayar = $total_bayar - $bulanan;
+                //                     if($total_bayar >= 0){
+                //                         $status_bayar = true;
+                //                     }
+                                    
+                //                 }
+                //             }
+                //         }else{
+                //             $detail_tagihan = DetailTagihanKeuanganTotal::where('id_tagihan',$tagihan_total->id)->get();
+                //             $i = 0;
+                //             foreach($detail_tagihan as $dt){
+                //                 if($dt->id_jenis == 2 && $i == 0){
+                //                     $new_total_tagihan += $dt->jumlah;
+                //                     $total_bayar = $total_bayar - $dt->jumlah;
+                //                     $i++;
+                //                 }elseif($dt->id_jenis == 8){
+                //                     $new_total_tagihan += $dt->jumlah;
+                //                     $total_bayar = $total_bayar - $dt->jumlah;
+                //                     if($total_bayar >= 0){
+                //                         $status_bayar = true;
+                //                     }
+                //                 }
+                //             }
+                //         }
+                //     }
+                //     $tagihan_update = TagihanKeuangan::find($list_tagihan[$row->id]->id);
+                //     $tagihan_update->status = $status_bayar ? 1 : 0;
+                //     $tagihan_update->save();
+                        
+                //     $nestedData = [];
+                //     $nestedData['fake_id'] = $start + $index + 1;
+                //     $nestedData['id'] = $row->id;
+                //     $nestedData['nim'] = $row->nim;
+                //     $nestedData['nama'] = $row->nama;
+                //     $nestedData['prodi'] = $nama[$row->id_program_studi];
+                //     foreach($jenis as $jen){
+                //         $nestedData[str_replace(' ', '', $jen->nama)] = $list_keu[$row->id][$jen->id];
+                //     }
+                //     // $nestedData['total'] = $list_tagihan[$row->id]->total ?? 0;
+                //     $nestedData['total'] = $new_total_tagihan ?? 0;
+                //     // $nestedData['total_bayar'] = $list_tagihan[$row->id]->total_bayar ?? 0;
+                //     $nestedData['total_bayar'] = $tagihan_total->pembayaran ?? 0;
+                //     $nestedData['status'] = $list_tagihan[$row->id]->status ?? 0;
+                //     $nestedData['id_tagihan'] = $list_tagihan[$row->id]->id ?? 0;
+                //     $nestedData['is_publish'] = $list_tagihan[$row->id]->is_publish ?? 0;
+                //     $data[] = $nestedData;
+                // }else{
+                    
                     $tagihan_total = Tagihan::where('nim',$row->nim)->first();
                     $total_bayar = $tagihan_total->pembayaran ?? 0;
-                    
-                    
-                    
-                    
                     //jika prodi D3
                     $status_bayar = false;
                     $new_total_tagihan = 0;
                     $i = 1;
                     if(!empty($tagihan_total->id)){                        
-                        if($id == 1 || $id == 2){
+                        if($id == 1 || $id == 2 || $id == 5){
                             $detail_tagihan = DetailTagihanKeuanganTotal::where('id_tagihan',$tagihan_total->id)->get();
                             foreach($detail_tagihan as $dt){
                                 
@@ -177,8 +263,8 @@ class TagihanController extends Controller
                                     $upp_bulan = $dt->jumlah / 30;
                                     $bulan_mhs = $mahasiswa->bulan_awal;
                                     $tahun_mhs = $mahasiswa->angkatan;
-                                    $tagihan_bulan = $list_tagihan[$row->id]->periode;
-                                    $tagihan_tahun = $list_tagihan[$row->id]->tahun;
+                                    $tagihan_bulan = date('m');
+                                    $tagihan_tahun = date('Y');
                                     $pengurangan = ($tagihan_tahun * 12 + $tagihan_bulan) - ($tahun_mhs * 12 + $bulan_mhs);
                                     $bulanan = $upp_bulan * $pengurangan;
                                     $new_total_tagihan += $bulanan;
@@ -196,6 +282,7 @@ class TagihanController extends Controller
                                 if($dt->id_jenis == 2 && $i == 0){
                                     $new_total_tagihan += $dt->jumlah;
                                     $total_bayar = $total_bayar - $dt->jumlah;
+                                    $upp_semester = $dt->jumlah;
                                     $i++;
                                 }elseif($dt->id_jenis == 8){
                                     $new_total_tagihan += $dt->jumlah;
@@ -203,14 +290,13 @@ class TagihanController extends Controller
                                     if($total_bayar >= 0){
                                         $status_bayar = true;
                                     }
+                                }elseif($dt->id_jenis == 1){
+                                    $dpp = $dt->jumlah;
                                 }
                             }
                         }
                     }
-                    $tagihan_update = TagihanKeuangan::find($list_tagihan[$row->id]->id);
-                    $tagihan_update->status = $status_bayar ? 1 : 0;
-                    $tagihan_update->save();
-                        
+                                          
                     $nestedData = [];
                     $nestedData['fake_id'] = $start + $index + 1;
                     $nestedData['id'] = $row->id;
@@ -218,18 +304,29 @@ class TagihanController extends Controller
                     $nestedData['nama'] = $row->nama;
                     $nestedData['prodi'] = $nama[$row->id_program_studi];
                     foreach($jenis as $jen){
-                        $nestedData[str_replace(' ', '', $jen->nama)] = $list_keu[$row->id][$jen->id];
+                        if($jen->id == 1){
+                            $nestedData[str_replace(' ', '', $jen->nama)] = $dpp;
+                        }elseif($jen->id == 2){
+                            $nestedData[str_replace(' ', '', $jen->nama)] = $upp_semester;
+                        }elseif($jen->id == 6){
+                            $nestedData[str_replace(' ', '', $jen->nama)] = $upp_bulan;
+                        }else{
+                            $nestedData[str_replace(' ', '', $jen->nama)] = $list_keu[$row->id][$jen->id];
+                        }
+                        
                     }
+                    $tagihan_total_bayar = $tagihan_total->pembayaran ?? 0;
+                    $status = ($tagihan_total_bayar >= $new_total_tagihan) ? 1 : 0;
                     // $nestedData['total'] = $list_tagihan[$row->id]->total ?? 0;
                     $nestedData['total'] = $new_total_tagihan ?? 0;
                     // $nestedData['total_bayar'] = $list_tagihan[$row->id]->total_bayar ?? 0;
-                    $nestedData['total_bayar'] = $tagihan_total->pembayaran ?? 0;
-                    $nestedData['status'] = $list_tagihan[$row->id]->status ?? 0;
-                    $nestedData['id_tagihan'] = $list_tagihan[$row->id]->id ?? 0;
-                    $nestedData['is_publish'] = $list_tagihan[$row->id]->is_publish ?? 0;
+                    $nestedData['total_bayar'] = $tagihan_total_bayar ?? 0;
+                    $nestedData['status'] = $status ?? 0;
+                    $nestedData['id_tagihan'] = $row->id ?? 0;
+                    $nestedData['is_publish'] = $row->is_publish_keuangan ?? 0;
                     $data[] = $nestedData;
                 }
-            }
+            // }
 
             return response()->json([
                 'draw' => intval($request->input('draw')),
