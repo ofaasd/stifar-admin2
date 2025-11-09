@@ -92,16 +92,22 @@ class TagihanController extends Controller
             $order = $columns[$request->input('order.0.column')];
             $dir = $request->input('order.0.dir');
 
+            $angkatan = 2025;
+            //tidak bisa karena mahasiswa bulan masuk untuk 2024 blm ada datanya
+            // if($id == "5"){
+            //     $angkatan = 2024;
+            // }
+
             if (empty($request->input('search.value'))) {
                 $tagihan = Mahasiswa::where('id_program_studi',$id)
-                    ->where('angkatan','>=','2025')
+                    ->where('angkatan','>=',$angkatan)
                     ->orderBy($order, $dir)
                     ->get();
             } else {
                 $search = $request->input('search.value');
 
                 $tagihan = Mahasiswa::where('id_program_studi', $id)
-                            ->where('angkatan','>=','2025')
+                            ->where('angkatan','>=',$angkatan)
                             ->where(function ($query) use ($search) {
                                 $query->where('id', 'LIKE', "%{$search}%")
                                     ->orWhere('nim', 'LIKE', "%{$search}%")
@@ -111,7 +117,7 @@ class TagihanController extends Controller
                             ->get();
 
                 $totalFiltered = Mahasiswa::where('id_program_studi', $id)
-                            ->where('angkatan','>=','2025')
+                            ->where('angkatan','>=',$angkatan)
                             ->where(function ($query) use ($search) {
                                 $query->where('id', 'LIKE', "%{$search}%")
                                     ->orWhere('nim', 'LIKE', "%{$search}%")
@@ -243,7 +249,7 @@ class TagihanController extends Controller
                     $new_total_tagihan = 0;
                     $i = 1;
                     if(!empty($tagihan_total->id)){                        
-                        if($id == 1 || $id == 2 || $id == 5){
+                        if($id == 1 || $id == 2){
                             $detail_tagihan = DetailTagihanKeuanganTotal::where('id_tagihan',$tagihan_total->id)->get();
                             foreach($detail_tagihan as $dt){
                                 
@@ -260,7 +266,44 @@ class TagihanController extends Controller
                                 }elseif($dt->id_jenis == 2 && $i > 1){
                                     //dipecah UPP per bulan
                                     $mahasiswa = Mahasiswa::where('nim',$row->nim)->first();
+                                    
                                     $upp_bulan = $dt->jumlah / 30;
+                                
+                                    
+                                    $bulan_mhs = $mahasiswa->bulan_awal;
+                                    $tahun_mhs = $mahasiswa->angkatan;
+                                    $tagihan_bulan = date('m');
+                                    $tagihan_tahun = date('Y');
+                                    $pengurangan = ($tagihan_tahun * 12 + $tagihan_bulan) - ($tahun_mhs * 12 + $bulan_mhs);
+                                    $bulanan = $upp_bulan * $pengurangan;
+                                    $new_total_tagihan += $bulanan;
+                                    $total_bayar = $total_bayar - $bulanan;
+                                    if($total_bayar >= 0){
+                                        $status_bayar = true;
+                                    }
+                                    
+                                }
+                            }
+                        }elseif($id == 5){
+                            $detail_tagihan = DetailTagihanKeuanganTotal::where('id_tagihan',$tagihan_total->id)->get();
+                            foreach($detail_tagihan as $dt){
+                                
+                                
+                                if($dt->id_jenis == 8){
+                                    $total_bayar = $total_bayar - $dt->jumlah;
+                                    $new_total_tagihan += $dt->jumlah;
+                                    
+                                }elseif($dt->id_jenis == 2 && $i == 1){
+                                    $total_bayar = $total_bayar - $dt->jumlah;
+                                    $new_total_tagihan += $dt->jumlah;
+                                    $i++;
+                                    
+                                }elseif($dt->id_jenis == 2 && $i > 1){
+                                    //dipecah UPP per bulan
+                                    $mahasiswa = Mahasiswa::where('nim',$row->nim)->first();
+                                    
+                                    $upp_bulan = $dt->jumlah / 8;
+                                    
                                     $bulan_mhs = $mahasiswa->bulan_awal;
                                     $tahun_mhs = $mahasiswa->angkatan;
                                     $tagihan_bulan = date('m');
