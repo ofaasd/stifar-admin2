@@ -19,9 +19,6 @@ class TagihanImport implements ToCollection
             
             $cek_tagihan = Tagihan::where('nim',$row[2])->count();
             if($cek_tagihan == 0){
-                
-                echo "masuk sini";
-                exit;
                 $tagihan = Tagihan::create([
                     'gelombang' => $row[0],
                     'nim' => $row[2],

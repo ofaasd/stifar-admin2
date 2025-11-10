@@ -40,7 +40,7 @@
                 <div class="card">
                     <div class="card-header pb-0 card-no-border">
                         @if(empty($link))
-                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal" id="add-record">+ Generate {{$title2}}</button>
+                        {{-- <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal" id="add-record">+ Generate {{$title2}}</button> --}}
                         <a href="{{url("admin/keuangan/tagihan/publish/" . $id)}}" class="btn btn-success" >Publish Tagihan</a>
                         <a href="{{url("admin/keuangan/tagihan/unpublish/" . $id)}}" class="btn btn-danger" >UnPublish Tagihan</a>
                         <a href="{{url("admin/keuangan/tagihan/payment_checking/" . $id)}}" class="btn btn-info" >Checking Pembayaran</a>
@@ -137,6 +137,35 @@
                                 <div class="modal-content">
                                     <form action="javascript:void(0)" id="formAdd2">
                                         @csrf
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="ModalLabel">Publish Edit {{$title2}}</h5>
+                                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <input type="hidden" name="id_prodi" id="id_prodi_edit" value="{{$id}}">
+                                            <input type="hidden" name="id" id="id">
+                                            <input type="hidden" name="nim" id="nim">
+                                            <div class="mb-3" id="field-nama">
+                                                <label for="is_publish" class="form-label">Publilsh Tagihan</label>
+                                                <select name="is_publish" id="is_publish" class="form-control">
+                                                    <option value="0">Draft</option>
+                                                    <option value="1">Publish</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                            <button type="submit" class="btn btn-danger" id="btnDelete">Hapus</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {{-- <div class="modal fade" id="editModalOld" tabindex="-1" role="dialog" aria-labelledby="editModalOld" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <form action="javascript:void(0)" id="formAdd2">
+                                        @csrf
 
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="ModalLabel">Edit Tagihan <span id="tpt-nim"></span></h5>
@@ -187,7 +216,7 @@
                                     </form>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -208,6 +237,7 @@
         const title2 = "{{ $title2 }}";
         const page = '/'.concat("admin/keuangan/").concat(title,'_show/{{$id}}');
         const page2 = '/'.concat("admin/keuangan/").concat(title);
+        const page3 = '/'.concat("admin/keuangan/tagihan/update_publish");
         var my_column = $('#my_column').val();
         const pecah = my_column.split('\n');
         let my_data = [];
@@ -421,7 +451,7 @@
 
             $.ajax({
                 data: myFormData,
-                url: `${baseUrl}${page2}`,
+                url: `${baseUrl}${page3}`,
                 type: 'POST',
                 processData: false,
                 contentType: false,
