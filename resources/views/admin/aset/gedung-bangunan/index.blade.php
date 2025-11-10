@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Basic DataTables')
+@section('title2', 'Basic DataTables')
 
 @section('css')
 
@@ -88,9 +88,9 @@
                                         <th></th>
                                         <th>No</th>
                                         <th>Tanah</th>
+                                        <th>Jumlah Lantai</th>
                                         <th>Kode</th>
                                         <th>Nama</th>
-                                        <th>Jumlah Lantai</th>
                                         <th>Luas</th>
                                         <th>Actions</th>
                                     </tr>
