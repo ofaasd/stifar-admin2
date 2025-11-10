@@ -248,6 +248,7 @@ class TagihanController extends Controller
                     $status_bayar = false;
                     $new_total_tagihan = 0;
                     $i = 1;
+                    $pengurangan = 0;
                     if(!empty($tagihan_total->id)){                        
                         if($id == 1 || $id == 2){
                             $detail_tagihan = DetailTagihanKeuanganTotal::where('id_tagihan',$tagihan_total->id)->get();
@@ -274,7 +275,7 @@ class TagihanController extends Controller
                                     $tahun_mhs = $mahasiswa->angkatan;
                                     $tagihan_bulan = date('m');
                                     $tagihan_tahun = date('Y');
-                                    $pengurangan = ($tagihan_tahun * 12 + $tagihan_bulan) - ($tahun_mhs * 12 + $bulan_mhs);
+                                    $pengurangan = ($tagihan_tahun * 12 + $tagihan_bulan) - ($tahun_mhs * 12 + $bulan_mhs) + 1;//ditambah 1 karena julidi hitung
                                     $bulanan = $upp_bulan * $pengurangan;
                                     $new_total_tagihan += $bulanan;
                                     $total_bayar = $total_bayar - $bulanan;
@@ -309,7 +310,7 @@ class TagihanController extends Controller
                                     $tahun_mhs = $mahasiswa->angkatan;
                                     $tagihan_bulan = date('m');
                                     $tagihan_tahun = date('Y');
-                                    $pengurangan = ($tagihan_tahun * 12 + $tagihan_bulan) - ($tahun_mhs * 12 + $bulan_mhs);
+                                    $pengurangan = ($tagihan_tahun * 12 + $tagihan_bulan) - ($tahun_mhs * 12 + $bulan_mhs) + 1;//ditambah 1 karena julidi hitung
                                     $bulanan = $upp_bulan * $pengurangan;
                                     $new_total_tagihan += $bulanan;
                                     $total_bayar = $total_bayar - $bulanan;
