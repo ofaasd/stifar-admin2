@@ -74,14 +74,14 @@ class TagihanS1Import implements ToCollection
                 ]);
                 $new_tagihan = Tagihan::where('nim',$row[2])->first();
                 $detail = DetailTagihanKeuangan::where('id_tagihan',$new_tagihan->id)->delete();
-                
+
                 $mahasiswa = Mahasiswa::where('nim',$row[2])->update(['nopen' => $row[1]]);
                 if($tagihan){
                     $array = ['Registrasi','DPP','UPP','UPP'];
                     foreach($array as $key=>$vaue){
                         if($key == 0){
                             $detail = DetailTagihanKeuangan::create([
-                                'id_tagihan' => $tagihan->id,
+                                'id_tagihan' => $new_tagihan->id,
                                 'id_jenis' => 8,
                                 'jumlah' => $row[4],
                                 
@@ -89,7 +89,7 @@ class TagihanS1Import implements ToCollection
                         }elseif($key == 1){
                             if(is_int($row[5])){
                                 $detail = DetailTagihanKeuangan::create([
-                                    'id_tagihan' => $tagihan->id,
+                                    'id_tagihan' => $new_tagihan->id,
                                     'id_jenis' => 1,
                                     'jumlah' => $row[5],
                                     
@@ -99,7 +99,7 @@ class TagihanS1Import implements ToCollection
                         }elseif($key == 2){
                             if(is_int($row[6])){
                                 $detail = DetailTagihanKeuangan::create([
-                                    'id_tagihan' => $tagihan->id,
+                                    'id_tagihan' => $new_tagihan->id,
                                     'id_jenis' => 2,
                                     'jumlah' => $row[6],
                                     
@@ -109,7 +109,7 @@ class TagihanS1Import implements ToCollection
                         }elseif($key == 3){
                             if(is_int($row[7])){
                                 $detail = DetailTagihanKeuangan::create([
-                                    'id_tagihan' => $tagihan->id,
+                                    'id_tagihan' => $new_tagihan->id,
                                         'id_jenis' => 2,
                                     'jumlah' => $row[7],
                                     
