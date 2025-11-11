@@ -102,9 +102,13 @@
                                             
                                             </tbody>
                                             <tfoot>
-                                                <tr>
+                                                 <tr>
                                                     <th>Total Tagihan</th>
-                                                    <th>Rp. {{number_format(($new_total_tagihan-$tagihan_total_bayar),0,",",".")}}</th>
+                                                    @if(!empty($status) && $status == 1)
+                                                        <th>Rp. 0</th>
+                                                    @else
+                                                        <th>Rp. {{number_format(($new_total_tagihan-$tagihan_total_bayar),0,",",".")}}</th>
+                                                    @endif
                                                 </tr>
                                                 {{-- <tr class="{{($tagihan->status==0) ? "bg-danger text-light" : "bg-success text-light"}}">
                                                     <th class="text-white">Total Bayar</th>
@@ -121,7 +125,7 @@
                                             </tfoot>
                                         </table>
                                         <br />
-                                        @if(!empty($bayar_dpp))
+                                        
                                             <table class="table table-hover table-border-horizontal m-4" id="tablekrs">
                                                 <tbody>
                                                     <tr>
@@ -140,7 +144,6 @@
                                                     </tr>
                                                 </tfoot>
                                             </table>
-                                        @endif
                                     @endif
                                 </div>
                             </div>

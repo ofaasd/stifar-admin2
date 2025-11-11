@@ -146,8 +146,8 @@
                                             <input type="hidden" name="id" id="id">
                                             <input type="hidden" name="nim" id="nim">
                                             <div class="mb-3" id="field-nama">
-                                                <label for="is_publish" class="form-label">Publilsh Tagihan</label>
-                                                <select name="is_publish" id="is_publish" class="form-control">
+                                                <label for="is_publish_keuangan" class="form-label">Publilsh Tagihan</label>
+                                                <select name="is_publish" id="is_publish_keuangan" class="form-control">
                                                     <option value="0">Draft</option>
                                                     <option value="1">Publish</option>
                                                 </select>
