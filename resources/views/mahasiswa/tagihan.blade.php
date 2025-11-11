@@ -28,7 +28,7 @@
             <div class="col-sm-12">
                 
                     
-                @if(!$status_bayar)
+                @if($mhs->is_publish_keuangan == 1)
                     <div class="card mb-4">
                         <div class="card-header bg-primary">
                             <div class="row">
@@ -45,28 +45,38 @@
                             <div class="mt-4">
                                 <div class="mt-4 col-md-6 ">
                                     <div class="mt-2"></div>
+                                    @if($mhs->id_program_studi == 1 || $mhs->id_program_studi == 2 || $mhs->id_program_studi == 5)
                                     <table class="table table-hover table-border-horizontal m-4" id="tablekrs">
-                                        <thead>
-                                            {{-- <th>No.</th> --}}
-                                            <th>Tunggakan Tagihan</th>
-                                            <th>Nominal</th>
-                                        </thead>
                                         <tbody>
-                                            <td>Tagihan Bulanan</td>
-                                            <td>Rp. {{number_format(($new_total_tagihan-$tagihan_total->pembayaran),0,",",".")}}</td>
+                                            
+                                                <tr>
+                                                    <td>UPP Bulanan</td>
+                                                    <td>Rp. {{number_format(($upp_bulan),0,",",".")}}</td>
+                                                </tr>
+                                                 <tr>
+                                                    <td>Tunggakan UPP Bulan Lalu</td>
+                                                    @if($new_total_tagihan - $tagihan_total_bayar - $upp_bulan > 0)
+                                                        <td>Rp. {{number_format(($new_total_tagihan - $tagihan_total_bayar - $upp_bulan),0,",",".")}}</td>
+                                                    @else
+                                                        <td>Rp. 0</td>
+                                                    @endif
+                                                </tr>
+                                           
                                         </tbody>
                                         <tfoot>
                                             <tr>
-                                                <th>Total</th>
-                                                <th>Rp. {{number_format(($new_total_tagihan-$tagihan_total->pembayaran),0,",",".")}}</th>
+                                                <th>Total Tagihan</th>
+                                                <th>Rp. {{number_format(($new_total_tagihan-$tagihan_total_bayar),0,",",".")}}</th>
                                             </tr>
-                                            {{-- <tr class="{{($tagihan->status==0) ? "bg-danger text-light" : "bg-success text-light"}}">
-                                                <th class="text-white">Total Bayar</th>
-                                                <th class="text-white">Rp. {{number_format($tagihan->total_bayar,0,",",".")}}</th>
-                                            </tr> --}}
-                                            <tr class="{{(!empty($tagihan->status) && $tagihan->status==0) ? "bg-danger text-light" : "bg-success text-light"}}">
+                                            {{-- @if($status == 1)
+                                                <tr class="{{($status==0) ? "bg-danger text-light" : "bg-success text-light"}}">
+                                                    <th class="text-white">Total Bayar</th>
+                                                    <th class="text-white">Rp. {{number_format($tagihan->total_bayar,0,",",".")}}</th>
+                                                </tr>
+                                            {{-- @endif --}}
+                                            <tr class="{{(empty($status)) ? "bg-danger text-light" : "bg-success text-light"}}">
                                                 <th class="text-white">Status</th>
-                                                <th class="text-white">{{(!empty($tagihan->status) && $tagihan->status==0) ? "Belum Lunas" : "Lunas"}}</th>
+                                                <th class="text-white">{{(empty($status)) ? "Belum Lunas" : "Lunas " }}</th>
                                             </tr>
                                             {{-- <tr class="{{($tagihan->status==0) ? "bg-danger text-light" : "bg-success text-light"}}">
                                                 <th class="text-white">Batas Waktu</th>
@@ -74,7 +84,65 @@
                                             </tr> --}}
                                         </tfoot>
                                     </table>
-                                
+                                    @else
+                                        <table class="table table-hover table-border-horizontal m-4" id="tablekrs">
+                                            <tbody>
+                                                
+                                                    <tr>
+                                                        <td>UPP Semester</td>
+                                                        <td>Rp. {{number_format(($upp_semester),0,",",".")}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Tunggakan UPP Semester Lalu</td>
+                                                        @if($new_total_tagihan - $tagihan_total_bayar - $upp_semester > 0)
+                                                            <td>Rp. {{number_format(($new_total_tagihan - $tagihan_total_bayar - $upp_semester),0,",",".")}}</td>
+                                                        @else
+                                                            <td>Rp. 0</td>
+                                                        @endif
+                                                    </tr>
+                                            
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <th>Total Tagihan</th>
+                                                    <th>Rp. {{number_format(($new_total_tagihan-$tagihan_total_bayar),0,",",".")}}</th>
+                                                </tr>
+                                                {{-- <tr class="{{($tagihan->status==0) ? "bg-danger text-light" : "bg-success text-light"}}">
+                                                    <th class="text-white">Total Bayar</th>
+                                                    <th class="text-white">Rp. {{number_format($tagihan->total_bayar,0,",",".")}}</th>
+                                                </tr> --}}
+                                                <tr class="{{(empty($status)) ? "bg-danger text-light" : "bg-success text-light"}}">
+                                                    <th class="text-white">Status</th>
+                                                    <th class="text-white">{{(empty($status)) ? "Belum Lunas" : "Lunas " }}</th>
+                                                </tr>
+                                                {{-- <tr class="{{($tagihan->status==0) ? "bg-danger text-light" : "bg-success text-light"}}">
+                                                    <th class="text-white">Batas Waktu</th>
+                                                    <th class="text-white">{{date('d-m-Y',strtotime($tagihan->batas_waktu))}}</th>
+                                                </tr> --}}
+                                            </tfoot>
+                                        </table>
+                                        <br />
+                                        @if(!empty($bayar_dpp))
+                                            <table class="table table-hover table-border-horizontal m-4" id="tablekrs">
+                                                <tbody>
+                                                    <tr>
+                                                        <td>DPP</td>
+                                                        <td>Rp. {{number_format(($dpp),0,",",".")}}</td>
+                                                    </tr>
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <th>Total DPP Dibayar</th>
+                                                        <th>Rp. {{number_format(($bayar_dpp),0,",",".")}}</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Sisa Pembayaran DPP</th>
+                                                        <th>Rp. {{number_format(($dpp - $bayar_dpp),0,",",".")}}</th>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        @endif
+                                    @endif
                                 </div>
                             </div>
                         </div>

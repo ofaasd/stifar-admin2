@@ -358,7 +358,6 @@ class TagihanController extends Controller
                         }else{
                             $nestedData[str_replace(' ', '', $jen->nama)] = "RP. " . number_format($list_keu[$row->id][$jen->id], 0, ',', '.');
                         }
-                        
                     }
                     $tagihan_total_bayar = $tagihan_total->pembayaran ?? 0;
                     $status = ($tagihan_total_bayar >= $new_total_tagihan) ? 1 : 0;
@@ -717,12 +716,18 @@ class TagihanController extends Controller
 
     public function publish(string $id)
     {
-        $new_tagihan = TagihanKeuangan::where('id_prodi',$id)->update(['is_publish'=>1]);
+        $new_tagihan = Mahasiswa::where('id_program_studi',$id)->update(['is_publish_keuangan'=>1]);
         return redirect()->back();
+    }
+    public function update_publish(Request $request)
+    {
+        $new_tagihan = Mahasiswa::where('nim',$request->nim)->update(['is_publish_keuangan'=>$request->is_publish]);
+        return response()->json(['status' => 'success',
+                'message' => 'Data berhasil diperbarui',], 200);
     }
     public function unpublish(string $id)
     {
-        $new_tagihan = TagihanKeuangan::where('id_prodi',$id)->update(['is_publish'=>0]);
+        $new_tagihan = Mahasiswa::where('id_program_studi',$id)->update(['is_publish_keuangan'=>0]);
         return redirect()->back();
     }
     /**
