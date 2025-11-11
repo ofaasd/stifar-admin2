@@ -32,6 +32,9 @@
                         <h6>KRS {{$row->keterangan}}</h6>
                     </div>
                     <div class="card-body">
+                        <div class="alert alert-primary">
+                            Validasi pembayaran dilakukan dihari kerja, jika ada ketidaksesuaian dalam nominal pembayaran silahkan dapat menghubungi bagian keuangan.
+                        </div>
                         <table class="table" id="tablekrs">
                             <thead>
                                 <td>No.</td>

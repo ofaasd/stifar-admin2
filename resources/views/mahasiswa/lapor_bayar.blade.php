@@ -35,6 +35,9 @@
              Gunakan Form Lapor Pembayaran Jika Sudah melakukan konfirmasi pembayaran
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
+        <div class="alert alert-primary">
+            Validasi pembayaran dilakukan dihari kerja, jika ada ketidaksesuaian dalam nominal pembayaran silahkan dapat menghubungi bagian keuangan.
+        </div>
         <div class="payment-form-container">
             <h2 class="text-center mb-4">Lapor Pembayaran</h2>
             @if (session('success'))
