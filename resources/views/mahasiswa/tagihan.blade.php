@@ -66,13 +66,12 @@
                                         <tfoot>
                                             <tr>
                                                 <th>Total Tagihan</th>
-                                                <th>Rp. {{number_format(($new_total_tagihan-$tagihan_total_bayar),0,",",".")}}</th>
+                                                @if(!empty($status) && $status == 1)
+                                                    <th>Rp. 0</th>
+                                                @else
+                                                    <th>Rp. {{number_format(($new_total_tagihan-$tagihan_total_bayar),0,",",".")}}</th>
+                                                @endif
                                             </tr>
-                                            {{-- @if($status == 1)
-                                                <tr class="{{($status==0) ? "bg-danger text-light" : "bg-success text-light"}}">
-                                                    <th class="text-white">Total Bayar</th>
-                                                    <th class="text-white">Rp. {{number_format($tagihan->total_bayar,0,",",".")}}</th>
-                                                </tr>
                                             {{-- @endif --}}
                                             <tr class="{{(empty($status)) ? "bg-danger text-light" : "bg-success text-light"}}">
                                                 <th class="text-white">Status</th>
