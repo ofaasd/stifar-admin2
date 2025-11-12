@@ -462,7 +462,7 @@
                         </div>
                     </div>
 
-                    <div class="d-flex justify-content-between mt-4">
+                    <div class="d-flex justify-content-between">
                         <button class="btn btn-outline-secondary btn-lg" onclick="prevStep(1)">
                             <i class="bi bi-arrow-left me-2"></i> Kembali
                         </button>
