@@ -38,8 +38,6 @@ class MahasiswaPenontonSidangController extends Controller
                 'sidang.kartu_bimbingan AS kartuBimbingan',
                 'sidang.presentasi',
                 'sidang.pendukung',
-                'sidang.acc1_at AS acc1At',
-                'sidang.acc2_at AS acc2At',
                 'gelombang_sidang_skripsi.nama AS namaGelombang',
                 'master_ruang.nama_ruang AS namaRuang',
                 'mahasiswa.nama'
@@ -104,8 +102,6 @@ class MahasiswaPenontonSidangController extends Controller
             ->leftJoin('mahasiswa', 'mahasiswa.nim', '=', 'master_skripsi.nim')
             ->leftJoin('gelombang_sidang_skripsi', 'sidang.gelombang_id', '=', 'gelombang_sidang_skripsi.id')
             ->leftJoin('master_ruang', 'sidang.ruang_id', '=', 'master_ruang.id')
-            ->where('sidang.acc_pembimbing1', 1)
-            ->where('sidang.acc_pembimbing2', 1)
             ->whereNotNull('sidang.tanggal')
             ->whereNotNull('sidang.ruang_id')
             ->where('sidang.id', $id)
