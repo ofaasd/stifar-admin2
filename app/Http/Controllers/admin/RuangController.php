@@ -19,7 +19,7 @@ class RuangController extends Controller
     public $indexed = ['', 'id', 'kodeGedung', 'kodeJenis', 'nama_ruang', 'kapasitas', 'lantai' , 'luas'];
     public function index(Request $request)
     {
-        $ruang = MasterRuang::select(
+        $query = MasterRuang::select(
             'master_ruang.*',
             'master_ruang.id AS idRuang',
             'master_lantai.lantai as lantai',
@@ -29,12 +29,13 @@ class RuangController extends Controller
         ->leftJoin('master_lantai', 'master_lantai.id', '=', 'master_ruang.lantai_id')
         ->leftJoin('master_jenis_ruang', 'master_jenis_ruang.kode', '=', 'master_ruang.kode_jenis')
         ->leftJoin('aset_gedung_bangunan', 'aset_gedung_bangunan.kode', '=', 'master_ruang.kode_gedung')
-        ->get()
+        ->groupBy('master_ruang.id');
+
+        $ruang = $query->get()
         ->map(function ($item) {
             $item->idEnkripsi = Crypt::encryptString($item->idRuang . "stifar");
             return $item;
         });
-
 
         if (empty($request->input('length'))) {
             $title = "Ruang";
@@ -67,17 +68,7 @@ class RuangController extends Controller
 
 
             if (empty($request->input('search.value'))) {
-                $ruang = MasterRuang::select(
-                    'master_ruang.*',
-                    'master_ruang.id AS idRuang',
-                    'master_lantai.lantai as lantai',
-                    'master_jenis_ruang.kode as kodeJenis',
-                    'aset_gedung_bangunan.kode AS kodeGedung'
-                )
-                ->leftJoin('master_lantai', 'master_lantai.id', '=', 'master_ruang.lantai_id')
-                ->leftJoin('master_jenis_ruang', 'master_jenis_ruang.kode', '=', 'master_ruang.kode_jenis')
-                ->leftJoin('aset_gedung_bangunan', 'aset_gedung_bangunan.kode', '=', 'master_ruang.kode_gedung')
-                ->get()
+                $ruang = $query->get()
                 ->map(function ($item) {
                     $item->idEnkripsi = Crypt::encryptString($item->idRuang . "stifar");
                     return $item;
