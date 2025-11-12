@@ -295,7 +295,7 @@
                                         
                                         <div class="timeline-item completed">
                                             <div class="d-flex justify-content-between align-items-start mb-3">
-                                                <h6 class="mb-0">Pengajuan Judul Skripsi</h6>
+                                                <h6 class="mb-0">Pengajuan Judul</h6>
                                                 <span class="badge bg-success">Disetujui</span>
                                             </div>
                                             <p class="mb-2">Judul skripsi "Sistem Manajemen Inventory Berbasis Web dengan Teknologi Machine Learning" telah disetujui oleh pembimbing dan koordinator.</p>

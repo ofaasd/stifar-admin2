@@ -87,7 +87,7 @@
                         @if(empty($judulSkripsi))
                             <div class="alert alert-warning mb-0" role="alert">
                                 <i class="bi bi-exclamation-circle"></i>
-                                Selesaikan pengajuan Judul Skripsi terlebih dahulu sebelum mengajukan bimbingan.
+                                Selesaikan pengajuan Judul terlebih dahulu sebelum mengajukan bimbingan.
                             </div>
                         @else
                             <button class="btn btn-primary btn-sm" data-bs-toggle="modal"

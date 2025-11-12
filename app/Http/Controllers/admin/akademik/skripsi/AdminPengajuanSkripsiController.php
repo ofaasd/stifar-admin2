@@ -38,7 +38,7 @@ class AdminPengajuanSkripsiController extends Controller
         $prodi = Prodi::all();
 
         $data = [
-            'title' => 'Pengajuan Judul Skripsi',
+            'title' => 'Pengajuan Judul',
             'statusPengajuan' => $statusPengajuan,
             'prodi' => $prodi
         ];   
@@ -55,7 +55,7 @@ class AdminPengajuanSkripsiController extends Controller
     {
         $prodi = $request->input('prodi') ?? null;
 
-        // Ambil semua pengajuan judul skripsi, join mahasiswa dan master_skripsi
+        // Ambil semua pengajuan judul, join mahasiswa dan master_skripsi
         $pengajuan = PengajuanJudulSkripsi::select([
                 'pengajuan_judul_skripsi.id',
                 'pengajuan_judul_skripsi.id_master',
@@ -292,7 +292,7 @@ class AdminPengajuanSkripsiController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Data pengajuan judul skripsi berhasil disimpan.'
+                'message' => 'Data pengajuan judul berhasil disimpan.'
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -346,7 +346,7 @@ class AdminPengajuanSkripsiController extends Controller
         ->get();
 
         $data = [
-            'title' => 'Detail Pengajuan Judul Skripsi',
+            'title' => 'Detail Pengajuan Judul',
             'masterSkripsi' => $masterSkripsi,
             'judulSkripsi' => $judulSkripsi,
             'mahasiswa' => $mahasiswa,
@@ -465,7 +465,7 @@ class AdminPengajuanSkripsiController extends Controller
 
         $logo = asset('assets/images/logo/upload/logo_besar.png');
 
-        $title = "Laporan Pengajuan Judul Skripsi";
+        $title = "Laporan Pengajuan Judul";
 
         // Tambahkan filter ke title jika ada
         $parts = [];

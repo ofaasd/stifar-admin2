@@ -271,17 +271,17 @@ class PengajuanSkripsiController extends Controller
     
             return redirect()
                 ->route('mhs.skripsi.daftar.index')
-                ->with('success', 'Pengajuan judul skripsi berhasil disimpan.');
+                ->with('success', 'Pengajuan judul berhasil disimpan.');
 
             // return response()->json([
             //     'status' => 'success',
-            //     'message' => 'Pengajuan judul skripsi berhasil disimpan.'
+            //     'message' => 'Pengajuan judul berhasil disimpan.'
             // ]);
     
         } catch (\Exception $e) {
             DB::rollBack();
     
-            \Log::error('Gagal menyimpan pengajuan judul skripsi', [
+            \Log::error('Gagal menyimpan pengajuan judul', [
                 'message' => $e->getMessage(),
                 'trace'   => $e->getTraceAsString(),
                 'user'    => Auth::id()

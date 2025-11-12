@@ -152,7 +152,7 @@
                 <div class="form-header">
                     <div class="row align-items-center">
                         <div class="col-md-8">
-                            <h2 class="mb-2">Pengajuan Judul Skripsi</h2>
+                            <h2 class="mb-2">Pengajuan Judul</h2>
                             <p class="mb-0">Ajukan judul penelitian skripsi Anda dengan detail yang lengkap</p>
                         </div>
                         <div class="col-md-4 text-end">
