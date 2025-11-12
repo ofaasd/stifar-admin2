@@ -92,14 +92,18 @@ class LoginController extends Controller
             $ta = TahunAjaran::where("status", "Aktif")->first();
 
             if($role[0] == "mhs"){
-                $mhs = Mahasiswa::where('user_id',Auth::user()->id)->first();
+                $mhs = Mahasiswa::where('user_id', Auth::user()->id)->first();
 
-                if(!$mhs){
+                if (!$mhs) {
                     Auth::logout();
                     Session::flash('error', 'Data Mahasiswa tidak ditemukan, silahkan hubungi admin');
                     return redirect()->route('login');
                 }
-                
+
+                if ($mhs->is_yudisium == 1 && empty($mhs->no_pisn)) {
+                    Session::flash('show_modal_isi_no_pisn', true);
+                }
+        
                 $session = [
                     'isYudisium' => $mhs->is_yudisium ?? 0,
                 ];

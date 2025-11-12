@@ -61,6 +61,38 @@
           </div>
         @endif
 
+        @if(session('show_modal_isi_no_pisn'))
+          <div class="modal fade" id="isi-no-pisn" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                  <form action="javascript:void(0)" id="userForm">
+                      <div class="modal-content">
+                          <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLabel">Isi No PISN</h5>
+                              <button class="btn-close" type="button" data-bs-dismiss="modal"
+                                  aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            <p>Silakan isi nomor PISN Anda pada <a href="{{ url('mhs/profile') }}">profil</a> untuk melengkapi data yudisium.</p>
+                          </div>
+                      </div>
+                  </form>
+              </div>
+          </div>
+
+          <script>
+            window.addEventListener('load', function() {
+              console.log('====================================');
+              console.log('Loaded modal isi pisn');
+              console.log('====================================');
+              var el = document.getElementById('isi-no-pisn');
+              if (el) {
+                var modal = new bootstrap.Modal(el);
+                modal.show();
+              }
+            });
+          </script>
+        @endif
+
 
       <!-- Page Header Ends  -->
       <!-- Page Body Start-->
