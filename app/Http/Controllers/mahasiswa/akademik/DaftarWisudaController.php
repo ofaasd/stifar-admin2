@@ -55,7 +55,12 @@ class DaftarWisudaController extends Controller
         ->first();
 
         if(!$mhs){
-            return response()->json(["message"  => "Data tidak ditemukan"]);
+            $data = [
+                'title' => $title,
+                'mhs' => $mhs,
+            ];
+
+            return view('mahasiswa.akademik.daftar-wisuda.index', $data);
         }
 
         $berkas = MahasiswaBerkasPendukung::select()
