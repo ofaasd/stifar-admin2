@@ -16,6 +16,12 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class CetakAsetController extends Controller
 {
+    /**
+    * menampilkan pilihan untuk mencetak data aset.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function index()
     {
         $title = "cetak";
@@ -26,6 +32,12 @@ class CetakAsetController extends Controller
         return view('admin.aset.cetak-aset.index', compact('title', 'title2', 'jenisBarang', 'jenisKendaraan', 'ruang'));
     }
 
+    /**
+    * mencetak PDF data aset berdasarkan jenis aset yang dipilih.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function generatePdf(Request $request)
     {
         try {

@@ -14,12 +14,23 @@ use Illuminate\Http\Request;
 
 class BimbinganMahasiswaController extends Controller
 {
+    /**
+    * menampilkan halaman bimbingan (mahasiswa).
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function index()
     {
-
         return view('dosen.skripsi.bimbingan.index');
     }
 
+    /**
+    * mengambil data bimbingan mahasiswa.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function getDataMhs()
     {
         $user = Auth::user();
@@ -49,6 +60,13 @@ class BimbinganMahasiswaController extends Controller
             ->make(true);
 
     }
+
+    /**
+    * menampilkan spesifik data bimbingan.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function detail($id)
     {
         // Mengambil data master bimbingan
@@ -103,6 +121,13 @@ class BimbinganMahasiswaController extends Controller
         // Render view dengan data
         return $this->renderView($dataMaster, $namaMahasiswa, $dataBimbingan, $TahapBimbingan, $judul, $logbookBimbingan);
     }
+
+    /**
+    * menampilkan data ke halaman bimbingan.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     private function renderView(
         $dataMaster = null,
         $namaMahasiswa = null,
@@ -121,6 +146,12 @@ class BimbinganMahasiswaController extends Controller
         ));
     }
 
+    /**
+    * menampilkan modal logbook bimbingan.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function getModalLogbook($id)
     {
         $data = LogbookBimbingan::where('id', $id)
@@ -135,7 +166,12 @@ class BimbinganMahasiswaController extends Controller
         }
     }
 
-
+    /**
+    * mengupload file bimbingan mahasiswa.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function upload(Request $request)
     {
         $request->validate([

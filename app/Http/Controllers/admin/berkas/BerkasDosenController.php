@@ -14,8 +14,11 @@ use Illuminate\Support\Facades\Crypt;
 class BerkasDosenController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
+    * menampilkan data dosen.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function index()
     {
         $title = "Berkas Dosen";
@@ -41,8 +44,11 @@ class BerkasDosenController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
+    * menyimpan data berkas dosen.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function store(Request $request)
     {
         $fields = [
@@ -138,8 +144,11 @@ class BerkasDosenController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
+    * menampilkan spesifik data berkas dosen.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function show(string $idEnkripsi)
     {
         $idDekrip = Crypt::decryptString($idEnkripsi);

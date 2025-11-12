@@ -14,7 +14,10 @@ use Illuminate\Support\Facades\Crypt;
 class AdminPengajuanSkripsiController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * menampilkan halaman pengajuan skripsi di sisi admin.
+     *
+     * Terakhir diedit: 6 November 2025
+     * Editor: faiz
      */
     public function index()
     {
@@ -42,6 +45,12 @@ class AdminPengajuanSkripsiController extends Controller
         return view('admin.akademik.skripsi.pengajuan.index', $data);
     }
 
+    /**
+     * menampilkan data pengajuan skripsi di sisi admin dengan filter program studi.
+     *
+     * Terakhir diedit: 6 November 2025
+     * Editor: faiz
+     */
     public function getData(Request $request)
     {
         $prodi = $request->input('prodi') ?? null;
@@ -164,7 +173,10 @@ class AdminPengajuanSkripsiController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * menyetujui pengajuan skripsi mahasiswa.
+     *
+     * Terakhir diedit: 6 November 2025
+     * Editor: faiz
      */
     public function store(Request $request)
     {
@@ -291,7 +303,10 @@ class AdminPengajuanSkripsiController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * mengambil data spesifik pada pengajuan skripsi.
+     *
+     * Terakhir diedit: 6 November 2025
+     * Editor: faiz
      */
     public function show(string $idMasterSkripsiEnkripsi)
     {
@@ -365,6 +380,12 @@ class AdminPengajuanSkripsiController extends Controller
         //
     }
 
+    /**
+     * mencetak daftar mahasiswa pengajuan skripsi menggunakan filter status dan tanggal.
+     *
+     * Terakhir diedit: 6 November 2025
+     * Editor: faiz
+     */
     public function print(Request $request)
     {
         $status = $request->status;

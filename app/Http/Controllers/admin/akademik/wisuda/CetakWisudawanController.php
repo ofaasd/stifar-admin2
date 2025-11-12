@@ -25,8 +25,11 @@ class CetakWisudawanController extends Controller
     ];
 
     /**
-     * Display a listing of the resource.
-     */
+    * menampilkan halaman dan data gelombang wisuda.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public $indexed = ['', 'id', 'periode', 'nama', 'tempat', 'waktu_pelaksanaan', 'tanggal_pendaftaran', 'tanggal_pemberkasan', 'tanggal_gladi', 'tarif_wisuda', 'jml_peserta'];
     public function index(Request $request)
     {
@@ -192,8 +195,11 @@ class CetakWisudawanController extends Controller
     }
 
     /**
-     * Cetak Wisudawan.
-     */
+    * mencetak daftar wisudawan dengan parameter gelombang.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function show(string $idEnkripsi)
     {
         $idDekrip = Crypt::decryptString($idEnkripsi);

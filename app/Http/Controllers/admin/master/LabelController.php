@@ -11,8 +11,11 @@ use App\Http\Requests\UpdateLabelRequest;
 class LabelController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
+    * menampilkan data label.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public $indexed = ['', 'id', 'nama'];
     public function index(Request $request)
     {

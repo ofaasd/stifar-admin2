@@ -12,8 +12,11 @@ use Illuminate\Validation\Rule;
 class JenisRuangController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
+    * menampilkan data jenis ruang.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public $indexed = ['', 'id', 'kode', 'nama'];
     public function index(Request $request)
     {
@@ -90,8 +93,11 @@ class JenisRuangController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
+    * menyimpan data jenis ruang.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function store(Request $request)
     {
         try {
@@ -136,8 +142,11 @@ class JenisRuangController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
+    * menampilkan spesifik data jenis ruang.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function edit(string $id)
     {
         $data = MasterJenisRuang::find($id);
@@ -161,8 +170,11 @@ class JenisRuangController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     */
+    * menghapus data jenis ruang.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function destroy(string $id)
     {
         $data = MasterJenisRuang::where('id', $id)->delete();

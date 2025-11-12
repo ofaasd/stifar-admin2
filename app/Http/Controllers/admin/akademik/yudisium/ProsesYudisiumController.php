@@ -15,9 +15,6 @@ use Illuminate\Support\Facades\Crypt;
 
 class ProsesYudisiumController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     protected $kualitas = [
         'A' => 4,
         'AB' => 3.5,
@@ -30,6 +27,12 @@ class ProsesYudisiumController extends Controller
         'E' => 0
     ];
 
+    /**
+    * menampilkan data peserta yudisium.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public $indexed = ['', 'id', 'nim', 'nilai', 'nilai2', 'gelombang'];
     public function index(Request $request)
     {
@@ -327,8 +330,11 @@ class ProsesYudisiumController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
+    * menyimpan mahasiswa sebagai yudisium.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function store(Request $request)
     {
         $id = $request->id;
@@ -389,8 +395,11 @@ class ProsesYudisiumController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
+    * menampilkan data spesifik data yudisium.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function edit(string $id)
     {
         try {
@@ -411,8 +420,11 @@ class ProsesYudisiumController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     */
+    * menghilangkan status mahasiswa sebagai yudisium.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function destroy(string $id)
     {
         try {
@@ -426,8 +438,11 @@ class ProsesYudisiumController extends Controller
     }
 
     /**
-     * Upload Foto Yudisium
-     */
+    * upload foto yudisium.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function storeFotoYudisium(Request $request)
     {
         $request->validate([

@@ -12,8 +12,11 @@ use App\Http\Controllers\Controller;
 class SettingYudisiumController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
+    * menampilkan data gelombang yudisium.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public $indexed = ['', 'id', 'nama', 'prodi', 'no_sk', 'periode'];
     public function index(Request $request)
     {
@@ -126,8 +129,11 @@ class SettingYudisiumController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
+    * menyimpan data gelombang yudisium.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function store(Request $request)
     {
         $id = $request->id;
@@ -187,8 +193,11 @@ class SettingYudisiumController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
+    * menampilkan data spesifik gelombang yudisium.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function edit(string $id)
     {
         $where = ['id' => $id];
@@ -207,8 +216,11 @@ class SettingYudisiumController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     */
+    * menghapus data gelombang yudisium.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function destroy(string $id)
     {
         $data = GelombangYudisium::where('id', $id)->delete();

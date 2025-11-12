@@ -12,8 +12,11 @@ use Illuminate\Validation\Rule;
 class JenisBarangController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
+    * menampilkan data jenis barang.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public $indexed = ['', 'id', 'kode', 'nama'];
     public function index(Request $request)
     {
@@ -90,8 +93,11 @@ class JenisBarangController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
+    * menyimpan data jenis barang.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function store(Request $request)
     {
         try {
@@ -135,8 +141,11 @@ class JenisBarangController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
+    * menampilkan spesifik data jenis barang.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function edit(string $id)
     {
         $data = MasterJenisBarang::find($id);
@@ -160,8 +169,11 @@ class JenisBarangController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     */
+    * menghapus data jenis barang.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function destroy(string $id)
     {
         $data = MasterJenisBarang::where('id', $id)->delete();

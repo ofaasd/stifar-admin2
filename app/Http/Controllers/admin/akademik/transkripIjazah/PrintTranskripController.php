@@ -10,8 +10,11 @@ use App\Http\Controllers\Controller;
 class PrintTranskripController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
+    * menampilkan halaman dan data mahasiswa.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function index(Request $request)
     {
         $title = "Print Transkrip.";

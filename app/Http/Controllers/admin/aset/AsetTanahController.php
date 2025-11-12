@@ -10,8 +10,11 @@ use Carbon\Carbon;
 class AsetTanahController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
+    * menampilkan data aset tanah.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public $indexed = ['', 'id', 'kode', 'nama', 'alamat', 'luas'];
     public function index(Request $request)
     {
@@ -119,8 +122,11 @@ class AsetTanahController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
+    * menyimpan data aset tanah.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function store(Request $request)
     {
         $id = $request->id;
@@ -222,8 +228,11 @@ class AsetTanahController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
+    * menampilkan spesifik data aset tanah.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function show(string $id)
     {
         $where = ['id' => $id];
@@ -240,8 +249,11 @@ class AsetTanahController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
+    * menampilkan spesifik data aset tanah.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function edit(string $id)
     {
         $where = ['id' => $id];
@@ -260,8 +272,11 @@ class AsetTanahController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     */
+    * menghapus data aset tanah.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function destroy(string $id)
     {
         $asetTanah = AsetTanah::where('id', $id)->first();

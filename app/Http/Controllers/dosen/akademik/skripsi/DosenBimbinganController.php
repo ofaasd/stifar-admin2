@@ -15,6 +15,12 @@ use Illuminate\Support\Facades\Crypt;
 
 class DosenBimbinganController extends Controller
 {
+    /**
+    * menampilkan halaman bimbingan (dosen).
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function index()
     {
         $data = [
@@ -23,6 +29,12 @@ class DosenBimbinganController extends Controller
         return view('dosen.akademik.skripsi.bimbingan.index', $data);
     }
     
+    /**
+    * mengambil data bimbingan spesifik.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function getData()
     {
         $cekUser = PegawaiBiodatum::where('user_id', Auth::id())->first();
@@ -83,6 +95,12 @@ class DosenBimbinganController extends Controller
 
     }
 
+    /**
+    * menambilkan data spesifik bimbingan.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function show($idEnkripsi)
     {
         try {
@@ -193,6 +211,12 @@ class DosenBimbinganController extends Controller
         }
     }
 
+    /**
+    * update data solusi permasalahan.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function update(Request $request, $idEnkripsi)
     {
         $idDekrip = Crypt::decryptString($idEnkripsi);
@@ -217,6 +241,12 @@ class DosenBimbinganController extends Controller
         }
     }
 
+    /**
+    * update status bimbingan.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function updateStatus(Request $request, $idEnkripsi)
     {
         $idDekrip = Crypt::decryptString($idEnkripsi);
@@ -258,6 +288,12 @@ class DosenBimbinganController extends Controller
         }
     }
 
+    /**
+    * persetujuan sidang untuk mahasiswa bimbingan.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function accSidang(Request $request, $idEnkripsi)
     {
         $request->validate([
@@ -363,6 +399,12 @@ class DosenBimbinganController extends Controller
         }
     }
 
+    /**
+    * upload file hasil bimbingan.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function uploadRevisi(Request $request, $idEnkripsi)
     {
         $idDekrip = Crypt::decryptString($idEnkripsi);

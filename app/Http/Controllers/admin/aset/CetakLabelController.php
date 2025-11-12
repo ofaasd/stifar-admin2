@@ -16,8 +16,11 @@ use Barryvdh\DomPDF\Facade\Pdf;
 class CetakLabelController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
+    * menampilkan pilihan untuk mencetak label aset.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function index()
     {
         $title = "cetak-label";
@@ -28,6 +31,12 @@ class CetakLabelController extends Controller
         return view('admin.aset.cetak-label.index', compact('title', 'title2', 'jenisBarang', 'jenisKendaraan', 'ruang'));
     }
 
+    /**
+    * mencetak PDF label aset berdasarkan jenis label yang dipilih.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function generatePdf(Request $request)
     {
         try {

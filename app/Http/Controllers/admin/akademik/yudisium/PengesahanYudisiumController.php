@@ -26,8 +26,11 @@ class PengesahanYudisiumController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
+    * pengesahan gelombang yudisium.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function store(Request $request)
     {
         $idDekrip = Crypt::decryptString($request->idEnkripsi);

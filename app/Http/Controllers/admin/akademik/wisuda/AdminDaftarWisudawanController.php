@@ -15,8 +15,11 @@ use App\Models\TbYudisiumArchive;
 class AdminDaftarWisudawanController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
+    * menampilkan halaman dan data wisudawan.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public $indexed = ['', 'id', 'nim', 'wisuda', 'yudisium', 'berkas', 'status_pembayaran'];
     public function index(Request $request)
     {
@@ -198,8 +201,11 @@ class AdminDaftarWisudawanController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
+    * memindahkan daftar wisudawan ke tabel alumni.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function store(Request $request)
     {
         try {

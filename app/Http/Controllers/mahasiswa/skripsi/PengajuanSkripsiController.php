@@ -28,6 +28,12 @@ class PengajuanSkripsiController extends Controller
         'E' => 0
     ];
 
+    /**
+    * menampilkan halaman dan data pengajuan skripsi.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function index()
     {
         $idUser = Auth::User()->id;
@@ -102,6 +108,12 @@ class PengajuanSkripsiController extends Controller
        return view('mahasiswa.skripsi.pengajuan.skripsi.index', $data);
     }
 
+    /**
+    * menyimpan data pengajuan skripsi.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -285,6 +297,12 @@ class PengajuanSkripsiController extends Controller
         }
     }
 
+    /**
+    * pengecekan kelulusan bidang minat.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function cekBidangMinat(Request $request)
     {
         try {

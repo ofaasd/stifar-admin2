@@ -12,11 +12,23 @@ use App\Models\PegawaiBiodatum;
 
 class DosenPembimbingController extends Controller
 {
+    /**
+    * menampilkan halaman dosen pembimbing.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function index()
     {
         return view('admin.skripsi.dosbim.index');
     }
 
+    /**
+    * mengambil data dosen pembimbing.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function getListDosen()
     {
         // Mengambil data dosen pembimbing dengan kuota yang tidak 0 dan join ke tabel pegawai
@@ -45,6 +57,12 @@ class DosenPembimbingController extends Controller
             ->make(true);
     }
 
+    /**
+    * mengambil data dosen.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function getData()
     {
         $data = PegawaiBiodatum::get(); // Mengambil data dari model Pegawai
@@ -58,6 +76,12 @@ class DosenPembimbingController extends Controller
             ->make(true);
     }
 
+    /**
+    * mengambil data npp dosen.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function getNppDosen()
     {
         $arrPembimbing = RefPembimbing::pluck('nip')->toArray();
@@ -96,6 +120,12 @@ class DosenPembimbingController extends Controller
         }
     }
 
+    /**
+    * menampilkan spesifik data dosen pembimbing.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function edit($npp)
     {
         // Ambil data dosen pembimbing berdasarkan nip
@@ -117,6 +147,12 @@ class DosenPembimbingController extends Controller
     }
     
 
+    /**
+    * update data dosen pembimbing.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function updateKuota(Request $request)
     {
         // Validasi input

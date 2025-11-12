@@ -15,6 +15,12 @@ use App\Models\PreferensiSidang;
 
 class PengajuanSidangController extends Controller
 {
+    /**
+    * menampilkan halaman dan data pengajuan sidang.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function index(){
         $gelombang = GelombangSidangSkripsi::select([
                 'gelombang_sidang_skripsi.*',
@@ -30,6 +36,12 @@ class PengajuanSidangController extends Controller
         return view('mahasiswa.skripsi.pengajuan.sidang.index', compact('gelombang','waktuSidang', 'hariSidang'));
     }
 
+    /**
+    * menyimpan data pengajuan sidang.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function store(Request $request)
     {
         try {

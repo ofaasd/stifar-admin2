@@ -25,6 +25,12 @@ class PengajuanController extends Controller
         $this->helpers = new helpers();
     }
 
+    /**
+    * menampilkan halaman dan data pengajuan mahasiswa.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function index()
     {
         $user  = Auth::user();
@@ -149,6 +155,12 @@ class PengajuanController extends Controller
         ]);
     }
 
+    /**
+    * mengambil data pengajuan judul mahasiswa.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function getDataPengajuanJudul($id)
     {
         $data = PengajuanJudulSkripsi::find($id);
@@ -165,7 +177,12 @@ class PengajuanController extends Controller
         return response()->json($data);
     }
 
-    // update revisi pengajuan judul
+    /**
+    * mengupdate judul skripsi.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function update($id, Request $request)
     {
         try {
@@ -193,6 +210,12 @@ class PengajuanController extends Controller
         }
     }
 
+    /**
+    * menampilkan spesifik data pengajuan judul.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function show($idEnkripsi, $isEdit = 0)
     {
         $idDekrip = Crypt::decryptString($idEnkripsi);
@@ -257,6 +280,12 @@ class PengajuanController extends Controller
         }
     }
 
+    /**
+    * mengisikan waktu sidang.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function inputWaktuSidang(Request $request, $idEnkripsi)
     {
         try {
@@ -281,6 +310,12 @@ class PengajuanController extends Controller
         }
     }
 
+    /**
+    * mencetak pengantar sidang.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function printSidang(Request $request)
     {
         try {
@@ -345,6 +380,12 @@ class PengajuanController extends Controller
         }
     }
 
+    /**
+    * mencetak persetujuan proposal.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function printPersetujuanProposal(Request $request)
     {
         try {

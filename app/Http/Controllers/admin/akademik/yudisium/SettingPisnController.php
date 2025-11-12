@@ -9,8 +9,11 @@ use App\Http\Controllers\Controller;
 class SettingPisnController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
+    * menampilkan data mahasiswa yang memiliki pisn.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public $indexed = ['', 'id', 'nim', 'pisn'];
     public function index(Request $request)
     {
@@ -110,8 +113,11 @@ class SettingPisnController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
+    * menyimpan pisn mahasiswa.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function store(Request $request)
     {
         $nim = $request->nim;
@@ -162,8 +168,11 @@ class SettingPisnController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
+    * menampilkan spesifik pisn mahasiswa.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function edit(string $nim)
     {
         try {
@@ -184,8 +193,11 @@ class SettingPisnController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     */
+    * menghapus datapisn mahasiswa.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function destroy(string $nim)
     {
         try {

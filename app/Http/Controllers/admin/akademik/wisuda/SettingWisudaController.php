@@ -10,8 +10,11 @@ use App\Http\Controllers\Controller;
 class SettingWisudaController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
+    * menampilkan halaman dan data setting wisuda.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public $indexed = ['', 'id', 'periode', 'nama', 'tempat', 'waktu_pelaksanaan', 'tanggal_pendaftaran'];
     public function index(Request $request)
     {
@@ -117,8 +120,11 @@ class SettingWisudaController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
+    * menyimpan data gelombang wisuda.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function store(Request $request)
     {
         $id = $request->id;
@@ -206,8 +212,11 @@ class SettingWisudaController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
+    * mengambil data spesifik gelombang wisuda.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function edit(string $id)
     {
         try {
@@ -233,8 +242,11 @@ class SettingWisudaController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     */
+    * menghapus data gelombang wisuda.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function destroy(string $id)
     {
         try {

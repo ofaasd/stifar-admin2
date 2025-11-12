@@ -8,9 +8,12 @@ use Illuminate\Http\Request;
 
 class JenisKendaaranController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+   /**
+    * menampilkan data jenis kendaraan.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public $indexed = ['', 'id', 'kode', 'nama'];
     public function index(Request $request)
     {
@@ -87,8 +90,11 @@ class JenisKendaaranController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
+    * menyimpan data jenis kendaraan.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function store(Request $request)
     {
         // Validasi data
@@ -132,8 +138,11 @@ class JenisKendaaranController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
+    * menampilkan spesifik data jenis kendaraan.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function edit(string $id)
     {
         $jenisKendaraan = ModelsJenisKendaaran::find($id);
@@ -157,8 +166,11 @@ class JenisKendaaranController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     */
+    * menghapus data jenis kendaraan.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function destroy(string $id)
     {
         $jenisKendaraan = ModelsJenisKendaaran::where('id', $id)->delete();

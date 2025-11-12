@@ -14,8 +14,11 @@ use Illuminate\Support\Facades\Crypt;
 class RuangController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
+     * menampilkan halaman utama ruang.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public $indexed = ['', 'id', 'kodeGedung', 'kodeJenis', 'nama_ruang', 'kapasitas', 'lantai' , 'luas'];
     public function index(Request $request)
     {
@@ -155,7 +158,10 @@ class RuangController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * menyimpan data ruang.
+     *
+     * Terakhir diedit: 6 November 2025
+     * Editor: faiz
      */
     public function store(Request $request)
     {
@@ -205,7 +211,10 @@ class RuangController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * melihat secara spesifik data ruang (detail ruang).
+     *
+     * Terakhir diedit: 6 November 2025
+     * Editor: faiz
      */
     public function show(string $idEnkripsi)
     {
@@ -225,7 +234,10 @@ class RuangController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * mengambil ruang tertentu yang akan di edit.
+     *
+     * Terakhir diedit: 6 November 2025
+     * Editor: faiz
      */
     public function edit(string $id)
     {
@@ -245,7 +257,10 @@ class RuangController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * menghapus data id.
+     *
+     * Terakhir diedit: 6 November 2025
+     * Editor: faiz
      */
     public function destroy(string $id)
     {

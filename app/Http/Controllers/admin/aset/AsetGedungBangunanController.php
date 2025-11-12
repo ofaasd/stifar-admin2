@@ -12,8 +12,11 @@ use Illuminate\Validation\Rule;
 class AsetGedungBangunanController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
+    * menampilkan data aset gedung dan bangunan.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public $indexed = ['', 'id', 'kode_tanah', 'id_lantai', 'kode', 'nama', 'luas'];
     public function index(Request $request)
     {
@@ -119,8 +122,11 @@ class AsetGedungBangunanController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
+    * menyimpan data aset gedung dan bangunan.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function store(Request $request)
     {
         try {
@@ -171,8 +177,11 @@ class AsetGedungBangunanController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
+    * menampilkan spesifik data aset gedung dan bangunan.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function edit(string $id)
     {
         $data = AsetGedungBangunan::where("id", $id)->first();
@@ -196,8 +205,11 @@ class AsetGedungBangunanController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     */
+    * menghapus data aset gedung dan bangunan.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function destroy(string $id)
     {
         $data = AsetGedungBangunan::where('id', $id)->delete();

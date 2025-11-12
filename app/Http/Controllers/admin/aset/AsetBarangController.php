@@ -17,8 +17,11 @@ use Illuminate\Validation\Rule;
 class AsetBarangController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
+    * menampilkan data aset barang.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public $indexed = ['', 'id', 'namaRuang', 'kodeJenisBarang', 'label', 'nama', 'namaPenanggungJawab', 'pemeriksaanTerakhir'];
     public function index(Request $request)
     {
@@ -154,8 +157,11 @@ class AsetBarangController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
+    * menyimpan data aset barang.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function store(Request $request)
     {
         try {
@@ -243,8 +249,11 @@ class AsetBarangController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
+    * menampilkan spesifik data aset barang.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function edit(string $id)
     {
         $data = AsetBarang::where("id", $id)->first();
@@ -272,8 +281,11 @@ class AsetBarangController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     */
+    * menghapuskan data aset barang.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function destroy(string $id)
     {
         $data = AsetBarang::where('id', $id)->delete();

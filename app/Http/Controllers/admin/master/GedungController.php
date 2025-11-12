@@ -9,8 +9,11 @@ use App\Http\Controllers\Controller;
 class GedungController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
+    * menampilkan data master gedung.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public $indexed = ['', 'id', 'kode', 'nama'];
     public function index(Request $request)
     {
@@ -87,8 +90,11 @@ class GedungController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
+    * menyimpan data master gedung.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function store(Request $request)
     {
         // Validasi data
@@ -132,8 +138,11 @@ class GedungController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
+    * menampilkan spesifik data master gedung.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function edit(string $id)
     {
         $gedung = MasterGedung::find($id);
@@ -157,8 +166,11 @@ class GedungController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     */
+    * menghapus data master gedung.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function destroy(string $id)
     {
         $gedung = MasterGedung::where('id', $id)->delete();

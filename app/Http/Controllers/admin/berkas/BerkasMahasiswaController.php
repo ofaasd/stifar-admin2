@@ -13,8 +13,11 @@ use App\Models\MahasiswaBerkasPendukung;
 class BerkasMahasiswaController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
+    * menampilkan data berkas mahasiswa.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function index()
     {
         $title = "Berkas Mahasiswa";
@@ -48,8 +51,11 @@ class BerkasMahasiswaController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
+    * menyimpan data berkas mahasiswa.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function store(Request $request)
     {
         $fields = [
@@ -142,8 +148,11 @@ class BerkasMahasiswaController extends Controller
 
 
     /**
-     * Display the specified resource.
-     */
+    * menampilkan spesifik data berkas mahasiswa.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function show(string $nimEnkrip)
     {
         $nimDekrip = Crypt::decryptString($nimEnkrip);

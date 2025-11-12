@@ -19,6 +19,12 @@ use App\Models\GelombangSidangSkripsi;
 
 class SidangController extends Controller
 {
+    /**
+    * menampilkan halaman dan data sidang.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function index()
     {   
         $tahunAjaran = TahunAjaran::all();
@@ -53,6 +59,13 @@ class SidangController extends Controller
 
         return view('dosen.skripsi.sidang.index', compact('tahunAjaran', 'ruang', 'pegawai', 'mahasiswaSkripsi', 'statusSidang', 'prodi'));
     }
+
+    /**
+    * menyimpan data sidang mahasiswa.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function store(Request $request)
     {
         try {
@@ -74,6 +87,12 @@ class SidangController extends Controller
         }
     }
 
+    /**
+    * mengambil data sidang mahasiswa.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function getDataPeserta(Request $request)
     {
         try {
@@ -207,6 +226,12 @@ class SidangController extends Controller
         }
     }
 
+    /**
+    * menampilkan spesifik data sidang mahasiswa.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function getDetail($id)
     {
         try {
@@ -268,6 +293,12 @@ class SidangController extends Controller
         }
     }
 
+    /**
+    * mengupdate jadwal data sidang mahasiswa.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function updateJadwal(Request $request, $id)
     {
         try {
@@ -316,6 +347,12 @@ class SidangController extends Controller
         return redirect()->route('sidang.index')->with('success', 'Gelombang berhasil diperbarui');
     }
 
+    /**
+    * penilaian sidang mahasiswa.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function penilaianSidang(Request $request, $id)
     {
         try {
@@ -405,6 +442,12 @@ class SidangController extends Controller
         }
     }
 
+    /**
+    * mencetak lembar hadir sidang.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function printLembarHadir(Request $request)
     {
         try {
@@ -472,6 +515,12 @@ class SidangController extends Controller
         }
     }
 
+    /**
+    * mencetak peserta sidang.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function printPeserta(Request $request)
     {
         try {

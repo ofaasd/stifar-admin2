@@ -11,6 +11,12 @@ use Illuminate\Http\Request;
 
 class PengajuanMahasiswaController extends Controller
 {
+    /**
+    * menampilkan data pengajuan mahasiswa (sidang dan skripsi).
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function index()
     {
         // ambil data master

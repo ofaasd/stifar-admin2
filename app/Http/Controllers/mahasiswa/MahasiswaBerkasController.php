@@ -13,7 +13,14 @@ use App\Models\MahasiswaBerkasPendukung;
 
 class MahasiswaBerkasController extends Controller
 {
-    public function index(){
+    /**
+    * menampilkan halaman dan data berkas mahasiswa.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
+    public function index()
+    {
         $mhs = Mahasiswa::where('user_id', Auth::id())->first();
         $nim = $mhs->nim;
         $title = $mhs->nama;
@@ -46,6 +53,12 @@ class MahasiswaBerkasController extends Controller
         return view('mahasiswa.berkas.index', $data);
     }
 
+    /**
+    * menyimpan data berkas mahasiswa.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function store(Request $request)
     {
         $fields = [

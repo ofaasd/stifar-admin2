@@ -13,8 +13,11 @@ use Illuminate\Validation\Rule;
 class MerkKendaraanController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
+    * menampilkan data merk kendaraan.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public $indexed = ['', 'id', 'kode', 'nama'];
     public function index(Request $request)
     {
@@ -92,8 +95,11 @@ class MerkKendaraanController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
+    * menyimpan data merk kendaraan.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function store(Request $request)
     {
         try {
@@ -137,8 +143,11 @@ class MerkKendaraanController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
+    * menampilkan spesifik data merk kendaraan.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function edit(string $id)
     {
         $data = MerkKendaraan::find($id);
@@ -162,8 +171,11 @@ class MerkKendaraanController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     */
+    * menghapus data merk kendaraan.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function destroy(string $id)
     {
         $data = MerkKendaraan::where('id', $id)->delete();

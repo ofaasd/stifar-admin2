@@ -13,6 +13,12 @@ use Illuminate\Support\Facades\Crypt;
 
 class MahasiswaPenontonSidangController extends Controller
 {
+    /**
+    * menampilkan data sidang.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function index()
     {
         try {
@@ -73,6 +79,12 @@ class MahasiswaPenontonSidangController extends Controller
         }
     }
 
+    /**
+    * menampilkan detail spesifik data sidang.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function show($idEnkripsi)
     {
         $idDekrip = Crypt::decryptString($idEnkripsi);
@@ -115,6 +127,12 @@ class MahasiswaPenontonSidangController extends Controller
         return view('mahasiswa.skripsi.penonton-sidang.show', compact('data'));
     }
 
+    /**
+    * mendaftar sebagai peserta sidang.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function daftar(Request $request)
     {
         $request->validate([

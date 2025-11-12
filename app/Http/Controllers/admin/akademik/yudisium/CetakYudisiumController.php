@@ -12,9 +12,6 @@ use Illuminate\Support\Facades\Crypt;
 
 class CetakYudisiumController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     protected $kualitas = [
         'A' => 4,
         'AB' => 3.5,
@@ -27,6 +24,12 @@ class CetakYudisiumController extends Controller
         'E' => 0
     ];
 
+    /**
+    * menampilkan halaman dan data gelombang yudisium.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public $indexed = ['', 'id', 'nama', 'nama_prodi', 'periode', 'jml_peserta'];
     public function index(Request $request)
     {
@@ -156,8 +159,11 @@ class CetakYudisiumController extends Controller
     }
 
     /**
-     * Cetak daftar Yudisium.
-     */
+    * mencetak daftar peserta yudisium per gelombang.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function show(string $idEnkripsi)
     {
         $idDekrip = Crypt::decryptString($idEnkripsi);

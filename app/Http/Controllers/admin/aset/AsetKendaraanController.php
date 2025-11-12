@@ -17,8 +17,11 @@ use Illuminate\Validation\Rule;
 class AsetKendaraanController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
+    * menampilkan data aset kendaraan.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public $indexed = ['', 'id', 'kode', 'nomorPolisi', 'namaKendaraan', 'transmisi', 'namaPenanggungJawab'];
     public function index(Request $request)
     {
@@ -180,8 +183,11 @@ class AsetKendaraanController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
+    * menyimpan data aset kendaraan.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function store(Request $request)
     {
         try {
@@ -251,8 +257,11 @@ class AsetKendaraanController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
+    * menampilkan spesifik data aset kendaraan.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function show(string $id)
     {
         $where = ['aset_kendaraan.id' => $id];
@@ -288,8 +297,11 @@ class AsetKendaraanController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
+    * menampilkan spesifik data aset kendaraan.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function edit(string $id)
     {
         $data = AsetKendaraan::where("id", $id)->first();
@@ -313,8 +325,11 @@ class AsetKendaraanController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     */
+    * menghapus data aset kendaraan.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function destroy(string $id)
     {
         $data = AsetKendaraan::where('id', $id)->delete();

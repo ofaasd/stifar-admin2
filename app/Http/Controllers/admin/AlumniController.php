@@ -18,8 +18,11 @@ use Illuminate\Support\Facades\Crypt;
 class AlumniController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
+    * menampilkan data alumni.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public $indexed = ['', 'id', 'nim', 'nama', 'jenjang', 'angkatan', 'tahun_lulus', 'prodi'];
     public function index(Request $request)
     {
@@ -119,8 +122,11 @@ class AlumniController extends Controller
     }
 
     /**
-     * Get data alumni.
-     */
+    * mengambil data alumni.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function get_alumni(Request $request)
     {
         $id = $request->id;
@@ -177,8 +183,11 @@ class AlumniController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
+    * menyimpan data alumni.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function store(Request $request)
     {
         $id = $request->id;
@@ -258,8 +267,11 @@ class AlumniController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
+    * menampilkan spesifik data alumni.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function edit(string $id)
     {
         $where = ['id' => $id];
@@ -281,6 +293,12 @@ class AlumniController extends Controller
         //
     }
 
+    /**
+    * mencetak ijazah alumni/mahasiswa.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function cetakIjazah(Request $request)
     {
         // Dekripsi NIM
@@ -393,8 +411,11 @@ class AlumniController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     */
+    * menghapus data alumni.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function destroy(string $id)
     {
         $data = Alumni::where('id', $id)->delete();

@@ -9,8 +9,11 @@ use Illuminate\Http\Request;
 class LantaiController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
+    * menampilkan data lantai.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public $indexed = ['', 'id', 'lantai'];
     public function index(Request $request)
     {
@@ -83,8 +86,11 @@ class LantaiController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
+    * menyimpan data lantai.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function store(Request $request)
     {
         // Validasi data
@@ -126,8 +132,11 @@ class LantaiController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
+    * menampilkan spesifik data lantai.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function edit(string $id)
     {
         $lantai = Lantai::find($id);
@@ -151,8 +160,11 @@ class LantaiController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     */
+    * menghapus data lantai.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function destroy(string $id)
     {
         $lantai = Lantai::where('id', $id)->delete();

@@ -14,8 +14,11 @@ use App\Models\MahasiswaBerkasPendukung;
 class AdminDaftarPendaftarWisudaController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
+    * menampilkan halaman dan data mahasiswa.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public $indexed = ['', 'id', 'nim', 'wisuda', 'yudisium', 'berkas', 'status_pembayaran'];
     public function index(Request $request)
     {
@@ -209,8 +212,11 @@ class AdminDaftarPendaftarWisudaController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
+    * menyimpan data pendaftar wisuda.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function store(Request $request)
     {
         $id = $request->id;
@@ -278,6 +284,12 @@ class AdminDaftarPendaftarWisudaController extends Controller
         //
     }
 
+    /**
+    * menyetujui pengajuan pendaftaran wisuda mahasiswa.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function acc(Request $request, string $id)
     {
         try {
@@ -302,8 +314,11 @@ class AdminDaftarPendaftarWisudaController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     */
+    * menghapus atau menolak data pendaftaran wisuda.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function destroy(string $id)
     {
         try {

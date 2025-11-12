@@ -14,9 +14,6 @@ use App\Models\TbYudisiumArchive;
 
 class ArsipProsesYudisiumController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     protected $kualitas = [
         'A' => 4,
         'AB' => 3.5,
@@ -29,6 +26,12 @@ class ArsipProsesYudisiumController extends Controller
         'E' => 0
     ];
 
+    /**
+    * menampilkan halaman dan data arsip yudisium.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public $indexed = ['', 'id', 'nim', 'nilai', 'nilai2', 'gelombang'];
     public function index(Request $request)
     {
@@ -290,8 +293,11 @@ class ArsipProsesYudisiumController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
+    * membuat mahasiswa jadi yudisium.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function store(Request $request)
     {
         $id = $request->id;
@@ -352,8 +358,11 @@ class ArsipProsesYudisiumController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
+    * menampilkan data spesifik data arsip yudisium.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function edit(string $id)
     {
         try {

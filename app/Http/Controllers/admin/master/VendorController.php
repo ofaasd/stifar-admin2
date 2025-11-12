@@ -11,8 +11,11 @@ use Illuminate\Validation\Rule;
 class VendorController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
+    * menampilkan data vendor.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public $indexed = ['', 'id', 'kode', 'nama'];
     public function index(Request $request)
     {
@@ -89,8 +92,11 @@ class VendorController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
+    * menyimpan data vendor.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function store(Request $request)
     {
         try {
@@ -134,8 +140,11 @@ class VendorController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
+    * menampilkan spesifik data vendor.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function edit(string $id)
     {
         $data = MasterVendor::find($id);
@@ -159,8 +168,11 @@ class VendorController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     */
+    * menghapus data vendor.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function destroy(string $id)
     {
         $data = MasterVendor::where('id', $id)->delete();

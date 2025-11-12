@@ -12,6 +12,12 @@ use App\Models\Prodi;
 
 class DosenBerkasController extends Controller
 {
+    /**
+    * menampilkan halaman dan data berkas pendukung dosen.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function index()
     {
         $cekUser = PegawaiBiodatum::where('user_id', Auth::id())->first();
@@ -50,6 +56,12 @@ class DosenBerkasController extends Controller
         return view('dosen.berkas.index', $data);
     }
     
+    /**
+    * menyimpan data berkas pendukung dosen.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function store(Request $request)
     {
         $fields = [

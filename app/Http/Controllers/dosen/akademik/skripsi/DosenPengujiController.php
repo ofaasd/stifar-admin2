@@ -23,6 +23,13 @@ class DosenPengujiController extends Controller
         $this->helpers = new helpers();
     }
 
+
+    /**
+    * menampilkan halaman daftar mahasiswa sidang.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function index()
     {
         $data = [
@@ -30,6 +37,13 @@ class DosenPengujiController extends Controller
         ];
         return view('dosen.akademik.skripsi.penguji.index', $data);
     }
+
+    /**
+    * mengambil data pengajuan penguji mahasiswa sidang.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function getData()
     {
         $cekUser = PegawaiBiodatum::where('user_id', Auth::id())->first();
@@ -142,6 +156,12 @@ class DosenPengujiController extends Controller
 
     }
 
+    /**
+    * menampilkan spesifik mahasiswa sidang.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function show($idEnkripsi)
     {
         try {
@@ -248,6 +268,13 @@ class DosenPengujiController extends Controller
         }
     }
 
+
+    /**
+    * persetujuan menjadi penguji.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function acc(Request $request, $idEnkripsi)
     {
         $id = $this->helpers->decryptId($idEnkripsi);

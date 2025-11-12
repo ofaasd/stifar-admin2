@@ -17,6 +17,12 @@ use App\Models\TbPembayaranWisuda;
 
 class DaftarWisudaController extends Controller
 {
+    /**
+    * menampilkan halamanm, data gelombang wisuda dan pendaftaran wisuda.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function index()
     {
         $gelombangWisuda = TbGelombangWisuda::select([
@@ -91,6 +97,12 @@ class DaftarWisudaController extends Controller
         return view('mahasiswa.akademik.daftar-wisuda.index', $data);
     }
 
+    /**
+    * menyimpan data pendaftaran wisuda.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function store(Request $request)
     {
         // validasi input
@@ -262,6 +274,12 @@ class DaftarWisudaController extends Controller
         return response()->json(['message' => 'Berhasil Menyimpan Berkas']);
     }
 
+    /**
+    * mengupload bukti bayar wisuda.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function uploadBuktiBayar(Request $request)
     {
         try {

@@ -100,6 +100,12 @@ class DosenController extends Controller
         return json_encode(['status' => 200 ]);
     }
 
+    /**
+    * perizinan skripsi mahasiswa.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function izinkanSkripsi(Request $request){
         Mahasiswa::where('id', $request->idmhs)->update([ 'is_skripsi' => 1]);
         return json_encode(['status' => 200 ]);

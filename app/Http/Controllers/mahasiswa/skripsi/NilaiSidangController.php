@@ -22,6 +22,12 @@ class NilaiSidangController extends Controller
         $this->helpers = new helpers();
     }
 
+    /**
+    * menampilkan data nilai sidang.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function index() 
     {
         try {
@@ -101,6 +107,12 @@ class NilaiSidangController extends Controller
         }
     }
 
+    /**
+    * menampilkan spesifik dan detail data nilai sidang.
+    *
+    * Terakhir diedit: 6 November 2025
+    * Editor: faiz
+    */
     public function show($idEnkripsi)
     {
         $id = $this->helpers->decryptId($idEnkripsi);
