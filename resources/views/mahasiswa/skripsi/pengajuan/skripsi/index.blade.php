@@ -135,26 +135,20 @@
 @endsection
 
 @section('breadcrumb-title')
-    <h3>{{ 'Daftar Dosen Pembimbing' }}</h3>
+    <h3>{{ 'Pengajuan Judul' }}</h3>
 @endsection
 
 @section('breadcrumb-items')
-    <li class="breadcrumb-item">Master Data</li>
-    <li class="breadcrumb-item active">{{ 'Daftar Dosen Pembimbing' }}</li>
+    <li class="breadcrumb-item">Akademik</li>
+    <li class="breadcrumb-item">Skripsi</li>
+    <li class="breadcrumb-item">Pengajuan</li>
+    <li class="breadcrumb-item active">{{ 'Pengajuan Judul' }}</li>
 @endsection
 
 @section('content')
-    <div class="row">
+    <div class="card">
         <div class="col-md-12">
             <div class="p-4">
-                <nav aria-label="breadcrumb" class="mb-4">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="mahasiswa-dashboard.html">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="#pengajuan">Pengajuan</a></li>
-                        <li class="breadcrumb-item active">Judul Skripsi</li>
-                    </ol>
-                </nav>
-
                 <div class="form-header">
                     <div class="row align-items-center">
                         <div class="col-md-8">
@@ -270,7 +264,7 @@
                         <button class="btn btn-success btn-lg" 
                         onclick="nextStep(2)" 
                         id="btnStep1" 
-                        {{-- {{ $syarat == 3 ? '' : 'disabled' }} --}}
+                        {{ $syarat == 3 ? '' : 'disabled' }}
                         >
                             Lanjutkan <i class="bi bi-arrow-right ms-2"></i>
                         </button>

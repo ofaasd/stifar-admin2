@@ -14,6 +14,7 @@
 @endsection
 
 @section('breadcrumb-items')
+    <li class="breadcrumb-item">Akademik</li>
     <li class="breadcrumb-item">Skripsi</li>
     <li class="breadcrumb-item active">{{ 'Pengajuan' }}</li>
 @endsection
@@ -43,7 +44,7 @@
             </li> --}}
             <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="judul-tab" data-bs-toggle="tab" data-bs-target="#judul" type="button">
-                    <i class="bi bi-file-text me-2"></i>Judul Skripsi
+                    <i class="bi bi-file-text me-2"></i>Judul
                 </button>
             </li>
             <li class="nav-item" role="presentation">
@@ -410,7 +411,7 @@
                                 <a href="{{ route('mhs.pengajuan.judul.index') }}" class="card h-100 pengajuan-option">
                                     <div class="card-body text-center">
                                         <i class="bi bi-file-text fs-1 text-success mb-3"></i>
-                                        <h6>Judul Skripsi</h6>
+                                        <h6>Judul</h6>
                                         <small class="text-muted">Ajukan judul penelitian</small>
                                     </div>
                                 </a>
@@ -460,11 +461,11 @@
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="edit-judul" class="form-label">Judul Skripsi</label>
+                            <label for="edit-judul" class="form-label">Judul</label>
                             <textarea class="form-control" id="edit-judul" name="judul" rows="3" required></textarea>
                         </div>
                         <div class="mb-3">
-                            <label for="edit-judul-english" class="form-label">Judul Skripsi (English)</label>
+                            <label for="edit-judul-english" class="form-label">Judul (English)</label>
                             <textarea class="form-control" id="edit-judul-english" name="judulEnglish" rows="3" required></textarea>
                         </div>
                         <div class="mb-3">

@@ -14,6 +14,7 @@
 @endsection
 
 @section('breadcrumb-items')
+    <li class="breadcrumb-item">Akademik</li>
     <li class="breadcrumb-item">Skripsi</li>
     <li class="breadcrumb-item active">{{ 'Pengajuan' }}</li>
 @endsection
@@ -36,7 +37,7 @@
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="judul-tab" data-bs-toggle="tab" data-bs-target="#judul" type="button">
-                <i class="bi bi-file-text me-2"></i>Judul Skripsi
+                <i class="bi bi-file-text me-2"></i>Judul
             </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -212,7 +213,7 @@
                         <div class="card h-100 pengajuan-option" onclick="selectPengajuan('judul')">
                             <div class="card-body text-center">
                                 <i class="bi bi-file-text fs-1 text-success mb-3"></i>
-                                <h6>Judul Skripsi</h6>
+                                <h6>Judul</h6>
                                 <small class="text-muted">Ajukan judul penelitian</small>
                             </div>
                         </div>
