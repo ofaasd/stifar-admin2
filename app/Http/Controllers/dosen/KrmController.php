@@ -139,7 +139,14 @@ class KrmController extends Controller
         $total_tidak_hadir = 0;
         $total_sakit = 0;
         $total_izin = 0;
-        $absensi_model = AbsensiModel::where(['id_jadwal' => $id_jadwal, 'id_pertemuan' => $id_pertemuan]);
+        $absensi_model = AbsensiModel::where(['id_jadwal' => $id_jadwal, 'id_pertemuan' => $id_pertemuan])
+                    ->select('absensi_models.*')
+                    ->whereIn('id', function($query) use ($id_jadwal, $id_pertemuan) {
+                        $query->select(DB::raw('MAX(id)'))
+                            ->from('absensi_models')
+                            ->where(['id_jadwal' => $id_jadwal, 'id_pertemuan' => $id_pertemuan])
+                            ->groupBy('id_mhs');
+                    });
         if($absensi_model->count() > 0){
             foreach($absensi_model->get() as $row){
                 if($row->type == 0){
