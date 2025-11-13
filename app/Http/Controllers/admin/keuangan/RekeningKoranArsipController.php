@@ -113,4 +113,20 @@ class RekeningKoranArsipController extends Controller
             return redirect('/admin/keuangan/rekening_koran/arsip')->with('error', 'Rekening Koran tidak ditemukan.');
         }
     }
+    public function delete($id)
+    {
+        $rek = RekeningKoranTemp::find($id);
+        if ($rek) {
+            $rek->delete();
+            return response()->json([
+                'success' => true,
+                'message' => 'Rekening Koran berhasil dihapus dari arsip.'
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Rekening Koran tidak ditemukan.'
+            ], 404);
+        }
+    }
 }
