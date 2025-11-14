@@ -134,7 +134,7 @@
                                 @endif
                             </td>
                             <td>{{ $row->catatan_mahasiswa }}</td>
-                            <td>{{ $row->catatan_dosen }}</td>
+                            <td>{{ $row->solusi_permasalahan }}</td>
                             <td>{{ $row->metode }}</td>
                             <td>{{ \Carbon\Carbon::parse($row->created_at)->format('d/m/Y H:i:s') }}</td>
                         </tr>

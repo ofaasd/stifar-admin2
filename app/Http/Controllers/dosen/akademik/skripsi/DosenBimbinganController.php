@@ -190,7 +190,7 @@ class DosenBimbinganController extends Controller
             });
 
             // kalo sudah ada 6 bimbingan dengan file_dosen tidak null, maka bisa sidang
-            $isSidang = $bimbingan->whereNotNull('file_dosen')
+            $isSidang = $bimbingan->whereNotNull('solusi_permasalahan')
                 ->count() >= 6 ? true : false;
 
             $mahasiswa = Mahasiswa::where('nim', $masterSkripsi->nim)->first();

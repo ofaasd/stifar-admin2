@@ -275,8 +275,14 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="card">
-                                <div class="card-header">
+                                <div class="card-header d-flex align-items-center justify-content-between">
                                     <h5 class="mb-0"><i class="bi bi-file-text me-2"></i>Judul, Bidang & Pembimbing</h5>
+                                    <div>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip" data-bs-placement="left"
+                                            title="Lakukan pengecekan pada bidang minat sebelum memilih pembimbing untuk memastikan kesesuaian. Pastikan semua mata kuliah prasyarat pada bidang minat terpilih memiliki nilai di atas C (tidak ada nilai C atau di bawahnya); jika ada mata kuliah dengan nilai C atau lebih rendah, Anda tidak memenuhi syarat untuk mengambil pada bidang minat tersebut.">
+                                            <i class="bi bi-info-circle me-1"></i>Bantuan
+                                        </button>
+                                    </div>
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
@@ -833,7 +839,7 @@
                             notifDiv.style.display = 'block';
                             statusSpan.textContent = 'Tidak Memenuhi Mata Kuliah Prasyarat';
                             messageDiv.style.display = 'block';
-                            textP.textContent = response.message + ' (' + response.matkul + ': ' + response.nilai + ')';
+                            textP.textContent = response.message + ' (' + (response.matkul ?? '-') + ': ' + (response.nilai ?? '-') + ')';
                         }
 
                         // Reset selections

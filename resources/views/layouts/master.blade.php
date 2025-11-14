@@ -81,9 +81,6 @@
 
           <script>
             window.addEventListener('load', function() {
-              console.log('====================================');
-              console.log('Loaded modal isi pisn');
-              console.log('====================================');
               var el = document.getElementById('isi-no-pisn');
               if (el) {
                 var modal = new bootstrap.Modal(el);

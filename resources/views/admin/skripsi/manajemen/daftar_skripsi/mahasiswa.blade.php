@@ -271,8 +271,8 @@
                                                 <p>{{ $item->catatan_mahasiswa ?? '-' }}</p>
                                             </div>
                                             <div class="col-md-6">
-                                                <h6>Catatan Dosen:</h6>
-                                                <p>{{ $item->catatan_dosen ?? 'Belum ada catatan dari dosen' }}</p>
+                                                <h6>Solusi Permasalahan:</h6>
+                                                <p>{{ $item->solusi_permasalahan ?? 'Belum ada catatan dari dosen' }}</p>
                                             </div>
                                         </div>
                                         @if ($item->berkas && $item->berkas->count() > 0)

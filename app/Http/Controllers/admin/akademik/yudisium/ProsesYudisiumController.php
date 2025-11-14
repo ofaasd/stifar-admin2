@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\admin\akademik\yudisium;
 
+use App\helpers;
 use App\Models\Prodi;
 use App\Models\Mahasiswa;
 use App\Models\TbYudisium;
@@ -373,6 +374,18 @@ class ProsesYudisiumController extends Controller
                     $updateMhs = Mahasiswa::where('nim', $nim)->update([
                         'is_yudisium' => 1
                     ]);
+
+                    $mhs = Mahasiswa::where('nim', $nim)->first();
+
+                    $dataWa['no_wa'] = $mhs->hp ?? '';
+                    $message = "*MYSTIFAR - Yudisium*\n\n"
+                        . "Halo, " . ($mhs->nama ?? '-') . ",\n\n"
+                        . "Selamat! Anda telah berhasil terdaftar sebagai peserta Yudisium pada gelombang.\n\n"
+                        . "Silakan pantau informasi lebih lanjut melalui MyStifar atau hubungi bagian akademik jika ada pertanyaan.\n\n"
+                        . "Terima kasih.\n\n";
+                    $dataWa['pesan'] = $message;
+                    
+                    $pesan = helpers::send_wa($dataWa);
                 }
 
                 if ($save) {

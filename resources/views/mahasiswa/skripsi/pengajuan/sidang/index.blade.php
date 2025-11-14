@@ -195,6 +195,9 @@
                                             <div class="mt-3">
                                                 <span class="badge bg-success">Tersedia</span>
                                             </div>
+                                            <div class="mt-2">
+                                                <small class="text-warning">Catatan: Belum ada persyaratan dari Koordinator Skripsi dan TA Stifar.</small>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\dosen\skripsi;
 
+use App\helpers;
+use Carbon\Carbon;
 use App\Models\Prodi;
 use App\Models\Mahasiswa;
 use App\Models\AktorSidang;
@@ -304,7 +306,6 @@ class SidangController extends Controller
         try {
             $sidang = SidangSkripsi::findOrFail($id);
             $sidang->update([
-                'gelombang_id'       => $request->gelombangId,
                 'tanggal'       => $request->tanggal,
                 'waktu_mulai'   => $request->waktuMulai,
                 'waktu_selesai' => $request->waktuSelesai,
@@ -312,6 +313,68 @@ class SidangController extends Controller
                 'penguji'       => isset($request->penguji) ? implode(',', $request->penguji) : null,
                 'status'        => 2,
             ]);
+
+            $pegawai = PegawaiBiodatum::whereIn('npp', $sidang->penguji)->get();
+
+            $teksNamaPenguji = '';
+            foreach ($pegawai as $index => $p) {
+                $teksNamaPenguji .= ($index + 1) . '. ' . $p->nama_lengkap . ' (' . $p->npp . ')' . "\n";
+            }
+
+            // Pastikan semua input ada sebelum di-convert, berikan fallback jika kosong/tidak valid
+            $formattedTanggal = '-';
+            if (!empty($request->tanggal)) {
+                try {
+                    $formattedTanggal = Carbon::parse($request->tanggal)->translatedFormat('d/m/Y');
+                } catch (\Exception $e) {
+                    // jika parsing gagal, simpan nilai mentah sebagai fallback
+                    $formattedTanggal = $request->tanggal;
+                }
+            }
+
+            $formattedWaktuMulai = '-';
+            if (!empty($request->waktuMulai) && strtotime(trim($request->waktuMulai)) !== false) {
+                $formattedWaktuMulai = date('H:i', strtotime(trim($request->waktuMulai)));
+            } elseif (!empty($request->waktuMulai)) {
+                $formattedWaktuMulai = $request->waktuMulai;
+            }
+
+            $formattedWaktuSelesai = '-';
+            if (!empty($request->waktuSelesai) && strtotime(trim($request->waktuSelesai)) !== false) {
+                $formattedWaktuSelesai = date('H:i', strtotime(trim($request->waktuSelesai)));
+            } elseif (!empty($request->waktuSelesai)) {
+                $formattedWaktuSelesai = $request->waktuSelesai;
+            }
+
+            $ruang = MasterRuang::find($request->ruangId);
+            
+            $mhs = MasterSkripsi::where('id', $sidang->skripsi_id)->first();
+            $dataWa['no_wa'] = $mhs->hp ?? '';
+            $dataWa['pesan'] ="*MYSTIFAR - Pengajuan Sidang*\n\n"
+                . "Halo, " . ($mhs->nama ?? '-') . ",\n\n"
+                ."NIM: ".$mhs->nim."\n\n"
+                ."Jadwal sidang skripsi Anda telah distujui dengan rincian sebagai berikut:\n"
+                ."Penguji: \n"
+                .$teksNamaPenguji;
+
+            if (!empty($formattedTanggal) && $formattedTanggal != '-') {
+                $dataWa['pesan'] .= "Tanggal: " . $formattedTanggal . "\n";
+            }
+
+            if ((!empty($formattedWaktuMulai) && $formattedTanggal != '-') && (!empty($formattedWaktuSelesai) && $formattedWaktuSelesai != '-')) {
+                $dataWa['pesan'] .= "Waktu: " . $formattedWaktuMulai . " - " . $formattedWaktuSelesai . "\n";
+            }
+
+            if (isset($ruang) && !empty($ruang) && !empty($ruang->nama_ruang)) {
+                $dataWa['pesan'] .= "Ruang: " . $ruang->nama_ruang . "\n\n";
+            }
+
+            $dataWa['pesan'] .= "Harap hadir tepat waktu dan persiapkan diri Anda dengan baik.\n\n"
+                ."Terima kasih.\n"
+                ."- Admin Mystifar";
+
+            $pesan = helpers::send_wa($dataWa);
+            
             return redirect()->back()->with('success', 'Jadwal sidang berhasil diperbarui.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
@@ -578,10 +641,10 @@ class SidangController extends Controller
             $sidang = $querySidang->get()
             ->map(function($item) {
                 // Format tanggal menjadi "12 September 2025"
-                if (!empty($item->tanggal)) {
-                    $carbonTanggal = \Carbon\Carbon::parse($item->tanggal);
-                    $item->tanggal = $carbonTanggal->translatedFormat('d/m/Y');
-                }
+                // if (!empty($item->tanggal)) {
+                //     $carbonTanggal = \Carbon\Carbon::parse($item->tanggal);
+                //     $item->tanggal = $carbonTanggal->translatedFormat('d/m/Y');
+                // }
 
                 return $item;
             });
@@ -605,7 +668,7 @@ class SidangController extends Controller
                     1 => 'Seminar Proposal',
                     2 => 'Seminar Proposal',
                 ];
-                $parts[] = 'Jenis: ' . ($jenisLabel[$jenis] ?? $jenis);
+                $parts[] = ($jenisLabel[$jenis] ?? $jenis);
             }
 
             if (!empty($fromDate) && !empty($toDate)) {
@@ -617,11 +680,11 @@ class SidangController extends Controller
             }
 
             if (!empty($parts)) {
-                $title .= ' — ' . implode(' | ', $parts);
+                $filterTitle = implode(' | ', $parts);
             }
             // Generate PDF dengan mPDF
-            $mpdf = new \Mpdf\Mpdf();
-            $html = view('dosen.skripsi.sidang.print', compact('sidang', 'logo', 'title'))->render();
+            $mpdf = new \Mpdf\Mpdf(['orientation' => 'L']); // landscape
+            $html = view('dosen.skripsi.sidang.print', compact('sidang', 'logo', 'title', 'filterTitle'))->render();
             $mpdf->WriteHTML($html);
 
             $filename = $title . '.pdf';

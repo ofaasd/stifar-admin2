@@ -283,7 +283,7 @@
             <tr>
                 <td>Tempat dan Tanggal Lahir / <span class="english">Place and Date of Birth</span></td>
                 <td>:</td>
-                <td>{{ $data->tempatLahir }}, {{ $data->tglLahir }}</td>
+                <td>{{ $data->tempatLahir ?? '-' }}, {{ $data->tglLahir }}</td>
             </tr>
             <tr>
                 <td>Tanggal Lulus / <span class="english">Date of Graduation</span></td>
@@ -371,8 +371,8 @@
             <tr>
                 <td colspan="8" style="text-align:left; padding-left: 12px; padding-right: 12px; padding-bottom: 12px; border-top:1px solid">
                     <p>JUDUL TESIS / <span class="english">Title of Scientific Paper</span> :</p>
-                    <p>{{ $data->judul }}</p>
-                    <p class="english">{{ $data->judulEng }}</p>
+                    <p style="font-family: 'Times New Roman', Times, serif; margin-bottom: 12px;">{{ $data->judul }}</p>
+                    <p class="english" style="font-family: 'Times New Roman', Times, serif; margin-top: 8px;">{{ $data->judulEng }}</p>
                 </td>
             </tr>
         </tbody>

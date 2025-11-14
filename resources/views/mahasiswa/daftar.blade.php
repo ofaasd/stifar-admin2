@@ -83,9 +83,11 @@
                                             <label for="spesifik-angkatan" class="form-label">Tahun Angkatan</label>
                                             <select id="spesifik-angkatan" name="angkatan" class="form-select" required>
                                                 <option value="" disabled selected>Pilih Angkatan...</option>
-                                                @foreach($angkatan as $ang)
-                                                    <option value="{{ $ang }}">{{ $ang }}</option>
-                                                @endforeach
+                                                @if (isset($angkatan) && !is_null($angkatan))
+                                                    @foreach($angkatan as $ang)
+                                                        <option value="{{ $ang }}">{{ $ang }}</option>
+                                                    @endforeach
+                                                @endif
                                             </select>
                                             <div class="form-text">Pilih tahun angkatan dan prodi untuk mencetak KTM.</div>
                                         </div>

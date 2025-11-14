@@ -13,6 +13,8 @@ use App\Models\MasterBidangMinat;
 use App\Models\MataKuliah;
 use Illuminate\Support\Facades\Auth;
 use App\Models\PengajuanJudulSkripsi;
+use App\helpers;
+use App\Models\PegawaiBiodatum;
 
 class PengajuanSkripsiController extends Controller
 {
@@ -134,7 +136,17 @@ class PengajuanSkripsiController extends Controller
             \DB::beginTransaction();
     
             $idUser = Auth::User()->id;
-            $mhs = Mahasiswa::where('user_id', $idUser)->first();
+            $mhs = Mahasiswa::select([
+                'mahasiswa.*',
+                'program_studi.jml_sks AS minSks',
+                'program_studi.max_c AS maxC',
+                'program_studi.max_d AS maxD',
+                'program_studi.max_e AS maxE',
+            ])
+            ->where('user_id', $idUser)
+            ->leftJoin('program_studi', 'program_studi.id', '=', 'mahasiswa.id_program_studi')
+            ->first();
+
             $nim   = $mhs->nim;
     
             // buat master skripsi
@@ -150,16 +162,6 @@ class PengajuanSkripsiController extends Controller
             }
 
             $idUser = Auth::User()->id;
-            $mhs = Mahasiswa::select([
-                'mahasiswa.*',
-                'program_studi.jml_sks AS minSks',
-                'program_studi.max_c AS maxC',
-                'program_studi.max_d AS maxD',
-                'program_studi.max_e AS maxE',
-            ])
-            ->where('user_id', $idUser)
-            ->leftJoin('program_studi', 'program_studi.id', '=', 'mahasiswa.id_program_studi')
-            ->first();
 
             if(!$mhs)
             {
@@ -231,6 +233,16 @@ class PengajuanSkripsiController extends Controller
             //     ], 400);
             //     return redirect()->back()->with('error','Anda belum mengambil mata kuliah Metodologi Penelitian.');
             // }
+
+            $bidangMinat = MasterBidangMinat::all();
+            $teksBidangMinat1 = $bidangMinat->where('id', $request->bidang1)->first()->nama ?? '';
+            $teksBidangMinat2 = $bidangMinat->where('id', $request->bidang2)->first()->nama ?? '';
+
+            $pembimbing = PegawaiBiodatum::all();
+            $teksPembimbing1_1 = $pembimbing->where('npp', $request->pembimbing1)->first()->nama_lengkap ?? '';
+            $teksPembimbing1_2 = $pembimbing->where('npp', $request->pembimbing1_2)->first()->nama_lengkap ?? '';
+            $teksPembimbing2_1 = $pembimbing->where('npp', $request->pembimbing2)->first()->nama_lengkap ?? '';
+            $teksPembimbing2_2 = $pembimbing->where('npp', $request->pembimbing2_2)->first()->nama_lengkap ?? '';
             
             $pengajuanData = [
                 [
@@ -249,11 +261,14 @@ class PengajuanSkripsiController extends Controller
                 ]
             ];
 
+            $save = 0;
             foreach ($pengajuanData as $data) {
                 $master = MasterSkripsi::create([
                     'nim' => $nim,
                     'pembimbing_1' => $data['pembimbing1'],
                     'pembimbing_2' => $data['pembimbing2'],
+                    'pembimbing_1_pengajuan' => $data['pembimbing1'],
+                    'pembimbing2_pengajuan' => $data['pembimbing2'],
                     'status' => 0
                 ]);
 
@@ -265,6 +280,38 @@ class PengajuanSkripsiController extends Controller
                     'id_bidang_minat' => $data['bidangMinat'],
                     'status' => 0,
                 ]);
+
+                $save++;
+            }
+
+            if($save == 2)
+            {
+                $dataWa['no_wa'] = $mhs->hp ?? '';
+                $abstrak = $validated['abstrak'] ?? '';
+                $shortAbstrak = mb_strlen($abstrak) > 350 ? mb_substr($abstrak, 0, 350) . '...' : $abstrak;
+
+                $message = "*MYSTIFAR - Pengajuan Judul*\n\n"
+                    . "Halo, " . $mhs->nama . ",\n\n"
+                    . "Pengajuan skripsi Anda telah berhasil disimpan dengan rincian berikut:\n\n"
+                    . "Judul Pilihan 1:\n"
+                    . "- Bidang Minat: " . ($teksBidangMinat1 ?? '-') . "\n"
+                    . "- Judul: " . ($request->judul1 ?? '-') . "\n"
+                    . "- Judul (EN): " . ($request->judulEng1 ?? '-') . "\n"
+                    . "- Pembimbing 1: " . ($teksPembimbing1_1 ?? '-') . "\n"
+                    . "- Pembimbing 2: " . ($teksPembimbing1_2 ?? '-') . "\n\n"
+                    . "Judul Pilihan 2:\n"
+                    . "- Bidang Minat: " . ($teksBidangMinat2 ?? '-') . "\n"
+                    . "- Judul: " . ($request->judul2 ?? '-') . "\n"
+                    . "- Judul (EN): " . ($request->judulEng2 ?? '-') . "\n"
+                    . "- Pembimbing 1: " . ($teksPembimbing2_1 ?? '-') . "\n"
+                    . "- Pembimbing 2: " . ($teksPembimbing2_2 ?? '-') . "\n\n"
+                    . "Abstrak (ringkasan):\n" . $shortAbstrak . "\n\n"
+                    . "Status: Pengajuan\n\n"
+                    . "Jika ada koreksi atau pertanyaan, silakan hubungi admin skripsi.\n\n"
+                    . "Terima kasih,\nAdmin Skripsi STIFAR";
+                $dataWa['pesan'] = $message;
+                
+                $pesan = helpers::send_wa($dataWa);
             }
     
             DB::commit();
@@ -340,15 +387,23 @@ class PengajuanSkripsiController extends Controller
             ->whereNotNull('master_nilai.nakhir')
             ->get();
 
-            foreach ($getNilai as $row) {
-                if (!isset($this->kualitas[$row['nhuruf']]) || $this->kualitas[$row['nhuruf']] < 2) {
-                    return response()->json([
-                        'status' => 'error',
-                        'isValid' => false,
-                        'message' => 'Terdapat mata kuliah dengan nilai di bawah C. Minimal nilai adalah C untuk bidang minat ini.',
-                        'matkul' => $row->nama_matkul,
-                        'nilai' => $row['nakhir']
-                    ], 200);
+            if($getNilai->isEmpty()) {
+                return response()->json([
+                    'status' => 'error',
+                    'isValid' => false,
+                    'message' => 'Anda belum mengambil mata kuliah pada bidang minat ini.'
+                ], 200);
+            }else{
+                foreach ($getNilai as $row) {
+                    if (!isset($this->kualitas[$row['nhuruf']]) || $this->kualitas[$row['nhuruf']] < 2) {
+                        return response()->json([
+                            'status' => 'error',
+                            'isValid' => false,
+                            'message' => 'Terdapat mata kuliah dengan nilai di bawah C. Minimal nilai adalah C untuk bidang minat ini.',
+                            'matkul' => $row->nama_matkul,
+                            'nilai' => $row['nakhir']
+                        ], 200);
+                    }
                 }
             }
 

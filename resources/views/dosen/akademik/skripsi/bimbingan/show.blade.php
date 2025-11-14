@@ -217,22 +217,22 @@
                                 <tbody>
                                     @foreach($bimbingan as $item)
                                         <tr>
-                                            <td>{{ \Carbon\Carbon::parse($item->tanggal_waktu)->format('d F Y') }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($item->tanggal_waktu)->format('d/m/Y') }}</td>
                                             <td>
                                                 @if ($item->berkas && $item->berkas->count() > 0)
                                                     <div class="list-group">
                                                         @foreach ($item->berkas as $berkas)
                                                             <a href="{{ asset('storage/' . $berkas->file) }}"
                                                                 target="_blank"
-                                                                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-                                                                @if(Str::endsWith(strtolower($berkas->file), '.pdf')) rel="noopener noreferrer" @endif>>
-                                                                {{ basename($berkas->file) }}
-                                                                <span class="badge bg-primary rounded-pill">Unduh</span>
+                                                                class="list-group-item list-group-item-action d-flex justify-content-center align-items-center"
+                                                                @if(Str::endsWith(strtolower($berkas->file), '.pdf')) rel="noopener noreferrer" @endif
+                                                                title="{{ basename($berkas->file) }}">
+                                                                <i class="fa fa-download" aria-hidden="true"></i>
                                                             </a>
                                                         @endforeach
                                                     </div>
                                                 @else
-                                                    <span class="text-muted">Tidak ada</span>
+                                                    <span class="text-muted">-</span>
                                                 @endif
                                             </td>
                                             <td>{{ $item->permasalahan }}</td>
@@ -259,13 +259,13 @@
                                                             <button type="submit" class="btn btn-primary btn-sm btn-submit-revisi">Upload File</button>
                                                         </form>
                                                     @else
-                                                        <a href="{{ asset('storage/' . $item->file_dosen) }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                                            Lihat File
+                                                        <a href="{{ asset('storage/' . $item->file_dosen) }}" target="_blank" class="btn btn-sm">
+                                                            <i class="fa fa-eye"></i>
                                                         </a>
                                                     @endif
                                                 @elseif(!empty($item->file_dosen))
-                                                    <a href="{{ asset('storage/' . $item->file_dosen) }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                                        Lihat File
+                                                    <a href="{{ asset('storage/' . $item->file_dosen) }}" target="_blank" class="btn btn-sm">
+                                                        <i class="fa fa-eye"></i>
                                                     </a>
                                                 @else
                                                     <span class="text-muted">-</span>

@@ -400,9 +400,9 @@
 
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <h6>Catatan Dosen:</h6>
+                                        <h6>Solusi Permasalahan:</h6>
                                         <div class="card bg-light mb-3 text-dark">
-                                            <div class="card-body" id="catatanDosen"></div>
+                                            <div class="card-body" id="solusiPermasalahan"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -496,7 +496,7 @@
                                 $('#detail-permasalahan').text(detail.permasalahan ?? '-');
                                 $('#solusi-permasalahan').text(detail.solusi_permasalahan ?? '-');
                                 $('#catatanMahasiswa').html(detail.catatan_mahasiswa ?? '-');
-                                $('#catatanDosen').html(detail.catatan_dosen ?? '-');
+                                $('#solusiPermasalahan').html(detail.solusi_permasalahan ?? '-');
 
                                 let statusText = '',
                                     statusClass = '';

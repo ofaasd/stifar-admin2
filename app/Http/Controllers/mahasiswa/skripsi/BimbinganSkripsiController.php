@@ -300,7 +300,7 @@ class BimbinganSkripsiController extends Controller
             }
 
             $logBook = BimbinganSkripsi::where('id_master', $masterSkripsi->id)
-                ->whereNotNull('file_dosen')
+                ->whereNotNull('solusi_permasalahan')
                 ->get();
 
             $mhs = Mahasiswa::select([

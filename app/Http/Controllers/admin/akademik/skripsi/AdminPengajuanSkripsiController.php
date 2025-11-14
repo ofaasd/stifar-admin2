@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers\admin\akademik\skripsi;
 
+use App\helpers;
+use App\Models\Prodi;
 use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use App\Models\MasterSkripsi;
 use App\Models\RefPembimbing;
+use App\Models\PegawaiBiodatum;
+use App\Models\MasterBidangMinat;
 use App\Http\Controllers\Controller;
 use App\Models\PengajuanJudulSkripsi;
-use App\Models\Prodi;
 use Illuminate\Support\Facades\Crypt;
 
 class AdminPengajuanSkripsiController extends Controller
@@ -279,6 +282,39 @@ class AdminPengajuanSkripsiController extends Controller
                     PengajuanJudulSkripsi::where('id', $judul->id)->update([
                         'status' => 1,
                     ]);
+                    
+                    $dataWa['no_wa'] = $mhs->hp ?? '';
+                    $abstrak = $validated['abstrak'] ?? '';
+                    $shortAbstrak = mb_strlen($abstrak) > 350 ? mb_substr($abstrak, 0, 350) . '...' : $abstrak;
+                    $mhs = Mahasiswa::where('nim', $nim)->first();
+                    $judul = PengajuanJudulSkripsi::where('id', $judul->id)->first();
+
+                    $bidangMinat = MasterBidangMinat::all();
+                    $teksBidangMinat = $bidangMinat->where('id', $judul->id_bidang_minat)->first()->nama ?? '';
+
+                    $pembimbing = PegawaiBiodatum::all();
+                    $teksPembimbing1 = $pembimbing->where('npp', $pembimbing1)->first()->nama_lengkap ?? '';
+                    $teksPembimbing2 = $pembimbing->where('npp', $pembimbing2)->first()->nama_lengkap ?? '';
+
+                    // Gunakan abstrak dari model judul yang diterima
+                    $abstrak = $judul->abstrak ?? '';
+                    $shortAbstrak = mb_strlen($abstrak) > 350 ? mb_substr($abstrak, 0, 350) . '...' : $abstrak;
+
+                    $message = "*MYSTIFAR - Pengajuan Judul*\n\n"
+                        . "Halo, " . ($mhs->nama ?? '-') . ",\n\n"
+                        . "Pengajuan skripsi Anda dinyatakan: *Diterima*\n\n"
+                        . "Rincian judul yang diterima:\n"
+                        . "- Bidang Minat: " . ($teksBidangMinat ?: '-') . "\n"
+                        . "- Judul: " . ($judul->judul ?? '-') . "\n"
+                        . "- Judul (EN): " . ($judul->judul_eng ?? '-') . "\n"
+                        . "- Pembimbing 1: " . ($teksPembimbing1 ?: '-') . "\n"
+                        . "- Pembimbing 2: " . ($teksPembimbing2 ?: '-') . "\n\n"
+                        . "Abstrak (ringkasan):\n" . $shortAbstrak . "\n\n"
+                        . "Silakan cek sistem atau hubungi admin skripsi untuk informasi lebih lanjut.\n\n"
+                        . "Terima kasih,\nAdmin Skripsi STIFAR";
+                    $dataWa['pesan'] = $message;
+                    
+                    $pesan = helpers::send_wa($dataWa);
                 }else{
                     MasterSkripsi::where('id', $judul->id_master)->update([
                         'status' => 3, // Status master berubah menjadi Ditolak selain yang acc
