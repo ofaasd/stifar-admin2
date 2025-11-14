@@ -141,7 +141,7 @@ class TagihanMhsController extends Controller
         $jenis = JenisKeuangan::all();
         $list_jenis = [];
         foreach($jenis as $j){
-            $list_jenis[$j->kode] = $j->nama;
+            $list_jenis[$j->kode] = "Pembayaran " . $j->nama;
         }
         return view('mahasiswa.tagihan_riwayat', compact('title','mhs','pembayaran', 'list_jenis'));
     }
