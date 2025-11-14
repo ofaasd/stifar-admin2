@@ -4,6 +4,7 @@ namespace App;
 
 use Auth;
 use App\Models\MasterSkripsi;
+use App\Models\master_nilai;
 use Illuminate\Support\Facades\Crypt;
 
 class helpers
@@ -31,6 +32,54 @@ class helpers
         }else{
             return 'E';
         }
+    }
+
+    public static function getDaftarNilaiMhs($nim)
+    {
+        return master_nilai::select(
+                'master_nilai.*',
+                'a.hari',
+                'a.kel',
+                'b.nama_matkul',
+                'b.sks_teori',
+                'b.sks_praktek',
+                'b.kode_matkul'
+            )
+            ->leftJoin('jadwals as a', 'master_nilai.id_jadwal', '=', 'a.id')
+            ->join('mata_kuliahs as b', function($join) {
+                $join->on('a.id_mk', '=', 'b.id')
+                        ->orOn('master_nilai.id_matkul', '=', 'b.id');
+            })
+            ->where('nim', $nim)
+            ->whereNotNull('master_nilai.nakhir')
+            ->get();
+    }
+
+    public function getIPK($nim)
+    {
+        $getNilai = self::getDaftarNilaiMhs($nim);
+        $totalSks = 0;
+        $totalIps = 0;
+        foreach ($getNilai as $row) {
+            $sks = ($row->sks_teori + $row->sks_praktek);
+            $totalSks += $sks;
+            if($row->validasi_tugas == 1 && $row->validasi_uts == 1 && $row->validasi_uas == 1)
+            {
+                $totalIps +=  ($row->sks_teori+$row->sks_praktek) * $this->getKualitas($row->nhuruf);
+            }
+        }
+        return $totalSks > 0 ? number_format($totalIps / $totalSks, 2) : 0;
+    }
+
+    public function getSksTempuh($nim)
+    {
+        $getNilai = self::getDaftarNilaiMhs($nim);
+        $totalSks = 0;
+        foreach ($getNilai as $row) {
+            $sks = ($row->sks_teori + $row->sks_praktek);
+            $totalSks += $sks;
+        }
+        return $totalSks;
     }
 
     public static function getKualitas(string $nilai)
