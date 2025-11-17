@@ -51,7 +51,14 @@
                                             @foreach($pembayaran as $row_pembayaran)
                                             <tr>
                                             <td>{{date('d-m-Y',strtotime($row_pembayaran->tanggal_bayar))}}</td>
-                                            <td>{{$list_jenis[$row_pembayaran->jenis_keuangan] ?? 'Akumulasi Pembayaran Sebelumnya'}}</td>
+                                            {{-- <td>{{$list_jenis[$row_pembayaran->jenis_keuangan] ?? 'Akumulasi Pembayaran Sebelumnya'}}</td> --}}
+                                            <td>
+                                                @if(!empty($row_pembayaran->keterangan))
+                                                    {{$row_pembayaran->keterangan}}
+                                                @else
+                                                    {{$list_jenis[$row_pembayaran->jenis_keuangan] ?? 'Akumulasi Pembayaran Sebelumnya'}}   
+                                                @endif
+                                            </td>
                                             <td>Rp. {{number_format($row_pembayaran->jumlah,0,",",".")}}</td>
                                             @php $total_pembayaran += $row_pembayaran->jumlah; @endphp
                                             </tr>
