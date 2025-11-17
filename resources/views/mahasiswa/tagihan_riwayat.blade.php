@@ -43,7 +43,7 @@
                                         <thead>
                                             {{-- <th>No.</th> --}}
                                             <th>Tanggal</th>
-                                            <th>Jenis Pembayaran / Keterangan</th>
+                                            {{-- <th>Jenis Pembayaran / Keterangan</th> --}}
                                             <th>Jumlah</th>
                                         </thead>
                                         <tbody>
@@ -51,7 +51,18 @@
                                             @foreach($pembayaran as $row_pembayaran)
                                             <tr>
                                             <td>{{date('d-m-Y',strtotime($row_pembayaran->tanggal_bayar))}}</td>
-                                            <td>{{$list_jenis[$row_pembayaran->jenis_keuangan] ?? 'Akumulasi Pembayaran Sebelumnya'}}</td>
+                                            {{-- <td>{{$list_jenis[$row_pembayaran->jenis_keuangan] ?? 'Akumulasi Pembayaran Sebelumnya'}}</td> --}}
+                                            <td>
+                                                @if(!empty($row_pembayaran->keterangan))
+                                                    {{$row_pembayaran->keterangan}}
+                                                @else
+                                                    @if($mhs->id_program_studi == '1' || $mhs->id_program_studi == '2')
+                                                        Biaya Kuliah Per Bulan
+                                                    @else
+                                                        {{$list_jenis[$row_pembayaran->jenis_keuangan] ?? 'Angsuran Pembayaran'}}   
+                                                    @endif
+                                                @endif
+                                            </td>
                                             <td>Rp. {{number_format($row_pembayaran->jumlah,0,",",".")}}</td>
                                             @php $total_pembayaran += $row_pembayaran->jumlah; @endphp
                                             </tr>
