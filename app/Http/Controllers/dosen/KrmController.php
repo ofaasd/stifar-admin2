@@ -112,7 +112,7 @@ class KrmController extends Controller
     }
 
     public function daftarMhsNew($id,$id_pertemuan){
-        $ta = TahunAjaran::where('status','Tidak Aktif')->first();
+        $ta = TahunAjaran::where('status','Aktif')->first();
         $id_jadwal = $id;
         $id_pertemuan = $id_pertemuan;
         $title = "Input Absensi";
