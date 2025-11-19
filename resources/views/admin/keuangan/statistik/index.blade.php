@@ -34,7 +34,7 @@
                             <i class="fa fa-warning"></i> Data Dibawah merupakan data statistik keuangan mahasiswa global yang sudah di inputkan pada halaman total pembayaran
                     </div>
                     <div class="card-body" style="overflow-x:scroll">
-                        
+                            <a href="{{url('admin/keuangan/statistik/update_total_tagihan')}}" class="btn btn-primary mb-3">Update Total Tagihan</a>
                             @csrf
                             <table class="table table-stripped">
                                 <thead>

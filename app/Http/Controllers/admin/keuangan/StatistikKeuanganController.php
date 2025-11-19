@@ -15,7 +15,7 @@ use App\Models\TbPembayaran;
 class StatistikKeuanganController extends Controller
 {
     //
-    public function index()
+    public function index(Int $id=0)
     {
         $title = "Statistik Keuangan";
         $tagihan = Tagihan::all();
@@ -40,5 +40,14 @@ class StatistikKeuanganController extends Controller
         }
         $no = 1;
         return view('admin.keuangan.statistik.index', compact('title','data','no'));
+    }
+    public function update_total_tagihan(){
+        $tagihan = Tagihan::all();
+        foreach ($tagihan as $row) {
+            $total = DetailTagihanKeuangan::where('id_tagihan', $row->id)->sum('jumlah');
+            $row->total_bayar = $total;
+            $row->save();
+        }
+        return redirect()->back()->with('success', 'Total tagihan berhasil diupdate');
     }
 }
