@@ -26,6 +26,19 @@
 @section('content')
     <div class="container-fluid">
         <div class="row">
+            <div class="col-md-12 project-list">
+                <div class="card">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <ul class="nav nav-tabs border-tab" id="top-tab" role="tablist">
+                                @foreach($prodi as $prod)
+                                    <li class="nav-item"><a href="{{URL::to('admin/keuangan/statistik/' . $prod->id)}}" class="nav-link {{($id==$prod->id)?"active":""}}" style="font-size:10pt;"><i data-feather="info"></i>{{$nama[$prod->id]}} </a></li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
                 <div class="card">
