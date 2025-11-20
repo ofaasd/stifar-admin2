@@ -31,6 +31,7 @@ class CetakYudisiumController extends Controller
     * Editor: faiz
     */
     public $indexed = ['', 'id', 'nama', 'nama_prodi', 'periode', 'jml_peserta'];
+    public $indexed2 = ['', 'id', 'nama', 'nama_prodi', 'periode', 'jml_peserta'];
     public function index(Request $request)
     {
         if (empty($request->input('length'))) {
@@ -44,8 +45,9 @@ class CetakYudisiumController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
             $indexed = $this->indexed;
+            $indexed2 = $this->indexed2;
 
-            return view('admin.akademik.yudisium.cetak.index', compact('title', 'title2', 'gelombang','indexed'));
+            return view('admin.akademik.yudisium.cetak.index', compact('title', 'title2', 'gelombang','indexed','indexed2'));
         }else{
             $columns = [
                 1 => 'id',
