@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\ActivityLog;
 use Auth;
 use App\Models\MasterSkripsi;
 use App\Models\master_nilai;
@@ -69,6 +70,19 @@ class helpers
             }
         }
         return $totalSks > 0 ? number_format($totalIps / $totalSks, 2) : 0;
+    }
+
+    public function getAccByPengajuanSkripsi($idMaster)
+    {
+        $log = ActivityLog::where('description', 'acc-judul')
+            ->where('properties->id_master', $idMaster)
+            ->latest()
+            ->first();
+        if ($log) {
+            $accByUser = \App\Models\User::find($log->causer_id);
+            return $accByUser ? $accByUser->name : '-';
+        }
+        return null;
     }
 
     public function getSksTempuh($nim)
