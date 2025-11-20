@@ -131,7 +131,7 @@ class BimbinganSkripsiController extends Controller
                 'metode' => $request->metode,
                 'bimbingan_to' => $request->pembimbing,
                 'solusi_permasalahan' => null,
-                'status' => 0,
+                'status' => 2,
                 'catatan_mahasiswa' => $request->catatan,
                 'catatan_dosen' => null,
                 'tempat' => null,

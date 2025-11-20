@@ -226,7 +226,12 @@
                                                     </div>
                                                     <div class="col-md-3">
                                                         <h6>Solusi Permasalahan:</h6>
-                                                        <p>{{ $item->solusi_permasalahan ?? 'Belum ada solusi permasalahan dari dosen' }}</p>
+                                                        <p>
+                                                            {{ $item->solusi_permasalahan ?? 'Belum ada solusi permasalahan dari dosen' }}
+                                                            @if(!empty($item->timestamp_solusi))
+                                                                <span class="text-muted">({{ \Carbon\Carbon::parse($item->timestamp_solusi)->format('d/m/Y H:i:s') }})</span>
+                                                            @endif
+                                                        </p>-
                                                     </div>
                                                     <div class="col-md-3">
                                                         <h6>File Dosen:</h6>

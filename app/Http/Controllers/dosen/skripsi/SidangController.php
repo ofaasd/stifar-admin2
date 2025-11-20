@@ -460,6 +460,19 @@ class SidangController extends Controller
             $nhuruf = \App\helpers::getNilaiHuruf($nilaiAkhir);
             $tahunAjaran = TahunAjaran::where('status', 'Aktif')->first();
             $mhs = Mahasiswa::where('nim', $sidang->nim)->first();
+            $teksJenisSidang = $sidang->jenis == 1 ? 'Seminar Proposal' : 'Seminar Hasil';
+
+            $dataWa['no_wa'] = $mhs->hp ?? '';
+            $dataWa['pesan'] = "*MYSTIFAR - Nilai Sidang*\n\n"
+                . "Halo, " . ($mhs->nama ?? '-') . ",\n\n"
+                ."Nilai ". $teksJenisSidang ." Anda telah diumumkan dengan rincian sebagai berikut:\n"
+                ."Nilai Akhir: " . $nilaiAkhir . "\n"
+                ."Nilai Huruf: " . $nhuruf . "\n\n"
+                ."Selamat atas pencapaian Anda!\n\n"
+                ."Terima kasih.\n"
+                ."- Admin Mystifar";
+
+            $pesan = helpers::send_wa($dataWa);
 
             if ($sidang->jenis == 1) {
                 master_nilai::create([

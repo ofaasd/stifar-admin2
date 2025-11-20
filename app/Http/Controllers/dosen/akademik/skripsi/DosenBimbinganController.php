@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\dosen\akademik\skripsi;
 
+use App\helpers;
 use App\Models\Mahasiswa;
 use App\Models\AktorSidang;
 use Illuminate\Http\Request;
@@ -11,10 +12,18 @@ use App\Models\BimbinganSkripsi;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\PengajuanJudulSkripsi;
+use App\Models\Prodi;
 use Illuminate\Support\Facades\Crypt;
 
 class DosenBimbinganController extends Controller
 {
+    protected $helpers;
+
+    public function __construct()
+    {
+        $this->helpers = new helpers();
+    }
+
     /**
     * menampilkan halaman bimbingan (dosen).
     *
@@ -195,6 +204,23 @@ class DosenBimbinganController extends Controller
 
             $mahasiswa = Mahasiswa::where('nim', $masterSkripsi->nim)->first();
 
+            $mahasiswa->ipk = $this->helpers->getIPK($mahasiswa->nim);
+
+            $mahasiswa->prodi = Prodi::where('id', $mahasiswa->id_program_studi)->value('nama_prodi') ?? '-';
+
+            $dosenPembimbing = $masterSkripsi::select([
+                'dosen1.npp AS nppPembimbing1',
+                'dosen1.nama_lengkap AS namaPembimbing1',
+                'dosen2.npp AS nppPembimbing2',
+                'dosen2.nama_lengkap AS namaPembimbing2',
+            ])
+            ->leftJoin('pegawai_biodata as dosen1', 'master_skripsi.pembimbing_1', '=', 'dosen1.npp')
+            ->leftJoin('pegawai_biodata as dosen2', 'master_skripsi.pembimbing_2', '=', 'dosen2.npp')
+            ->first();
+
+            $mahasiswa->dosenPembimbing = $dosenPembimbing;
+            $mahasiswa->daftarNilai = $this->helpers->getDaftarNilaiMhs($mahasiswa->nim);
+
             $data = [
                 'title' => 'Detail Bimbingan ' . $mahasiswa->nama . ' (' . $mahasiswa->nim . ')',
                 'bimbingan' => $bimbingan,
@@ -233,6 +259,7 @@ class DosenBimbinganController extends Controller
             ]);
 
             $bimbingan->solusi_permasalahan = $request->input('solusiPermasalahan', $bimbingan->solusi_permasalahan);
+            $bimbingan->timestamp_solusi = now();
             $bimbingan->save();
 
             return redirect()->back()->with('success', 'Data bimbingan berhasil diperbarui.');

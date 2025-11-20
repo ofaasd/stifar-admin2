@@ -405,13 +405,12 @@ class PengajuanSkripsiController extends Controller
                         ], 200);
                     }
                 }
+                
+                return response()->json([
+                    'status' => 'success',
+                    'isValid' => true,
+                ]);
             }
-
-            return response()->json([
-                'status' => 'success',
-                'isValid' => true,
-            ]);
-
         } catch (\Exception $e) {
             \Log::error('Gagal mengecek bidang minat', [
                 'message' => $e->getMessage(),

@@ -69,12 +69,12 @@
 
                                             <div class="col-12">
                                                 <label for="from_date" class="form-label">Dari Tanggal</label>
-                                                <input type="date" name="fromDate" id="from_date" class="form-control">
+                                                <input type="date" name="fromDate" id="from_date" class="form-control" required>
                                             </div>
 
                                             <div class="col-12">
                                                 <label for="to_date" class="form-label">Sampai Tanggal</label>
-                                                <input type="date" name="toDate" id="to_date" class="form-control">
+                                                <input type="date" name="toDate" id="to_date" class="form-control" required>
                                             </div>
                                         </div>
 
