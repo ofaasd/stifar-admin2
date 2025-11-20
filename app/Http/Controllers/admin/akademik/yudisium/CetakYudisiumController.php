@@ -158,6 +158,36 @@ class CetakYudisiumController extends Controller
         }
     }
 
+    public function getDataSahYudisium()
+    {
+        $data = GelombangYudisium::select([
+            'gelombang_yudisium.id',
+            'gelombang_yudisium.nama',
+            'gelombang_yudisium.periode',
+            \DB::raw('(SELECT COUNT(*) FROM tb_yudisium WHERE tb_yudisium.id_gelombang_yudisium = gelombang_yudisium.id) as jmlPeserta'),
+            'gelombang_yudisium.tanggal_pengesahan AS tanggalPengesahan',
+            'program_studi.nama_prodi'
+        ])
+        ->leftJoin('program_studi', 'gelombang_yudisium.id_prodi', '=', 'program_studi.id')
+        ->whereNotNull('gelombang_yudisium.tanggal_pengesahan')
+        ->orderBy('gelombang_yudisium.created_at', 'desc')
+        ->get();
+        if ($data) {
+            return response()->json([
+                'draw' => 1,
+                'recordsTotal' => (int) $data->count(),
+                'recordsFiltered' => (int) $data->count(),
+                'code' => 200,
+                'data' => $data,
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'Internal Server Error',
+                'code' => 500,
+                'data' => [],
+            ]);
+        }
+    }
     /**
     * mencetak daftar peserta yudisium per gelombang.
     *
