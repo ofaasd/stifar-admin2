@@ -249,7 +249,9 @@ class SidangController extends Controller
                 'sidang.proposal',
                 'sidang.presentasi',
                 'sidang.pendukung',
+                'sidang.berita_acara AS beritaAcara',
                 'sidang.nilai_akhir AS nilaiAkhir',
+                'master_ruang.nama_ruang AS ruangan',
                 'mahasiswa.nim',
                 'mahasiswa.nama',
                 'master_skripsi.pembimbing_1 AS nppPembimbing1',
@@ -259,6 +261,7 @@ class SidangController extends Controller
             ])
             ->leftJoin('master_skripsi', 'sidang.skripsi_id', '=', 'master_skripsi.id')
             ->leftJoin('mahasiswa', 'master_skripsi.nim', '=', 'mahasiswa.nim')
+            ->leftJoin('master_ruang', 'sidang.ruang_id', '=', 'master_ruang.id')
             ->leftJoin('pegawai_biodata AS pembimbing1', 'master_skripsi.pembimbing_1', '=', 'pembimbing1.npp')
             ->leftJoin('pegawai_biodata AS pembimbing2', 'master_skripsi.pembimbing_2', '=', 'pembimbing2.npp')
             ->where('sidang.id', $id)
@@ -447,10 +450,24 @@ class SidangController extends Controller
                 ], 400);
             }
 
+            $folder = 'berkas-sidang/berita-acara';
+
+            $beritaAcaraFile = $request->file('beritaAcara');
+            $namaFileBeritaAcara = null;
+            if ($beritaAcaraFile) {
+                $targetDir = public_path($folder);
+                if (!is_dir($targetDir)) {
+                    mkdir($targetDir, 0755, true);
+                }
+                $namaFileBeritaAcara = $sidang->nim.'_berita_acara_'.time().'.'.$beritaAcaraFile->getClientOriginalExtension();
+                $beritaAcaraFile->move($targetDir, $namaFileBeritaAcara);
+            }
+
             // Update sidang
             SidangSkripsi::where('id', $sidang->id)->update([
                 'status' => $request->status,
                 'nilai_akhir' => $nilaiAkhir,
+                'berita_acara' => $namaFileBeritaAcara,
             ]);
             
             MasterSkripsi::where('id', $sidang->skripsi_id)->update([
