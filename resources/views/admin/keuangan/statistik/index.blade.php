@@ -26,6 +26,19 @@
 @section('content')
     <div class="container-fluid">
         <div class="row">
+            <div class="col-md-12 project-list">
+                <div class="card">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <ul class="nav nav-tabs border-tab" id="top-tab" role="tablist">
+                                @foreach($prodi as $prod)
+                                    <li class="nav-item"><a href="{{URL::to('admin/keuangan/statistik/' . $prod->id)}}" class="nav-link {{($id==$prod->id)?"active":""}}" style="font-size:10pt;"><i data-feather="info"></i>{{$nama[$prod->id]}} </a></li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
                 <div class="card">
@@ -34,7 +47,7 @@
                             <i class="fa fa-warning"></i> Data Dibawah merupakan data statistik keuangan mahasiswa global yang sudah di inputkan pada halaman total pembayaran
                     </div>
                     <div class="card-body" style="overflow-x:scroll">
-                        
+                            <a href="{{url('admin/keuangan/statistik/update_total_tagihan')}}" class="btn btn-primary mb-3">Update Total Tagihan</a>
                             @csrf
                             <table class="table table-stripped">
                                 <thead>

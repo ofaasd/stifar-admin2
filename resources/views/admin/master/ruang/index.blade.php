@@ -95,8 +95,8 @@
                                         <th>Kode Gedung</th>
                                         <th>Jenis Ruang</th>
                                         <th>Nama</th>
-                                        <th>Lantai</th>
                                         <th>Kapasitas</th>
+                                        <th>Lantai</th>
                                         <th>Luas</th>
                                         <th>Actions</th>
                                     </tr>

@@ -112,6 +112,7 @@ class KrmController extends Controller
     }
 
     public function daftarMhsNew($id,$id_pertemuan){
+        $ta = TahunAjaran::where('status','Aktif')->first();
         $id_jadwal = $id;
         $id_pertemuan = $id_pertemuan;
         $title = "Input Absensi";
@@ -131,6 +132,7 @@ class KrmController extends Controller
         $daftar_mhs = Krs::select('krs.*', 'mhs.nim', 'mhs.nama', 'mhs.foto_mhs')
                         ->leftJoin('mahasiswa as mhs', 'mhs.id', '=', 'krs.id_mhs')
                         ->orderBy('nim','asc')
+                        ->where('krs.id_tahun', $ta->id)
                         ->where('krs.id_jadwal', $id)->get();
         foreach($daftar_mhs as $daftar){
             $absensi[$daftar->id_mhs] = 1;
