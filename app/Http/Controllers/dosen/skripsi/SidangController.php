@@ -49,15 +49,12 @@ class SidangController extends Controller
         })
         ->get();
 
-        $sidang = SidangSkripsi::all();
-        $statusSidang = $sidang->pluck('status')->unique()->mapWithKeys(function ($item) {
-            $labels = [
-                0 => 'Pengajuan',
-                1 => 'Selesai',
-                2 => 'Diterima',
-            ];
-            return [$item => $labels[$item] ?? 'Unknown'];
-        });
+        $statusSidang = [
+            99 => 'Calon Peserta Sidang',
+            0 => 'Pengajuan',
+            1 => 'Selesai',
+            2 => 'Diterima',
+        ];
 
         return view('dosen.skripsi.sidang.index', compact('tahunAjaran', 'ruang', 'pegawai', 'mahasiswaSkripsi', 'statusSidang', 'prodi'));
     }
@@ -656,10 +653,33 @@ class SidangController extends Controller
             ->where('pengajuan_judul_skripsi.status', 1)
             ->orderBy('sidang.created_at', 'desc');
 
-            if ($status && $status != 'all') {
-                $querySidang->where('sidang.status', $status);
+            if ($status != 'all') {
+                if($status == 99)
+                {
+                    $querySidang = MasterSkripsi::select([
+                        'mahasiswa.nim',
+                        'mahasiswa.nama',
+                        'pengajuan_judul_skripsi.judul',
+                        'pembimbing1.nama_lengkap AS namaPembimbing1',
+                        'pembimbing2.nama_lengkap AS namaPembimbing2',
+                        'master_skripsi.pembimbing_1',
+                        'master_skripsi.pembimbing_2',
+                    ])
+                    ->leftJoin('mahasiswa', 'master_skripsi.nim', '=', 'mahasiswa.nim')
+                    ->leftJoin('pegawai_biodata AS pembimbing1', 'master_skripsi.pembimbing_1', '=', 'pembimbing1.npp')
+                    ->leftJoin('pegawai_biodata AS pembimbing2', 'master_skripsi.pembimbing_2', '=', 'pembimbing2.npp')
+                    ->leftJoin('pengajuan_judul_skripsi', 'master_skripsi.id', '=', 'pengajuan_judul_skripsi.id_master')
+                    ->where('master_skripsi.acc_1', 1)
+                    ->where('master_skripsi.acc_2', 1)
+                    ->whereNotIn('master_skripsi.id', function($query) {
+                        $query->select('skripsi_id')->from('sidang');
+                    });
+                }else{
+                    $querySidang->where('sidang.status', $status);
+                }
             }
-            if ($jenis && $jenis != 'all') {
+
+            if ($jenis != 'all') {
                 $querySidang->where('sidang.jenis', $jenis);
             }
             if ($fromDate) {
@@ -670,13 +690,11 @@ class SidangController extends Controller
             }
 
             $sidang = $querySidang->get()
-            ->map(function($item) {
-                // Format tanggal menjadi "12 September 2025"
-                // if (!empty($item->tanggal)) {
-                //     $carbonTanggal = \Carbon\Carbon::parse($item->tanggal);
-                //     $item->tanggal = $carbonTanggal->translatedFormat('d/m/Y');
-                // }
-
+            ->map(function($item) use ($status) {
+                if($status == 99)
+                {
+                    $item->status = 99;
+                }
                 return $item;
             });
 
@@ -686,16 +704,17 @@ class SidangController extends Controller
             $parts = [];
 
             $parts[] = 'Peserta Sidang';
-            if (!empty($status) && $status !== 'all') {
-                $statusLabels = [
+            if ($status != 'all') {
+                $statusSidang = [
+                    99 => 'Calon Peserta Sidang',
                     0 => 'Pengajuan',
                     1 => 'Selesai',
                     2 => 'Diterima',
                 ];
-                $parts[] = 'Status: ' . ($statusLabels[$status] ?? $status);
+                $parts[] = 'Status: ' . ($statusSidang[$status] ?? $status);
             }
 
-            if (!empty($jenis) && $jenis !== 'all') {
+            if ($jenis != 'all') {
                 $jenisLabel = [
                     1 => 'Seminar Proposal',
                     2 => 'Seminar Proposal',
@@ -716,7 +735,7 @@ class SidangController extends Controller
             }
             // Generate PDF dengan mPDF
             $mpdf = new \Mpdf\Mpdf(['orientation' => 'L']); // landscape
-            $html = view('dosen.skripsi.sidang.print', compact('sidang', 'logo', 'title', 'filterTitle'))->render();
+            $html = view('dosen.skripsi.sidang.print', compact('sidang', 'logo', 'title', 'filterTitle', 'status'))->render();
             $mpdf->WriteHTML($html);
 
             $filename = $title . '.pdf';

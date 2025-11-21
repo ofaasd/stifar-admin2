@@ -131,6 +131,7 @@
 
                             // Status badges mapping (sesuai snippet)
                             $statusLabels = [
+                                99 => '<span>Calon Peserta Sidang</span>',
                                 0 => '<span>Pengajuan</span>',
                                 1 => '<span>Selesai</span>',
                                 2 => '<span>Diterima</span>',
