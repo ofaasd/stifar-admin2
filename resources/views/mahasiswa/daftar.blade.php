@@ -41,22 +41,22 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="row mb-3">
-                            <div class="col-md-6 d-flex align-items-center">
-                                @if (!isset($isAlumni))
-                                    <a class="btn btn-primary" href="{{ URL::to('mahasiswa/create')}}">Tambah mahasiswa</a>
-                                @endif
-                            </div>
-                            <div class="col-md-6 d-flex justify-content-end align-items-center">
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Aksi
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-end">
-                                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalCetakKTM">Cetak KTM</a></li>
-                                        <!-- Tambah aksi lainnya di sini -->
-                                    </ul>
+                            @if (!isset($isAlumni))
+                                <div class="col-md-6 d-flex align-items-center">
+                                        <a class="btn btn-primary" href="{{ URL::to('mahasiswa/create')}}">Tambah mahasiswa</a>
                                 </div>
-                            </div>
+                                <div class="col-md-6 d-flex justify-content-end align-items-center">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                            Aksi
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalCetakKTM">Cetak KTM</a></li>
+                                            <!-- Tambah aksi lainnya di sini -->
+                                        </ul>
+                                    </div>
+                                </div>
+                            @endif
                         </div>
 
                         <!-- Modal Cetak KTM -->

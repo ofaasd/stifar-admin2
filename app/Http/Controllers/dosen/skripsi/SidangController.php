@@ -315,6 +315,7 @@ class SidangController extends Controller
                 'ruang_id'      => $request->ruangId,
                 'penguji'       => isset($request->penguji) ? implode(',', $request->penguji) : null,
                 'status'        => 2,
+                'acc_at'       => now(),
             ]);
 
             $pegawai = PegawaiBiodatum::whereIn('npp', $sidang->penguji)->get();
@@ -684,6 +685,7 @@ class SidangController extends Controller
             $title = "Daftar Peserta Sidang";
             $parts = [];
 
+            $parts[] = 'Peserta Sidang';
             if (!empty($status) && $status !== 'all') {
                 $statusLabels = [
                     0 => 'Pengajuan',

@@ -41,7 +41,9 @@ class helpers
                 'master_nilai.*',
                 'a.hari',
                 'a.kel',
+                'b.kode_matkul',
                 'b.nama_matkul',
+                'b.nama_matkul_eng',
                 'b.sks_teori',
                 'b.sks_praktek',
                 'b.kode_matkul'
@@ -96,21 +98,21 @@ class helpers
         return $totalSks;
     }
 
-    public static function getKualitas(string $nilai)
+    public static function getKualitas(string $huruf)
     {
-        if($nilai == 'A'){
+        if($huruf == 'A'){
             return 4;
-        }elseif($nilai == 'AB'){
+        }elseif($huruf == 'AB'){
             return 3.5;
-        }elseif($nilai == 'B'){
+        }elseif($huruf == 'B'){
             return 3;
-        }elseif($nilai == 'BC'){
+        }elseif($huruf == 'BC'){
             return 2.5;
-        }elseif($nilai == 'C'){
+        }elseif($huruf == 'C'){
             return 2;
-        }elseif($nilai == 'CD'){
+        }elseif($huruf == 'CD'){
             return 1.5;
-        }elseif($nilai == 'D'){
+        }elseif($huruf == 'D'){
             return 1;
         }else{
             return 0;

@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\admin\akademik\yudisium;
 
+use Carbon\Carbon;
 use App\Models\TbYudisium;
 use App\Models\master_nilai;
 use Illuminate\Http\Request;
+use App\Models\PegawaiBiodatum;
 use App\Models\GelombangYudisium;
 use App\Http\Controllers\Controller;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Crypt;
 
 class CetakYudisiumController extends Controller
@@ -23,6 +24,12 @@ class CetakYudisiumController extends Controller
         'ED' => 0.5,
         'E' => 0
     ];
+    protected $helpers;
+
+    public function __construct()
+    {
+        $this->helpers = new \App\helpers();
+    }
 
     /**
     * menampilkan halaman dan data gelombang yudisium.
@@ -215,6 +222,8 @@ class CetakYudisiumController extends Controller
         $data = TbYudisium::where('id_gelombang_yudisium', $id)
         ->leftJoin('mahasiswa', 'tb_yudisium.nim', '=', 'mahasiswa.nim')
         ->leftJoin('master_skripsi', 'mahasiswa.nim', '=', 'master_skripsi.nim')
+        ->leftJoin('pegawai_biodata as pb1', 'pb1.npp', '=', 'master_skripsi.pembimbing_1')
+        ->leftJoin('pegawai_biodata as pb2', 'pb2.npp', '=', 'master_skripsi.pembimbing_2')
         ->leftJoin('sidang', 'master_skripsi.id', '=', 'sidang.skripsi_id')
         ->leftJoin('pengajuan_judul_skripsi', 'master_skripsi.id', '=', 'pengajuan_judul_skripsi.id_master')
         ->where('pengajuan_judul_skripsi.status', 1)
@@ -223,47 +232,59 @@ class CetakYudisiumController extends Controller
             'mahasiswa.nim',
             'mahasiswa.foto_mhs',
             'pengajuan_judul_skripsi.judul',
-            'sidang.tanggal AS tanggalSidang'
+            'pb1.nama_lengkap AS pembimbing1',
+            'pb2.nama_lengkap AS pembimbing2',
+            'sidang.tanggal AS tanggalSidang',
+            'sidang.penguji',
             ])
-        ->get();
+        ->get()
+        ->map(function($item) {
+            if (!empty($item->penguji)) {
+                $npps = array_filter(array_map('trim', explode(',', $item->penguji)));
+                $namesByNpp = PegawaiBiodatum::whereIn('npp', $npps)->pluck('nama_lengkap', 'npp')->toArray();
+
+                foreach ($npps as $i => $npp) {
+                    $nama = $namesByNpp[$npp] ?? '-';
+                    $item->{'namaPenguji' . ($i + 1)} = $nama ?? '-';
+                }
+                $item->jmlPenguji = count($npps);
+            } else {
+                $item->namaPenguji1 = '-';
+                $item->namaPenguji2 = '-';
+            }
+                
+            return $item;
+        });
         
         if ($data->isEmpty()) {
             return redirect()->back()->with('error', 'No data found for this gelombang');
         }
 
         foreach ($data as $item) {   
-            $getNilai = master_nilai::select(
-                'master_nilai.*',
-                'a.hari',
-                'a.kel',
-                'b.nama_matkul',
-                'b.sks_teori',
-                'b.sks_praktek',
-                'b.kode_matkul'
-            )
-            ->leftJoin('jadwals as a', 'master_nilai.id_jadwal', '=', 'a.id')
-            ->join('mata_kuliahs as b', function($join) {
-                $join->on('a.id_mk', '=', 'b.id')
-                        ->orOn('master_nilai.id_matkul', '=', 'b.id');
-            })
-            ->where('nim', $item->nim)
-            ->whereNotNull('master_nilai.nakhir')
-            ->get();
+            $getNilai = $this->helpers->getDaftarNilaiMhs($item->nim);
 
             $totalSks = 0;
             $totalIps = 0;
+            $totalD = 0;
+            $totalE = 0;
             foreach ($getNilai as $row) {
                 $sks = ($row->sks_teori + $row->sks_praktek);
                 $totalSks += $sks;
                 if($row->validasi_tugas == 1 && $row->validasi_uts == 1 && $row->validasi_uas == 1)
                 {
                     $totalIps +=  ($row->sks_teori+$row->sks_praktek) * $this->kualitas[$row['nhuruf']];
+                    $totalD += $row->nhuruf == 'D' ? 1 : 0;
+                    $totalE += $row->nhuruf == 'E' ? 1 : 0;
                 }
             }
             $item->totalSks = $totalSks;
             $item->totalIps = $totalIps;
             $item->ipk = $totalSks > 0 ? number_format($totalIps / $totalSks, 2) : 0;
+
+            $item->totalD = $totalD;
+            $item->totalE = $totalE;
         }
+
         $logo = public_path('/assets/images/logo/logo-icon.png');
         // Kirim data ke view dan render HTML
         $html = view('admin.akademik.yudisium.cetak.view-cetak', compact('data', 'gelombang', 'logo'))->render();
@@ -271,6 +292,7 @@ class CetakYudisiumController extends Controller
         // Inisialisasi mPDF
         $mpdf = new \Mpdf\Mpdf([
             'format' => 'A4',
+            'orientation' => 'L',
             'mode' => 'utf-8'
         ]);
 

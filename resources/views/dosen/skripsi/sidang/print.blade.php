@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Peserta Sidang</title>
+    <title>{{ $filterTitle }}</title>
     <style>
         #customers {
             font-family: Arial, Helvetica, sans-serif;
@@ -15,17 +15,16 @@
         #customers td,
         #customers th {
             border: 1px solid #ddd;
-            padding: 8px;
+            padding: 6px;
         }
 
         #customers th {
-            padding-top: 12px;
-            padding-bottom: 12px;
+            padding: 8px;
             text-align: left;
         }
 
         td {
-            font-size: 12px;
+            font-size: 11px;
         }
 
         a {
@@ -38,13 +37,13 @@
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
-            font-size: 14px;
+            font-size: 11px;
         }
 
         .table th,
         .table td {
             border: 1px solid #000;
-            padding: 8px;
+            padding: 6px;
             text-align: left;
         }
 
@@ -60,23 +59,17 @@
 <body>
     <table width="100%">
         <tr>
-            <td width="10%">
-                <img src="{{ $logo ?? '' }}" alt="logo-stifar" style="width: 100px;"/>
+            <td style="width:90px; vertical-align:middle;">
+                <img src="{{ $logo }}" alt="logo-stifar" style="width:80px; height:auto; display:block;">
             </td>
-            <td width="90%" style="padding-left: 30px;">
-                <center>
-                    <b>SEKOLAH TINGGI ILMU FARMASI SEMARANG</b>
-                    <br>Alamat : Jl. Letnan Jendral Sarwo Edie Wibowo Km. 1, Plamongan Sari, Kec. Pedurungan, Kota Semarang
-                    <br>Email : admin@sistifar.id
-                    <br>Website : https://stifar.ac.id
-                </center>
+            <td style="vertical-align:middle; padding-left:10px;">
+                <div style="text-align:center; padding:8px 0;">
+                    <h1 style="font-size:22px; margin:0; font-weight:700; line-height:1.1;">{{ $filterTitle }}</h1>
+                </div>
             </td>
         </tr>
     </table>
     <hr>
-    <center><b>{{ $title }}</b></center>
-    <br>
-
     <div class="container">
         <div class="table-responsive">
             <table id="customers" class="table table-bordered ">
@@ -84,11 +77,11 @@
                     <tr>
                         <th>No.</th>
                         <th>Mahasiswa</th>
+                        <th>Judul</th>
                         <th>Pembimbing</th>
                         <th>Penguji</th>
                         <th>Waktu</th>
                         <th>Status</th>
-                        <th>Tanggal</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -150,11 +143,11 @@
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $mahasiswaText }}</td>
+                            <td>{{ $row->judul }}</td>
                             <td>{!! $pembimbingHtml !!}</td>
                             <td>{!! $pengujiHtml !!}</td>
-                            <td>{{ $waktu }}</td>
+                            <td>{{ $tanggal }} - {{ $waktu }}</td>
                             <td>{!! $statusHtml !!}</td>
-                            <td>{{ $tanggal }}</td>
                         </tr>
                     @empty
                         <tr>
@@ -164,7 +157,7 @@
                 </tbody>
             </table>
 
-            <p style="text-align: right; font-size: 12px; color: #555; margin-top: 10px;">
+            <p style="text-align: right; font-size: 8px; color: #555; margin-top: 10px;">
                 Dicetak: {{ \Carbon\Carbon::now()->format('d/m/Y H:i:s') }}
             </p>
         </div>

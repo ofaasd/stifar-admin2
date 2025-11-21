@@ -54,8 +54,8 @@
                                     </select>
                                 </div>
 
-                                <div class="col-12">
-                                    <label for="jenis" class="form-label">Jenis Sidang</label>
+                                <div class="col-12 mt-2">
+                                    <label for="jenis" class="form-label">Jenis</label>
                                     <select name="jenis" id="jenis" class="form-select">
                                         <option value="all">Semua</option>
                                         <option value="1">Seminar Proposal</option>
@@ -63,12 +63,12 @@
                                     </select>
                                 </div>
 
-                                <div class="col-12">
+                                <div class="col-12 mt-2">
                                     <label for="from_date" class="form-label">Dari Tanggal</label>
                                     <input type="date" name="fromDate" id="from_date" class="form-control">
                                 </div>
 
-                                <div class="col-12">
+                                <div class="col-12 mt-2">
                                     <label for="to_date" class="form-label">Sampai Tanggal</label>
                                     <input type="date" name="toDate" id="to_date" class="form-control">
                                 </div>
@@ -209,7 +209,7 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editJadwalModalLabel">Edit Jadwal Sidang</h5>
+                <h5 class="modal-title" id="editJadwalModalLabel">Detail Jadwal Sidang</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 

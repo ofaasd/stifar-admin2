@@ -10,12 +10,18 @@ use App\Models\master_nilai;
 use Illuminate\Http\Request;
 use App\Models\DaftarWisudawan;
 use App\Models\GelombangYudisium;
+use App\Models\JabatanStruktural;
 use App\Models\TbGelombangWisuda;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Crypt;
 
 class ProsesYudisiumController extends Controller
 {
+    protected $helpers;
+    public function __construct()
+    {
+        $this->helpers = new helpers();
+    }
     protected $kualitas = [
         'A' => 4,
         'AB' => 3.5,
@@ -66,23 +72,7 @@ class ProsesYudisiumController extends Controller
                 });
 
             foreach ($mhs as $item) {   
-                $getNilai = master_nilai::select(
-                    'master_nilai.*',
-                    'a.hari',
-                    'a.kel',
-                    'b.nama_matkul',
-                    'b.sks_teori',
-                    'b.sks_praktek',
-                    'b.kode_matkul'
-                )
-                ->leftJoin('jadwals as a', 'master_nilai.id_jadwal', '=', 'a.id')
-                ->join('mata_kuliahs as b', function($join) {
-                    $join->on('a.id_mk', '=', 'b.id')
-                            ->orOn('master_nilai.id_matkul', '=', 'b.id');
-                })
-                ->where('nim', $item->nim)
-                ->whereNotNull('master_nilai.nakhir')
-                ->get();
+                $getNilai = $this->helpers->getDaftarNilaiMhs($item->nim);
 
                 $totalSks = 0;
                 $totalIps = 0;
@@ -175,23 +165,7 @@ class ProsesYudisiumController extends Controller
                     });
 
                 foreach ($proses as $item) {
-                    $getNilai = master_nilai::select(
-                        'master_nilai.*',
-                        'a.hari',
-                        'a.kel',
-                        'b.nama_matkul',
-                        'b.sks_teori',
-                        'b.sks_praktek',
-                        'b.kode_matkul'
-                    )
-                    ->leftJoin('jadwals as a', 'master_nilai.id_jadwal', '=', 'a.id')
-                    ->join('mata_kuliahs as b', function($join) {
-                        $join->on('a.id_mk', '=', 'b.id')
-                                ->orOn('master_nilai.id_matkul', '=', 'b.id');
-                    })
-                    ->where('nim', $item->nim)
-                    ->whereNotNull('master_nilai.nakhir')
-                    ->get();
+                    $getNilai = $this->helpers->getDaftarNilaiMhs($item->nim);
 
                     $totalSks = 0;
                     $totalIps = 0;
@@ -231,23 +205,7 @@ class ProsesYudisiumController extends Controller
                     });
 
                 foreach ($proses as $item) {
-                    $getNilai = master_nilai::select(
-                        'master_nilai.*',
-                        'a.hari',
-                        'a.kel',
-                        'b.nama_matkul',
-                        'b.sks_teori',
-                        'b.sks_praktek',
-                        'b.kode_matkul'
-                    )
-                    ->leftJoin('jadwals as a', 'master_nilai.id_jadwal', '=', 'a.id')
-                    ->join('mata_kuliahs as b', function($join) {
-                        $join->on('a.id_mk', '=', 'b.id')
-                                ->orOn('master_nilai.id_matkul', '=', 'b.id');
-                    })
-                    ->where('nim', $item->nim)
-                    ->whereNotNull('master_nilai.nakhir')
-                    ->get();
+                    $getNilai = $this->helpers->getDaftarNilaiMhs($item->nim);
 
                     $totalSks = 0;
                     $totalIps = 0;
@@ -345,12 +303,33 @@ class ProsesYudisiumController extends Controller
                 'gelombang' => 'required',
             ]);
 
+            $mahasiswa = Mahasiswa::select([
+                'pegawai_biodata.id AS idKaprodi'
+            ])
+            ->leftJoin('jabatan_struktural', 'mahasiswa.id_program_studi', '=', 'jabatan_struktural.prodi_id')
+            ->leftJoin('pegawai_biodata', 'jabatan_struktural.id_pegawai', '=', 'pegawai_biodata.id')
+            ->where(function($query){
+                $query->where('jabatan_struktural.jabatan', 'like', '%kepala%')
+                      ->orWhereNull('jabatan_struktural.jabatan');
+            })
+            ->where('nim', $request->nim)
+            ->first();
+
+            $jabatanStruktural = JabatanStruktural::select([
+                'pegawai_biodata.id AS idKetua',
+            ])
+            ->where('jabatan', 'Ketua')
+            ->leftJoin('pegawai_biodata', 'jabatan_struktural.id_pegawai', '=', 'pegawai_biodata.id')
+            ->first();
+
             if ($id) {
                 $save = TbYudisium::updateOrCreate(
                     ['id' => $id],
                     [
                         'id_gelombang_yudisium' => $request->gelombang,
                         'nim' => $request->nim,
+                        'id_kaprodi' => $mahasiswa->idKaprodi ?? null,
+                        'id_ketua' => $jabatanStruktural->idKetua ?? null,
                     ]
                 );
 
@@ -364,6 +343,8 @@ class ProsesYudisiumController extends Controller
                         [
                             'id_gelombang_yudisium' => $request->gelombang,
                             'nim' => $nim,
+                            'id_kaprodi' => $mahasiswa->idKaprodi ?? null,
+                            'id_ketua' => $jabatanStruktural->idKetua ?? null,
                         ]
                     );
 

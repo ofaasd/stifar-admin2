@@ -13,9 +13,16 @@ use App\Models\MasterBidangMinat;
 use App\Http\Controllers\Controller;
 use App\Models\PengajuanJudulSkripsi;
 use Illuminate\Support\Facades\Crypt;
+use Symfony\Component\Console\Helper\Helper;
 
 class AdminPengajuanSkripsiController extends Controller
 {
+    protected $helpers;
+
+    public function __construct()
+    {
+        $this->helpers = new helpers();
+    }
     /**
      * menampilkan halaman pengajuan skripsi di sisi admin.
      *
@@ -73,6 +80,7 @@ class AdminPengajuanSkripsiController extends Controller
             ->orderBy('master_skripsi.created_at', 'desc')
             ->get()
             ->map(function ($item) {
+                $item->accBy = $this->helpers->getAccByPengajuanSkripsi($item->id_master);
                 $item->idMasterEnkripsi = Crypt::encryptString($item->id_master . "stifar");
                 return $item;
             })
@@ -131,7 +139,7 @@ class AdminPengajuanSkripsiController extends Controller
 
             $data[] = [
                 'nim' => $nim,
-                'nama' => $first->nama,
+                'nama' => $first->nama . ((($accBy = optional($rows->firstWhere('accBy', '!=', null))->accBy ?? $first->accBy) ? ' <br><small><i>Diterima oleh: ' . $accBy . '</i></small>' : '')),
                 'judul' => implode('<hr><br>', $judulArr),
                 'pembimbing1' => $first->pembimbing1,
                 'pembimbing2' => $first->pembimbing2,
@@ -275,6 +283,16 @@ class AdminPengajuanSkripsiController extends Controller
                     PengajuanJudulSkripsi::where('id', $judul->id)->update([
                         'status' => 1,
                     ]);
+
+                    activity()
+                    ->causedBy(auth()->user())
+                    ->withProperties([
+                        'ip_address' => request()->ip(),
+                        'user_agent' => request()->userAgent(),
+                        'id_master' => $judul->id_master,
+                        'nim' => $nim,
+                    ])
+                    ->log('acc-judul');
                     
                     $dataWa['no_wa'] = $mhs->hp ?? '';
                     $abstrak = $validated['abstrak'] ?? '';
