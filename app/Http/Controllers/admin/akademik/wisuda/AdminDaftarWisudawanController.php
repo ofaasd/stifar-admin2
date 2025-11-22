@@ -217,8 +217,10 @@ class AdminDaftarWisudawanController extends Controller
                     'mahasiswa.jk',
                     'mahasiswa.hp',
                     'mahasiswa.email',
+                    'mahasiswa.tgl_lahir',
                     'mahasiswa.no_pisn AS noPisn',
                     'mahasiswa.foto_yudisium AS foto',
+                    'mahasiswa.no_transkrip',
                     'gelombang_yudisium.tanggal_pengesahan AS tahunLulus',
                     'program_studi.id AS idProgramStudi',
                     'program_studi.jenjang',
@@ -251,7 +253,8 @@ class AdminDaftarWisudawanController extends Controller
                     'email_pribadi' => $mhs->email,
                     'prodi' => $mhs->prodi,
                     'id_program_studi' => $mhs->idProgramStudi,
-                    'judul_skripsi' => $mhs->judulSkripsi
+                    'judul_skripsi' => $mhs->judulSkripsi,
+                    'no_transkrip' => $mhs->no_transkrip,
                 ]);
                 
                 $yudisiumAktif = TbYudisium::where('nim', $mhs->nim)->first();

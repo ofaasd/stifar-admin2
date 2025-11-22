@@ -95,6 +95,7 @@ class ProsesYudisiumController extends Controller
             ])
             ->leftJoin('program_studi', 'gelombang_yudisium.id_prodi', '=', 'program_studi.id')
             ->orderBy('created_at', 'desc')
+            ->whereNull('gelombang_yudisium.tanggal_pengesahan')
             ->get();
 
             $prodi = Prodi::all();

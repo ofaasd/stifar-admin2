@@ -245,5 +245,13 @@
                 </p>
             </div>
         </div>
+        <div class="mb-2">
+            <label for="no-transkrip" class="col-sm-10 col-form-label">No Seri Transkrip:</label>
+            <div class="col-sm-12">
+                <div class="input-group">
+                    <input type="text" name="no_transkrip" class="form-control" id="no-transkrip" placeholder="Masukkan No Transkrip" value="{{$mahasiswa->no_tranksrip ?? ''}}">
+                </div>
+            </div>
+        </div>
     </div>
 </div>
