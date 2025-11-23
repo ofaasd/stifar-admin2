@@ -29,7 +29,7 @@ class KrsController extends Controller
             $curr_prodi = Prodi::find($pegawai->id_progdi);
         }
         $title = "Master KRS";
-        $tahun_ajaran = TahunAjaran::get();
+        $tahun_ajaran = TahunAjaran::orderBy('id','desc')->get();
         $prodi = Prodi::get();
         $angkatan = Mahasiswa::select("angkatan")->distinct()->orderBy('angkatan','desc')->get();
         return view('admin.akademik.krs.index', compact('title', 'tahun_ajaran','prodi','curr_prodi','angkatan'));
