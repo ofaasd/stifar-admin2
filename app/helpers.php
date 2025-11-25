@@ -2,8 +2,10 @@
 
 namespace App;
 
+use App\Models\ActivityLog;
 use Auth;
 use App\Models\MasterSkripsi;
+use App\Models\master_nilai;
 use Illuminate\Support\Facades\Crypt;
 
 class helpers
@@ -33,21 +35,84 @@ class helpers
         }
     }
 
-    public static function getKualitas(string $nilai)
+    public static function getDaftarNilaiMhs($nim)
     {
-        if($nilai == 'A'){
+        return master_nilai::select(
+                'master_nilai.*',
+                'a.hari',
+                'a.kel',
+                'b.kode_matkul',
+                'b.nama_matkul',
+                'b.nama_matkul_eng',
+                'b.sks_teori',
+                'b.sks_praktek',
+                'b.kode_matkul'
+            )
+            ->leftJoin('jadwals as a', 'master_nilai.id_jadwal', '=', 'a.id')
+            ->join('mata_kuliahs as b', function($join) {
+                $join->on('a.id_mk', '=', 'b.id')
+                        ->orOn('master_nilai.id_matkul', '=', 'b.id');
+            })
+            ->where('nim', $nim)
+            ->whereNotNull('master_nilai.nakhir')
+            ->get();
+    }
+
+    public function getIPK($nim)
+    {
+        $getNilai = self::getDaftarNilaiMhs($nim);
+        $totalSks = 0;
+        $totalIps = 0;
+        foreach ($getNilai as $row) {
+            $sks = ($row->sks_teori + $row->sks_praktek);
+            $totalSks += $sks;
+            if($row->validasi_tugas == 1 && $row->validasi_uts == 1 && $row->validasi_uas == 1)
+            {
+                $totalIps +=  ($row->sks_teori+$row->sks_praktek) * $this->getKualitas($row->nhuruf);
+            }
+        }
+        return $totalSks > 0 ? number_format($totalIps / $totalSks, 2) : 0;
+    }
+
+    public function getAccByPengajuanSkripsi($idMaster)
+    {
+        $log = ActivityLog::where('description', 'acc-judul')
+            ->where('properties->id_master', $idMaster)
+            ->latest()
+            ->first();
+        if ($log) {
+            $accByUser = \App\Models\User::find($log->causer_id);
+            return $accByUser ? $accByUser->name : '-';
+        }
+        return null;
+    }
+
+    public function getSksTempuh($nim)
+    {
+        $getNilai = self::getDaftarNilaiMhs($nim);
+        $totalSks = 0;
+        foreach ($getNilai as $row) {
+            $sks = ($row->sks_teori + $row->sks_praktek);
+            $totalSks += $sks;
+        }
+        return $totalSks;
+    }
+
+    public static function getKualitas(string $huruf)
+    {
+        if($huruf == 'A'){
             return 4;
-        }elseif($nilai == 'AB'){
+        }elseif($huruf == 'AB'){
             return 3.5;
-        }elseif($nilai == 'B'){
+        }elseif($huruf == 'B'){
             return 3;
-        }elseif($nilai == 'BC'){
+        }elseif($huruf == 'BC'){
             return 2.5;
-        }elseif($nilai == 'C'){
+        }elseif($huruf == 'C'){
             return 2;
-        }elseif($nilai == 'CD'){
+        }elseif($huruf == 'CD'){
             return 1.5;
-        }elseif($nilai == 'D'){
+        }elseif($huruf == 'D'){
             return 1;
         }else{
             return 0;

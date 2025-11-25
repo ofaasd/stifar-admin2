@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\admin\akademik\yudisium;
 
+use App\helpers;
 use App\Models\Prodi;
 use App\Models\Mahasiswa;
 use App\Models\TbYudisium;
@@ -9,12 +10,18 @@ use App\Models\master_nilai;
 use Illuminate\Http\Request;
 use App\Models\DaftarWisudawan;
 use App\Models\GelombangYudisium;
+use App\Models\JabatanStruktural;
 use App\Models\TbGelombangWisuda;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Crypt;
 
 class ProsesYudisiumController extends Controller
 {
+    protected $helpers;
+    public function __construct()
+    {
+        $this->helpers = new helpers();
+    }
     protected $kualitas = [
         'A' => 4,
         'AB' => 3.5,
@@ -65,23 +72,7 @@ class ProsesYudisiumController extends Controller
                 });
 
             foreach ($mhs as $item) {   
-                $getNilai = master_nilai::select(
-                    'master_nilai.*',
-                    'a.hari',
-                    'a.kel',
-                    'b.nama_matkul',
-                    'b.sks_teori',
-                    'b.sks_praktek',
-                    'b.kode_matkul'
-                )
-                ->leftJoin('jadwals as a', 'master_nilai.id_jadwal', '=', 'a.id')
-                ->join('mata_kuliahs as b', function($join) {
-                    $join->on('a.id_mk', '=', 'b.id')
-                            ->orOn('master_nilai.id_matkul', '=', 'b.id');
-                })
-                ->where('nim', $item->nim)
-                ->whereNotNull('master_nilai.nakhir')
-                ->get();
+                $getNilai = $this->helpers->getDaftarNilaiMhs($item->nim);
 
                 $totalSks = 0;
                 $totalIps = 0;
@@ -104,6 +95,7 @@ class ProsesYudisiumController extends Controller
             ])
             ->leftJoin('program_studi', 'gelombang_yudisium.id_prodi', '=', 'program_studi.id')
             ->orderBy('created_at', 'desc')
+            ->whereNull('gelombang_yudisium.tanggal_pengesahan')
             ->get();
 
             $prodi = Prodi::all();
@@ -174,23 +166,7 @@ class ProsesYudisiumController extends Controller
                     });
 
                 foreach ($proses as $item) {
-                    $getNilai = master_nilai::select(
-                        'master_nilai.*',
-                        'a.hari',
-                        'a.kel',
-                        'b.nama_matkul',
-                        'b.sks_teori',
-                        'b.sks_praktek',
-                        'b.kode_matkul'
-                    )
-                    ->leftJoin('jadwals as a', 'master_nilai.id_jadwal', '=', 'a.id')
-                    ->join('mata_kuliahs as b', function($join) {
-                        $join->on('a.id_mk', '=', 'b.id')
-                                ->orOn('master_nilai.id_matkul', '=', 'b.id');
-                    })
-                    ->where('nim', $item->nim)
-                    ->whereNotNull('master_nilai.nakhir')
-                    ->get();
+                    $getNilai = $this->helpers->getDaftarNilaiMhs($item->nim);
 
                     $totalSks = 0;
                     $totalIps = 0;
@@ -230,23 +206,7 @@ class ProsesYudisiumController extends Controller
                     });
 
                 foreach ($proses as $item) {
-                    $getNilai = master_nilai::select(
-                        'master_nilai.*',
-                        'a.hari',
-                        'a.kel',
-                        'b.nama_matkul',
-                        'b.sks_teori',
-                        'b.sks_praktek',
-                        'b.kode_matkul'
-                    )
-                    ->leftJoin('jadwals as a', 'master_nilai.id_jadwal', '=', 'a.id')
-                    ->join('mata_kuliahs as b', function($join) {
-                        $join->on('a.id_mk', '=', 'b.id')
-                                ->orOn('master_nilai.id_matkul', '=', 'b.id');
-                    })
-                    ->where('nim', $item->nim)
-                    ->whereNotNull('master_nilai.nakhir')
-                    ->get();
+                    $getNilai = $this->helpers->getDaftarNilaiMhs($item->nim);
 
                     $totalSks = 0;
                     $totalIps = 0;
@@ -344,12 +304,33 @@ class ProsesYudisiumController extends Controller
                 'gelombang' => 'required',
             ]);
 
+            $mahasiswa = Mahasiswa::select([
+                'pegawai_biodata.id AS idKaprodi'
+            ])
+            ->leftJoin('jabatan_struktural', 'mahasiswa.id_program_studi', '=', 'jabatan_struktural.prodi_id')
+            ->leftJoin('pegawai_biodata', 'jabatan_struktural.id_pegawai', '=', 'pegawai_biodata.id')
+            ->where(function($query){
+                $query->where('jabatan_struktural.jabatan', 'like', '%kepala%')
+                      ->orWhereNull('jabatan_struktural.jabatan');
+            })
+            ->where('nim', $request->nim)
+            ->first();
+
+            $jabatanStruktural = JabatanStruktural::select([
+                'pegawai_biodata.id AS idKetua',
+            ])
+            ->where('jabatan', 'Ketua')
+            ->leftJoin('pegawai_biodata', 'jabatan_struktural.id_pegawai', '=', 'pegawai_biodata.id')
+            ->first();
+
             if ($id) {
                 $save = TbYudisium::updateOrCreate(
                     ['id' => $id],
                     [
                         'id_gelombang_yudisium' => $request->gelombang,
                         'nim' => $request->nim,
+                        'id_kaprodi' => $mahasiswa->idKaprodi ?? null,
+                        'id_ketua' => $jabatanStruktural->idKetua ?? null,
                     ]
                 );
 
@@ -363,6 +344,8 @@ class ProsesYudisiumController extends Controller
                         [
                             'id_gelombang_yudisium' => $request->gelombang,
                             'nim' => $nim,
+                            'id_kaprodi' => $mahasiswa->idKaprodi ?? null,
+                            'id_ketua' => $jabatanStruktural->idKetua ?? null,
                         ]
                     );
 
@@ -373,6 +356,18 @@ class ProsesYudisiumController extends Controller
                     $updateMhs = Mahasiswa::where('nim', $nim)->update([
                         'is_yudisium' => 1
                     ]);
+
+                    $mhs = Mahasiswa::where('nim', $nim)->first();
+
+                    $dataWa['no_wa'] = $mhs->hp ?? '';
+                    $message = "*MYSTIFAR - Yudisium*\n\n"
+                        . "Halo, " . ($mhs->nama ?? '-') . ",\n\n"
+                        . "Selamat! Anda telah berhasil terdaftar sebagai peserta Yudisium pada gelombang.\n\n"
+                        . "Silakan pantau informasi lebih lanjut melalui MyStifar atau hubungi bagian akademik jika ada pertanyaan.\n\n"
+                        . "Terima kasih.\n\n";
+                    $dataWa['pesan'] = $message;
+                    
+                    $pesan = helpers::send_wa($dataWa);
                 }
 
                 if ($save) {

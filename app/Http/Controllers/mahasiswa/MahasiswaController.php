@@ -26,10 +26,17 @@ use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Crypt;
 use Picqer\Barcode\BarcodeGeneratorPNG;
 use App\Models\MahasiswaBerkasPendukung;
+use App\Models\TbYudisium;
 use Intervention\Image\Drivers\Gd\Driver;
 
 class MahasiswaController extends Controller
 {
+    protected $helpers;
+    public function __construct()
+    {
+        $this->helpers = new helpers;
+    }
+
     public function index(Request $request)
     {
         $title = "Daftar Mahasiswa";
@@ -270,7 +277,21 @@ class MahasiswaController extends Controller
 
     public function store(Request $request){
         $id = $request->id;
-        // dd($request->nilai_toefl);
+        $noTranskrip = $request->no_transkrip ?? null;
+
+        $mhs = Mahasiswa::where('no_transkrip', $noTranskrip)
+                ->where('no_tranksrip', '!=', '')
+                ->where('id', '!=', $id)
+                ->first();
+
+        if($mhs){
+            $data = [
+                'status' => 500,
+                'message' => 'No Seri Transkrip sudah digunakan oleh mahasiswa lain.',
+            ];
+            return response()->json($data, 500);
+        }
+
         if(empty($id)){
         //create user
         $email = $request->nim . "@mhs.stifar.id";
@@ -321,6 +342,7 @@ class MahasiswaController extends Controller
                     'status' => 1,
                     'no_pisn' => $request->no_pisn ?? null,
                     'nilai_toefl'=>$request->nilai_toefl ?? null,
+                    'no_transkrip'=>$request->no_transkrip ?? null,
                 ]
             );
             $data = [
@@ -366,6 +388,7 @@ class MahasiswaController extends Controller
                     'status' => $request->status,
                     'nilai_toefl'=>$request->nilai_toefl ?? null,
                     'no_pisn' => $request->no_pisn ?? null,
+                    'no_transkrip'=>$request->no_transkrip ?? null,
                 ]
             );
             return response()->json('updated');
@@ -655,7 +678,6 @@ class MahasiswaController extends Controller
             $nimDekrip = Crypt::decryptString($request->nimEnkripsi);
             $nim = str_replace("stifar", "", $nimDekrip);
 
-            $helpers = new helpers;
             $data = Mahasiswa::select([
                 'mahasiswa.nim',
                 'mahasiswa.nama',
@@ -663,6 +685,7 @@ class MahasiswaController extends Controller
                 'mahasiswa.tgl_lahir AS tglLahir',
                 'mahasiswa.foto_mhs AS fotoMhs',
                 'mahasiswa.foto_yudisium AS fotoYudisium',
+                'mahasiswa.no_transkrip AS noTranskrip',
                 'program_studi.nama_prodi AS programStudi',
                 'program_studi.jenjang',
                 'program_studi.nama_ijazah AS gelar',
@@ -675,24 +698,72 @@ class MahasiswaController extends Controller
             ->leftJoin('program_studi', 'program_studi.id', '=', 'mahasiswa.id_program_studi')
             ->leftJoin('master_skripsi', 'mahasiswa.nim', '=', 'master_skripsi.nim')
             ->leftJoin('pengajuan_judul_skripsi', 'master_skripsi.id', '=', 'pengajuan_judul_skripsi.id_master')
-            ->leftJoin('jabatan_struktural', 'mahasiswa.id_program_studi', '=', 'jabatan_struktural.prodi_id')
-            ->leftJoin('pegawai_biodata', 'jabatan_struktural.id_pegawai', '=', 'pegawai_biodata.id_pegawai')
             ->leftJoin('tb_yudisium', 'mahasiswa.nim', '=', 'tb_yudisium.nim')
+            ->leftJoin('pegawai_biodata', 'tb_yudisium.id_kaprodi', '=', 'pegawai_biodata.id')
             ->leftJoin('gelombang_yudisium', 'tb_yudisium.id_gelombang_yudisium', '=', 'gelombang_yudisium.id')
             ->where('mahasiswa.nim', $nim)
             ->where('pengajuan_judul_skripsi.status', 1)
-            ->where(function($query){
-                $query->where('jabatan_struktural.jabatan', 'like', '%kepala%')
-                      ->orWhereNull('jabatan_struktural.jabatan');
-            })
             ->first();
+
+            // Jika tidak ditemukan di tabel mahasiswa, coba ambil dari alumni
+            if (!$data) {
+                $data = \DB::table('tb_alumni')
+                    ->select([
+                        'tb_alumni.nim',
+                        'tb_alumni.nama',
+                        'tb_alumni.tempat_lahir AS tempatLahir',
+                        'tb_alumni.tgl_lahir AS tglLahir',
+                        'tb_alumni.foto AS fotoMhs',
+                        'tb_alumni.foto_yudisium AS fotoYudisium',
+                        'tb_alumni.no_transkrip AS noTranskrip',
+                        'program_studi.nama_prodi AS programStudi',
+                        'program_studi.jenjang',
+                        'program_studi.nama_ijazah AS gelar',
+                        'pengajuan_judul_skripsi.judul',
+                        'pengajuan_judul_skripsi.judul_eng AS judulEng',
+                        'pegawai_biodata.npp AS nppKaprodi',
+                        'pegawai_biodata.nama_lengkap AS namaKaprodi',
+                        'gelombang_yudisium.tanggal_pengesahan AS tanggalLulus'
+                    ])
+                    ->leftJoin('program_studi', 'program_studi.id', '=', 'tb_alumni.id_program_studi')
+                    ->leftJoin('master_skripsi', 'tb_alumni.nim', '=', 'master_skripsi.nim')
+                    ->leftJoin('pengajuan_judul_skripsi', 'master_skripsi.id', '=', 'pengajuan_judul_skripsi.id_master')
+                    ->leftJoin('tb_yudisium', 'tb_alumni.nim', '=', 'tb_yudisium.nim')
+                    ->leftJoin('pegawai_biodata', 'tb_yudisium.id_kaprodi', '=', 'pegawai_biodata.id')
+                    ->leftJoin('gelombang_yudisium', 'tb_yudisium.id_gelombang_yudisium', '=', 'gelombang_yudisium.id')
+                    ->where('tb_alumni.nim', $nim)
+                    ->where(function($query){
+                        // jika pengajuan judul ada pastikan status = 1, tapi jika tidak ada biarkan tetap ambil data alumni
+                        $query->where('pengajuan_judul_skripsi.status', 1)
+                              ->orWhereNull('pengajuan_judul_skripsi.status');
+                    })
+                    ->first();
+            }
 
             if (!$data) {
                 return response()->json(['message' => 'Data mahasiswa tidak ditemukan atau belum lengkap. Lengkapi data yudisium, judul skripsi, dan data lainnya.'], 404);
             }
 
-            $data->tglLahir = \Carbon\Carbon::parse($data->tglLahir)->translatedFormat('d F Y');
-            $data->tanggalLulus = \Carbon\Carbon::parse($data->tanggalLulus)->translatedFormat('d F Y');
+            // pastikan properti ada dan valid sebelum di-parse
+            if (!empty($data->tglLahir)) {
+                try {
+                    $data->tglLahir = \Carbon\Carbon::parse($data->tglLahir)->translatedFormat('d F Y');
+                } catch (\Exception $e) {
+                    $data->tglLahir = $data->tglLahir; // biarkan apa adanya jika bukan tanggal valid
+                }
+            } else {
+                $data->tglLahir = '-';
+            }
+
+            if (!empty($data->tanggalLulus)) {
+                try {
+                    $data->tanggalLulus = \Carbon\Carbon::parse($data->tanggalLulus)->translatedFormat('d F Y');
+                } catch (\Exception $e) {
+                    $data->tanggalLulus = $data->tanggalLulus;
+                }
+            } else {
+                $data->tanggalLulus = '-';
+            }
 
             if (preg_match('/\((.*?)\)/', $data->gelar, $matches)) {
                 $data->gelar = $matches[1];
@@ -700,50 +771,54 @@ class MahasiswaController extends Controller
                 $data->gelar = $data->gelar;
             }
 
-            $getNilai = master_nilai::select(
-                'master_nilai.*',
-                'a.hari',
-                'a.kel',
-                'b.nama_matkul',
-                'b.sks_teori',
-                'b.sks_praktek',
-                'b.kode_matkul'
-            )
-            ->leftJoin('jadwals as a', 'master_nilai.id_jadwal', '=', 'a.id')
-            ->join('mata_kuliahs as b', function($join) {
-                $join->on('a.id_mk', '=', 'b.id')
-                        ->orOn('master_nilai.id_matkul', '=', 'b.id');
-            })
-            ->where('nim', $data->nim)
-            ->whereNotNull('master_nilai.nakhir')
-            ->get();
+            $getNilai = $this->helpers->getDaftarNilaiMhs($data->nim);
 
             $totalSks = 0;
             $totalIps = 0;
             $totalMutu = 0;
             $totalBobot = 0;
             $mataKuliah = [];
+            // kumpulkan mata kuliah unik berdasarkan kombinasi kode + nama. jika duplikat, ambil yang 'terbesar' berdasarkan bobot (sks * mutu)
+            $mataKuliahMap = [];
             foreach ($getNilai as $row) {
-                $mutu = $helpers->getKualitas($row->nhuruf) ?? 0;
-                $countBobot = ($row->sks_teori + $row->sks_praktek) * $helpers->getKualitas($row->nhuruf);
+                $mutu = $this->helpers->getKualitas($row->nhuruf) ?? 0;
+                $sks = ($row->sks_teori + $row->sks_praktek);
+                $countBobot = $sks * $mutu;
 
-                $mataKuliah[] = [
-                    'kodeMatkul'        => $row->kode_matkul ?? 'data tidak ditemukan',
-                    'namaMataKuliah'    => $row->nama_matkul ?? 'data tidak ditemukan',
+                $kodePerbandingan = preg_replace('/\s+/', '', strtolower(trim($row->kode_matkul ?? '')));
+                $namaMkPerbandingan = preg_replace('/\s+/', '', strtolower(trim($row->nama_matkul ?? '')));
+                $key = $kodePerbandingan . '|' . $namaMkPerbandingan;
+
+                $kode = $row->kode_matkul ?? '';
+                $namaMk = $row->nama_matkul ?? '';
+                $entry = [
+                    'kodeMatkul'        => $kode ?: 'data tidak ditemukan',
+                    'namaMataKuliah'    => $namaMk ?: 'data tidak ditemukan',
                     'namaMataKuliahEng' => $row->nama_matkul_eng ?? 'data tidak ditemukan',
-                    'totalSks'          => $row->sks_teori + $row->sks_praktek,
+                    'totalSks'          => $sks,
                     'nilai'             => $row->nhuruf,
                     'mutu'              => $mutu,
                     'bobot'             => $countBobot,
+                    'validasi_tugas'    => $row->validasi_tugas ?? 0,
+                    'validasi_uts'      => $row->validasi_uts ?? 0,
+                    'validasi_uas'      => $row->validasi_uas ?? 0,
                 ];
 
-                $sks = ($row->sks_teori + $row->sks_praktek);
-                $totalSks += $sks;
-                if($row->validasi_tugas == 1 && $row->validasi_uts == 1 && $row->validasi_uas == 1)
-                {
-                    $totalIps +=  ($row->sks_teori+$row->sks_praktek) * $helpers->getKualitas($row->nhuruf);
-                    $totalMutu += $mutu;
-                    $totalBobot += $countBobot;
+                // jika belum ada, atau bobot saat ini lebih besar dari yang tersimpan, replace
+                if (!isset($mataKuliahMap[$key]) || $mutu > $mataKuliahMap[$key]['mutu']) {
+                    $mataKuliahMap[$key] = $entry;
+                }
+            }
+
+            // konversi map menjadi array dan hitung total berdasarkan item unik yang telah dipilih
+            $mataKuliah = [];
+            foreach ($mataKuliahMap as $entry) {
+                $mataKuliah[] = $entry;
+                $totalSks += $entry['totalSks'];
+                if ($entry['validasi_tugas'] == 1 && $entry['validasi_uts'] == 1 && $entry['validasi_uas'] == 1) {
+                    $totalIps += $entry['totalSks'] * $entry['mutu'];
+                    $totalMutu += $entry['mutu'];
+                    $totalBobot += $entry['bobot'];
                 }
             }
             $data->totalSks = $totalSks;
@@ -752,12 +827,12 @@ class MahasiswaController extends Controller
             $data->ipk = $totalSks > 0 ? floatval(number_format($totalIps / $totalSks, 2)) : 0;
             $data->mataKuliah = $mataKuliah;
 
-            $jabatanStruktural = JabatanStruktural::select([
+            $jabatanStruktural = TbYudisium::select([
                 'pegawai_biodata.npp',
                 'pegawai_biodata.nama_lengkap',
             ])
-            ->where('jabatan', 'Ketua')
-            ->leftJoin('pegawai_biodata', 'jabatan_struktural.id_pegawai', '=', 'pegawai_biodata.id_pegawai')
+            ->where('tb_yudisium.nim', $data->nim)
+            ->leftJoin('pegawai_biodata', 'tb_yudisium.id_ketua', '=', 'pegawai_biodata.id')
             ->first();
 
             $data->nppKetua = $jabatanStruktural->npp ?? '-';

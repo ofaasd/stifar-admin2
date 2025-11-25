@@ -54,24 +54,58 @@
                 <div class="card">
                     <div class="card-body">
                         <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
-                        <div class="table-responsive">
-                            <table class="display" id="basic-1">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>ID</th>
-                                        <th>Nama</th>
-                                        <th>Program Studi</th>
-                                        <th>Periode</th>
-                                        <th>Jumlah Peserta</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+                        <textarea name='column2' id='my_column_2' style="display:none">@foreach($indexed2 as $value) {{$value . "\n"}} @endforeach</textarea>
 
-                                </tbody>
-                            </table>
+                        <!-- Tabs -->
+                        <ul class="nav nav-tabs mb-3" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="tab-sebelum" data-bs-toggle="tab" data-bs-target="#tab-sebelum-pane" type="button" role="tab" aria-controls="tab-sebelum-pane" aria-selected="true">Belum disahkan</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="tab-sah" data-bs-toggle="tab" data-bs-target="#tab-sah-pane" type="button" role="tab" aria-controls="tab-sah-pane" aria-selected="false">Sudah Disahkan</button>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="tab-sebelum-pane" role="tabpanel" aria-labelledby="tab-sebelum">
+                                <div class="table-responsive">
+                                    <table class="display" id="basic-1">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>ID</th>
+                                                <th>Nama</th>
+                                                <th>Program Studi</th>
+                                                <th>Periode</th>
+                                                <th>Jumlah Peserta</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="tab-sah-pane" role="tabpanel" aria-labelledby="tab-sah">
+                                <div class="table-responsive">
+                                    <table class="display" id="basic-2">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>ID</th>
+                                                <th>Nama</th>
+                                                <th>Program Studi</th>
+                                                <th>Periode</th>
+                                                <th>Jumlah Peserta</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -89,22 +123,109 @@
             const baseUrl = {!! json_encode(url('/')) !!};
             const title = "{{strtolower($title2)}}";
             const page = '/'.concat("admin/akademik/yudisium/").concat(title);
+            const page2 = '/'.concat("admin/akademik/yudisium/").concat('get-sah-yudisium');
             var my_column = $('#my_column').val();
             const pecah = my_column.split('\n');
             let my_data = [];
             pecah.forEach((item, index) => {
                 let temp = item.replace(/ /g, '');
-                let data_obj = { data: temp };
-                my_data.push(data_obj);
+                if(temp !== '') {
+                    let data_obj = { data: temp };
+                    my_data.push(data_obj);
+                }
             });
 
-            const dt = $("#basic-1").DataTable({
+            var my_column_2 = $('#my_column_2').val();
+            const pecah2 = my_column_2.split('\n');
+            let my_data_2 = [];
+            pecah2.forEach((item, index) => {
+                let temp = item.replace(/ /g, '');
+                if(temp !== '') {   
+                    let data_obj2 = { data: temp };
+                    my_data_2.push(data_obj2);
+                }
+            });
+
+            const dt1 = $("#basic-1").DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {
                     url: baseUrl.concat(page),
                 },
                 columns: my_data,
+                columnDefs: [
+                    {
+                    // For Responsive
+                    className: 'control',
+                    searchable: false,
+                    orderable: false,
+                    responsivePriority: 2,
+                    targets: 0,
+                    render: function render(data, type, full, meta) {
+                        return '';
+                    }
+                    },
+                    {
+                    searchable: false,
+                    orderable: false,
+                    targets: 1,
+                    render: function render(data, type, full, meta) {
+                        return '<span>'.concat(full.fake_id, '</span>');
+                    }
+                    },
+                    {
+                    // Actions
+                    targets: -1,
+                    title: 'Actions',
+                    searchable: false,
+                    orderable: false,
+                    render: function render(data, type, full, meta) {
+                        if(full['tanggalPengesahan'] == null)
+                        {
+                            return (
+                                '<div class="d-inline-block text-nowrap">' +
+                                    '<a target="_blank" href="/admin/akademik/yudisium/cetak-daftar-yudisium/' + full['idEnkripsi'] + '" class="btn btn-sm btn-icon text-primary" title="Cetak">' +
+                                        '<i class="fa fa-print"></i></a> | ' +
+                                        '<button class="btn btn-sm btn-icon btn-pengesahan text-info" title="Pengesahan Yudisium" data-nama="'+ full['nama'] + '" data-id="' + full['idEnkripsi'] +
+                                        '" data-bs-toggle="modal" data-original-title="Pengesahan Yudisium" data-bs-target="#pengesahanModal"><i class="fa fa-check"></i></button>' +
+                                        '</div>'
+                                    );
+                        }else{
+                            return (
+                                '<div class="d-inline-block text-nowrap">' +
+                                    '<a target="_blank" href="/admin/akademik/yudisium/cetak-daftar-yudisium/' + full['idEnkripsi'] + '" class="btn btn-sm btn-icon text-primary" title="Cetak">' +
+                                        '<i class="fa fa-print"></i></a> | ' +
+                                        '<span class="badge bg-success">Disahkan pada ' + full['tanggalPengesahan'] + '</span>' +
+                                    '</div>'
+                            );
+                        }
+                    }
+                    }
+                ],
+                order: [[2, 'desc']],
+                dom:
+                    '<"row mx-2"' +
+                    '<"col-md-2"<"me-3"l>>' +
+                    '<"col-md-10"<"dt-action-buttons text-xl-end text-lg-start text-md-end text-start d-flex align-items-center justify-content-end flex-md-row flex-column mb-3 mb-md-0"fB>>' +
+                    '>t' +
+                    '<"row mx-2"' +
+                    '<"col-sm-12 col-md-6"i>' +
+                    '<"col-sm-12 col-md-6"p>' +
+                    '>',
+                language: {
+                    sLengthMenu: '_MENU_',
+                    search: '',
+                    searchPlaceholder: 'Search..'
+                },
+            });
+
+            const dt2 = $("#basic-2").DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: baseUrl.concat(page2),
+                },
+                columns: my_data_2,
                 columnDefs: [
                     {
                     // For Responsive
@@ -217,7 +338,8 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') || '{{ csrf_token() }}'
                     },
                     success: function success(message) {
-                        dt.draw();
+                        dt1.draw();
+                        dt2.draw();
                         $("#tambahModal").modal('hide');
                         swal({
                             icon: 'success',
@@ -274,7 +396,8 @@
                         '_token': '{{ csrf_token() }}',
                     },
                     success: function success() {
-                        dt.draw();
+                        dt1.draw();
+                        dt2.draw();
                     },
                     error: function error(_error) {
                         // console.log(_error);

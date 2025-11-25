@@ -153,6 +153,7 @@ use App\Http\Controllers\admin\akademik\skripsi\AdminPengajuanSkripsiController;
 use App\Http\Controllers\admin\akademik\transkripIjazah\PrintTranskripController;
 use App\Http\Controllers\admin\akademik\wisuda\AdminDaftarPendaftarWisudaController;
 use App\Http\Controllers\admin\admisi\StatistikController as AdmisiStatistikController;
+use App\Http\Controllers\admin\akademik\PenyerahanIjazahController;
 
 /*
 |--------------------------------------------------------------------------
@@ -415,6 +416,8 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi|baak|admin-
             Route::post('/print', [AdminPengajuanSkripsiController::class, 'print'])->name('print-pengajuan-skripsi');
         });
 
+        Route::resource('/penyerahan-ijazah', PenyerahanIjazahController::class)->name('index','penyerahan-ijazah');
+
         // Transkrip ijazah
         Route::prefix('/transkrip-ijazah')->group(function () {
             // Print ijazah
@@ -434,6 +437,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi|baak|admin-
             Route::resource('/setting-pisn', SettingPisnController::class)->name('index','setting-pisn-yudisium');
             Route::post('/cetak-transkrip-nilai', [MahasiswaController::class, 'cetakTranskripNilai']);
             Route::resource('/cetak', CetakYudisiumController::class)->name('index','cetak-yudisium');
+            Route::get('/get-sah-yudisium', [CetakYudisiumController::class, 'getDataSahYudisium'])->name('get-sudah-yudisium');
             Route::get('/cetak-daftar-yudisium/{idEnkripsi}', [CetakYudisiumController::class, 'show'])->name('show','cetak-daftar-yudisium');
             Route::resource('/pengesahan', PengesahanYudisiumController::class)->name('index','pengesahan-yudisium');
         });

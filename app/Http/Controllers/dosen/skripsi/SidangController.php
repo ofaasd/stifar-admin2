@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\dosen\skripsi;
 
+use App\helpers;
+use Carbon\Carbon;
 use App\Models\Prodi;
 use App\Models\Mahasiswa;
 use App\Models\AktorSidang;
@@ -47,15 +49,12 @@ class SidangController extends Controller
         })
         ->get();
 
-        $sidang = SidangSkripsi::all();
-        $statusSidang = $sidang->pluck('status')->unique()->mapWithKeys(function ($item) {
-            $labels = [
-                0 => 'Pengajuan',
-                1 => 'Selesai',
-                2 => 'Diterima',
-            ];
-            return [$item => $labels[$item] ?? 'Unknown'];
-        });
+        $statusSidang = [
+            99 => 'Calon Peserta Sidang',
+            0 => 'Pengajuan',
+            1 => 'Selesai',
+            2 => 'Diterima',
+        ];
 
         return view('dosen.skripsi.sidang.index', compact('tahunAjaran', 'ruang', 'pegawai', 'mahasiswaSkripsi', 'statusSidang', 'prodi'));
     }
@@ -247,7 +246,9 @@ class SidangController extends Controller
                 'sidang.proposal',
                 'sidang.presentasi',
                 'sidang.pendukung',
+                'sidang.berita_acara AS beritaAcara',
                 'sidang.nilai_akhir AS nilaiAkhir',
+                'master_ruang.nama_ruang AS ruangan',
                 'mahasiswa.nim',
                 'mahasiswa.nama',
                 'master_skripsi.pembimbing_1 AS nppPembimbing1',
@@ -257,6 +258,7 @@ class SidangController extends Controller
             ])
             ->leftJoin('master_skripsi', 'sidang.skripsi_id', '=', 'master_skripsi.id')
             ->leftJoin('mahasiswa', 'master_skripsi.nim', '=', 'mahasiswa.nim')
+            ->leftJoin('master_ruang', 'sidang.ruang_id', '=', 'master_ruang.id')
             ->leftJoin('pegawai_biodata AS pembimbing1', 'master_skripsi.pembimbing_1', '=', 'pembimbing1.npp')
             ->leftJoin('pegawai_biodata AS pembimbing2', 'master_skripsi.pembimbing_2', '=', 'pembimbing2.npp')
             ->where('sidang.id', $id)
@@ -304,14 +306,76 @@ class SidangController extends Controller
         try {
             $sidang = SidangSkripsi::findOrFail($id);
             $sidang->update([
-                'gelombang_id'       => $request->gelombangId,
                 'tanggal'       => $request->tanggal,
                 'waktu_mulai'   => $request->waktuMulai,
                 'waktu_selesai' => $request->waktuSelesai,
                 'ruang_id'      => $request->ruangId,
                 'penguji'       => isset($request->penguji) ? implode(',', $request->penguji) : null,
                 'status'        => 2,
+                'acc_at'       => now(),
             ]);
+
+            $pegawai = PegawaiBiodatum::whereIn('npp', $sidang->penguji)->get();
+
+            $teksNamaPenguji = '';
+            foreach ($pegawai as $index => $p) {
+                $teksNamaPenguji .= ($index + 1) . '. ' . $p->nama_lengkap . ' (' . $p->npp . ')' . "\n";
+            }
+
+            // Pastikan semua input ada sebelum di-convert, berikan fallback jika kosong/tidak valid
+            $formattedTanggal = '-';
+            if (!empty($request->tanggal)) {
+                try {
+                    $formattedTanggal = Carbon::parse($request->tanggal)->translatedFormat('d/m/Y');
+                } catch (\Exception $e) {
+                    // jika parsing gagal, simpan nilai mentah sebagai fallback
+                    $formattedTanggal = $request->tanggal;
+                }
+            }
+
+            $formattedWaktuMulai = '-';
+            if (!empty($request->waktuMulai) && strtotime(trim($request->waktuMulai)) !== false) {
+                $formattedWaktuMulai = date('H:i', strtotime(trim($request->waktuMulai)));
+            } elseif (!empty($request->waktuMulai)) {
+                $formattedWaktuMulai = $request->waktuMulai;
+            }
+
+            $formattedWaktuSelesai = '-';
+            if (!empty($request->waktuSelesai) && strtotime(trim($request->waktuSelesai)) !== false) {
+                $formattedWaktuSelesai = date('H:i', strtotime(trim($request->waktuSelesai)));
+            } elseif (!empty($request->waktuSelesai)) {
+                $formattedWaktuSelesai = $request->waktuSelesai;
+            }
+
+            $ruang = MasterRuang::find($request->ruangId);
+            
+            $mhs = MasterSkripsi::where('id', $sidang->skripsi_id)->first();
+            $dataWa['no_wa'] = $mhs->hp ?? '';
+            $dataWa['pesan'] ="*MYSTIFAR - Pengajuan Sidang*\n\n"
+                . "Halo, " . ($mhs->nama ?? '-') . ",\n\n"
+                ."NIM: ".$mhs->nim."\n\n"
+                ."Jadwal sidang skripsi Anda telah distujui dengan rincian sebagai berikut:\n"
+                ."Penguji: \n"
+                .$teksNamaPenguji;
+
+            if (!empty($formattedTanggal) && $formattedTanggal != '-') {
+                $dataWa['pesan'] .= "Tanggal: " . $formattedTanggal . "\n";
+            }
+
+            if ((!empty($formattedWaktuMulai) && $formattedTanggal != '-') && (!empty($formattedWaktuSelesai) && $formattedWaktuSelesai != '-')) {
+                $dataWa['pesan'] .= "Waktu: " . $formattedWaktuMulai . " - " . $formattedWaktuSelesai . "\n";
+            }
+
+            if (isset($ruang) && !empty($ruang) && !empty($ruang->nama_ruang)) {
+                $dataWa['pesan'] .= "Ruang: " . $ruang->nama_ruang . "\n\n";
+            }
+
+            $dataWa['pesan'] .= "Harap hadir tepat waktu dan persiapkan diri Anda dengan baik.\n\n"
+                ."Terima kasih.\n"
+                ."- Admin Mystifar";
+
+            $pesan = helpers::send_wa($dataWa);
+            
             return redirect()->back()->with('success', 'Jadwal sidang berhasil diperbarui.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
@@ -384,10 +448,24 @@ class SidangController extends Controller
                 ], 400);
             }
 
+            $folder = 'berkas-sidang/berita-acara';
+
+            $beritaAcaraFile = $request->file('beritaAcara');
+            $namaFileBeritaAcara = null;
+            if ($beritaAcaraFile) {
+                $targetDir = public_path($folder);
+                if (!is_dir($targetDir)) {
+                    mkdir($targetDir, 0755, true);
+                }
+                $namaFileBeritaAcara = $sidang->nim.'_berita_acara_'.time().'.'.$beritaAcaraFile->getClientOriginalExtension();
+                $beritaAcaraFile->move($targetDir, $namaFileBeritaAcara);
+            }
+
             // Update sidang
             SidangSkripsi::where('id', $sidang->id)->update([
                 'status' => $request->status,
                 'nilai_akhir' => $nilaiAkhir,
+                'berita_acara' => $namaFileBeritaAcara,
             ]);
             
             MasterSkripsi::where('id', $sidang->skripsi_id)->update([
@@ -397,6 +475,19 @@ class SidangController extends Controller
             $nhuruf = \App\helpers::getNilaiHuruf($nilaiAkhir);
             $tahunAjaran = TahunAjaran::where('status', 'Aktif')->first();
             $mhs = Mahasiswa::where('nim', $sidang->nim)->first();
+            $teksJenisSidang = $sidang->jenis == 1 ? 'Seminar Proposal' : 'Seminar Hasil';
+
+            $dataWa['no_wa'] = $mhs->hp ?? '';
+            $dataWa['pesan'] = "*MYSTIFAR - Nilai Sidang*\n\n"
+                . "Halo, " . ($mhs->nama ?? '-') . ",\n\n"
+                ."Nilai ". $teksJenisSidang ." Anda telah diumumkan dengan rincian sebagai berikut:\n"
+                ."Nilai Akhir: " . $nilaiAkhir . "\n"
+                ."Nilai Huruf: " . $nhuruf . "\n\n"
+                ."Selamat atas pencapaian Anda!\n\n"
+                ."Terima kasih.\n"
+                ."- Admin Mystifar";
+
+            $pesan = helpers::send_wa($dataWa);
 
             if ($sidang->jenis == 1) {
                 master_nilai::create([
@@ -562,10 +653,33 @@ class SidangController extends Controller
             ->where('pengajuan_judul_skripsi.status', 1)
             ->orderBy('sidang.created_at', 'desc');
 
-            if ($status && $status != 'all') {
-                $querySidang->where('sidang.status', $status);
+            if ($status != 'all') {
+                if($status == 99)
+                {
+                    $querySidang = MasterSkripsi::select([
+                        'mahasiswa.nim',
+                        'mahasiswa.nama',
+                        'pengajuan_judul_skripsi.judul',
+                        'pembimbing1.nama_lengkap AS namaPembimbing1',
+                        'pembimbing2.nama_lengkap AS namaPembimbing2',
+                        'master_skripsi.pembimbing_1',
+                        'master_skripsi.pembimbing_2',
+                    ])
+                    ->leftJoin('mahasiswa', 'master_skripsi.nim', '=', 'mahasiswa.nim')
+                    ->leftJoin('pegawai_biodata AS pembimbing1', 'master_skripsi.pembimbing_1', '=', 'pembimbing1.npp')
+                    ->leftJoin('pegawai_biodata AS pembimbing2', 'master_skripsi.pembimbing_2', '=', 'pembimbing2.npp')
+                    ->leftJoin('pengajuan_judul_skripsi', 'master_skripsi.id', '=', 'pengajuan_judul_skripsi.id_master')
+                    ->where('master_skripsi.acc_1', 1)
+                    ->where('master_skripsi.acc_2', 1)
+                    ->whereNotIn('master_skripsi.id', function($query) {
+                        $query->select('skripsi_id')->from('sidang');
+                    });
+                }else{
+                    $querySidang->where('sidang.status', $status);
+                }
             }
-            if ($jenis && $jenis != 'all') {
+
+            if ($jenis != 'all') {
                 $querySidang->where('sidang.jenis', $jenis);
             }
             if ($fromDate) {
@@ -576,13 +690,11 @@ class SidangController extends Controller
             }
 
             $sidang = $querySidang->get()
-            ->map(function($item) {
-                // Format tanggal menjadi "12 September 2025"
-                if (!empty($item->tanggal)) {
-                    $carbonTanggal = \Carbon\Carbon::parse($item->tanggal);
-                    $item->tanggal = $carbonTanggal->translatedFormat('d/m/Y');
+            ->map(function($item) use ($status) {
+                if($status == 99)
+                {
+                    $item->status = 99;
                 }
-
                 return $item;
             });
 
@@ -591,21 +703,23 @@ class SidangController extends Controller
             $title = "Daftar Peserta Sidang";
             $parts = [];
 
-            if (!empty($status) && $status !== 'all') {
-                $statusLabels = [
+            $parts[] = 'Peserta Sidang';
+            if ($status != 'all') {
+                $statusSidang = [
+                    99 => 'Calon Peserta Sidang',
                     0 => 'Pengajuan',
                     1 => 'Selesai',
                     2 => 'Diterima',
                 ];
-                $parts[] = 'Status: ' . ($statusLabels[$status] ?? $status);
+                $parts[] = 'Status: ' . ($statusSidang[$status] ?? $status);
             }
 
-            if (!empty($jenis) && $jenis !== 'all') {
+            if ($jenis != 'all') {
                 $jenisLabel = [
                     1 => 'Seminar Proposal',
                     2 => 'Seminar Proposal',
                 ];
-                $parts[] = 'Jenis: ' . ($jenisLabel[$jenis] ?? $jenis);
+                $parts[] = ($jenisLabel[$jenis] ?? $jenis);
             }
 
             if (!empty($fromDate) && !empty($toDate)) {
@@ -617,11 +731,11 @@ class SidangController extends Controller
             }
 
             if (!empty($parts)) {
-                $title .= ' — ' . implode(' | ', $parts);
+                $filterTitle = implode(' | ', $parts);
             }
             // Generate PDF dengan mPDF
-            $mpdf = new \Mpdf\Mpdf();
-            $html = view('dosen.skripsi.sidang.print', compact('sidang', 'logo', 'title'))->render();
+            $mpdf = new \Mpdf\Mpdf(['orientation' => 'L']); // landscape
+            $html = view('dosen.skripsi.sidang.print', compact('sidang', 'logo', 'title', 'filterTitle', 'status'))->render();
             $mpdf->WriteHTML($html);
 
             $filename = $title . '.pdf';

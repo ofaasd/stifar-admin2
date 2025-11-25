@@ -55,10 +55,9 @@ class AsetBarangController extends Controller
             $start = $request->input('start');
             $order = $columns[$request->input('order.0.column')];
             $dir = $request->input('order.0.dir');
-
-
-            if (empty($request->input('search.value'))) {
-                $asetBarang = AsetBarang::select([
+            
+            // base query grouped by aset_barang.id to avoid duplicates caused by joins
+            $baseQuery = AsetBarang::select([
                     'aset_barang.*',
                     'master_ruang.nama_ruang AS namaRuang',
                     'pegawai_biodata.nama_lengkap AS namaPenanggungJawab',
@@ -68,6 +67,10 @@ class AsetBarangController extends Controller
                 ->leftJoin('master_ruang', DB::raw("REPLACE(master_ruang.nama_ruang, ' ', '')"), '=', 'aset_barang.kode_ruang')
                 ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'aset_barang.id_penanggung_jawab')
                 ->leftJoin('master_jenis_barang', 'master_jenis_barang.kode', '=', 'aset_barang.kode_jenis_barang')
+                ->groupBy('aset_barang.id', 'master_ruang.nama_ruang', 'pegawai_biodata.nama_lengkap', 'master_jenis_barang.kode', DB::raw('DATE(aset_barang.pemeriksaan_terakhir)'));
+
+            if (empty($request->input('search.value'))) {
+                $asetBarang = (clone $baseQuery)
                 ->offset($start)
                 ->limit($limit)
                 ->orderBy($order, $dir)
@@ -75,42 +78,23 @@ class AsetBarangController extends Controller
             } else {
                 $search = $request->input('search.value');
 
-                $asetBarang = AsetBarang::select([
-                    'aset_barang.*',
-                    'master_ruang.nama_ruang AS namaRuang',
-                    'pegawai_biodata.nama_lengkap AS namaPenanggungJawab',
-                    'master_jenis_barang.kode AS kodeJenisBarang',
-                    DB::raw('DATE(aset_barang.pemeriksaan_terakhir) AS pemeriksaanTerakhir')
-                ])
-                ->leftJoin('master_ruang', 'master_ruang.nama_ruang', '=', 'aset_barang.kode_ruang')
-                ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'aset_barang.id_penanggung_jawab')
-                ->leftJoin('master_jenis_barang', 'master_jenis_barang.kode', '=', 'aset_barang.kode_jenis_barang')
-                ->where('aset_barang.id', 'LIKE', "%{$search}%")
-                ->orWhere('namaRuang', 'LIKE', "%{$search}%")
-                ->orWhere('namaPenanggungJawab', 'LIKE', "%{$search}%")
-                ->orWhere('aset_barang.label', 'LIKE', "%{$search}%")
-                ->orWhere('aset_barang.elektronik', 'LIKE', "%{$search}%")
+                // clone the base query and apply grouped where conditions to avoid unexpected OR precedence
+                $searchQuery = (clone $baseQuery);
+                $searchQuery->where(function ($q) use ($search) {
+                    $q->where('master_ruang.nama_ruang', 'LIKE', "%{$search}%")
+                      ->orWhere('pegawai_biodata.nama_lengkap', 'LIKE', "%{$search}%")
+                      ->orWhere('aset_barang.label', 'LIKE', "%{$search}%")
+                      ->orWhere('aset_barang.elektronik', 'LIKE', "%{$search}%");
+                });
+
+                $asetBarang = (clone $searchQuery)
                 ->offset($start)
                 ->limit($limit)
                 ->orderBy($order, $dir)
                 ->get();
 
-                $totalFiltered = AsetBarang::select([
-                        'aset_barang.*',
-                        'master_ruang.nama_ruang AS namaRuang',
-                        'pegawai_biodata.nama_lengkap AS namaPenanggungJawab',
-                        'master_jenis_barang.kode AS kodeJenisBarang',
-                        DB::raw('DATE(aset_barang.pemeriksaan_terakhir) AS pemeriksaanTerakhir')
-                    ])
-                    ->leftJoin('master_ruang', 'master_ruang.nama_ruang', '=', 'aset_barang.kode_ruang')
-                    ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'aset_barang.id_penanggung_jawab')
-                    ->leftJoin('master_jenis_barang', 'master_jenis_barang.kode', '=', 'aset_barang.kode_jenis_barang')
-                    ->where('aset_barang.id', 'LIKE', "%{$search}%")
-                    ->orWhere('namaRuang', 'LIKE', "%{$search}%")
-                    ->orWhere('namaPenanggungJawab', 'LIKE', "%{$search}%")
-                    ->orWhere('aset_barang.label', 'LIKE', "%{$search}%")
-                    ->orWhere('aset_barang.elektronik', 'LIKE', "%{$search}%")
-                    ->count();
+                // count distinct grouped results for filtered total
+                $totalFiltered = (clone $searchQuery)->get()->count();
             }
 
             $data = [];

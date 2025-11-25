@@ -7,7 +7,7 @@
     {{-- <title>Daftar Pengajuan Judul</title> --}}
     <style>
         #customers {
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: 'Times New Roman', Times, serif, Helvetica, sans-serif;
             border-collapse: collapse;
             width: 100%;
         }
@@ -15,21 +15,14 @@
         #customers td,
         #customers th {
             border: 1px solid #ddd;
-            padding: 8px;
-        }
-
-        #customers th {
-            padding-top: 12px;
-            padding-bottom: 12px;
-            text-align: left;
+            padding: 4px;
         }
 
         td{
-            font-size: 12px;
+            font-size: 11px;
         }
         a{
             color: black;
-
             outline: 0;
             border: none;
         }
@@ -37,11 +30,11 @@
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
-            font-size: 14px;
+            font-size: 11px;
         }
         .table th, .table td {
             border: 1px solid #000;
-            padding: 8px;
+            padding: 4px;
             text-align: left;
         }
       
@@ -49,24 +42,19 @@
 </head>
 
 <body>
-    <table width="100%">
+    <table width="100%" style="margin-bottom:12px;">
         <tr>
-            <td width="10%">
-                <img src="{{ $logo }}" alt="logo-stifar" style="width: 100px;"/>
+            <td style="width:90px; vertical-align:middle;">
+                <img src="{{ $logo }}" alt="logo-stifar" style="width:80px; height:auto; display:block;">
             </td>
-            <td width="90%" style="padding-left: 30px;">
-                <center>
-                    <b>SEKOLAH TINGGI ILMU FARMASI SEMARANG</b>
-                    <br>Alamat : Jl. Letnan Jendral Sarwo Edie Wibowo Km. 1, Plamongan Sari, Kec. Pedurungan, Kota Semarang
-                    <br>Email : admin@sistifar.id
-                    <br>Website : https://stifar.ac.id
-                </center>
+            <td style="vertical-align:middle; padding-left:10px;">
+                <div style="text-align:center; padding:8px 0;">
+                    <h1 style="font-size:22px; margin:0; font-weight:700; line-height:1.1;">{{ $title }}</h1>
+                </div>
             </td>
         </tr>
     </table>
     <hr>
-    <center><b>{{ $title }}</b></center>
-    <br>
     <div class="container">
         <div class="table-responsive">
             <table id="customers" class="table table-bordered ">
@@ -75,7 +63,8 @@
                         <th>No.</th>
                         <th>Mahasiswa</th>
                         <th>Judul</th>
-                        <th>Pembimbing</th>
+                        <th>Pembimbing Pengajuan</th>
+                        <th>Pembimbing Realisasi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -84,21 +73,24 @@
                         @php
                             $judulArr = [];
                             foreach ($rows as $row) {
-                                switch ($row->status) {
-                                    case 1:
-                                        $icon = '<span title="ACC" style="color:green;">&#10004;</span>';
-                                        break;
-                                    case 2:
-                                        $icon = '<span title="Revisi" style="color:orange;">&#9998;</span>';
-                                        break;
-                                    case 3:
-                                        $icon = '<span title="Ditolak" style="color:red;">&#10006;</span>';
-                                        break;
-                                    default:
-                                        $icon = '<span title="Pengajuan" style="color:gray;">&#9203;</span>';
-                                        break;
-                                }
-                                $judulArr[] = $icon . ' ' . e($row->judul) . '<br>' . $icon . ' ' . e($row->judulEnglish);
+                                $statusLabels = [
+                                    0 => 'Pengajuan',
+                                    1 => 'ACC',
+                                    2 => 'Revisi',
+                                    3 => 'Ditolak',
+                                    4 => 'Pergantian Judul',
+                                ];
+
+                                $icons = [
+                                    0 => '<span title="' . $statusLabels[0] . '" style="color:gray;">&#9203;</span>',
+                                    1 => '<span title="' . $statusLabels[1] . '" style="color:green;">&#10004;</span>',
+                                    2 => '<span title="' . $statusLabels[2] . '" style="color:orange;">&#9998;</span>',
+                                    3 => '<span title="' . $statusLabels[3] . '" style="color:red;">&#10006;</span>',
+                                    4 => '<span title="' . $statusLabels[4] . '" style="color:blue;">&#8635;</span>',
+                                ];
+
+                                $icon = $icons[$row->status] ?? '<span title="Unknown" style="color:gray;">&#9203;</span>';
+                                $judulArr[] = $icon . ' ' . e($row->judul);
                             }
                             $first = $rows->first();
                         @endphp
@@ -107,10 +99,57 @@
                             <td>({{ $nim }}) {{ $first->nama }}</td>
                             <td>{!! implode('<hr><br>', $judulArr) !!}</td>
                             <td>
-                                @if($first->pembimbing2)
-                                    {{ $first->pembimbing1 . ' & ' . $first->pembimbing2 }}
+                                @if($isPengajuan)
+                                    @php
+                                        $kuota1 = $first->kuotaPembimbing1 ?? 0;
+                                        $kuota2 = $first->kuotaPembimbing2 ?? 0;
+                                        $jml1   = $first->jmlBimbingan1 ?? 0;
+                                        $jml2   = $first->jmlBimbingan2 ?? 0;
+                                    @endphp
+
+                                    <div style="font-size:11px; line-height:1.2;">
+                                        @if($first->pembimbing2)
+                                            <div>
+                                                <strong>{{ $first->pembimbing1 ?? '-' }}</strong><br>
+                                                <span style="font-size:10px; color:#555;">(Kuota: {{ $kuota1 }}, Bimbingan: {{ $jml1 }})</span>
+                                            </div>
+                                            <div style="margin-top:4px;">
+                                                <strong>{{ $first->pembimbing2 ?? '-' }}</strong><br>
+                                                <span style="font-size:10px; color:#555;">(Kuota: {{ $kuota2 }}, Bimbingan: {{ $jml2 }})</span>
+                                            </div>
+                                        @else
+                                            <div>
+                                                <strong>{{ $first->pembimbing1 ?? '-' }}</strong><br>
+                                                <span style="font-size:10px; color:#555;">(Kuota: {{ $kuota1 }}, Bimbingan: {{ $jml1 }})</span>
+                                            </div>
+                                        @endif
+                                    </div>
                                 @else
-                                    {{ $first->pembimbing1 ?? '-' }}
+                                    @php
+                                        $pp1 = $rows->pluck('pembimbingPengajuan1')->filter()->unique()->values()->all();
+                                        $pp2 = $rows->pluck('pembimbingPengajuan2')->filter()->unique()->values()->all();
+                                    @endphp
+
+                                    @if(count($pp1) && count($pp2))
+                                        {{ $pp1[0] . ' & ' . $pp2[0] }}
+                                    @elseif(count($pp1))
+                                        {{ $pp1[0] }}
+                                    @elseif(count($pp2))
+                                        {{ $pp2[0] }}
+                                    @else
+                                        -
+                                    @endif
+                                @endif
+                            </td>
+                            <td>
+                                @if($isPengajuan)
+                                    -
+                                @else
+                                    @if($first->pembimbing2)
+                                        {{ $first->pembimbing1 . ' & ' . $first->pembimbing2 }}
+                                    @else
+                                        {{ $first->pembimbing1 ?? '-' }}
+                                    @endif
                                 @endif
                             </td>
                         </tr>

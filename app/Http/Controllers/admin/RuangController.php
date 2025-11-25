@@ -34,12 +34,6 @@ class RuangController extends Controller
         ->leftJoin('aset_gedung_bangunan', 'aset_gedung_bangunan.kode', '=', 'master_ruang.kode_gedung')
         ->groupBy('master_ruang.id');
 
-        $ruang = $query->get()
-        ->map(function ($item) {
-            $item->idEnkripsi = Crypt::encryptString($item->idRuang . "stifar");
-            return $item;
-        });
-
         if (empty($request->input('length'))) {
             $title = "Ruang";
             $indexed = $this->indexed;
@@ -69,7 +63,6 @@ class RuangController extends Controller
             $order = $columns[$request->input('order.0.column')];
             $dir = $request->input('order.0.dir');
 
-
             if (empty($request->input('search.value'))) {
                 $ruang = $query->get()
                 ->map(function ($item) {
@@ -84,16 +77,17 @@ class RuangController extends Controller
                     ->leftJoin('master_jenis_ruang', 'master_jenis_ruang.kode', '=', 'master_ruang.kode_jenis')
                     ->leftJoin('aset_gedung_bangunan', 'aset_gedung_bangunan.kode', '=', 'master_ruang.kode_gedung')
                     ->where('id', 'LIKE', "%{$search}%")
-                    ->orWhere('kodeGedung', 'LIKE', "%{$search}%")
+                    ->orWhere('aset_gedung_bangunan', 'LIKE', "%{$search}%")
                     ->orWhere('nama_ruang', 'LIKE', "%{$search}%")
-                    ->orWhere('kodeJenis', 'LIKE', "%{$search}%")
+                    ->orWhere('kode', 'LIKE', "%{$search}%")
                     ->orWhere('kapasitas', 'LIKE', "%{$search}%")
                     ->orWhere('lantai', 'LIKE', "%{$search}%")
                     ->orWhere('luas', 'LIKE', "%{$search}%")
                     ->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
-                    ->get()->map(function ($item) {
+                    ->get()
+                    ->map(function ($item) {
                         $item->idEnkripsi = Crypt::encryptString($item->idRuang . "stifar");
                         return $item;
                     });
@@ -103,9 +97,9 @@ class RuangController extends Controller
                     ->leftJoin('master_jenis_ruang', 'master_jenis_ruang.kode', '=', 'master_ruang.kode_jenis')
                     ->leftJoin('aset_gedung_bangunan', 'aset_gedung_bangunan.kode', '=', 'master_ruang.kode_gedung')
                     ->where('id', 'LIKE', "%{$search}%")
-                    ->orWhere('kodeGedung', 'LIKE', "%{$search}%")
+                    ->orWhere('aset_gedung_bangunan', 'LIKE', "%{$search}%")
                     ->orWhere('nama_ruang', 'LIKE', "%{$search}%")
-                    ->orWhere('kodeJenis', 'LIKE', "%{$search}%")
+                    ->orWhere('kode', 'LIKE', "%{$search}%")
                     ->orWhere('kapasitas', 'LIKE', "%{$search}%")
                     ->orWhere('lantai', 'LIKE', "%{$search}%")
                     ->orWhere('luas', 'LIKE', "%{$search}%")

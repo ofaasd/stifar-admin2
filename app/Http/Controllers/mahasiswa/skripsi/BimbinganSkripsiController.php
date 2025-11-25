@@ -6,10 +6,11 @@ use Log;
 use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use App\Models\MasterSkripsi;
+use App\Models\SidangSkripsi;
 use App\Models\BerkasBimbingan;
 use App\Models\BimbinganSkripsi;
-use Illuminate\Support\Facades\DB;
 
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\PengajuanJudulSkripsi;
@@ -131,7 +132,7 @@ class BimbinganSkripsiController extends Controller
                 'metode' => $request->metode,
                 'bimbingan_to' => $request->pembimbing,
                 'solusi_permasalahan' => null,
-                'status' => 0,
+                'status' => 2,
                 'catatan_mahasiswa' => $request->catatan,
                 'catatan_dosen' => null,
                 'tempat' => null,
@@ -280,7 +281,6 @@ class BimbinganSkripsiController extends Controller
     public function logBook($nimEnkripsi)
     {
         try {
-
             $nimDekrip = Crypt::decryptString($nimEnkripsi);
             $nim = str_replace("stifar", "", $nimDekrip);
 
@@ -299,8 +299,20 @@ class BimbinganSkripsiController extends Controller
                 return back()->with('error', 'Data skripsi tidak ditemukan.');
             }
 
+            $isSidang = SidangSkripsi::where('skripsi_id', $masterSkripsi->id)
+                ->whereIn('status', [1, 2])
+                ->exists();
+
+            $sidang = null;
+            if ($isSidang) {
+                $sidang = SidangSkripsi::where('skripsi_id', $masterSkripsi->id)
+                    ->whereIn('status', [1, 2])
+                    ->latest()
+                    ->first();
+            }
+
             $logBook = BimbinganSkripsi::where('id_master', $masterSkripsi->id)
-                ->whereNotNull('file_dosen')
+                ->whereNotNull('solusi_permasalahan')
                 ->get();
 
             $mhs = Mahasiswa::select([
@@ -318,7 +330,7 @@ class BimbinganSkripsiController extends Controller
 
             // Generate PDF dengan mPDF
             $mpdf = new \Mpdf\Mpdf();
-            $html = view('mahasiswa.skripsi.berkas.template_logbook', compact('logBook', 'mhs', 'masterSkripsi', 'logo'))->render();
+            $html = view('mahasiswa.skripsi.berkas.template_logbook', compact('logBook', 'mhs', 'masterSkripsi', 'logo', 'sidang'))->render();
             $mpdf->WriteHTML($html);
 
             return response($mpdf->Output('logbook.pdf', 'S'))->header('Content-Type', 'application/pdf');

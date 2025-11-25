@@ -133,8 +133,6 @@
                 //alert(data_obj.data);
                 my_data.push(data_obj);
             });
-            //alert(data_obj);
-            // console.log(my_data);
 
             const dt = $("#basic-1").DataTable({
                 processing: true,

@@ -54,8 +54,8 @@
                                     </select>
                                 </div>
 
-                                <div class="col-12">
-                                    <label for="jenis" class="form-label">Jenis Sidang</label>
+                                <div class="col-12 mt-2">
+                                    <label for="jenis" class="form-label">Jenis</label>
                                     <select name="jenis" id="jenis" class="form-select">
                                         <option value="all">Semua</option>
                                         <option value="1">Seminar Proposal</option>
@@ -63,12 +63,12 @@
                                     </select>
                                 </div>
 
-                                <div class="col-12">
+                                <div class="col-12 mt-2">
                                     <label for="from_date" class="form-label">Dari Tanggal</label>
                                     <input type="date" name="fromDate" id="from_date" class="form-control">
                                 </div>
 
-                                <div class="col-12">
+                                <div class="col-12 mt-2">
                                     <label for="to_date" class="form-label">Sampai Tanggal</label>
                                     <input type="date" name="toDate" id="to_date" class="form-control">
                                 </div>
@@ -209,12 +209,12 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editJadwalModalLabel">Edit Jadwal Sidang</h5>
+                <h5 class="modal-title" id="editJadwalModalLabel">Detail Jadwal Sidang</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
             <div class="modal-body" style="max-height:70vh; overflow-y:auto;">
-                <form action="" method="post" id="form-edit-jadwal">
+                <form action="" method="post" id="form-edit-jadwal" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
 
@@ -228,15 +228,18 @@
                             <div class="col-md-6 mb-3">
                                 <label for="tanggalSidangEdit" class="form-label">Tanggal Sidang</label>
                                 <input type="date" class="form-control" id="tanggalSidangEdit" name="tanggal" required>
+                                <div class="view-tanggal-sidang"></div>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="waktuMulaiEdit" class="form-label">Waktu Mulai</label>
                                 <input type="time" class="form-control" id="waktuMulaiEdit" name="waktuMulai" required>
+                                <div class="view-waktu-mulai"></div>
                             </div>
 
                             <div class="col-md-6 mb-3">
                                 <label for="waktuSelesaiEdit" class="form-label">Waktu Selesai</label>
                                 <input type="time" class="form-control" id="waktuSelesaiEdit" name="waktuSelesai" required>
+                                <div class="view-waktu-selesai"></div>
                             </div>
 
                             <div class="col-md-6 mb-3">
@@ -246,6 +249,7 @@
                                         <option value="{{ $row->id }}">{{ $row->nama_ruang }}</option>
                                     @endforeach
                                 </select>
+                                <div class="view-ruangan"></div>
                             </div>
                         </div>
                     </div>
@@ -262,9 +266,29 @@
                                 <div id="nilaiPenguji" class="ps-2"></div>
                             </div>
 
-                            <label for="input-nilai-sidang" class="form-label mt-2"><strong>Nilai Sidang Akhir</strong></label>
-                            <input type="number" min="0" max="100" class="form-control mb-2" id="input-nilai-sidang" placeholder="Masukkan nilai akhir">
-                            <small class="text-muted d-block">Catatan: Penilaian dibuka sampai H+7 setelah tanggal sidang.</small>
+                            <div class="mb-2">
+                                <label for="input-nilai-sidang" class="form-label mt-2"><strong>Nilai Sidang Akhir</strong></label>
+                                <input type="number" min="0" max="100" class="form-control mb-2" id="input-nilai-sidang" placeholder="Masukkan nilai akhir">
+                                <small class="text-muted d-block catatan-nilai-sidang">Catatan: Penilaian dibuka sampai H+7 setelah tanggal sidang.</small>
+                                <div class="view-nilai-sidang"></div>
+                            </div>
+
+                            <div class="mb-2">
+
+                                <label for="berita-acara" class="form-label mt-2"><strong>Berita Acara Sidang</strong></label>
+
+                                <div class="container-input-berita-acara">
+                                    <input type="file" class="form-control" id="berita-acara" accept=".pdf,.doc,.docx" />
+                                    <small class="text-muted d-block">Catatan: Gabungkan semua dokumen (proposal, presentasi, pendukung, dll.) menjadi 1 file sebelum diunggah. Disarankan format PDF.</small>
+                                </div>
+
+                                <!-- Wadah untuk tombol melihat file -->
+                                <div id="berita-acara-container" class="mt-2">
+                                    <a href="#" target="_blank" id="btn-view-berita-acara" class="btn btn-outline-primary btn-sm d-none">
+                                        <i class="bi bi-eye"></i> Lihat Berita Acara
+                                    </a>
+                                </div>
+                            </div>
 
                             <button
                                 type="button"
@@ -286,7 +310,7 @@
                         </div>
                     </div>
 
-                    <div class="row select-penguji">
+                    <div class="row select-penguji" id="select-penguji">
                         <div class="col-12 mb-3">
                             <label for="pengujiSidangEdit" class="form-label">Penguji</label>
                             <select class="form-select" id="pengujiSidangEdit" name="penguji[]" multiple size="8">
@@ -295,7 +319,7 @@
                                 @endforeach
                             </select>
                             <small class="text-muted">Tekan Ctrl (atau Cmd di Mac) untuk memilih lebih dari satu penguji.</small>
-                            <div id="listPengujiTerpilih" class="mt-2"></div>
+                            <div id="view-penguji"></div>
                         </div>
                     </div>
 
@@ -406,10 +430,53 @@
                 }
 
                 let allowedToOpen = false;
+                // Jadi mode view isian jika sudah ada nilai akhir
                 if (data.nilaiAkhir) {
                     $('#view-update-status').show();
                     $('#input-daftar-hadir-sidang-id').val(data.id);
                     $('#input-nilai-sidang').val(data.nilaiAkhir).prop('disabled', true);
+                    $form.find('input, select, textarea, button[type="submit"]').prop('disabled', true).prop('readonly', true);
+                    $form.find('button[data-bs-dismiss="modal"]').prop('disabled', false);
+
+                    // tanggal sidang
+                    $form.find('#tanggalSidangEdit').hide();
+                    $form.find('.view-tanggal-sidang').html(
+                        `<p class="text-muted">(${new Date(data.tanggal).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })})</p>`
+                    );
+
+                    // waktu mulai
+                    $form.find('#waktuMulaiEdit').hide();
+                    $form.find('.view-waktu-mulai').html(
+                        `<p class="text-muted">(${data.waktuMulai ? data.waktuMulai : '-'})</p>`
+                    );
+
+                    // waktu selesai
+                    $form.find('#waktuSelesaiEdit').hide();
+                    $form.find('.view-waktu-selesai').html(
+                        `<p class="text-muted">(${data.waktuSelesai ? data.waktuSelesai : '-'})</p>`
+                    );
+
+                    // ruangan
+                    $form.find('#ruanganSidangEdit').hide();
+                    $form.find('.view-ruangan').html(
+                        `<p class="text-muted">(${data.ruangan ? data.ruangan : '-'})</p>`
+                    );
+                    
+                    // nilai sidang
+                    $form.find('#input-nilai-sidang').siblings('.catatan-nilai-sidang').hide();
+                    $form.find('.view-nilai-sidang').html(
+                        `<p class="text-muted">(${data.nilaiAkhir})</p>`
+                    );
+
+                    // berita acara
+                    $form.find('.container-input-berita-acara').hide();
+                    if (data.beritaAcara) {
+                        $('#btn-view-berita-acara').removeClass('d-none').attr('href', `/berkas-sidang/berita-acara/${data.beritaAcara}`);
+                    } else {
+                        $('#btn-view-berita-acara').removeClass('d-none').attr('href', '#').text('Tidak ada Berita Acara');
+                    }
+
+                    $form.find('#select-penguji').hide().css('display', 'none');
                     $('#btn-update-status').hide();
                 } else if (withinRangeDate) {
                     if (today.getTime() > tanggalSidang.getTime()) {
@@ -527,6 +594,10 @@
 
     function updateStatusSidang(id, btn) {
         var nilai = $('#input-nilai-sidang').val();
+        var beritaAcara = $('#berita-acara')[0].files[0];
+
+
+        // Validasi nilai
         if (nilai === '' || nilai < 0 || nilai > 100) {
             swal("Nilai tidak valid!", "Masukkan nilai sidang antara 0 - 100.", "warning");
             return;
@@ -541,15 +612,22 @@
             if (!willUpdate) return;
             $(btn).prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Tunggu...');
 
+            const formData = new FormData();
+            formData.append('_token', '{{ csrf_token() }}');
+            formData.append('_method', 'PUT');
+            formData.append('status', 1);
+            formData.append('nilai', nilai);
+            if (beritaAcara) {
+                formData.append('beritaAcara', beritaAcara); // nama field sesuai yang backend harapkan
+            }
+
             $.ajax({
                 url: `{{ route('sidang.penilaian-sidang', ':id') }}`.replace(':id', id),
                 type: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    _method: 'PUT',
-                    status: 1,
-                    nilai: nilai
-                },
+                data: formData,
+                processData: false,
+                contentType: false,
+                cache: false,
                 success: function(response) {
                     $('#editJadwalModal').modal('hide');
                     $('#jadwal-sidang-table').DataTable().ajax.reload(null, false);

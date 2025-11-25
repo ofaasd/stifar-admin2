@@ -2,17 +2,27 @@
 
 namespace App\Http\Controllers\admin\akademik\skripsi;
 
+use App\helpers;
+use App\Models\Prodi;
 use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use App\Models\MasterSkripsi;
 use App\Models\RefPembimbing;
+use App\Models\PegawaiBiodatum;
+use App\Models\MasterBidangMinat;
 use App\Http\Controllers\Controller;
 use App\Models\PengajuanJudulSkripsi;
-use App\Models\Prodi;
 use Illuminate\Support\Facades\Crypt;
+use Symfony\Component\Console\Helper\Helper;
 
 class AdminPengajuanSkripsiController extends Controller
 {
+    protected $helpers;
+
+    public function __construct()
+    {
+        $this->helpers = new helpers();
+    }
     /**
      * menampilkan halaman pengajuan skripsi di sisi admin.
      *
@@ -21,19 +31,12 @@ class AdminPengajuanSkripsiController extends Controller
      */
     public function index()
     {
-        $pengajuanJudul = PengajuanJudulSkripsi::all();
-        $statusLabels = [
+        $statusPengajuan = [
             0 => 'Pengajuan',
             1 => 'ACC',
             2 => 'Revisi',
             3 => 'Ditolak',
-            4 => 'Pergantian Judul',
         ];
-
-        $statusPengajuan = $pengajuanJudul->pluck('status')->unique()->sort()->values()
-            ->mapWithKeys(function($status) use ($statusLabels) {
-                return [$status => $statusLabels[$status] ?? 'Tidak Diketahui'];
-            })->toArray();
 
         $prodi = Prodi::all();
 
@@ -77,6 +80,7 @@ class AdminPengajuanSkripsiController extends Controller
             ->orderBy('master_skripsi.created_at', 'desc')
             ->get()
             ->map(function ($item) {
+                $item->accBy = $this->helpers->getAccByPengajuanSkripsi($item->id_master);
                 $item->idMasterEnkripsi = Crypt::encryptString($item->id_master . "stifar");
                 return $item;
             })
@@ -101,7 +105,7 @@ class AdminPengajuanSkripsiController extends Controller
                         $icon = '<span title="Pengajuan" class="text-secondary"><i class="bi bi-clock-fill"></i></span>';
                         break;
                 }
-                $judulArr[] = $icon . ' ' . $row->judul . '<br>' . $icon . ' ' . $row->judulEnglish;
+                $judulArr[] = $icon . ' ' . $row->judul;
             }
             
             $first = $rows->first();
@@ -135,7 +139,7 @@ class AdminPengajuanSkripsiController extends Controller
 
             $data[] = [
                 'nim' => $nim,
-                'nama' => $first->nama,
+                'nama' => $first->nama . ((($accBy = optional($rows->firstWhere('accBy', '!=', null))->accBy ?? $first->accBy) ? ' <br><small><i>Diterima oleh: ' . $accBy . '</i></small>' : '')),
                 'judul' => implode('<hr><br>', $judulArr),
                 'pembimbing1' => $first->pembimbing1,
                 'pembimbing2' => $first->pembimbing2,
@@ -250,12 +254,12 @@ class AdminPengajuanSkripsiController extends Controller
                     $pembimbing1Count = MasterSkripsi::where(function($q) use ($pembimbing1) {
                         $q->where('pembimbing_1', $pembimbing1)
                           ->orWhere('pembimbing_2', $pembimbing1);
-                    })->where('status', '!=', 1)->count();
+                    })->where('status', 2)->count();
 
                     $pembimbing2Count = MasterSkripsi::where(function($q) use ($pembimbing2) {
                         $q->where('pembimbing_1', $pembimbing2)
                           ->orWhere('pembimbing_2', $pembimbing2);
-                    })->where('status', '!=', 1)->count();
+                    })->where('status', 2)->count();
 
                     if ($kuotaPembimbing1 <= $pembimbing1Count) {
                         return response()->json([
@@ -279,6 +283,49 @@ class AdminPengajuanSkripsiController extends Controller
                     PengajuanJudulSkripsi::where('id', $judul->id)->update([
                         'status' => 1,
                     ]);
+
+                    activity()
+                    ->causedBy(auth()->user())
+                    ->withProperties([
+                        'ip_address' => request()->ip(),
+                        'user_agent' => request()->userAgent(),
+                        'id_master' => $judul->id_master,
+                        'nim' => $nim,
+                    ])
+                    ->log('acc-judul');
+                    
+                    $dataWa['no_wa'] = $mhs->hp ?? '';
+                    $abstrak = $validated['abstrak'] ?? '';
+                    $shortAbstrak = mb_strlen($abstrak) > 350 ? mb_substr($abstrak, 0, 350) . '...' : $abstrak;
+                    $mhs = Mahasiswa::where('nim', $nim)->first();
+                    $judul = PengajuanJudulSkripsi::where('id', $judul->id)->first();
+
+                    $bidangMinat = MasterBidangMinat::all();
+                    $teksBidangMinat = $bidangMinat->where('id', $judul->id_bidang_minat)->first()->nama ?? '';
+
+                    $pembimbing = PegawaiBiodatum::all();
+                    $teksPembimbing1 = $pembimbing->where('npp', $pembimbing1)->first()->nama_lengkap ?? '';
+                    $teksPembimbing2 = $pembimbing->where('npp', $pembimbing2)->first()->nama_lengkap ?? '';
+
+                    // Gunakan abstrak dari model judul yang diterima
+                    $abstrak = $judul->abstrak ?? '';
+                    $shortAbstrak = mb_strlen($abstrak) > 350 ? mb_substr($abstrak, 0, 350) . '...' : $abstrak;
+
+                    $message = "*MYSTIFAR - Pengajuan Judul*\n\n"
+                        . "Halo, " . ($mhs->nama ?? '-') . ",\n\n"
+                        . "Pengajuan skripsi Anda dinyatakan: *Diterima*\n\n"
+                        . "Rincian judul yang diterima:\n"
+                        . "- Bidang Minat: " . ($teksBidangMinat ?: '-') . "\n"
+                        . "- Judul: " . ($judul->judul ?? '-') . "\n"
+                        . "- Judul (EN): " . ($judul->judul_eng ?? '-') . "\n"
+                        . "- Pembimbing 1: " . ($teksPembimbing1 ?: '-') . "\n"
+                        . "- Pembimbing 2: " . ($teksPembimbing2 ?: '-') . "\n\n"
+                        . "Abstrak (ringkasan):\n" . $shortAbstrak . "\n\n"
+                        . "Silakan cek sistem atau hubungi admin skripsi untuk informasi lebih lanjut.\n\n"
+                        . "Terima kasih,\nAdmin Skripsi STIFAR";
+                    $dataWa['pesan'] = $message;
+                    
+                    $pesan = helpers::send_wa($dataWa);
                 }else{
                     MasterSkripsi::where('id', $judul->id_master)->update([
                         'status' => 3, // Status master berubah menjadi Ditolak selain yang acc
@@ -388,9 +435,10 @@ class AdminPengajuanSkripsiController extends Controller
      */
     public function print(Request $request)
     {
-        $status = $request->status;
+        $status = ($request->status);
         $fromDate = $request->fromDate;
         $toDate = $request->toDate;
+        $isPengajuan = $status == 0 ? true : false;
 
         if($toDate < $fromDate)
         {
@@ -405,17 +453,25 @@ class AdminPengajuanSkripsiController extends Controller
             'pengajuan_judul_skripsi.abstrak',
             'master_skripsi.nim',
             'mahasiswa.nama AS nama',
+            'master_skripsi.pembimbing_1',
+            'master_skripsi.pembimbing_2',
+            'master_skripsi.pembimbing_1_pengajuan',
+            'master_skripsi.pembimbing_2_pengajuan',
             'pengajuan_judul_skripsi.status',
             'pb1.nama_lengkap AS pembimbing1',
             'pb2.nama_lengkap AS pembimbing2',  
+            'ppb1.nama_lengkap AS pembimbingPengajuan1',
+            'ppb2.nama_lengkap AS pembimbingPengajuan2',  
         ])
         ->leftJoin('master_skripsi', 'pengajuan_judul_skripsi.id_master', '=', 'master_skripsi.id')
         ->leftJoin('pegawai_biodata as pb1', 'pb1.npp', '=', 'master_skripsi.pembimbing_1')
         ->leftJoin('pegawai_biodata as pb2', 'pb2.npp', '=', 'master_skripsi.pembimbing_2')
+        ->leftJoin('pegawai_biodata as ppb1', 'ppb1.npp', '=', 'master_skripsi.pembimbing_1_pengajuan')
+        ->leftJoin('pegawai_biodata as ppb2', 'ppb2.npp', '=', 'master_skripsi.pembimbing_2_pengajuan')
         ->leftJoin('mahasiswa', 'master_skripsi.nim', '=', 'mahasiswa.nim')
         ->orderBy('master_skripsi.created_at', 'desc');
 
-        if ($status && $status != 'all') {
+        if ($status != 'all') {
             $queryPengajuan->where('pengajuan_judul_skripsi.status', $status);
         }
         if ($fromDate) {
@@ -425,43 +481,27 @@ class AdminPengajuanSkripsiController extends Controller
             $queryPengajuan->whereDate('pengajuan_judul_skripsi.created_at', '<=', $toDate);
         }
 
+        $kuotaPembimbing = RefPembimbing::all();
+
         $pengajuan = $queryPengajuan->get()
-        ->map(function ($item) {
+        ->map(function ($item) use ($kuotaPembimbing) {
             $item->idMasterEnkripsi = Crypt::encryptString($item->id_master . "stifar");
+            
+            $item->kuotaPembimbing1 = $kuotaPembimbing->where('nip', $item->pembimbing_1)->first()->kuota ?? 0;
+            $item->kuotaPembimbing2 = $kuotaPembimbing->where('nip', $item->pembimbing_2)->first()->kuota ?? 0;
+
+            $item->jmlBimbingan1 = MasterSkripsi::where(function($q) use ($item) {
+                    $q->where('pembimbing_1', $item->pembimbing_1)
+                    ->orWhere('pembimbing_2', $item->pembimbing_1);
+                })->where('status', 2)->count();
+            $item->jmlBimbingan2 = MasterSkripsi::where(function($q) use ($item) {
+                    $q->where('pembimbing_1', $item->pembimbing_2)
+                    ->orWhere('pembimbing_2', $item->pembimbing_2);
+                })->where('status', 2)->count();
+
             return $item;
         })
         ->groupBy('nim');
-
-        $data = [];
-        foreach ($pengajuan as $nim => $rows) {
-            $judulArr = [];
-            foreach ($rows as $row) {
-                // Tentukan icon status
-                switch ($row->status) {
-                    case 1:
-                        $icon = '<span title="ACC" class="text-success"><i class="bi bi-check-circle-fill"></i></span>';
-                        break;
-                    case 2:
-                        $icon = '<span title="Revisi" class="text-warning"><i class="bi bi-pencil-square"></i></span>';
-                        break;
-                    case 3:
-                        $icon = '<span title="Ditolak" class="text-danger"><i class="bi bi-x-circle-fill"></i></span>';
-                        break;
-                    default:
-                        $icon = '<span title="Pengajuan" class="text-secondary"><i class="bi bi-clock-fill"></i></span>';
-                        break;
-                }
-                $judulArr[] = $icon . ' ' . $row->judul . '<br>' . $icon . ' ' . $row->judulEnglish;
-            }
-            $first = $rows->first();
-            $data[] = [
-                'nim' => $nim,
-                'nama' => $first->nama,
-                'judul' => implode('<hr><br>', $judulArr),
-                'pembimbing1' => $first->pembimbing1,
-                'pembimbing2' => $first->pembimbing2,
-            ];
-        }
 
         $logo = asset('assets/images/logo/upload/logo_besar.png');
 
@@ -478,7 +518,7 @@ class AdminPengajuanSkripsiController extends Controller
             4 => 'Pergantian Judul',
         ];
 
-        if (!empty($status) && $status !== 'all') {
+        if ($status != 'all') {
             $statusText = $statusLabels[(int)$status] ?? 'Tidak Diketahui';
             $parts[] = "Status: " . $statusText;
         }
@@ -494,7 +534,7 @@ class AdminPengajuanSkripsiController extends Controller
 
         // Generate PDF dengan mPDF
         $mpdf = new \Mpdf\Mpdf();
-        $html = view('admin.akademik.skripsi.pengajuan.print', compact('pengajuan', 'logo', 'title'))->render();
+        $html = view('admin.akademik.skripsi.pengajuan.print', compact('pengajuan', 'logo', 'title', 'isPengajuan'))->render();
         $mpdf->WriteHTML($html);
 
         // Buat nama file yang unik dan sertakan header Content-Disposition agar browser menyimpan dengan nama yang benar

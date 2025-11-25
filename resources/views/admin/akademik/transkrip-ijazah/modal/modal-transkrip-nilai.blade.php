@@ -14,10 +14,6 @@
                         <label for="nomor-sk" class="form-label">Nomor SK</label>
                         <input type="text" class="form-control" id="nomor-sk" name="nomorSk" value="153/D/O/2000 tanggal 10 Agustus 2000" required>
                     </div>
-                    <div class="mb-3">
-                        <label for="nomor-seri" class="form-label">Nomor Seri Transkrip</label>
-                        <input type="text" class="form-control" id="nomor-seri" name="nomorSeri" value="063032" required>
-                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>

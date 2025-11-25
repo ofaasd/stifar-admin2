@@ -15,23 +15,19 @@
         #customers td,
         #customers th {
             border: 1px solid #ddd;
-            padding: 8px;
+            padding: 4px;
         }
 
-    
-
         #customers th {
-            padding-top: 12px;
-            padding-bottom: 12px;
+            padding: 6px;
             text-align: left;
         }
 
         td{
-            font-size: 12px;
+            font-size: 11px;
         }
         a{
             color: black;
-
             outline: 0;
             border: none;
         }
@@ -39,11 +35,11 @@
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
-            font-size: 14px;
+            font-size: 11px;
         }
         .table th, .table td {
             border: 1px solid #000;
-            padding: 8px;
+            padding: 4px;
             text-align: left;
         }
       
@@ -53,22 +49,17 @@
 <body>
     <table width="100%">
         <tr>
-            <td width="10%">
-                <img src="{{ $logo }}" alt="logo-stifar" style="width: 100px;"/>
+            <td style="width:90px; vertical-align:middle;">
+                <img src="{{ $logo }}" alt="logo-stifar" style="width:80px; height:auto; display:block;">
             </td>
-            <td width="90%" style="padding-left: 30px;">
-                <center>
-                    <b>SEKOLAH TINGGI ILMU FARMASI SEMARANG</b>
-                    <br>Alamat : Jl. Letnan Jendral Sarwo Edie Wibowo Km. 1, Plamongan Sari, Kec. Pedurungan, Kota Semarang
-                    <br>Email : admin@sistifar.id
-                    <br>Website : https://stifar.ac.id
-                </center>
+            <td style="vertical-align:middle; padding-left:10px;">
+                <div style="text-align:center; padding:8px 0;">
+                    <h1 style="font-size:22px; margin:0; font-weight:700; line-height:1.1;">Logbook Bimbingan</h1>
+                </div>
             </td>
         </tr>
     </table>
     <hr>
-    <center><b>Logbook Bimbingan Skripsi</b></center>
-    <br>
     <table width="100%">
         <tr>
             <td>Nama</td>
@@ -134,7 +125,7 @@
                                 @endif
                             </td>
                             <td>{{ $row->catatan_mahasiswa }}</td>
-                            <td>{{ $row->catatan_dosen }}</td>
+                            <td>{{ $row->solusi_permasalahan }}</td>
                             <td>{{ $row->metode }}</td>
                             <td>{{ \Carbon\Carbon::parse($row->created_at)->format('d/m/Y H:i:s') }}</td>
                         </tr>
@@ -145,7 +136,23 @@
                     @endforelse
                 </tbody>
             </table>
-
+            @if(!empty($sidang) && $sidang->acc_at)
+                @php
+                    $jenisSidang = '-';
+                    if(isset($sidang->jenis)){
+                        if($sidang->jenis == 1) {
+                            $jenisSidang = 'Seminar Proposal';
+                        } elseif($sidang->jenis == 2) {
+                            $jenisSidang = 'Seminar Hasil';
+                        } else {
+                            $jenisSidang = $sidang->jenis;
+                        }
+                    }
+                @endphp
+                <small style="color:#6c757d; font-size:11px; display:inline-block; margin-bottom:10px;">
+                    <strong style="font-weight:600; color:inherit;">Sidang:</strong> {{ $jenisSidang }} — Disetujui pada {{ \Carbon\Carbon::parse($sidang->acc_at)->format('d/m/Y H:i') }}
+                </small>
+            @endif
             <hr>
             <br>
             <table width="100%">
@@ -170,7 +177,7 @@
                     <td><center>{{ $mhs->nama }}</center></td>
                 </tr>
             </table>
-            <p style="text-align: right; font-size: 12px; color: #555; margin-top: 10px;">
+            <p style="text-align: right; font-size: 8px; color: #555; margin-top: 10px;">
                 Dicetak: {{ \Carbon\Carbon::now()->format('d/m/Y H:i:s') }}
             </p>
         </div>

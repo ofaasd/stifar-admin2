@@ -28,143 +28,61 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header pb-0">
-                    <h5>Judul: {{ $judulSkripsi->judul }}</h5>
-                    <h6 class="text-muted">Judul (English): {{ $judulSkripsi->judul_eng }}</h6>
+                    <h5>Judul: {{ $judulSkripsi->judul }} <small class="text-muted">Pengajuan: {{ \Carbon\Carbon::parse($judulSkripsi->created_at)->format('d/m/Y') }}</small>, <small class="text-muted">Acc: {{ \Carbon\Carbon::parse($judulSkripsi->updated_at)->format('d/m/Y') }}</small></h5>
+                    {{-- <h6 class="text-muted">Judul (English): {{ $judulSkripsi->judul_eng }}</h6> --}}
                     <h6 class="text-muted">Bidang Minat: {{ $judulSkripsi->bidang_minat }}</h6>
-                    @if(isset($pengajuanSidang) && $pengajuanSidang)
-                        <div class="alert mt-2 mb-0">
-                            <strong>Pengajuan Sidang:</strong><br>
-                            <ul class="mb-0 ps-3">
-                                <li><b>Gelombang:</b> {{ $pengajuanSidang->namaGelombang ?? '-' }}</li>
-                                <li>
-                                    <b>Jenis Sidang:</b>
-                                    @if($pengajuanSidang->jenis == 1)
-                                        Seminar Proposal
-                                    @elseif($pengajuanSidang->jenis == 2)
-                                        Seminar Hasil
-                                    @else
-                                        -
+                    <div class="mt-2">
+                        <div class="row align-items-start">
+                            <div class="col-md-8">
+                                <p class="mb-1"><strong>Pembimbing 1:</strong>
+                                    <span>
+                                        {{ optional($mahasiswa->dosenPembimbing)->namaPembimbing1
+                                            ?? $masterSkripsi->pembimbing1->nama ?? $masterSkripsi->pembimbing_1_nama ?? $masterSkripsi->pembimbing_1 ?? '-' }}
+                                    </span>
+                                    <small class="text-muted">(
+                                        {{ optional($mahasiswa->dosenPembimbing)->nppPembimbing1 ?? '-' }}
+                                    )</small>
+                                    @if(!empty($masterSkripsi->acc_1_at))
+                                        , ACC Sidang: {{ \Carbon\Carbon::parse($masterSkripsi->acc_1_at)->format('d/m/Y H:i:s') }}
                                     @endif
-                                </li>
-                                <li>
-                                    <b>Tanggal:</b>
-                                    {{ \Carbon\Carbon::parse($pengajuanSidang->tanggal)->translatedFormat('d F Y') ?? '-' }}
-                                </li>
-                                <li><b>Waktu:</b> {{ $pengajuanSidang->waktuMulai ?? '-' }} - {{ $pengajuanSidang->waktuSelesai ?? '-' }}</li>
-                                <li><b>Ruangan:</b> {{ $pengajuanSidang->namaRuang ?? '-' }}</li>
-                                @if($pengajuanSidang->kartuBimbingan)
-                                    <li>
-                                        <b>Kartu Bimbingan:</b>
-                                        <a href="{{ asset('berkas-sidang/' . $pengajuanSidang->kartuBimbingan) }}" target="_blank" class="btn btn-sm btn-outline-primary">Lihat</a>
-                                    </li>
-                                @endif
-                                @if($pengajuanSidang->presentasi)
-                                    <li>
-                                        <b>Berkas Presentasi:</b>
-                                        <a href="{{ asset('berkas-sidang/' . $pengajuanSidang->presentasi) }}" target="_blank" class="btn btn-sm btn-outline-primary">Lihat</a>
-                                    </li>
-                                @endif
-                                @if($pengajuanSidang->pendukung)
-                                    <li>
-                                        <b>Berkas Pendukung:</b>
-                                        <a href="{{ asset('berkas-sidang/' . $pengajuanSidang->pendukung) }}" target="_blank" class="btn btn-sm btn-outline-primary">Lihat</a>
-                                    </li>
-                                @endif
-                            </ul>
+                                </p>
 
-                            {{-- Form Input Nilai Tugas Akhir --}}
-                            <form action="{{ route('akademik.skripsi.dosen.bimbingan.penilaian', $pengajuanSidang->idEnkripsi ?? '') }}" method="POST" class="mt-3" id="form-penilaian">
-                                @csrf
-                                @method('PUT')
-                                @php
-                                    $isDisabled = (isset($penilaian) && isset($penilaian->status) && $penilaian->status == 1) ? 'disabled' : '';
-                                @endphp
-                                <div class="row g-2">
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-bold">Penulisan</label>
-                                        <div class="mb-2 ms-3 d-flex align-items-center gap-2">
-                                            <label class="mb-0 flex-grow-1">
-                                                Konsistensi penulisan dan kesesuaian dengan aturan
-                                                <span class="text-muted">(10 - 15)</span>
-                                            </label>
-                                            <input type="number" name="konsistensiPenulisan" class="form-control form-control-sm w-auto" min="10" max="15" step="1" required value="{{ old('konsistensiPenulisan', $penilaian->konsistensi_penulisan ?? '') }}" {{ $isDisabled }}>
-                                            <label class="mb-0 flex-grow-1">
-                                                Penelusuran pustaka
-                                                <span class="text-muted">(10 - 15)</span>
-                                            </label>
-                                            <input type="number" name="penelusuran" class="form-control form-control-sm w-auto" min="10" max="15" step="1" required value="{{ old('penelusuran', $penilaian->penelusuran ?? '') }}" {{ $isDisabled }}>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-bold">Sikap</label>
-                                        <div class="mb-2 ms-3 d-flex align-items-center gap-2">
-                                            <label class="mb-0 flex-grow-1">
-                                                Kontribusi dan keterlibatan ide
-                                                <span class="text-muted">(10 - 15)</span>
-                                            </label>
-                                            <input type="number" name="kontribusi" class="form-control form-control-sm w-auto" min="10" max="15" step="1" required value="{{ old('kontribusi', $penilaian->kontribusi ?? '') }}" {{ $isDisabled }}>
-                                            <label class="mb-0 flex-grow-1">
-                                                Kontinuitas dan ketekunan
-                                                <span class="text-muted">(10 - 15)</span>
-                                            </label>
-                                            <input type="number" name="ketekunan" class="form-control form-control-sm w-auto" min="10" max="15" step="1" required value="{{ old('ketekunan', $penilaian->ketekunan ?? '') }}" {{ $isDisabled }}>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row g-2 mt-2">
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-bold">Kedalaman Materi</label>
-                                        <div class="mb-2 ms-3 d-flex align-items-center gap-2">
-                                            <label class="mb-0 flex-grow-1">
-                                                Penguasaan materi
-                                                <span class="text-muted">(15 - 20)</span>
-                                            </label>
-                                            <input type="number" name="penguasaan" class="form-control form-control-sm w-auto" min="15" max="20" step="1" required value="{{ old('penguasaan', $penilaian->penguasaan ?? '') }}" {{ $isDisabled }}>
-                                            <label class="mb-0 flex-grow-1">
-                                                Relevansi latar belakang, rumusan masalah, dan metodologi penelitian
-                                                <span class="text-muted">(15 - 20)</span>
-                                            </label>
-                                            <input type="number" name="menemukanRelevansi" class="form-control form-control-sm w-auto" min="15" max="20" step="1" required value="{{ old('menemukanRelevansi', $penilaian->menemukan_relevansi ?? '') }}" {{ $isDisabled }}>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-bold">Rekapitulasi</label>
-                                        <div class="mb-2 ms-3">
-                                            <label>
-                                                Jumlah (70-100)
-                                            </label>
-                                            <input type="number" name="jumlahNilai" class="form-control form-control-sm" min="70" max="100" step="1" readonly value="{{ old('jumlahNilai', $penilaian->jumlah_nilai ?? '') }}">
-                                        </div>
-                                        <div class="mb-2 ms-3">
-                                            <label>
-                                                Nilai Akhir proses penyusunan proposal (30%)
-                                            </label>
-                                            <input type="number" name="nilaiAkhir" class="form-control form-control-sm" min="0" max="100" step="0.01" readonly value="{{ old('nilaiAkhir', $penilaian->nilai_akhir ?? '') }}">
-                                        </div>
-                                    </div>
-                                </div>
+                                <p class="mb-0"><strong>Pembimbing 2:</strong>
+                                    @php
+                                        $nama2 = optional($mahasiswa->dosenPembimbing)->namaPembimbing2
+                                            ?? $masterSkripsi->pembimbing2->nama ?? $masterSkripsi->pembimbing_2_nama ?? $masterSkripsi->pembimbing_2 ?? null;
+                                        $npp2 = optional($mahasiswa->dosenPembimbing)->nppPembimbing2
+                                            ?? $masterSkripsi->pembimbing2->npp ?? $masterSkripsi->pembimbing_2_npp ?? null;
+                                    @endphp
 
-                                @if (!isset($penilaian) || !isset($penilaian->status) || $penilaian->status != 1)
-                                    <div class="mt-2">
-                                        <button type="submit" class="btn btn-primary btn-sm">Simpan Nilai</button>
-                                    </div>
-                                @endif
-                            </form>
+                                    @if($nama2 || $npp2)
+                                        {{ $nama2 ?? '-' }}
+                                        <small class="text-muted">({{ $npp2 ?? '-' }})</small>
+                                        @if(!empty($masterSkripsi->acc_2_at))
+                                            , ACC Sidang: {{ \Carbon\Carbon::parse($masterSkripsi->acc_2_at)->format('d/m/Y H:i:s') }}
+                                        @endif
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif
+                                </p>
+                            </div>
 
-                            {{-- Form Validasi Nilai --}}
-                            @if(isset($penilaian) && $penilaian->status == 0)
-                                <form action="{{ route('akademik.skripsi.dosen.bimbingan.validasi-nilai', $pengajuanSidang->idEnkripsi ?? '') }}" method="POST" class="mt-2" id="form-validasi-nilai">
-                                    @csrf
-                                    @method('PUT')
-                                    <button type="submit" class="btn btn-success btn-sm">
-                                        Validasi Nilai
+                            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                                <div class="d-inline-flex gap-2">
+                                    <!-- Button: Profil Mahasiswa -->
+                                    <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalProfilMahasiswa">
+                                        <i class="fa fa-user"></i> Profil Mahasiswa
                                     </button>
-                                </form>
-                            @elseif(isset($penilaian) && $penilaian->status == 1)
-                                <span class="badge bg-success mt-2">Nilai telah divalidasi</span>
-                            @endif
+
+                                    <!-- Button: KHS Mahasiswa -->
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#modalKhsMahasiswa">
+                                        <i class="fa fa-graduation-cap"></i> KHS Mahasiswa
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                    @endif
+                    </div>
+
                     @php
                         $accField = 'acc_' . $dosen->pembimbingKe;
                     @endphp
@@ -198,6 +116,117 @@
                         </div>
                     @endif
                 </div>
+
+                <!-- Modal: Profil Mahasiswa -->
+                <div class="modal fade" id="modalProfilMahasiswa" tabindex="-1" aria-labelledby="modalProfilMahasiswaLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalProfilMahasiswaLabel">Profil Mahasiswa</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row g-3">
+                                    <div class="col-md-3 text-center">
+                                        @if(!empty($mahasiswa->foto_mhs))
+                                            <img src="{{ public_path('assets/images/mahasiswa/' . $mahasiswa->foto_mhs) }}" alt="Foto Mahasiswa" class="img-fluid rounded">
+                                        @else
+                                            <div class="border rounded p-4 text-muted">Tidak ada foto</div>
+                                        @endif
+                                    </div>
+                                    <div class="col-md-9">
+                                        <table class="table table-sm table-borderless mb-0">
+                                            <tbody>
+                                                <tr>
+                                                    <th>NIM</th>
+                                                    <td>{{ $mahasiswa->nim ?? '-' }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Nama</th>
+                                                    <td>{{ $mahasiswa->nama ?? '-' }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Program Studi</th>
+                                                    <td>{{ $mahasiswa->prodi ?? '-' }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Angkatan</th>
+                                                    <td>{{ $mahasiswa->angkatan ?? '-' }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Email</th>
+                                                    <td>{{ $mahasiswa->email ?? '-' }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Telepon</th>
+                                                    <td>{{ $mahasiswa->hp ?? '-' }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                @if(!empty($mahasiswa->alamat))
+                                    <div class="mt-3">
+                                        <strong>Alamat:</strong>
+                                        <p class="mb-0">{{ $mahasiswa->alamat }}</p>
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">Tutup</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal: KHS Mahasiswa -->
+                <div class="modal fade" id="modalKhsMahasiswa" tabindex="-1" aria-labelledby="modalKhsMahasiswaLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalKhsMahasiswaLabel">KHS Mahasiswa - {{ $mahasiswa->nama ?? $mahasiswa->full_name ?? '' }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body" style="max-height: calc(100vh - 200px); overflow-y: auto;">
+                                <p class="text-muted">IPK: {{ $mahasiswa->ipk !== null ? number_format($mahasiswa->ipk, 2) : '-' }}</p>
+                                @if(isset($mahasiswa->daftarNilai) && $mahasiswa->daftarNilai->count())
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Kode Mata Kuliah</th>
+                                                    <th>Mata Kuliah</th>
+                                                    <th>Tugas</th>
+                                                    <th>UTS</th>
+                                                    <th>UAS</th>
+                                                    <th>Nilai Akhir</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($mahasiswa->daftarNilai as $row)
+                                                <tr>
+                                                        <td style="white-space: nowrap;">{{ $row->kode_matkul ?? '-' }}</td>
+                                                        <td style="white-space: nowrap;">{{ $row->nama_matkul ?? '-' }}</td>
+                                                        <td>{{ $row->ntugas ?? '-' }}</td>
+                                                        <td>{{ $row->nuts ?? '-' }}</td>
+                                                        <td>{{ $row->nuas ?? '-' }}</td>
+                                                        <td>{{ $row->nakhir ?? '-' }} / {{ $row->nhuruf }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                @else
+                                    <p class="text-muted mb-0">Belum ada data KHS untuk mahasiswa ini.</p>
+                                @endif
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">Tutup</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="card-body">
                     @if($bimbingan->count())
                         <div class="table-responsive">
@@ -217,22 +246,22 @@
                                 <tbody>
                                     @foreach($bimbingan as $item)
                                         <tr>
-                                            <td>{{ \Carbon\Carbon::parse($item->tanggal_waktu)->format('d F Y') }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($item->tanggal_waktu)->format('d/m/Y') }}</td>
                                             <td>
                                                 @if ($item->berkas && $item->berkas->count() > 0)
                                                     <div class="list-group">
                                                         @foreach ($item->berkas as $berkas)
                                                             <a href="{{ asset('storage/' . $berkas->file) }}"
                                                                 target="_blank"
-                                                                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-                                                                @if(Str::endsWith(strtolower($berkas->file), '.pdf')) rel="noopener noreferrer" @endif>>
-                                                                {{ basename($berkas->file) }}
-                                                                <span class="badge bg-primary rounded-pill">Unduh</span>
+                                                                class="list-group-item list-group-item-action d-flex justify-content-center align-items-center"
+                                                                @if(Str::endsWith(strtolower($berkas->file), '.pdf')) rel="noopener noreferrer" @endif
+                                                                title="{{ basename($berkas->file) }}">
+                                                                <i class="fa fa-download" aria-hidden="true"></i>
                                                             </a>
                                                         @endforeach
                                                     </div>
                                                 @else
-                                                    <span class="text-muted">Tidak ada</span>
+                                                    <span class="text-muted">-</span>
                                                 @endif
                                             </td>
                                             <td>{{ $item->permasalahan }}</td>
@@ -259,13 +288,13 @@
                                                             <button type="submit" class="btn btn-primary btn-sm btn-submit-revisi">Upload File</button>
                                                         </form>
                                                     @else
-                                                        <a href="{{ asset('storage/' . $item->file_dosen) }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                                            Lihat File
+                                                        <a href="{{ asset('storage/' . $item->file_dosen) }}" target="_blank" class="btn btn-sm">
+                                                            <i class="fa fa-eye"></i>
                                                         </a>
                                                     @endif
                                                 @elseif(!empty($item->file_dosen))
-                                                    <a href="{{ asset('storage/' . $item->file_dosen) }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                                        Lihat File
+                                                    <a href="{{ asset('storage/' . $item->file_dosen) }}" target="_blank" class="btn btn-sm">
+                                                        <i class="fa fa-eye"></i>
                                                     </a>
                                                 @else
                                                     <span class="text-muted">-</span>
@@ -285,15 +314,8 @@
                                             </td>
                                             <td>
                                                 @if ($item->bimbingan_to == $dosen->npp)
-                                                    @if($item->status == 0)
-                                                        <form action="{{ route('akademik.skripsi.dosen.bimbingan.update-status', $item->idEnkripsi) }}" method="POST" class="d-flex gap-1 form-update-status">
-                                                            @csrf
-                                                            @method('PUT')
-                                                            <button name="status" value="2" class="btn btn-info btn-sm" title="Setuju">Setuju</button>
-                                                            <button name="status" value="4" class="btn btn-danger btn-sm" title="Tolak">Tolak</button>
-                                                        </form>
-                                                    @elseif($item->status == 2 && $item->bimbingan_to == $dosen->npp)
-                                                        @if(!empty($item->file_dosen))
+                                                    @if($item->status == 2 && $item->bimbingan_to == $dosen->npp)
+                                                        @if(!empty($item->solusi_permasalahan))
                                                             <form action="{{ route('akademik.skripsi.dosen.bimbingan.update-status', $item->idEnkripsi) }}" method="POST" class="d-flex gap-1 form-update-status">
                                                                 @csrf
                                                                 @method('PUT')
@@ -301,7 +323,7 @@
                                                                 <button name="status" value="3" class="btn btn-warning btn-sm" title="Revisi">Revisi</button>
                                                             </form>
                                                         @else
-                                                            <span class="text-muted">Menunggu file dosen untuk tindakan</span>
+                                                            <span class="text-muted">Menunggu dosen untuk memberi solusi permasalahan</span>
                                                         @endif
                                                     @else
                                                         @if($item->status == 1)

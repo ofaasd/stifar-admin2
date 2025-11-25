@@ -16,6 +16,7 @@
 
 @section('breadcrumb-items')
     <li class="breadcrumb-item">Master</li>
+    <li class="breadcrumb-item">Akademik</li>
     <li class="breadcrumb-item active">Bidang Minat</li>
 @endsection
 

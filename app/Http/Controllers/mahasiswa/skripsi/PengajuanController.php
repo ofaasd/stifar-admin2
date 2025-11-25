@@ -3,6 +3,7 @@ namespace App\Http\Controllers\mahasiswa\skripsi;
 
 use App\helpers;
 
+use Carbon\Carbon;
 use App\Models\Mahasiswa;
 use App\Models\AktorSidang;
 use App\Models\MasterRuang;
@@ -14,7 +15,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\PengajuanJudulSkripsi;
 use Illuminate\Support\Facades\Crypt;
-use App\Models\PengajuanBerkasSkripsi;
 
 class PengajuanController extends Controller
 {
@@ -37,6 +37,10 @@ class PengajuanController extends Controller
         $email = $user->email;
         $nim   = explode('@', $email)[0];
         $mhs = Mahasiswa::where('nim', $nim)->first();
+
+        $mhs->sksTempuh = $this->helpers->getSksTempuh($nim);
+        $mhs->ipk = $this->helpers->getIPK($nim);
+        
         $dataDosbim = MasterSkripsi::where('nim', $nim)
         ->leftJoin('pegawai_biodata AS pegawai1', 'pegawai1.npp', '=', 'master_skripsi.pembimbing_1')
         ->leftJoin('pegawai_biodata AS pegawai2', 'pegawai2.npp', '=', 'master_skripsi.pembimbing_2')
@@ -66,18 +70,6 @@ class PengajuanController extends Controller
                 });
         }
     
-        // if ($dataDosbim) {
-        //     // ambil semua berkas terkait
-        //     $berkas = PengajuanBerkasSkripsi::where('id_master', $dataDosbim->id)->get();
-        
-        //     // masukkan ke array dalam 1 row
-        //     $dataDosbim->berkas = $berkas->mapWithKeys(function ($b) {
-        //         return [
-        //             strtolower($b->kategori) => $b->nama_file
-        //         ];
-        //     });
-        // }
-
         $sidang = SidangSkripsi::select([
             'sidang.id',
             'sidang.tanggal',
@@ -141,6 +133,20 @@ class PengajuanController extends Controller
             return $item;
         });
 
+        $judulMahasiswa = MasterSkripsi::select([
+            'mahasiswa.nama',
+            'mahasiswa.nim',
+            'pengajuan_judul_skripsi.judul',
+            'pembimbing1.nama_lengkap as namaPembimbing1',
+            'pembimbing2.nama_lengkap as namaPembimbing2',
+        ])
+        ->leftJoin('mahasiswa', 'mahasiswa.nim', '=', 'master_skripsi.nim')
+        ->leftJoin('pengajuan_judul_skripsi', 'pengajuan_judul_skripsi.id_master', '=', 'master_skripsi.id')
+        ->leftJoin('pegawai_biodata AS pembimbing1', 'master_skripsi.pembimbing_1', '=', 'pembimbing1.npp')
+        ->leftJoin('pegawai_biodata AS pembimbing2', 'master_skripsi.pembimbing_2', '=', 'pembimbing2.npp')
+        ->where('master_skripsi.status', 1)
+        ->get();
+
         $isAllowSidang = MasterSkripsi::where('nim', $nim)->where('status', 2)->where('acc_1', 1)->where('acc_2', 1)->exists();
 
         $ruang = MasterRuang::all();
@@ -152,6 +158,7 @@ class PengajuanController extends Controller
             'mhs' => $mhs,
             'isAllowSidang' => $isAllowSidang,
             'ruang' => $ruang,
+            'judulMahasiswa' => $judulMahasiswa,
         ]);
     }
 
@@ -296,6 +303,26 @@ class PengajuanController extends Controller
                 return response()->json(['status' => false, 'message' => 'Sidang not found'], 404);
             }
 
+            $masterSkripsi = MasterSkripsi::find($sidang->skripsi_id);
+            $mhs = Mahasiswa::where('nim', $masterSkripsi->nim)->first();
+
+            $cekBentrok = SidangSkripsi::where('id', '!=', $sidang->id)
+                ->where('ruang_id', $request->idRuang)
+                ->where('tanggal', $request->tanggal)
+                ->where(function ($query) use ($request) {
+                    $query->whereBetween('waktu_mulai', [$request->waktuMulai, $request->waktuSelesai])
+                          ->orWhereBetween('waktu_selesai', [$request->waktuMulai, $request->waktuSelesai])
+                          ->orWhere(function ($q) use ($request) {
+                              $q->where('waktu_mulai', '<=', $request->waktuMulai)
+                                ->where('waktu_selesai', '>=', $request->waktuSelesai);
+                          });
+                })
+                ->exists();
+
+            if ($cekBentrok) {
+                return redirect()->back()->with('error', 'Waktu sidang bentrok dengan jadwal lain di ruang yang sama.');
+            }
+
             $sidang->update([
                 'tanggal' => $request->tanggal,
                 'waktu_mulai' => $request->waktuMulai,
@@ -303,7 +330,21 @@ class PengajuanController extends Controller
                 'ruang_id' => $request->idRuang,
             ]);
 
-            // return response()->json(['status' => true, 'message' => 'Waktu sidang updated successfully']);
+            $formattedTanggal = Carbon::parse($request->tanggal)->translatedFormat('d/m/Y');
+            $formattedWaktuMulai = date('H:i', strtotime($request->waktuMulai));
+            $formattedWaktuSelesai = date('H:i', strtotime($request->waktuSelesai));
+            $ruang = MasterRuang::find($request->idRuang);
+
+            $dataWa['no_wa'] = $mhs->hp ?? '';
+            $dataWa['pesan'] = "Yth. " . $mhs->nama . ",\n\n" .
+                "Waktu sidang skripsi Anda telah dijadwalkan pada:\n" .
+                "Tanggal: " . $formattedTanggal . "\n" .
+                "Waktu: " . $formattedWaktuMulai . " - " . $formattedWaktuSelesai . "\n" .
+                "Ruang: " . ($ruang->nama_ruang ?? '-') . "\n\n" .
+                "Harap hadir tepat waktu.\n\n" .
+                "Terima kasih.";
+            $pesan = helpers::send_wa($dataWa);
+
             return redirect()->back()->with('success', 'Waktu sidang updated successfully');
         } catch (\Exception $e) {
             return response()->json(['status' => false, 'message' => $e->getMessage()], 500);

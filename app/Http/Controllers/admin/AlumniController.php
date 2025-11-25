@@ -7,12 +7,14 @@ use App\Models\Prodi;
 use App\Models\Alumni;
 use App\Models\Mahasiswa;
 use App\Models\TbFlagging;
+use App\Models\TbYudisium;
 use Illuminate\Http\Request;
 use App\Models\DaftarWisudawan;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\JabatanStruktural;
 use App\Models\TbGelombangWisuda;
 use App\Http\Controllers\Controller;
+use App\Models\PenyerahanIjazah;
 use Illuminate\Support\Facades\Crypt;
 
 class AlumniController extends Controller
@@ -307,38 +309,63 @@ class AlumniController extends Controller
 
         // Ambil data mahasiswa
         $mahasiswa = Mahasiswa::select(
-                'mahasiswa.nama',
-                'mahasiswa.nim',
-                'mahasiswa.no_ktp AS nik',
-                'mahasiswa.agama',
-                'mahasiswa.tempat_lahir AS kotaKelahiran',
-                'mahasiswa.tgl_lahir AS tanggalLahir',
-                'mahasiswa.alamat',
-                'mahasiswa.angkatan',
-                'mahasiswa.foto_mhs AS fotoMhs',
-                'mahasiswa.foto_yudisium AS fotoYudisium',
-                'mahasiswa.created_at AS createdAt',
+            'mahasiswa.nama',
+            'mahasiswa.nim',
+            'mahasiswa.no_ktp AS nik',
+            'mahasiswa.tempat_lahir AS kotaKelahiran',
+            'mahasiswa.tgl_lahir AS tanggalLahir',
+            'mahasiswa.angkatan',
+            'mahasiswa.foto_mhs AS fotoMhs',
+            'mahasiswa.foto_yudisium AS fotoYudisium',
+            'mahasiswa.created_at AS createdAt',
+            'program_studi.nama_prodi AS prodiIndo',
+            'program_studi.nama_prodi_eng AS prodiInggris',
+            'program_studi.nama_ijazah AS namaIjazahIndo',
+            'program_studi.nama_ijazah_eng AS namaIjazahInggris',
+            'gelombang_yudisium.tanggal_pengesahan AS lulusPada',
+            'mahasiswa.no_pisn AS noPisn',
+            'pegawai_biodata.npp AS nppKaprodi',
+            'pegawai_biodata.nama_lengkap AS namaKaprodi',
+            )
+            ->leftJoin('program_studi', 'program_studi.id', '=', 'mahasiswa.id_program_studi')
+            ->leftJoin('tb_yudisium', 'mahasiswa.nim', '=', 'tb_yudisium.nim')
+            ->leftJoin('gelombang_yudisium', 'tb_yudisium.id_gelombang_yudisium', '=', 'gelombang_yudisium.id')
+            ->leftJoin('pegawai_biodata', 'tb_yudisium.id_kaprodi', '=', 'pegawai_biodata.id')
+            ->where('mahasiswa.nim', $nim)
+            ->first();
+
+        // Jika tidak ditemukan di tabel mahasiswa, coba cari di tabel alumni
+        if (!$mahasiswa) 
+        {
+            $mahasiswa = Alumni::select(
+                'tb_alumni.nama',
+                'tb_alumni.nim',
+                'tb_alumni.no_ktp AS nik',
+                'tb_alumni.tempat_lahir AS kotaKelahiran',
+                'tb_alumni.tgl_lahir AS tanggalLahir',
+                'tb_alumni.angkatan',
+                'tb_alumni.foto AS fotoMhs',
+                'tb_alumni.foto_yudisium AS fotoYudisium',
+                'tb_alumni.created_at AS createdAt',
                 'program_studi.nama_prodi AS prodiIndo',
                 'program_studi.nama_prodi_eng AS prodiInggris',
                 'program_studi.nama_ijazah AS namaIjazahIndo',
                 'program_studi.nama_ijazah_eng AS namaIjazahInggris',
                 'gelombang_yudisium.tanggal_pengesahan AS lulusPada',
-                'mahasiswa.no_pisn AS noPisn',
+                'tb_alumni.no_pisn AS noPisn',
                 'pegawai_biodata.npp AS nppKaprodi',
                 'pegawai_biodata.nama_lengkap AS namaKaprodi',
             )
-            ->leftJoin('program_studi', 'program_studi.id', '=', 'mahasiswa.id_program_studi')
-            ->leftJoin('tb_yudisium', 'mahasiswa.nim', '=', 'tb_yudisium.nim')
+            ->leftJoin('program_studi', 'program_studi.id', '=', 'tb_alumni.id_program_studi')
+            ->leftJoin('tb_yudisium', 'tb_alumni.nim', '=', 'tb_yudisium.nim')
             ->leftJoin('gelombang_yudisium', 'tb_yudisium.id_gelombang_yudisium', '=', 'gelombang_yudisium.id')
-            ->leftJoin('jabatan_struktural', 'mahasiswa.id_program_studi', '=', 'jabatan_struktural.prodi_id')
-            ->leftJoin('pegawai_biodata', 'jabatan_struktural.id_pegawai', '=', 'pegawai_biodata.id_pegawai')
-            ->where('mahasiswa.nim', $nim)
-            ->where('jabatan_struktural.jabatan', 'like', '%kepala%')
+            ->leftJoin('pegawai_biodata', 'tb_yudisium.id_kaprodi', '=', 'pegawai_biodata.id')
+            ->where('tb_alumni.nim', $nim)
             ->first();
 
-        if (!$mahasiswa) 
-        {
-            return response()->json(['message' => 'Data tidak ditemukan.']);
+            if (!$mahasiswa) {
+                return response()->json(['message' => 'Data tidak ditemukan.']);
+            }
         }
         
         if(!$mahasiswa->lulusPada)
@@ -351,16 +378,27 @@ class AlumniController extends Controller
             return response()->json(['message' => 'No PISN belum ada.']);
         }
 
-        $jabatanStruktural = JabatanStruktural::select([
+        PenyerahanIjazah::updateOrCreate(
+            [
+                'nim' => $nim,
+            ],
+            [
+                'printed_at' => now(),
+                'by_id' => auth()->user()->id,
+                'created_at' => now(),
+            ]
+        );
+
+        $ketuaYayasan = TbYudisium::select([
             'pegawai_biodata.npp',
             'pegawai_biodata.nama_lengkap',
         ])
-        ->where('jabatan', 'Ketua')
-        ->leftJoin('pegawai_biodata', 'jabatan_struktural.id_pegawai', '=', 'pegawai_biodata.id_pegawai')
+        ->where('tb_yudisium.nim', $mahasiswa->nim)
+        ->leftJoin('pegawai_biodata', 'tb_yudisium.id_ketua', '=', 'pegawai_biodata.id')
         ->first();
 
-        $mahasiswa->nppKetua = $jabatanStruktural->npp ?? '-';
-        $mahasiswa->namaKetua = $jabatanStruktural->nama_lengkap ?? '-';
+        $mahasiswa->nppKetua = $ketuaYayasan->npp ?? '-';
+        $mahasiswa->namaKetua = $ketuaYayasan->nama_lengkap ?? '-';
 
         $mahasiswa->tanggalDiberikan = $request->tanggal_diberikan ?? '-';
 
