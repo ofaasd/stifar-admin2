@@ -49,19 +49,55 @@ class TagihanTotalController extends Controller
             $dir = $request->input('order.0.dir');
 
             if (empty($request->input('search.value'))) {
-                $tagihan = Tagihan::where('tagihan.status',0)
+                if($id != null){
+                    $tagihan = Tagihan::where('tagihan.status',0)
+                        ->join('mahasiswa','mahasiswa.nim','=','tagihan.nim')
+                        ->join('program_studi','program_studi.id','=','mahasiswa.id_program_studi')
+                        ->select('tagihan.*')
+                        ->where('program_studi.id',$id)
+                        ->offset($start)
+                        ->limit($limit)
+                        ->orderBy($order, $dir)
+                        ->get();
+                }else{
+                    $tagihan = Tagihan::where('tagihan.status',0)
                     ->join('mahasiswa','mahasiswa.nim','=','tagihan.nim')
-                    ->join('program_studi','program_studi.id','=','mahasiswa.id_program_studi')
                     ->select('tagihan.*')
-                    ->where('program_studi.id',$id)
                     ->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
                     ->get();
+                }   
             } else {
                 $search = $request->input('search.value');
-
-                $tagihan = Tagihan::where('tagihan.status',0)
+                if($id != null){
+                    $tagihan = Tagihan::where('tagihan.status',0)
+                    ->join('mahasiswa','mahasiswa.nim','=','tagihan.nim')
+                    ->join('program_studi','program_studi.id','=','mahasiswa.id_program_studi')
+                    ->select('tagihan.*')
+                    ->where('program_studi.id',$id)
+                    ->where(fn($query) =>
+                        $query ->where('tagihan.id', 'LIKE', "%{$search}%")
+                        ->orWhere('tagihan.nim', 'LIKE', "%{$search}%")
+                        ->orWhere('nama', 'LIKE', "%{$search}%")
+                    )
+                    ->offset($start)
+                    ->limit($limit)
+                    ->orderBy($order, $dir)
+                    ->get();
+                    $totalFiltered = Tagihan::where('tagihan.status',0)
+                    ->join('mahasiswa','mahasiswa.nim','=','tagihan.nim')
+                    ->join('program_studi','program_studi.id','=','mahasiswa.id_program_studi')
+                    ->select('tagihan.*')
+                    ->where('program_studi.id',$id)
+                    ->where(fn($query) =>
+                        $query ->where('tagihan.id', 'LIKE', "%{$search}%")
+                        ->orWhere('tagihan.nim', 'LIKE', "%{$search}%")
+                        ->orWhere('nama', 'LIKE', "%{$search}%")
+                    )
+                    ->count();
+                }else{
+                    $tagihan = Tagihan::where('tagihan.status',0)
                     ->join('mahasiswa','mahasiswa.nim','=','tagihan.nim')
                     ->select('tagihan.*')
                     ->where(fn($query) =>
@@ -73,8 +109,7 @@ class TagihanTotalController extends Controller
                     ->limit($limit)
                     ->orderBy($order, $dir)
                     ->get();
-
-                $totalFiltered = Tagihan::where('tagihan.status',0)
+                    $totalFiltered = Tagihan::where('tagihan.status',0)
                     ->join('mahasiswa','mahasiswa.nim','=','tagihan.nim')
                     ->select('tagihan.*')
                     ->where(fn($query) =>
@@ -83,6 +118,8 @@ class TagihanTotalController extends Controller
                         ->orWhere('nama', 'LIKE', "%{$search}%")
                     )
                     ->count();
+                }
+                
             }
 
             $data = [];

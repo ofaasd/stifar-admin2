@@ -20,11 +20,15 @@ class PembayaranController extends Controller
     {
         $bulan = date('m');
         $tahun = date('Y');
+        $prodi = 0;
         if(!empty($request->bulan)){
             $bulan = $request->bulan;
         }
         if(!empty($request->tahun)){
             $tahun = $request->tahun;
+        }
+        if(!empty($request->prodi)){
+            $prodi = $request->prodi;
         }
         if (empty($request->input('length'))) {
             $title = "pembayaran";
@@ -47,7 +51,13 @@ class PembayaranController extends Controller
                 "Desember"
             ];
             $mhs_all = Mahasiswa::where('status',1)->get();
-            return view('admin.keuangan.pembayaran.index', compact('title', 'bulan','tahun','list_bulan','title2','mhs_all', 'indexed'));
+            $all_prodi = Prodi::all();
+            $nama = [];
+            foreach($all_prodi as $row){
+                $nama_prodi = explode(' ',$row->nama_prodi);
+                $nama[$row->id] = $nama_prodi[0] . " " . $nama_prodi[1];
+            }
+            return view('admin.keuangan.pembayaran.index', compact('title', 'bulan','tahun','list_bulan','title2','mhs_all', 'indexed','nama','prodi','all_prodi'));
         } else {
             $columns = [
                 1 => 'id',
@@ -74,37 +84,82 @@ class PembayaranController extends Controller
             if(!empty($request->tahun)){
                 $tahun = $request->tahun;
             }
+            if(!empty($request->prodi)){
+                $prodi = $request->prodi;
+            }
 
             if (empty($request->input('search.value'))) {
-                $pembayaran = TbPembayaran::whereMonth('tanggal_bayar',$bulan)
-                    ->whereYear('tanggal_bayar',$tahun)
-                    ->offset($start)
-                    ->limit($limit)
-                    ->orderBy($order, $dir)
-                    ->get();
+                if(empty($prodi)){
+                    $pembayaran = TbPembayaran::whereMonth('tanggal_bayar',$bulan)
+                        ->whereYear('tanggal_bayar',$tahun)
+                        ->offset($start)
+                        ->limit($limit)
+                        ->orderBy($order, $dir)
+                        ->get();
+                }else{
+                    // Prefix column with table name to avoid ambiguity in joins
+                    $orderColumn = in_array($order, ['nim', 'id']) ? 'tb_pembayaran.' . $order : $order;
+                    $pembayaran = TbPembayaran::select('tb_pembayaran.*')
+                        ->where('mahasiswa.id_program_studi',$prodi)
+                        ->join('mahasiswa','mahasiswa.nim','=','tb_pembayaran.nim')
+                        ->whereMonth('tanggal_bayar',$bulan)
+                        ->whereYear('tanggal_bayar',$tahun)
+                        ->offset($start)
+                        ->limit($limit)
+                        ->orderBy($orderColumn, $dir)
+                        ->get();
+                }   
             } else {
                 $search = $request->input('search.value');
+                if(empty($prodi)){
+                    $pembayaran = TbPembayaran::whereMonth('tanggal_bayar',$bulan)
+                        ->whereYear('tanggal_bayar',$tahun)
+                        ->where(fn($query) =>
+                            $query ->where('id', 'LIKE', "%{$search}%")
+                            ->orWhere('keterangan', 'LIKE', "%{$search}%")
+                            ->orWhere('nim', 'LIKE', "%{$search}%")
+                        )
+                        ->offset($start)
+                        ->limit($limit)
+                        ->orderBy($order, $dir)
+                        ->get();
 
-                $pembayaran = TbPembayaran::whereMonth('tanggal_bayar',$bulan)
-                    ->whereYear('tanggal_bayar',$tahun)
-                    ->where(fn($query) =>
-                        $query ->where('id', 'LIKE', "%{$search}%")
-                        ->orWhere('keterangan', 'LIKE', "%{$search}%")
-                        ->orWhere('nim', 'LIKE', "%{$search}%")
-                    )
-                    ->offset($start)
-                    ->limit($limit)
-                    ->orderBy($order, $dir)
-                    ->get();
-
-                $totalFiltered = TbPembayaran::whereMonth('tanggal_bayar',$bulan)
-                    ->whereYear('tanggal_bayar',$tahun) 
-                    ->where(fn($query) =>
-                        $query ->where('id', 'LIKE', "%{$search}%")
-                        ->orWhere('keterangan', 'LIKE', "%{$search}%")
-                        ->orWhere('nim', 'LIKE', "%{$search}%")
-                    )
-                    ->count();
+                    $totalFiltered = TbPembayaran::whereMonth('tanggal_bayar',$bulan)
+                        ->whereYear('tanggal_bayar',$tahun) 
+                        ->where(fn($query) =>
+                            $query ->where('id', 'LIKE', "%{$search}%")
+                            ->orWhere('keterangan', 'LIKE', "%{$search}%")
+                            ->orWhere('nim', 'LIKE', "%{$search}%")
+                        )
+                        ->count();
+                }else{
+                    // Prefix column with table name to avoid ambiguity in joins
+                    $orderColumn = in_array($order, ['nim', 'id']) ? 'tb_pembayaran.' . $order : $order;
+                    $pembayaran = TbPembayaran::select('tb_pembayaran.*')
+                        ->where('mahasiswa.id_program_studi',$prodi)
+                        ->join('mahasiswa','mahasiswa.nim','=','tb_pembayaran.nim')
+                        ->whereMonth('tanggal_bayar',$bulan)
+                        ->whereYear('tanggal_bayar',$tahun)
+                        ->where(fn($query) =>
+                            $query ->where('tb_pembayaran.id', 'LIKE', "%{$search}%")
+                            ->orWhere('tb_pembayaran.keterangan', 'LIKE', "%{$search}%")
+                            ->orWhere('tb_pembayaran.nim', 'LIKE', "%{$search}%")
+                        )
+                        ->offset($start)
+                        ->limit($limit)
+                        ->orderBy($orderColumn, $dir)
+                        ->get();
+                    $totalFiltered = TbPembayaran::where('mahasiswa.id_program_studi',$prodi)
+                        ->join('mahasiswa','mahasiswa.nim','=','tb_pembayaran.nim') 
+                        ->whereMonth('tanggal_bayar',$bulan)
+                        ->whereYear('tanggal_bayar',$tahun)
+                        ->where(fn($query) =>
+                            $query ->where('tb_pembayaran.id', 'LIKE', "%{$search}%")
+                            ->orWhere('tb_pembayaran.keterangan', 'LIKE', "%{$search}%")
+                            ->orWhere('tb_pembayaran.nim', 'LIKE', "%{$search}%")
+                        )
+                        ->count();
+                }
             }
 
             $data = [];
