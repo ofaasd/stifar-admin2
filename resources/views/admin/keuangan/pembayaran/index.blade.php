@@ -115,6 +115,17 @@
                                                     @endfor
                                                 </select>
                                             </div>
+                                            <div class="mb-3">
+                                                <div class="mb-3" id="field-nama">
+                                                    <label for="nim" class="form-label">Program Studi</label>
+                                                </div>
+                                                <select name="prodi" class="form-control" id="prodi">
+                                                    <option value="0">--Semua Prodi--</option>
+                                                    @foreach($all_prodi as $row)
+                                                        <option value="{{$row->id}}" {{($prodi == $row->id)?"selected":""}}>{{$nama[$row->id] ?? $row->nama_prodi}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                         </div>
                                         <div class="modal-footer">
                                             <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
@@ -214,6 +225,7 @@
                 data: {
                     'bulan' : $("#bulan").val(),
                     'tahun' : $("#tahun").val(),
+                    'prodi' : $("#prodi").val(),
                 }
             },
             columns: my_data,
