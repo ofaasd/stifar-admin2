@@ -153,6 +153,7 @@ use App\Http\Controllers\admin\akademik\skripsi\AdminPengajuanSkripsiController;
 use App\Http\Controllers\admin\akademik\transkripIjazah\PrintTranskripController;
 use App\Http\Controllers\admin\akademik\wisuda\AdminDaftarPendaftarWisudaController;
 use App\Http\Controllers\admin\admisi\StatistikController as AdmisiStatistikController;
+use App\Http\Controllers\admin\akademik\PenyerahanIjazahController;
 
 /*
 |--------------------------------------------------------------------------
@@ -414,6 +415,8 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi|baak|admin-
             Route::post('/store', [AdminPengajuanSkripsiController::class, 'store'])->name('store-pengajuan-skripsi');
             Route::post('/print', [AdminPengajuanSkripsiController::class, 'print'])->name('print-pengajuan-skripsi');
         });
+
+        Route::resource('/penyerahan-ijazah', PenyerahanIjazahController::class)->name('index','penyerahan-ijazah');
 
         // Transkrip ijazah
         Route::prefix('/transkrip-ijazah')->group(function () {

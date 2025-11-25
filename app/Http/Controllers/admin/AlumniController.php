@@ -14,6 +14,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\JabatanStruktural;
 use App\Models\TbGelombangWisuda;
 use App\Http\Controllers\Controller;
+use App\Models\PenyerahanIjazah;
 use Illuminate\Support\Facades\Crypt;
 
 class AlumniController extends Controller
@@ -311,10 +312,8 @@ class AlumniController extends Controller
             'mahasiswa.nama',
             'mahasiswa.nim',
             'mahasiswa.no_ktp AS nik',
-            'mahasiswa.agama',
             'mahasiswa.tempat_lahir AS kotaKelahiran',
             'mahasiswa.tgl_lahir AS tanggalLahir',
-            'mahasiswa.alamat',
             'mahasiswa.angkatan',
             'mahasiswa.foto_mhs AS fotoMhs',
             'mahasiswa.foto_yudisium AS fotoYudisium',
@@ -342,10 +341,8 @@ class AlumniController extends Controller
                 'tb_alumni.nama',
                 'tb_alumni.nim',
                 'tb_alumni.no_ktp AS nik',
-                'tb_alumni.agama',
                 'tb_alumni.tempat_lahir AS kotaKelahiran',
                 'tb_alumni.tgl_lahir AS tanggalLahir',
-                'tb_alumni.alamat',
                 'tb_alumni.angkatan',
                 'tb_alumni.foto AS fotoMhs',
                 'tb_alumni.foto_yudisium AS fotoYudisium',
@@ -380,6 +377,17 @@ class AlumniController extends Controller
         {
             return response()->json(['message' => 'No PISN belum ada.']);
         }
+
+        PenyerahanIjazah::updateOrCreate(
+            [
+                'nim' => $nim,
+            ],
+            [
+                'printed_at' => now(),
+                'by_id' => auth()->user()->id,
+                'created_at' => now(),
+            ]
+        );
 
         $ketuaYayasan = TbYudisium::select([
             'pegawai_biodata.npp',

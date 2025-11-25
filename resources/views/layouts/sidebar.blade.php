@@ -184,7 +184,7 @@
                     </li>
                     <li>
                         <a class="submenu-title" href="#">
-                            <span>Yuidisium</span>
+                            <span>Yudisium</span>
                         </a>
                         <ul class="nav-sub-childmenu submenu-content">
                             <li><a href="{{Url::to('admin/akademik/yudisium/setting')}}">Setting</a></li>
@@ -218,6 +218,7 @@
 
                         </ul>
                     </li>
+                    <li><a href="{{Url::to('admin/akademik/penyerahan-ijazah')}}">Penyerahan Ijazah</a></li>
                      {{-- <li><a href="#">Evaluasi Studi <label class="badge badge-light-danger">!</label></a></li>
                      <li><a href="#">Histori Jadwal <label class="badge badge-light-danger">!</label></a></li>
                      <li>

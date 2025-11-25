@@ -277,7 +277,21 @@ class MahasiswaController extends Controller
 
     public function store(Request $request){
         $id = $request->id;
-        // dd($request->nilai_toefl);
+        $noTranskrip = $request->no_transkrip ?? null;
+
+        $mhs = Mahasiswa::where('no_transkrip', $noTranskrip)
+                ->where('no_tranksrip', '!=', '')
+                ->where('id', '!=', $id)
+                ->first();
+
+        if($mhs){
+            $data = [
+                'status' => 500,
+                'message' => 'No Seri Transkrip sudah digunakan oleh mahasiswa lain.',
+            ];
+            return response()->json($data, 500);
+        }
+
         if(empty($id)){
         //create user
         $email = $request->nim . "@mhs.stifar.id";
@@ -328,6 +342,7 @@ class MahasiswaController extends Controller
                     'status' => 1,
                     'no_pisn' => $request->no_pisn ?? null,
                     'nilai_toefl'=>$request->nilai_toefl ?? null,
+                    'no_transkrip'=>$request->no_transkrip ?? null,
                 ]
             );
             $data = [
@@ -373,6 +388,7 @@ class MahasiswaController extends Controller
                     'status' => $request->status,
                     'nilai_toefl'=>$request->nilai_toefl ?? null,
                     'no_pisn' => $request->no_pisn ?? null,
+                    'no_transkrip'=>$request->no_transkrip ?? null,
                 ]
             );
             return response()->json('updated');
@@ -669,6 +685,7 @@ class MahasiswaController extends Controller
                 'mahasiswa.tgl_lahir AS tglLahir',
                 'mahasiswa.foto_mhs AS fotoMhs',
                 'mahasiswa.foto_yudisium AS fotoYudisium',
+                'mahasiswa.no_transkrip AS noTranskrip',
                 'program_studi.nama_prodi AS programStudi',
                 'program_studi.jenjang',
                 'program_studi.nama_ijazah AS gelar',
@@ -698,6 +715,7 @@ class MahasiswaController extends Controller
                         'tb_alumni.tgl_lahir AS tglLahir',
                         'tb_alumni.foto AS fotoMhs',
                         'tb_alumni.foto_yudisium AS fotoYudisium',
+                        'tb_alumni.no_transkrip AS noTranskrip',
                         'program_studi.nama_prodi AS programStudi',
                         'program_studi.jenjang',
                         'program_studi.nama_ijazah AS gelar',
