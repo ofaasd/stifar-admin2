@@ -11,6 +11,7 @@ use App\Models\Prodi;
 use App\Models\TbPembayaran; 
 use App\Imports\PembayaranImport;
 use Maatwebsite\Excel\Facades\Excel;  
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PembayaranController extends Controller
 {
@@ -280,5 +281,71 @@ class PembayaranController extends Controller
             'status' => 'success',
             'message' => 'Pembayaran Berhasil ditambah/update',
         ], 200);
+    }
+    public function cetak(Int $bulan, Int $tahun, Int $prodi){
+        $nama_prodi = '';
+        if($prodi == 0){
+            $pembayaran = TbPembayaran::select('tb_pembayaran.*')
+                        ->join('mahasiswa','mahasiswa.nim','=','tb_pembayaran.nim')
+                        ->whereMonth('tanggal_bayar',$bulan)
+                        ->whereYear('tanggal_bayar',$tahun)
+                        ->orderBy('tanggal_bayar', 'asc')
+                        ->get();
+        }else{
+            $nama_prodi = Prodi::find($prodi)->nama_prodi;
+            $pembayaran = TbPembayaran::select('tb_pembayaran.*')
+                ->where('mahasiswa.id_program_studi',$prodi)
+                ->join('mahasiswa','mahasiswa.nim','=','tb_pembayaran.nim')
+                ->whereMonth('tanggal_bayar',$bulan)
+                ->whereYear('tanggal_bayar',$tahun)
+                ->orderBy('tanggal_bayar', 'asc')
+                ->get();
+        }
+        $list_pembayaran = [];
+        foreach ($pembayaran as $index => $row) {
+            $mahasiswa = Mahasiswa::where('nim',$row->nim)->first();
+            if(!empty($mahasiswa)){
+                $curr_prodi = Prodi::find($mahasiswa->id_program_studi);
+                $nestedData = [];
+                $nestedData['id'] = $row->id;
+                $nestedData['tanggal_bayar'] = date('d-m-Y H:i', strtotime($row->tanggal_bayar)) ?? "";
+                
+                $nestedData['nim'] = $row->nim ?? "";
+                $nestedData['nama'] = $mahasiswa->nama ?? "";
+                $nestedData['prodi'] = $curr_prodi->nama_prodi ?? "";
+                $nestedData['description'] = $row->description ?? "";
+                $nestedData['jumlah'] =  number_format($row->jumlah ?? 0,0,",",".");
+                $nestedData['keterangan'] =  $row->keterangan ?? '';
+                $nestedData['status'] =  $row->status ?? '';
+                $list_pembayaran[] = $nestedData;
+            }
+        }
+        $list_bulan = [
+            1=>"Januari",
+            "Februari",
+            "Maret",
+            "April",
+            "Mei",
+            "Juni",
+            "Juli",
+            "Agustus",
+            "September",
+            "Oktober",
+            "November",
+            "Desember"
+        ];
+        $data = [
+            'pembayaran' => $list_pembayaran,
+            'no' => 1,
+            'bulan' => $bulan,
+            'tahun' => $tahun,
+            'prodi' => $prodi,
+            'nama_prodi' => $nama_prodi,
+            'list_bulan' => $list_bulan,
+            'logo' => public_path('/assets/images/logo/logo-icon.png')
+        ];
+        $filename = 'rekap-pembayaran-'.$bulan.'-'.$tahun.' ' . $prodi . '.pdf';
+        $pdf = PDF::loadView('admin.keuangan.pembayaran.cetak_pembayaran', $data);
+        return $pdf->download($filename);
     }
 }
