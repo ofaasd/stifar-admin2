@@ -17,7 +17,7 @@ class TagihanTotalController extends Controller
 {
     //
     public $indexed = ['','id','gelombang', 'nim','nama', 'total_bayar'];
-    public function index(Request $request)
+    public function index(Request $request, String $id = null)
     {
         if (empty($request->input('length'))) {
             $title = "tagihan_total";
@@ -25,8 +25,12 @@ class TagihanTotalController extends Controller
             $indexed = $this->indexed;
             $mahasiswa = Mahasiswa::where('status',1)->get();
             $prodi = Prodi::all();
+            foreach($prodi as $row){
+                $nama_prodi = explode(' ',$row->nama_prodi);
+                $nama[$row->id] = $nama_prodi[0] . " " . $nama_prodi[1];
+            }
             $jenis = JenisKeuangan::whereNotNull('kode')->get();
-            return view('admin.keuangan.tagihan_total.index', compact('title', 'title2','prodi', 'indexed','mahasiswa','jenis'));
+            return view('admin.keuangan.tagihan_total.index', compact('title', 'title2','prodi', 'indexed','mahasiswa','jenis','id','nama'));
         } else {
             $columns = [
                 1 => 'id',
@@ -45,7 +49,11 @@ class TagihanTotalController extends Controller
             $dir = $request->input('order.0.dir');
 
             if (empty($request->input('search.value'))) {
-                $tagihan = Tagihan::where('status',0)
+                $tagihan = Tagihan::where('tagihan.status',0)
+                    ->join('mahasiswa','mahasiswa.nim','=','tagihan.nim')
+                    ->join('program_studi','program_studi.id','=','mahasiswa.id_program_studi')
+                    ->select('tagihan.*')
+                    ->where('program_studi.id',$id)
                     ->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
@@ -53,20 +61,26 @@ class TagihanTotalController extends Controller
             } else {
                 $search = $request->input('search.value');
 
-                $tagihan = Tagihan::where('status',0)
+                $tagihan = Tagihan::where('tagihan.status',0)
+                    ->join('mahasiswa','mahasiswa.nim','=','tagihan.nim')
+                    ->select('tagihan.*')
                     ->where(fn($query) =>
-                        $query ->where('id', 'LIKE', "%{$search}%")
-                        ->orWhere('nim', 'LIKE', "%{$search}%")
+                        $query ->where('tagihan.id', 'LIKE', "%{$search}%")
+                        ->orWhere('tagihan.nim', 'LIKE', "%{$search}%")
+                        ->orWhere('nama', 'LIKE', "%{$search}%")
                     )
                     ->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
                     ->get();
 
-                $totalFiltered = Tagihan::where('status',0)
+                $totalFiltered = Tagihan::where('tagihan.status',0)
+                    ->join('mahasiswa','mahasiswa.nim','=','tagihan.nim')
+                    ->select('tagihan.*')
                     ->where(fn($query) =>
-                        $query ->where('id', 'LIKE', "%{$search}%")
-                        ->orWhere('nim', 'LIKE', "%{$search}%")
+                        $query ->where('tagihan.id', 'LIKE', "%{$search}%")
+                        ->orWhere('tagihan.nim', 'LIKE', "%{$search}%")
+                        ->orWhere('nama', 'LIKE', "%{$search}%")
                     )
                     ->count();
             }

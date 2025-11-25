@@ -239,7 +239,7 @@ class VerifikasiController extends Controller
                 return response()->json('Error');
             }
         }else{
-            return response()->json('Error | va sudah digunakan atau tidak terdaftar');
+            return response()->json('Error | va sudah digunakan atau tidak terdaftar', 401);
         }
 
 
