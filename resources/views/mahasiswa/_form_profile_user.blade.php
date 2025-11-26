@@ -203,6 +203,6 @@
                 </div>
             </div>
         @endif
-
+        <input type="hidden" class="form-control" name="bulan_awal" id="bulan_awal" value="{{$mahasiswa->bulan_awal}}">
     </div>
 </div>
