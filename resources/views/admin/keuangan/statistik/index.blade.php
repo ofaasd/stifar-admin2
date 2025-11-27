@@ -48,6 +48,7 @@
                     </div>
                     <div class="card-body" style="overflow-x:scroll">
                             <a href="{{url('admin/keuangan/statistik/update_total_tagihan')}}" class="btn btn-primary mb-3">Update Total Tagihan</a>
+                            <a href="{{url('admin/keuangan/statistik/cetak/' . $id)}}" class="btn btn-primary mb-3">Cetak</a>
                             @csrf
                             <table class="table table-stripped">
                                 <thead>

@@ -12,6 +12,7 @@ use App\Imports\TagihanS1Import;
 use App\Models\JenisKeuangan;
 use App\Models\Prodi;
 use Maatwebsite\Excel\Facades\Excel;  
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class TagihanTotalController extends Controller
 {
@@ -266,5 +267,48 @@ class TagihanTotalController extends Controller
             'status' => 'success',
             'message' => 'Rekening Koran Berhasil ditambah/update',
         ], 200);
+    }
+    public function cetak(Int $id = null){
+        
+        $nama_prodi = '';
+        if($id != null){
+            $nama_prodi = Prodi::find($id)->nama_prodi;
+            $tagihan = Tagihan::where('tagihan.status',0)
+                ->join('mahasiswa','mahasiswa.nim','=','tagihan.nim')
+                ->join('program_studi','program_studi.id','=','mahasiswa.id_program_studi')
+                ->select('tagihan.*')
+                ->where('program_studi.id',$id)
+                ->get();
+        }else{
+            $tagihan = Tagihan::where('tagihan.status',0)
+            ->join('mahasiswa','mahasiswa.nim','=','tagihan.nim')
+            ->select('tagihan.*')
+            ->get();
+        }  
+
+        $new_data = [];
+        if (!empty($tagihan)) {
+            foreach ($tagihan as $index => $row) {
+                $mahasiswa = Mahasiswa::where('nim',$row->nim)->first();
+                $nestedData = [];
+                $nestedData['id'] = $row->id;
+                $nestedData['gelombang'] = $row->gelombang ?? "";
+                $nestedData['nim'] = $row->nim ?? "";
+                $nestedData['nama'] = $mahasiswa->nama ?? "";
+                $nestedData['total_bayar'] =  number_format($row->total_bayar ?? 0,0,",",".");
+                $new_data[] = $nestedData;
+            }
+        }
+
+        $data = [
+            'tagihan' => $new_data,
+            'no' => 1,
+            'id' => $id,
+            'nama_prodi' => $nama_prodi,
+            'logo' => public_path('/assets/images/logo/logo-icon.png')
+        ];
+        $filename = 'rekap-total-tagihan-' . $id . '.pdf';
+        $pdf = PDF::loadView('admin.keuangan.tagihan_total.cetak_tagihan_total', $data);
+        return $pdf->download($filename);
     }
 }
