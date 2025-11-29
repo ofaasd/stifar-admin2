@@ -360,9 +360,9 @@ class TagihanController extends Controller
                         }
                     }
                     $tagihan_total_bayar = $tagihan_total->pembayaran ?? 0;
-                    $status = ($tagihan_total_bayar >= $tagihan_total->total_bayar) ? 1 : 0;
+                    $status = ($tagihan_total_bayar >= $new_total_tagihan) ? 1 : 0;
                     // $nestedData['total'] = $list_tagihan[$row->id]->total ?? 0;
-                    $nestedData['total'] = $tagihan_total->total_bayar ?? 0;
+                    $nestedData['total'] = $new_total_tagihan ?? 0;
                     // $nestedData['total_bayar'] = $list_tagihan[$row->id]->total_bayar ?? 0;
                     $nestedData['total_bayar'] = $tagihan_total_bayar ?? 0;
                     $nestedData['status'] = $status ?? 0;

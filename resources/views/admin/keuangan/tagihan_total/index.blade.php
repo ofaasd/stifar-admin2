@@ -43,7 +43,7 @@
                         @if(empty($link))
                         <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal" id="add-record">+ Add Tagihan Total</button>
                         <button class="btn btn-info" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#importModal" id="import-record">+ Import Tagihan Total</button>
-                        
+                        <a href="{{url('admin/keuangan/cetak_tagihan_total/'.$id)}}" class="btn btn-success" target="_blank">Download Tagihan Total</a>
                         @endif
                         <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
                             <div class="modal-dialog" role="document">

@@ -280,7 +280,7 @@ class MahasiswaController extends Controller
         $noTranskrip = $request->no_transkrip ?? null;
 
         $mhs = Mahasiswa::where('no_transkrip', $noTranskrip)
-                ->where('no_tranksrip', '!=', '')
+                ->where('no_transkrip', '!=', '')
                 ->where('id', '!=', $id)
                 ->first();
 
