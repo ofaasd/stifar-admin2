@@ -145,7 +145,8 @@
                 <tr>
                     <td class="col-no">{{ $i }}</td>
                     <td>{{ $sidang->{'namaPenguji' . $i} ?? '-' }}</td>
-                    <td colspan="2"></td>
+                    <td></td>
+                    <td></td>
                 </tr>
             @endfor
         </tbody>
