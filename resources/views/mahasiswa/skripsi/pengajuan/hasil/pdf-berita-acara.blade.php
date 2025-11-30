@@ -222,7 +222,7 @@
 
     <div class="signature-section">
         <div class="date-line">
-            Semarang, {{ $formattedHariIni }}
+            Semarang, {{ $formattedSidang }}
         </div>
 
         @php

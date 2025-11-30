@@ -322,10 +322,29 @@
                                                                 </button>
                                                             </form>
 
+                                                            {{-- sempro & hasil --}}
                                                             <form action="{{ route('mhs.skripsi.daftar.print-berita-acara') }}" method="POST" class="d-inline" target="_blank">
                                                                 @csrf
                                                                 <input type="hidden" name="id" value="{{ $row->id }}">
                                                                 <button type="submit" class="btn btn-sm btn-outline-success" title="Berita Acara Seminar">
+                                                                    <i class="bi bi-download"></i>
+                                                                </button>
+                                                            </form>
+
+                                                            {{-- sempro & hasil --}}
+                                                            <form action="{{ route('mhs.skripsi.daftar.print-lembar-penilaian-penguji') }}" method="POST" class="d-inline" target="_blank">
+                                                                @csrf
+                                                                <input type="hidden" name="id" value="{{ $row->id }}">
+                                                                <button type="submit" class="btn btn-sm btn-outline-success" title="Lembar Penilaian Penguji">
+                                                                    <i class="bi bi-download"></i>
+                                                                </button>
+                                                            </form>
+
+                                                            {{-- sempro & hasil --}}
+                                                            <form action="{{ route('mhs.skripsi.daftar.print-lembar-rekap-nilai') }}" method="POST" class="d-inline" target="_blank">
+                                                                @csrf
+                                                                <input type="hidden" name="id" value="{{ $row->id }}">
+                                                                <button type="submit" class="btn btn-sm btn-outline-success" title="Lembar Rekap Nilai">
                                                                     <i class="bi bi-download"></i>
                                                                 </button>
                                                             </form>
