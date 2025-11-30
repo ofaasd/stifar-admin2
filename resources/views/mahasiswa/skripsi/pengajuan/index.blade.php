@@ -307,7 +307,7 @@
                                                             <form action="{{ route('mhs.skripsi.daftar.print-sidang') }}" method="POST" class="d-inline" target="_blank">
                                                                 @csrf
                                                                 <input type="hidden" name="id" value="{{ $row->id }}">
-                                                                <button type="submit" class="btn btn-sm btn-outline-success" title="Download Surat Pengantar Sidang">
+                                                                <button type="submit" class="btn btn-sm btn-outline-success" title="Surat Pengantar Sidang">
                                                                     <i class="bi bi-download"></i>
                                                                 </button>
                                                             </form>
@@ -317,7 +317,15 @@
                                                             <form action="{{ route('mhs.skripsi.daftar.print-persetujuan-proposal') }}" method="POST" class="d-inline" target="_blank">
                                                                 @csrf
                                                                 <input type="hidden" name="id" value="{{ $row->id }}">
-                                                                <button type="submit" class="btn btn-sm btn-outline-success" title="Download Surat Persetujuan Seminar">
+                                                                <button type="submit" class="btn btn-sm btn-outline-success" title="Surat Persetujuan Seminar">
+                                                                    <i class="bi bi-download"></i>
+                                                                </button>
+                                                            </form>
+
+                                                            <form action="{{ route('mhs.skripsi.daftar.print-berita-acara') }}" method="POST" class="d-inline" target="_blank">
+                                                                @csrf
+                                                                <input type="hidden" name="id" value="{{ $row->id }}">
+                                                                <button type="submit" class="btn btn-sm btn-outline-success" title="Berita Acara Seminar">
                                                                     <i class="bi bi-download"></i>
                                                                 </button>
                                                             </form>

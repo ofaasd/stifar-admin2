@@ -749,6 +749,8 @@ Route::group(['middleware' => ['auth', 'role:mhs|super-admin|admin-prodi']], fun
         Route::post('/print-sidang', 'printSidang')->name('print-sidang');
         Route::post('/print-persetujuan-proposal', 'printPersetujuanProposal')->name('print-persetujuan-proposal');
         Route::put('/input-waktu-sidang/{id?}', 'inputWaktuSidang')->name('input-waktu-sidang');
+        
+        Route::post('/print-berita-acara', 'printBeritaAcara')->name('print-berita-acara');
     });
     Route::group(['prefix' => 'mahasiswa/skripsi/berkas', 'as' => 'mhs.skripsi.berkas.', 'controller' => BerkasController::class], function () {
         Route::get('/', 'index')->name('index');
