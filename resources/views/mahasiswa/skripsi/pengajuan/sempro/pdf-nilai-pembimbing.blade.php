@@ -200,7 +200,7 @@
 
         <div class="signature-section clearfix">
             <div class="sig-container">
-                <div style="margin-bottom: 5px;">Semarang, {{ $formattedSidang }}</div>
+                <div style="margin-bottom: 5px; padding-right: 24px;">Semarang, {{ $formattedSidang }}</div>
                 <div>Pembimbing I</div>
                 <div class="sig-space"></div>
                 <div class="sig-name">{{ $sidang->namaPembimbing1 }}</div>
@@ -255,54 +255,54 @@
                     <td rowspan="2" class="col-kategori">Penulisan:</td>
                     <td>Konsistensi penulisan dan kesesuaian dengan aturan</td>
                     <td class="col-rentang">10 - 15</td>
-                    <td>....</td>
+                    <td style="text-align: center">....</td>
                 </tr>
                 <tr>
                     <td>Penelusuran pustaka</td>
                     <td class="col-rentang">10 - 15</td>
-                    <td>....</td>
+                    <td style="text-align: center">....</td>
                 </tr>
 
                 <tr>
                     <td rowspan="2" class="col-kategori">Sikap:</td>
                     <td>Kontribusi dan keterlibatan ide</td>
                     <td class="col-rentang">10 - 15</td>
-                    <td>....</td>
+                    <td style="text-align: center">....</td>
                 </tr>
                 <tr>
                     <td>Kontinuitas dan ketekunan</td>
                     <td class="col-rentang">10 - 15</td>
-                    <td>....</td>
+                    <td style="text-align: center">....</td>
                 </tr>
 
                 <tr>
                     <td rowspan="2" class="col-kategori">Kedalaman Materi:</td>
                     <td>Penguasaan materi</td>
                     <td class="col-rentang">15 - 20</td>
-                    <td>....</td>
+                    <td style="text-align: center">....</td>
                 </tr>
                 <tr>
                     <td>Kemampuan menemukan relevansi antara latar belakang, rumusan masalah, dan metodologi penelitian</td>
                     <td class="col-rentang">15 - 20</td>
-                    <td>....</td>
+                    <td style="text-align: center">....</td>
                 </tr>
             </tbody>
             <tfoot>
                 <tr>
                     <td colspan="2" style="text-align: right; padding-right: 15px; font-weight: bold;">Jumlah</td>
                     <td style="text-align: center;">(70 - 100)</td>
-                    <td>....</td>
+                    <td style="text-align: center">....</td>
                 </tr>
                 <tr>
                     <td colspan="3" style="text-align: right; padding-right: 15px; font-weight: bold;">Nilai Akhir proses penyusunan proposal <span style="font-weight:normal;">(30%)</span></td>
-                    <td>....</td>
+                    <td style="text-align: center">....</td>
                 </tr>
             </tfoot>
         </table>
 
         <div class="signature-section clearfix">
             <div class="sig-container">
-                <div style="margin-bottom: 5px;">Semarang, {{ $formattedSidang }}</div>
+                <div style="margin-bottom: 5px; padding-right: 24px;">Semarang, {{ $formattedSidang }}</div>
                 <div>Pembimbing II</div>
                 <div class="sig-space"></div>
                 <div class="sig-name">{{ $sidang->namaPembimbing2 }}</div>

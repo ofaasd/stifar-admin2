@@ -4,12 +4,7 @@
     <meta charset="UTF-8">
     <title>Formulir Persetujuan Sidang Hasil</title>
     <style>
-        /* --- KONFIGURASI HALAMAN A4 --- */
-        @page {
-            size: A4;
-            margin: 2cm 2.5cm; /* Margin standar */
-        }
-
+        
         body {
             font-family: "Times New Roman", Times, serif;
             font-size: 11pt;
@@ -34,13 +29,6 @@
             width: 80px;
             height: auto;
         }
-        .text-cell {
-            width: 88%;
-            text-align: center;
-        }
-        .text-cell h1 { font-size: 14pt; margin: 0; font-weight: bold; }
-        .text-cell h2 { font-size: 12pt; margin: 2px 0; font-weight: bold; }
-        .text-cell p { font-size: 9pt; margin: 1px 0; }
 
         /* --- JUDUL --- */
         .doc-title {
@@ -48,14 +36,12 @@
             font-weight: bold;
             font-size: 13pt;
             margin: 20px 0 30px 0;
-            text-decoration: underline;
             text-transform: uppercase;
         }
 
         /* --- FORMULIR ISIAN --- */
         .info-table {
             width: 100%;
-            border-collapse: collapse;
             margin-bottom: 20px;
         }
         .info-table td {
@@ -80,6 +66,7 @@
         .date-line {
             text-align: right;
             margin-bottom: 10px;
+            padding-right: 24px;
         }
         .sig-table {
             width: 100%;
@@ -92,10 +79,6 @@
             padding-bottom: 60px; /* Ruang tanda tangan */
         }
         .sig-role { margin-bottom: 5px; }
-        .sig-name {
-            font-weight: bold;
-            text-decoration: underline;
-        }
         
         /* Helper Clearfix */
         .clearfix::after {
@@ -107,20 +90,9 @@
 </head>
 <body>
 
-    <table class="header-table">
-        <tr>
-            <td class="logo-cell">
-                <img src="{{ public_path('assets/images/logo-stifar.png') }}" class="logo-img" alt="Logo">
-            </td>
-            <td class="text-cell">
-                <h1>SEKOLAH TINGGI ILMU FARMASI YAYASAN PHARMASI SEMARANG</h1>
-                <h2>PROGRAM STUDI STRATA 1 (S-1) FARMASI</h2>
-                <p>Jalan Letnan Jendral Sarwo Edie Wibowo Km. 1 Plamongansari - Pucanggading - Semarang - 50193</p>
-                <p>Telepon : 024 - 6706147 ; 6725272 ; Faksimile : 024 - 6706148</p>
-                <p>Email : stifar_yaphar@yahoo.com | Website : www.stifar.ac.id</p>
-            </td>
-        </tr>
-    </table>
+    <div class="header">
+        <img src="{{ public_path('assets/images/skripsi/header-pdf.png') }}" alt="header pdf" style="width: 100%; height: auto;"/>
+    </div>
 
     <div class="doc-title">FORMULIR PERSETUJUAN SIDANG HASIL</div>
 
@@ -128,27 +100,27 @@
         <tr>
             <td class="label-col">Nama</td>
             <td class="sep-col">:</td>
-            <td class="val-col">...........................................................................................</td>
+            <td class="val-col">{{ $sidang->nama }}</td>
         </tr>
         <tr>
             <td>NIM</td>
             <td>:</td>
-            <td>...........................................................................................</td>
+            <td>{{ $sidang->nim }}</td>
         </tr>
         <tr>
             <td>Judul</td>
             <td>:</td>
-            <td>...........................................................................................<br><br>...........................................................................................<br><br>...........................................................................................</td>
+            <td>{{ $sidang->judul }}</td>
         </tr>
     </table>
 
     <div class="statement-text">
-        Hasil dengan judul diatas telah disetujui untuk diujikan pada sidang hasil.
+        Hasil dengan judul diatas <span style="font-weight:bold; text-decoration:underline">telah disetujui</span> untuk diujikan pada sidang hasil.
     </div>
 
     <div class="signature-section">
         <div class="date-line">
-            Semarang, ............................................
+            Semarang, {{ $formattedSidang }}
         </div>
 
         <table class="sig-table">
@@ -164,12 +136,12 @@
                 </tr>
             <tr>
                 <td>
-                    <div class="sig-name">( ............................................ )</div>
-                    <div>NIY. .....................................</div>
+                    <div class="sig-name">{{ $sidang->namaPembimbing1 }}</div>
+                    <div>NIY. {{ $sidang->pembimbing_1 }}</div>
                 </td>
                 <td>
-                    <div class="sig-name">( ............................................ )</div>
-                    <div>NIY. .....................................</div>
+                    <div class="sig-name">{{ $sidang->namaPembimbing2 }}</div>
+                    <div>NIY. {{ $sidang->pembimbing_2 }}</div>
                 </td>
             </tr>
         </table>

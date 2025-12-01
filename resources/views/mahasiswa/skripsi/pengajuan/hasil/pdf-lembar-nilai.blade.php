@@ -222,7 +222,7 @@
 
             <div class="signature-section clearfix">
                 <div class="sig-container">
-                    <div style="margin-bottom: 5px;">Semarang, {{ $formattedSidang }}</div>
+                    <div style="margin-bottom: 5px; padding-right: 24px;">Semarang, {{ $formattedSidang }}</div>
                     <div>Penguji,</div>
                     <div class="sig-space"></div>
                     <div class="sig-name">{{ $sidang->{'namaPenguji' . $i} ?? '-' }}</div>

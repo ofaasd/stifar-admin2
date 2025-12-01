@@ -245,8 +245,8 @@
                         </div>
                         <div class="card-body">
                             @if (isset($sidang) && count($sidang) > 0)
-                                <div class="table-responsive">
-                                    <table class="table table-hover" id="jadwal-sidang-table">
+                                <div>
+                                    <table class="table" id="jadwal-sidang-table">
                                         <thead>
                                             <tr>
                                                 <th>No</th>
@@ -304,61 +304,100 @@
                                                     </td>
                                                     <td class="d-flex gap-2 align-items-center">
                                                         @if ($row->status == 1 || $row->status == 2)
-                                                            <form action="{{ route('mhs.skripsi.daftar.print-sidang') }}" method="POST" class="d-inline" target="_blank">
-                                                                @csrf
-                                                                <input type="hidden" name="id" value="{{ $row->id }}">
-                                                                <button type="submit" class="btn btn-sm btn-outline-success" title="Surat Pengantar Sidang">
-                                                                    <i class="bi bi-download"></i>
+                                                            <div class="btn-group">
+                                                                <button type="button" class="btn btn-sm btn-outline-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" title="Cetak Dokumen">
+                                                                    <i class="bi bi-printer-fill me-1"></i> Cetak
                                                                 </button>
-                                                            </form>
-                                                        @endif
+                                                                <ul class="dropdown-menu dropdown-menu-end p-1" style="z-index: 9999;">
+                                                                    <li>
+                                                                        <form action="{{ route('mhs.skripsi.daftar.print-sidang') }}" method="POST" target="_blank" class="m-0">
+                                                                            @csrf
+                                                                            <input type="hidden" name="id" value="{{ $row->id }}">
+                                                                            <button type="submit" class="dropdown-item d-flex align-items-center">
+                                                                                <i class="bi bi-download me-2"></i> Surat Pengantar Sidang
+                                                                            </button>
+                                                                        </form>
+                                                                    </li>
+                                                                    <li>
+                                                                        <form action="{{ route('mhs.skripsi.daftar.print-persetujuan-proposal') }}" method="POST" target="_blank" class="m-0">
+                                                                            @csrf
+                                                                            <input type="hidden" name="id" value="{{ $row->id }}">
+                                                                            <button type="submit" class="dropdown-item d-flex align-items-center">
+                                                                                <i class="bi bi-download me-2"></i> Surat Persetujuan Seminar
+                                                                            </button>
+                                                                        </form>
+                                                                    </li>
+                                                                    <li>
+                                                                        <form action="{{ route('mhs.skripsi.daftar.print-berita-acara') }}" method="POST" target="_blank" class="m-0">
+                                                                            @csrf
+                                                                            <input type="hidden" name="id" value="{{ $row->id }}">
+                                                                            <button type="submit" class="dropdown-item d-flex align-items-center">
+                                                                                <i class="bi bi-download me-2"></i> Berita Acara Seminar
+                                                                            </button>
+                                                                        </form>
+                                                                    </li>
+                                                                    <li>
+                                                                        <form action="{{ route('mhs.skripsi.daftar.print-lembar-penilaian-penguji') }}" method="POST" target="_blank" class="m-0">
+                                                                            @csrf
+                                                                            <input type="hidden" name="id" value="{{ $row->id }}">
+                                                                            <button type="submit" class="dropdown-item d-flex align-items-center">
+                                                                                <i class="bi bi-download me-2"></i> Lembar Penilaian Penguji
+                                                                            </button>
+                                                                        </form>
+                                                                    </li>
+                                                                    <li>
+                                                                        <form action="{{ route('mhs.skripsi.daftar.print-lembar-rekap-nilai') }}" method="POST" target="_blank" class="m-0">
+                                                                            @csrf
+                                                                            <input type="hidden" name="id" value="{{ $row->id }}">
+                                                                            <button type="submit" class="dropdown-item d-flex align-items-center">
+                                                                                <i class="bi bi-download me-2"></i> Lembar Rekap Nilai
+                                                                            </button>
+                                                                        </form>
+                                                                    </li>
 
-                                                        @if ($row->status == 1 || $row->status == 2)
-                                                            <form action="{{ route('mhs.skripsi.daftar.print-persetujuan-proposal') }}" method="POST" class="d-inline" target="_blank">
-                                                                @csrf
-                                                                <input type="hidden" name="id" value="{{ $row->id }}">
-                                                                <button type="submit" class="btn btn-sm btn-outline-success" title="Surat Persetujuan Seminar">
-                                                                    <i class="bi bi-download"></i>
-                                                                </button>
-                                                            </form>
+                                                                    @if ($row->jenis == 1)
+                                                                        <li>
+                                                                            <form action="{{ route('mhs.skripsi.daftar.print-penilaian-pembimbing') }}" method="POST" target="_blank" class="m-0">
+                                                                                @csrf
+                                                                                <input type="hidden" name="id" value="{{ $row->id }}">
+                                                                                <button type="submit" class="dropdown-item d-flex align-items-center">
+                                                                                    <i class="bi bi-download me-2"></i> Lembar Penilaian Pembimbing
+                                                                                </button>
+                                                                            </form>
+                                                                        </li>
+                                                                    @endif
 
-                                                            {{-- sempro & hasil --}}
-                                                            <form action="{{ route('mhs.skripsi.daftar.print-berita-acara') }}" method="POST" class="d-inline" target="_blank">
-                                                                @csrf
-                                                                <input type="hidden" name="id" value="{{ $row->id }}">
-                                                                <button type="submit" class="btn btn-sm btn-outline-success" title="Berita Acara Seminar">
-                                                                    <i class="bi bi-download"></i>
-                                                                </button>
-                                                            </form>
-
-                                                            {{-- sempro & hasil --}}
-                                                            <form action="{{ route('mhs.skripsi.daftar.print-lembar-penilaian-penguji') }}" method="POST" class="d-inline" target="_blank">
-                                                                @csrf
-                                                                <input type="hidden" name="id" value="{{ $row->id }}">
-                                                                <button type="submit" class="btn btn-sm btn-outline-success" title="Lembar Penilaian Penguji">
-                                                                    <i class="bi bi-download"></i>
-                                                                </button>
-                                                            </form>
-
-                                                            {{-- sempro & hasil --}}
-                                                            <form action="{{ route('mhs.skripsi.daftar.print-lembar-rekap-nilai') }}" method="POST" class="d-inline" target="_blank">
-                                                                @csrf
-                                                                <input type="hidden" name="id" value="{{ $row->id }}">
-                                                                <button type="submit" class="btn btn-sm btn-outline-success" title="Lembar Rekap Nilai">
-                                                                    <i class="bi bi-download"></i>
-                                                                </button>
-                                                            </form>
-
-                                                            {{-- sempro --}}
-                                                            @if ($row->jenis == 1)
-                                                                <form action="{{ route('mhs.skripsi.daftar.print-penilaian-pembimbing') }}" method="POST" class="d-inline" target="_blank">
-                                                                    @csrf
-                                                                    <input type="hidden" name="id" value="{{ $row->id }}">
-                                                                    <button type="submit" class="btn btn-sm btn-outline-success" title="Lembar Penilaian Pembimbing">
-                                                                        <i class="bi bi-download"></i>
-                                                                    </button>
-                                                                </form>
-                                                            @endif
+                                                                    @if ($row->jenis == 2)
+                                                                        <li>
+                                                                            <form action="{{ route('mhs.skripsi.daftar.print-formulir-pendaftaran-hasil') }}" method="POST" target="_blank" class="m-0">
+                                                                                @csrf
+                                                                                <input type="hidden" name="id" value="{{ $row->id }}">
+                                                                                <button type="submit" class="dropdown-item d-flex align-items-center">
+                                                                                    <i class="bi bi-download me-2"></i> Formulir Pendaftaran Sidang Hasil
+                                                                                </button>
+                                                                            </form>
+                                                                        </li>
+                                                                        <li>
+                                                                            <form action="{{ route('mhs.skripsi.daftar.print-formulir-persetujuan-hasil') }}" method="POST" target="_blank" class="m-0">
+                                                                                @csrf
+                                                                                <input type="hidden" name="id" value="{{ $row->id }}">
+                                                                                <button type="submit" class="dropdown-item d-flex align-items-center">
+                                                                                    <i class="bi bi-download me-2"></i> Formulir Persetujuan Sidang Hasil
+                                                                                </button>
+                                                                            </form>
+                                                                        </li>
+                                                                        <li>
+                                                                            <form action="{{ route('mhs.skripsi.daftar.print-tanda-terima-naskah') }}" method="POST" target="_blank" class="m-0">
+                                                                                @csrf
+                                                                                <input type="hidden" name="id" value="{{ $row->id }}">
+                                                                                <button type="submit" class="dropdown-item d-flex align-items-center">
+                                                                                    <i class="bi bi-download me-2"></i> Tanda Terima Naskah
+                                                                                </button>
+                                                                            </form>
+                                                                        </li>
+                                                                    @endif
+                                                                </ul>
+                                                            </div>
                                                         @endif
 
                                                         {{-- Tombol Edit: buka modal pengeditan untuk baris ini --}}

@@ -4,12 +4,7 @@
     <meta charset="UTF-8">
     <title>Formulir Pendaftaran Sidang Hasil</title>
     <style>
-        /* --- KONFIGURASI HALAMAN A4 --- */
-        @page {
-            size: A4;
-            margin: 2cm 2.5cm; /* Margin standar */
-        }
-
+        
         body {
             font-family: "Times New Roman", Times, serif;
             font-size: 11pt;
@@ -49,14 +44,12 @@
             font-weight: bold;
             font-size: 13pt;
             margin: 20px 0 30px 0;
-            text-decoration: underline;
             text-transform: uppercase;
         }
 
         /* --- FORMULIR ISIAN --- */
         .info-table {
             width: 100%;
-            border-collapse: collapse;
             margin-bottom: 20px;
         }
         .info-table td {
@@ -81,10 +74,6 @@
         .sig-space {
             height: 70px;
         }
-        .sig-name {
-            font-weight: bold;
-            text-decoration: underline;
-        }
         
         /* Helper Clearfix */
         .clearfix::after {
@@ -96,20 +85,9 @@
 </head>
 <body>
 
-    <table class="header-table">
-        <tr>
-            <td class="logo-cell">
-                <img src="{{ public_path('assets/images/logo-stifar.png') }}" class="logo-img" alt="Logo">
-            </td>
-            <td class="text-cell">
-                <h1>SEKOLAH TINGGI ILMU FARMASI YAYASAN PHARMASI SEMARANG</h1>
-                <h2>PROGRAM STUDI STRATA 1 (S-1) FARMASI</h2>
-                <p>Jalan Letnan Jendral Sarwo Edie Wibowo Km. 1 Plamongansari - Pucanggading - Semarang - 50193</p>
-                <p>Telepon : 024 - 6706147 ; 6725272 ; Faksimile : 024 - 6706148</p>
-                <p>Email : stifar_yaphar@yahoo.com | Website : www.stifar.ac.id</p>
-            </td>
-        </tr>
-    </table>
+    <div class="header">
+        <img src="{{ public_path('assets/images/skripsi/header-pdf.png') }}" alt="header pdf" style="width: 100%; height: auto;"/>
+    </div>
 
     <div class="doc-title">FORMULIR PENDAFTARAN SIDANG HASIL</div>
 
@@ -117,37 +95,37 @@
         <tr>
             <td class="label-col">Nama</td>
             <td class="sep-col">:</td>
-            <td class="val-col">...........................................................................................</td>
+            <td class="val-col">{{ $sidang->nama }}</td>
         </tr>
         <tr>
             <td>NIM</td>
             <td>:</td>
-            <td>...........................................................................................</td>
+            <td>{{ $sidang->nim }}</td>
         </tr>
         <tr>
             <td>Judul Skripsi</td>
             <td>:</td>
-            <td>...........................................................................................<br><br>...........................................................................................<br><br>...........................................................................................</td>
+            <td>{{ $sidang->judul }}</td>
         </tr>
         <tr>
             <td>Dosen Pembimbing 1</td>
             <td>:</td>
-            <td>...........................................................................................</td>
+            <td>{{ $sidang->namaPembimbing1 }}</td>
         </tr>
         <tr>
             <td>Dosen Pembimbing 2</td>
             <td>:</td>
-            <td>...........................................................................................</td>
+            <td>{{ $sidang->namaPembimbing2 }}</td>
         </tr>
     </table>
 
     <div class="signature-section clearfix">
         <div class="sig-container">
-            <div style="margin-bottom: 5px;">Semarang, ...................................</div>
+            <div style="margin-bottom: 5px; padding-right: 24px;">Semarang, {{ $formattedSidang }}</div>
             <div style="margin-bottom: 5px;">Mahasiswa,</div>
             <div class="sig-space"></div>
-            <div class="sig-name">( ............................................ )</div>
-            <div>NIM. .....................................</div>
+            <div class="sig-name">{{ $sidang->nama }}</div>
+            <div>NIM: {{ $sidang->nim }}</div>
         </div>
     </div>
 

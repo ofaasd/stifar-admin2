@@ -754,6 +754,9 @@ Route::group(['middleware' => ['auth', 'role:mhs|super-admin|admin-prodi']], fun
         Route::post('/print-lembar-penilaian-penguji', 'printLembarNilaiPenguji')->name('print-lembar-penilaian-penguji');
         Route::post('/print-lembar-rekap-nilai', 'printLembarRekapNilai')->name('print-lembar-rekap-nilai');
         Route::post('/print-penilaian-pembimbing', 'printPenilaianPembimbing')->name('print-penilaian-pembimbing');
+        Route::post('/print-formulir-pendaftaran-hasil', 'printPendaftaranSidangHasil')->name('print-formulir-pendaftaran-hasil');
+        Route::post('/print-formulir-persetujuan-hasil', 'printPersetujuanSidangHasil')->name('print-formulir-persetujuan-hasil');
+        Route::post('/print-tanda-terima-naskah', 'printTandaTerimaNaskah')->name('print-tanda-terima-naskah');
     });
     Route::group(['prefix' => 'mahasiswa/skripsi/berkas', 'as' => 'mhs.skripsi.berkas.', 'controller' => BerkasController::class], function () {
         Route::get('/', 'index')->name('index');

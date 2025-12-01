@@ -171,7 +171,7 @@
                 <td colspan="2" style="vertical-align: top;">
                     <div class="signature-section clearfix">
                         <div class="sig-container" style="width:60%;">
-                            <div style="margin-bottom: 5px;">Semarang, {{ $formattedSidang }}</div>
+                            <div style="margin-bottom: 5px; padding-right: 24px;">Semarang, {{ $formattedSidang }}</div>
                             <div>Ketua Sidang,</div>
                             <img src="{{ public_path('assets/images/blank-image.png') }}" alt="header pdf" style="width: 100%; height: 20%;"/>
                             <div class="sig-name">{{ $sidang->namaPenguji1 }}</div>

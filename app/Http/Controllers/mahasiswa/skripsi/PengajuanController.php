@@ -761,4 +761,196 @@ class PengajuanController extends Controller
             return response()->json(['status' => false, 'message' => $e->getMessage()], 500);
         }
     }
+
+    public function printPendaftaranSidangHasil(Request $request)
+    {
+        try {
+            $idSidang = $request->id;
+
+            $sidang = SidangSkripsi::select([
+                'sidang.id',
+                'sidang.tanggal',
+                'sidang.waktu_mulai AS waktuMulai',
+                'sidang.waktu_selesai AS waktuSelesai',
+                'sidang.penguji',
+                'sidang.jenis',
+                'master_ruang.nama_ruang AS ruangan',
+                'sidang.status',
+                'gelombang_sidang_skripsi.nama AS namaGelombang',
+                'gelombang_sidang_skripsi.periode',
+                'pembimbing1.nama_lengkap AS namaPembimbing1',
+                'pembimbing2.nama_lengkap AS namaPembimbing2',
+                'pengajuan_judul_skripsi.judul',
+                'master_skripsi.pembimbing_1',
+                'master_skripsi.pembimbing_2',
+                'mahasiswa.nama',
+                'mahasiswa.nim'
+            ])
+            ->leftJoin('master_skripsi', 'sidang.skripsi_id', '=', 'master_skripsi.id')
+            ->leftJoin('gelombang_sidang_skripsi', 'sidang.gelombang_id', '=', 'gelombang_sidang_skripsi.id')
+            ->leftJoin('master_ruang', 'sidang.ruang_id', '=', 'master_ruang.id')
+            ->leftJoin('pegawai_biodata AS pembimbing1', 'master_skripsi.pembimbing_1', '=', 'pembimbing1.npp')
+            ->leftJoin('pegawai_biodata AS pembimbing2', 'master_skripsi.pembimbing_2', '=', 'pembimbing2.npp')
+            ->leftJoin('pengajuan_judul_skripsi', 'master_skripsi.id', '=', 'pengajuan_judul_skripsi.id_master')
+            ->leftJoin('mahasiswa', 'master_skripsi.nim', '=', 'mahasiswa.nim')
+            ->where('sidang.id', $idSidang)
+            ->first();
+
+            if($sidang)
+            {
+                $npps = explode(',', $sidang->penguji);
+                $names = PegawaiBiodatum::whereIn('npp', $npps)->pluck('nama_lengkap')->toArray();
+                foreach ($names as $i => $nama) {
+                    $sidang->{'namaPenguji' . ($i + 1)} = $nama;
+                }
+
+                $sidang->jmlPenguji = count($npps);
+            }
+            
+            $logo = asset('assets/images/logo/upload/logo_besar.png');
+
+            $teks = $sidang->jenis == 1 ? 'sempro' : 'hasil';
+            $formattedSidang = Carbon::parse($sidang->tanggal)->translatedFormat('d F Y');
+
+            // Generate PDF dengan mPDF
+            $mpdf = new \Mpdf\Mpdf();
+            $html = '';
+            $html = view('mahasiswa.skripsi.pengajuan.hasil.pdf-pendaftaran', compact('sidang', 'logo', 'formattedSidang'))->render();
+            $mpdf->WriteHTML($html);
+
+            $filename = $sidang->nim . '_pendaftaran_sidang_hasil_'.  $teks . '.pdf';
+            return response($mpdf->Output($filename, 'S'))->header('Content-Type', 'application/pdf');
+
+        }catch (\Exception $e) {
+            return response()->json(['status' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function printPersetujuanSidangHasil(Request $request)
+    {
+        try {
+            $idSidang = $request->id;
+
+            $sidang = SidangSkripsi::select([
+                'sidang.id',
+                'sidang.tanggal',
+                'sidang.waktu_mulai AS waktuMulai',
+                'sidang.waktu_selesai AS waktuSelesai',
+                'sidang.penguji',
+                'sidang.jenis',
+                'master_ruang.nama_ruang AS ruangan',
+                'sidang.status',
+                'gelombang_sidang_skripsi.nama AS namaGelombang',
+                'gelombang_sidang_skripsi.periode',
+                'pembimbing1.nama_lengkap AS namaPembimbing1',
+                'pembimbing2.nama_lengkap AS namaPembimbing2',
+                'pengajuan_judul_skripsi.judul',
+                'master_skripsi.pembimbing_1',
+                'master_skripsi.pembimbing_2',
+                'mahasiswa.nama',
+                'mahasiswa.nim'
+            ])
+            ->leftJoin('master_skripsi', 'sidang.skripsi_id', '=', 'master_skripsi.id')
+            ->leftJoin('gelombang_sidang_skripsi', 'sidang.gelombang_id', '=', 'gelombang_sidang_skripsi.id')
+            ->leftJoin('master_ruang', 'sidang.ruang_id', '=', 'master_ruang.id')
+            ->leftJoin('pegawai_biodata AS pembimbing1', 'master_skripsi.pembimbing_1', '=', 'pembimbing1.npp')
+            ->leftJoin('pegawai_biodata AS pembimbing2', 'master_skripsi.pembimbing_2', '=', 'pembimbing2.npp')
+            ->leftJoin('pengajuan_judul_skripsi', 'master_skripsi.id', '=', 'pengajuan_judul_skripsi.id_master')
+            ->leftJoin('mahasiswa', 'master_skripsi.nim', '=', 'mahasiswa.nim')
+            ->where('sidang.id', $idSidang)
+            ->first();
+
+            if($sidang)
+            {
+                $npps = explode(',', $sidang->penguji);
+                $names = PegawaiBiodatum::whereIn('npp', $npps)->pluck('nama_lengkap')->toArray();
+                foreach ($names as $i => $nama) {
+                    $sidang->{'namaPenguji' . ($i + 1)} = $nama;
+                }
+
+                $sidang->jmlPenguji = count($npps);
+            }
+            
+            $logo = asset('assets/images/logo/upload/logo_besar.png');
+
+            $teks = $sidang->jenis == 1 ? 'sempro' : 'hasil';
+            $formattedSidang = Carbon::parse($sidang->tanggal)->translatedFormat('d F Y');
+
+            // Generate PDF dengan mPDF
+            $mpdf = new \Mpdf\Mpdf();
+            $html = '';
+            $html = view('mahasiswa.skripsi.pengajuan.hasil.pdf-persetujuan', compact('sidang', 'logo', 'formattedSidang'))->render();
+            $mpdf->WriteHTML($html);
+
+            $filename = $sidang->nim . '_persetujuan_sidang_hasil_'.  $teks . '.pdf';
+            return response($mpdf->Output($filename, 'S'))->header('Content-Type', 'application/pdf');
+
+        }catch (\Exception $e) {
+            return response()->json(['status' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function printTandaTerimaNaskah(Request $request)
+    {
+        try {
+            $idSidang = $request->id;
+
+            $sidang = SidangSkripsi::select([
+                'sidang.id',
+                'sidang.tanggal',
+                'sidang.waktu_mulai AS waktuMulai',
+                'sidang.waktu_selesai AS waktuSelesai',
+                'sidang.penguji',
+                'sidang.jenis',
+                'master_ruang.nama_ruang AS ruangan',
+                'sidang.status',
+                'gelombang_sidang_skripsi.nama AS namaGelombang',
+                'gelombang_sidang_skripsi.periode',
+                'pembimbing1.nama_lengkap AS namaPembimbing1',
+                'pembimbing2.nama_lengkap AS namaPembimbing2',
+                'pengajuan_judul_skripsi.judul',
+                'master_skripsi.pembimbing_1',
+                'master_skripsi.pembimbing_2',
+                'mahasiswa.nama',
+                'mahasiswa.nim'
+            ])
+            ->leftJoin('master_skripsi', 'sidang.skripsi_id', '=', 'master_skripsi.id')
+            ->leftJoin('gelombang_sidang_skripsi', 'sidang.gelombang_id', '=', 'gelombang_sidang_skripsi.id')
+            ->leftJoin('master_ruang', 'sidang.ruang_id', '=', 'master_ruang.id')
+            ->leftJoin('pegawai_biodata AS pembimbing1', 'master_skripsi.pembimbing_1', '=', 'pembimbing1.npp')
+            ->leftJoin('pegawai_biodata AS pembimbing2', 'master_skripsi.pembimbing_2', '=', 'pembimbing2.npp')
+            ->leftJoin('pengajuan_judul_skripsi', 'master_skripsi.id', '=', 'pengajuan_judul_skripsi.id_master')
+            ->leftJoin('mahasiswa', 'master_skripsi.nim', '=', 'mahasiswa.nim')
+            ->where('sidang.id', $idSidang)
+            ->first();
+
+            if($sidang)
+            {
+                $npps = explode(',', $sidang->penguji);
+                $names = PegawaiBiodatum::whereIn('npp', $npps)->pluck('nama_lengkap')->toArray();
+                foreach ($names as $i => $nama) {
+                    $sidang->{'namaPenguji' . ($i + 1)} = $nama;
+                }
+
+                $sidang->jmlPenguji = count($npps);
+            }
+            
+            $logo = asset('assets/images/logo/upload/logo_besar.png');
+
+            $teks = $sidang->jenis == 1 ? 'sempro' : 'hasil';
+            $formattedSidang = Carbon::parse($sidang->tanggal)->translatedFormat('d F Y');
+
+            // Generate PDF dengan mPDF
+            $mpdf = new \Mpdf\Mpdf();
+            $html = '';
+            $html = view('mahasiswa.skripsi.pengajuan.hasil.pdf-terima-naskah', compact('sidang', 'logo', 'formattedSidang'))->render();
+            $mpdf->WriteHTML($html);
+
+            $filename = $sidang->nim . '_tanda_terima_naskah_'.  $teks . '.pdf';
+            return response($mpdf->Output($filename, 'S'))->header('Content-Type', 'application/pdf');
+
+        }catch (\Exception $e) {
+            return response()->json(['status' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
 }
