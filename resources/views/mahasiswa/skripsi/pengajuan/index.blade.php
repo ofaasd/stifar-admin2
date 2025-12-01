@@ -348,6 +348,17 @@
                                                                     <i class="bi bi-download"></i>
                                                                 </button>
                                                             </form>
+
+                                                            {{-- sempro --}}
+                                                            @if ($row->jenis == 1)
+                                                                <form action="{{ route('mhs.skripsi.daftar.print-penilaian-pembimbing') }}" method="POST" class="d-inline" target="_blank">
+                                                                    @csrf
+                                                                    <input type="hidden" name="id" value="{{ $row->id }}">
+                                                                    <button type="submit" class="btn btn-sm btn-outline-success" title="Lembar Penilaian Pembimbing">
+                                                                        <i class="bi bi-download"></i>
+                                                                    </button>
+                                                                </form>
+                                                            @endif
                                                         @endif
 
                                                         {{-- Tombol Edit: buka modal pengeditan untuk baris ini --}}
