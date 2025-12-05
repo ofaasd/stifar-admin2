@@ -77,10 +77,11 @@ class KeuanganController extends Controller
                     ->join('tahun_ajarans', 'tahun_ajarans.id', '=', 'master_keuangan_mhs.id_tahun_ajaran')
                     ->join('program_studi','program_studi.id','=','mahasiswa.id_program_studi')
                     ->where('id_tahun_ajaran',$ta->id)
-                    ->where('mahasiswa.nim', 'LIKE', "%{$search}%")
+                    //->where('mahasiswa.nim', 'LIKE', "%{$search}%")
                     ->where(function($query) use ($search) {
                         $query->where('mahasiswa.nama', 'LIKE', "%{$search}%")
                               ->orWhere('tahun_ajarans.kode_ta', 'LIKE', "%{$search}%")
+                              ->orWhere('mahasiswa.nim', 'LIKE', "%{$search}%")
                               ->orWhere('program_studi.nama_prodi', 'LIKE', "%{$search}%");
                     })
                     ->offset($start)
@@ -93,10 +94,11 @@ class KeuanganController extends Controller
                 ->join('tahun_ajarans', 'tahun_ajarans.id', '=', 'master_keuangan_mhs.id_tahun_ajaran')
                 ->join('program_studi','program_studi.id','=','mahasiswa.id_program_studi')
                 ->where('id_tahun_ajaran',$ta->id)
-                ->where('mahasiswa.nim', 'LIKE', "%{$search}%")
+                
                 ->where(function($query) use ($search) {
                     $query->where('mahasiswa.nama', 'LIKE', "%{$search}%")
                     ->orWhere('tahun_ajarans.kode_ta', 'LIKE', "%{$search}%")
+                    ->orWhere('mahasiswa.nim', 'LIKE', "%{$search}%")
                     ->orWhere('program_studi.nama_prodi', 'LIKE', "%{$search}%");
                 })
                 ->count();
