@@ -125,25 +125,24 @@
             const page = '/'.concat("admin/akademik/yudisium/").concat(title);
             const page2 = '/'.concat("admin/akademik/yudisium/").concat('get-sah-yudisium');
             var my_column = $('#my_column').val();
-            const pecah = my_column.split('\n');
-            let my_data = [];
-            pecah.forEach((item, index) => {
-                let temp = item.replace(/ /g, '');
-                if(temp !== '') {
-                    let data_obj = { data: temp };
-                    my_data.push(data_obj);
-                }
-            });
-
             var my_column_2 = $('#my_column_2').val();
             const pecah2 = my_column_2.split('\n');
+            const pecah = my_column.split('\n');
+            let my_data = [];
             let my_data_2 = [];
+            pecah.forEach((item, index) => {
+                let temp = item.replace(/ /g, '');
+                // if(temp !== '') {
+                    let data_obj = { data: temp };
+                    my_data.push(data_obj);
+                // }
+            });
             pecah2.forEach((item, index) => {
                 let temp = item.replace(/ /g, '');
-                if(temp !== '') {   
-                    let data_obj2 = { data: temp };
-                    my_data_2.push(data_obj2);
-                }
+                // if(temp !== '') {
+                    let data_obj = { data: temp };
+                    my_data_2.push(data_obj);
+                // }
             });
 
             const dt1 = $("#basic-1").DataTable({
@@ -367,64 +366,6 @@
                 });
             });
 
-            //delete record
-            $(document).on('click', '.delete-record', function () {
-                const id = $(this).data('id');
-                // sweetalert for confirmation of delete
-                swal({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                buttons: true,
-                dangerMode: true,
-                showCancelButton: true,
-                confirmButtonText: 'Yes, delete it!',
-                customClass: {
-                    confirmButton: 'btn btn-primary me-3',
-                    cancelButton: 'btn btn-label-secondary'
-                },
-                buttonsStyling: false
-                }).then(function (result) {
-                if (result) {
-
-                    // delete the data
-                    $.ajax({
-                    type: 'DELETE',
-                    url: ''.concat(baseUrl).concat(page, '/').concat(id),
-                    data:{
-                        'id': id,
-                        '_token': '{{ csrf_token() }}',
-                    },
-                    success: function success() {
-                        dt1.draw();
-                        dt2.draw();
-                    },
-                    error: function error(_error) {
-                        // console.log(_error);
-                    }
-                    });
-
-                    // success sweetalert
-                    swal({
-                    icon: 'success',
-                    title: 'Deleted!',
-                    text: 'The Record has been deleted!',
-                    customClass: {
-                        confirmButton: 'btn btn-success'
-                    }
-                    });
-                } else {
-                    swal({
-                    title: 'Cancelled',
-                    text: 'The record is not deleted!',
-                    icon: 'error',
-                    customClass: {
-                        confirmButton: 'btn btn-success'
-                    }
-                    });
-                }
-                });
-            });
         });
 
     </script>
