@@ -8,7 +8,8 @@
                         <select class="form-control" name="jenis_pegawai" id="jenis_pegawai" required>
                         <option value="0">--- Pilih Jenis Pegawai --- </option>
                             @foreach($jenis_pegawai as $row)
-                                <option value='{{$row->id}}' {{($curr_jenis_pegawai->id_jenis_pegawai == $row->id)?"selected" : "" }}>{{$row->nama }}</option>
+                                @php $new_id_jenis_pegawai = $curr_jenis_pegawai->id_jenis_pegawai ?? 2; @endphp
+                                <option value='{{$row->id}}' {{($new_id_jenis_pegawai == $row->id)?"selected" : "" }}>{{$row->nama }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -19,8 +20,9 @@
                     <label class="col-sm-12 col-form-label">Posisi Pegawai</label>
                     <div class="col-sm-12">
                         <select class="form-control" name="posisi_pegawai" id="status_pegawai" required>
+
                             @foreach($list_jenis as $row)
-                                <option value='{{$row->id}}' {{($curr_jenis_pegawai->id == $row->id)?"selected" : "" }}>{{$row->nama }}</option>
+                                <option value='{{$row->id}}' {{(!empty($curr_jenis_pegawai) && $curr_jenis_pegawai->id == $row->id)?"selected" : "" }}>{{$row->nama }}</option>
                             @endforeach
                         </select>
                     </div>

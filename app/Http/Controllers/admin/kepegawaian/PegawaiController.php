@@ -207,7 +207,7 @@ class PegawaiController extends Controller
         $curr_jenis_pegawai = PegawaiPosisi::where('id',$pegawai->id_posisi_pegawai)->first();
         $curr_jabatan_fungsional = JabatanFungsional::where('id', $pegawai->id_jabfung)->first();
         $curr_jabatan_struktural = JabatanStruktural::where('id', $pegawai->id_jabstruk)->first();
-        $list_jenis = PegawaiPosisi::where('id_jenis_pegawai',$curr_jenis_pegawai->id_jenis_pegawai)->get();
+        $list_jenis = PegawaiPosisi::where('id_jenis_pegawai',$curr_jenis_pegawai->id_jenis_pegawai ?? 2)->get();
         foreach($pos as $row){
             $posisi[$row->id] = $row->nama;
         }

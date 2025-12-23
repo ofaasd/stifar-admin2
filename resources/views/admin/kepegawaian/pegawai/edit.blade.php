@@ -38,7 +38,7 @@
                                 </div>
                               <div class="media-body">
                                 <h5 class="mb-1">{{$pegawai->nama_lengkap}}</h5>
-                                <p>{{$posisi[$pegawai->id_posisi_pegawai]}}</p>
+                                <p>{{$posisi[$pegawai->id_posisi_pegawai] ?? 'Staff'}}</p>
                               </div>
                             </div>
                           </div>
