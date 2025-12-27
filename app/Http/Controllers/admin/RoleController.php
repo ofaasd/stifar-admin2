@@ -5,6 +5,8 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Role as role;
+use App\Models\Permission as permission;
+use App\Models\RoleHasPermission as role_has_permission;
 
 class RoleController extends Controller
 {
@@ -116,6 +118,12 @@ class RoleController extends Controller
                 return response()->json('Failed Create Academic');
             }
         }
+    }
+    public function create(){
+        $title = "Create Role";
+        $permission = permission::all();    
+        // $role_has_permission = role_has_permission::all();  
+        return view('admin.role.create', compact('title', 'permission'));
     }
     public function edit(string $id)
     {
