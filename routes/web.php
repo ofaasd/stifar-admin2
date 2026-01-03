@@ -688,6 +688,7 @@ Route::group(['middleware' => ['auth', 'role:mhs|super-admin|admin-prodi']], fun
                     Route::get('/', [MahasiswaPenontonSidangController::class, 'index'])->name('index');
                     Route::get('/show/{idEnkripsi}', [MahasiswaPenontonSidangController::class, 'show'])->name('show');
                     Route::post('/daftar', [MahasiswaPenontonSidangController::class, 'daftar'])->name('daftar');
+                    Route::post('/upload-bukti', [MahasiswaPenontonSidangController::class, 'uploadBukti'])->name('upload-bukti');
                 });
 
             });

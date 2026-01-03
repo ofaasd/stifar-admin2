@@ -60,12 +60,36 @@
                         <div class="alert alert-info" role="alert">
                             Anda sudah terdaftar sebagai penonton sidang ini.
                         </div>
+                        <div class="alert alert-warning mt-2" role="alert">
+                            <strong>Catatan:</strong> Silakan buka halaman ini pada hari H sidang untuk mengunggah bukti kehadiran Anda.
+                        </div>
                     @else
                         <form action="{{ route('akademik.skripsi.mahasiswa.daftar-penonton-sidang.daftar') }}" method="POST" id="form-daftar-penonton">
                             @csrf
                             <input type="hidden" name="id" value="{{ $data->id }}">
                             <button type="submit" class="btn btn-primary mt-3" id="btn-daftar-penonton">
                                 Daftar Jadi Penonton Sidang
+                            </button>
+                        </form>
+                    @endif
+
+                    @if($data->bukti)
+                        <div class="alert alert-success mt-3" role="alert">
+                            Anda telah mengunggah bukti penonton sidang. <a href="{{ asset('storage/sidang/penonton-sidang/bukti/' . $data->bukti) }}" target="_blank">Lihat Bukti</a>
+                        </div>
+                    @endif
+
+                    @if ($data->isToday)
+                        <form action="{{ route('akademik.skripsi.mahasiswa.daftar-penonton-sidang.upload-bukti') }}" method="POST" id="form-upload-bukti" enctype="multipart/form-data">
+                            @csrf
+                            <input type="hidden" name="id" value="{{ $data->id }}">
+                            <div class="form-group mt-3">
+                                <label for="bukti">Bukti Penonton Sidang</label>                            
+                                <input type="file" class="form-control" id="bukti" name="bukti" required accept=".pdf,.jpg,.jpeg,.png">
+                                <small class="form-text text-muted">Upload bukti kehadiran (PDF, JPG, atau PNG). akan dibuka selama hari H sidang</small>
+                            </div>
+                            <button type="submit" class="btn btn-success mt-2" id="btn-submit">
+                                Upload Bukti
                             </button>
                         </form>
                     @endif

@@ -37,10 +37,28 @@ class CetakYudisiumController extends Controller
     * Terakhir diedit: 6 November 2025
     * Editor: faiz
     */
-    public $indexed = ['', 'id', 'nama', 'nama_prodi', 'periode', 'jml_peserta'];
-    public $indexed2 = ['', 'id', 'nama', 'nama_prodi', 'periode', 'jml_peserta'];
+    public $indexed = ['', 'id', 'nama', 'nama_prodi', 'periode', 'jmlPeserta'];
+    public $indexed2 = ['', 'id', 'nama', 'nama_prodi', 'periode', 'jmlPeserta'];
     public function index(Request $request)
     {
+        $data = GelombangYudisium::select([
+            'gelombang_yudisium.id',
+            'gelombang_yudisium.nama',
+            'gelombang_yudisium.periode',
+            \DB::raw('(SELECT COUNT(*) FROM tb_yudisium WHERE tb_yudisium.id_gelombang_yudisium = gelombang_yudisium.id) as jmlPeserta'),
+            'gelombang_yudisium.tanggal_pengesahan AS tanggalPengesahan',
+            'program_studi.nama_prodi'
+        ])
+        ->leftJoin('program_studi', 'gelombang_yudisium.id_prodi', '=', 'program_studi.id')
+        ->whereNotNull('gelombang_yudisium.tanggal_pengesahan')
+        ->orderBy('gelombang_yudisium.created_at', 'desc')
+        ->get()
+        ->map(function ($item, $index) {
+            $item->fake_id = $index + 1;
+            $item->idEnkripsi = Crypt::encryptString($item->id . "stifar");
+            return $item;
+        });
+
         if (empty($request->input('length'))) {
             $title = "Cetak Yudisium";
             $title2 = "cetak";
@@ -59,8 +77,9 @@ class CetakYudisiumController extends Controller
             $columns = [
                 1 => 'id',
                 2 => 'nama',
-                3 => 'periode',
-                4 => 'jml_peserta',
+                3 => 'nama_prodi',
+                4 => 'periode',
+                5 => 'jmlPeserta',
             ];
 
             $search = [];
@@ -84,6 +103,7 @@ class CetakYudisiumController extends Controller
                         'program_studi.nama_prodi'
                     ])
                     ->leftJoin('program_studi', 'gelombang_yudisium.id_prodi', '=', 'program_studi.id')
+                    ->whereNull('gelombang_yudisium.tanggal_pengesahan')
                     ->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
@@ -143,7 +163,7 @@ class CetakYudisiumController extends Controller
                     $nestedData['periode'] = $row->periode;
                     $nestedData['nama'] = $row->nama;
                     $nestedData['nama_prodi'] = $row->nama_prodi;
-                    $nestedData['jml_peserta'] = $row->jmlPeserta;
+                    $nestedData['jmlPeserta'] = $row->jmlPeserta;
                     $nestedData['idEnkripsi'] = $row->idEnkripsi;
                     $nestedData['tanggalPengesahan'] = $tanggalPengesahan;
                     $data[] = $nestedData;
@@ -180,7 +200,13 @@ class CetakYudisiumController extends Controller
         ->leftJoin('program_studi', 'gelombang_yudisium.id_prodi', '=', 'program_studi.id')
         ->whereNotNull('gelombang_yudisium.tanggal_pengesahan')
         ->orderBy('gelombang_yudisium.created_at', 'desc')
-        ->get();
+        ->get()
+        ->map(function ($item, $index) {
+            $item->fake_id = $index + 1;
+            $item->idEnkripsi = Crypt::encryptString($item->id . "stifar");
+            return $item;
+        });
+
         if ($data) {
             return response()->json([
                 'draw' => 1,

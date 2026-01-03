@@ -49,6 +49,26 @@ class MahasiswaPenontonSidangController extends Controller
             ->whereNotNull('sidang.tanggal')
             ->whereNotNull('sidang.ruang_id');
 
+            $arrRiwayatPenontonSidang = PenontonSidang::where('nim', function ($query) {
+                $query->select('nim')
+                    ->from('mahasiswa')
+                    ->where('user_id', Auth::id())
+                    ->limit(1);
+            })
+            ->pluck('id_sidang')
+            ->toArray();
+
+            // Riwayat sidang (tanggal < hari ini)
+            $riwayatPenonton = (clone $baseQuery)
+                ->whereDate('sidang.tanggal', '<', $today)
+                ->orderBy('sidang.tanggal', 'desc')
+                ->whereIn('sidang.id', $arrRiwayatPenontonSidang)
+                ->get()
+                ->map(function ($item) {
+                    $item->idEnkripsi = Crypt::encryptString($item->id . "stifar");
+                    return $item;
+                });
+
             // Sidang hari ini
             $sidangHariIni = (clone $baseQuery)
                 ->whereDate('sidang.tanggal', $today)
@@ -66,7 +86,7 @@ class MahasiswaPenontonSidangController extends Controller
                 ->get();
 
             // Contoh return ke view
-            return view('mahasiswa.skripsi.penonton-sidang.index', compact('sidangHariIni', 'sidangAkanDatang', 'title'));
+            return view('mahasiswa.skripsi.penonton-sidang.index', compact('riwayatPenonton', 'sidangHariIni', 'sidangAkanDatang', 'title'));
 
         } catch (\Exception $e) {
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
@@ -114,6 +134,20 @@ class MahasiswaPenontonSidangController extends Controller
             ->where('nim', $mhs->nim)
             ->exists();
             $data->isRegistered = $isRegistered;
+        }
+
+        $isToday = false;
+        if ($data && $data->tanggal == now()->toDateString()) {
+            $isToday = true;
+        }
+        $data->isToday = $isToday;
+
+        $penontonSidang = PenontonSidang::where('id_sidang', $id)
+            ->where('nim', $mhs->nim)
+            ->first();
+
+        if ($penontonSidang) {
+            $data->bukti = $penontonSidang->bukti;
         }
 
         return view('mahasiswa.skripsi.penonton-sidang.show', compact('data'));
@@ -185,6 +219,30 @@ class MahasiswaPenontonSidangController extends Controller
                 'status' => 'error',
                 'message' => 'Terjadi kesalahan: ' . $e->getMessage()
             ], 500);
+        }
+    }
+
+    public function uploadBukti(Request $request)
+    {
+        $request->validate([
+            'bukti' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
+        ]);
+
+        try {
+            $penontonSidang = PenontonSidang::where('id_sidang', $request->id)->first();
+
+            if ($request->hasFile('bukti')) {
+                $file = $request->file('bukti');
+                $filename = 'bukti_' . $penontonSidang->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+                $file->storeAs('public/sidang/penonton-sidang/bukti', $filename);
+
+                $penontonSidang->bukti = $filename;
+                $penontonSidang->save();
+            }
+
+            return redirect()->back()->with('success', 'Bukti penonton sidang berhasil diunggah.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
 }
