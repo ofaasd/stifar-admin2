@@ -27,7 +27,38 @@
             <div class="row">
                 <div class="col-md-8 mx-auto">
 
-                    <h4>Sidang Hari Ini</h4>
+                    <h4>Riwayat</h4>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Tanggal</th>
+                                <th>Nama Mahasiswa</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($riwayatPenonton as $sidang)
+                                <tr>
+                                    <td>{{ \Carbon\Carbon::parse($sidang->tanggal)->format('d/m/Y') }}</td>
+                                    <td>{{ $sidang->nama ?? '-' }}</td>
+                                    <td>
+                                        <a href="{{ route('akademik.skripsi.mahasiswa.daftar-penonton-sidang.show', $sidang->idEnkripsi) }}"
+                                           class="btn btn-success btn-sm btn-detail"
+                                           title="Lihat"
+                                           onclick="this.disabled=true; this.innerHTML='<span class=\'spinner-border spinner-border-sm\'></span> Loading...';">
+                                            <span class="btn-text"><i class="bi bi-eye"></i></span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="3" class="text-center">Tidak ada riwayat.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+
+                    <h4 class="mt-4">Sidang Hari Ini</h4>
                     <table class="table table-bordered">
                         <thead>
                             <tr>
