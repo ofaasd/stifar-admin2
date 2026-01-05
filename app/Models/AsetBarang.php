@@ -13,6 +13,7 @@ class AsetBarang extends Model
     protected $table = 'aset_barang';
     protected $fillable = [
         'kode_ruang',
+        'kode_kategori',
         'id_penanggung_jawab',
         'label',
         'nama',

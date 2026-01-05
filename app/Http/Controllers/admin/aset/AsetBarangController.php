@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Models\AsetBarang;
 use App\Models\MasterJenisBarang;
+use App\Models\MasterKategoriAset;
 use App\Models\MasterRuang;
 use App\Models\MasterVendor;
 use App\Models\PegawaiBiodatum;
@@ -33,7 +34,8 @@ class AsetBarangController extends Controller
             $dataPegawai = PegawaiBiodatum::orderBy('nama_lengkap', 'asc')->get();
             $dataVendor = MasterVendor::orderBy('nama', 'asc')->get();
             $dataJenisBarang = MasterJenisBarang::orderBy('kode', 'asc')->get();
-            return view('admin.aset.barang.index', compact('title', 'title2', 'indexed', 'asetRuang', 'dataJenisBarang', 'dataPegawai', 'dataVendor'));
+            $dataKategori = MasterKategoriAset::orderBy('nama', 'asc')->get();
+            return view('admin.aset.barang.index', compact('title', 'title2', 'indexed', 'asetRuang', 'dataJenisBarang', 'dataPegawai', 'dataVendor', 'dataKategori'));
         }else{
             $columns = [
                 1 => 'id',
@@ -173,6 +175,7 @@ class AsetBarangController extends Controller
                                 : 'nullable|string|unique:aset_barang,label',
                 'elektronik'      => 'required',
                 'pemeriksaanTerakhir'      => 'required',
+                'kodeKategori'      => 'required',
             ]);
             
             $kodeRuang = $validatedData['kodeRuang'];
@@ -206,7 +209,8 @@ class AsetBarangController extends Controller
                     'id_penanggung_jawab' => $validatedData['idPenanggungJawab'],
                     'label' => $label,
                     'elektronik' => $validatedData['elektronik'],
-                    'pemeriksaan_terakhir' => $validatedData['pemeriksaanTerakhir']
+                    'pemeriksaan_terakhir' => $validatedData['pemeriksaanTerakhir'],
+                    'kode_kategori' => $validatedData['kodeKategori']
                 ]
             );
 

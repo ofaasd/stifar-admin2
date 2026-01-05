@@ -135,9 +135,17 @@
                                                     <label for="inventaris_baru" class="form-label">Kode Inventaris Baru</label>
                                                     <input type="text" name="inventarisBaru" id="inventaris_baru" class="form-control">
                                                 </div>
-                                                <div class="mb-3">
+                                                <div class="mb-3 col-6">
                                                     <label for="pemeriksaan_terakhir" class="form-label">Pemeriksaan Terakhir</label>
                                                     <input type="date" name="pemeriksaanTerakhir" id="pemeriksaan_terakhir" class="form-control">
+                                                </div>
+                                                <div class="mb-3 col-6">
+                                                    <label for="kode_kategori" class="form-label">Kategori</label>
+                                                    <select class="form-select" aria-label="Default select example" id="kode_kategori" name="kodeKategori">
+                                                        @foreach ($dataKategori as $row)
+                                                            <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }}</option>
+                                                        @endforeach
+                                                    </select>
                                                 </div>
                                             </div>
                                         </div>
