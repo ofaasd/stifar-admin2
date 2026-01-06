@@ -12,7 +12,7 @@
 @endsection
 
 @section('breadcrumb-title')
-    <h3>{{$title2}} Bulan {{$list_bulan[$bulan]}} Tahun {{$tahun}}</h3>
+    <h3>{{$title2}} Bulan {{$list_bulan[(int)$bulan]}} Tahun {{$tahun}}</h3>
 @endsection
 
 @section('breadcrumb-items')
