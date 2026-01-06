@@ -208,7 +208,7 @@ class PembayaranController extends Controller
     {
         try {
             // 1. Cari kriteria data yang dianggap duplikat
-            $duplicates = DB::table('pembayarans') // Ganti dengan nama tabel Anda
+            $duplicates = DB::table('tb_pembayaran') // Ganti dengan nama tabel Anda
                 ->select('nim', 'jumlah', 'tanggal_bayar', DB::raw('COUNT(*) as total'))
                 ->groupBy('nim', 'jumlah', 'tanggal_bayar')
                 ->havingRaw('COUNT(*) > 1')
@@ -218,7 +218,7 @@ class PembayaranController extends Controller
 
             foreach ($duplicates as $duplicate) {
                 // 2. Ambil ID dari data yang duplikat, urutkan dari yang paling lama (ID terkecil)
-                $ids = DB::table('pembayarans')
+                $ids = DB::table('tb_pembayaran')
                     ->where('nim', $duplicate->nim)
                     ->where('jumlah', $duplicate->jumlah)
                     ->where('tanggal_bayar', $duplicate->tanggal_bayar)
@@ -228,7 +228,7 @@ class PembayaranController extends Controller
                 // 3. Sisihkan ID pertama (index 0), lalu hapus sisanya
                 $idsToDelete = $ids->slice(1); 
                 
-                DB::table('pembayarans')->whereIn('id', $idsToDelete)->delete();
+                DB::table('tb_pembayaran')->whereIn('id', $idsToDelete)->delete();
                 $deletedCount += $idsToDelete->count();
             }
 
