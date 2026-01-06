@@ -299,8 +299,7 @@ class KrmController extends Controller
                             $join->on('master_nilai.id_mhs', '=', 'mhs.id');
                          })
                          ->where('krs.id_jadwal', $id)
-                         ->where('krs.id_tahun', $tahun_ajaran->id)
-                         ->where()->orderBy('mhs.nim','asc')->get();
+                         ->where('krs.id_tahun', $tahun_ajaran->id)->orderBy('mhs.nim','asc')->get();
         $action[1] = $daftar_mhs[0]->publish_tugas ?? 0;
         $action[2] = $daftar_mhs[0]->publish_uts ?? 0;
         $action[3] = $daftar_mhs[0]->publish_uas ?? 0;
