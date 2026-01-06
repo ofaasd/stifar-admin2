@@ -203,6 +203,48 @@ class PembayaranController extends Controller
         //
     }
 
+    public function removeDuplicates()
+    {
+        try {
+            // 1. Identifikasi data yang duplikat berdasarkan NIM, Prodi, Bulan, dan Tahun
+            // Kita menggunakan raw query untuk mengambil bulan dan tahun dari tanggal_bayar
+            $duplicates = TbPembayaran::select(
+                    'nim', 
+                    DB::raw('MONTH(tanggal_bayar) as bulan'), 
+                    DB::raw('YEAR(tanggal_bayar) as tahun'),
+                    DB::raw('COUNT(*) as total')
+                )
+                ->groupBy('nim', 'bulan', 'tahun')
+                ->havingRaw('COUNT(*) > 1')
+                ->get();
+
+            $deletedCount = 0;
+
+            foreach ($duplicates as $dup) {
+                // 2. Cari semua ID yang cocok dengan kriteria duplikat tersebut
+                $allIds = TbPembayaran::where('nim', $dup->nim)
+                    ->whereMonth('tanggal_bayar', $dup->bulan)
+                    ->whereYear('tanggal_bayar', $dup->tahun)
+                    ->orderBy('id', 'asc') // Urutkan agar data pertama (paling lama) tetap aman
+                    ->pluck('id');
+
+                // 3. Sisihkan ID pertama (index 0), ambil sisanya untuk dihapus
+                $idsToDelete = $allIds->slice(1); 
+
+                // 4. Eksekusi penghapusan
+                if ($idsToDelete->count() > 0) {
+                    TbPembayaran::whereIn('id', $idsToDelete)->delete();
+                    $deletedCount += $idsToDelete->count();
+                }
+            }
+
+            return back()->with('success', "Pembersihan selesai! Total $deletedCount data duplikat berhasil dihapus.");
+
+        } catch (\Exception $e) {
+            return back()->with('error', "Terjadi kesalahan: " . $e->getMessage());
+        }
+    }
+
     /**
      * Store a newly created resource in storage.
      */
