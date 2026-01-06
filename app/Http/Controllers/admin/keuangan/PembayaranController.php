@@ -12,6 +12,7 @@ use App\Models\TbPembayaran;
 use App\Imports\PembayaranImport;
 use Maatwebsite\Excel\Facades\Excel;  
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
 
 class PembayaranController extends Controller
 {
