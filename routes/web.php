@@ -487,6 +487,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi|baak|admin-
     Route::get('/admin/keuangan/pembayaran/cetak/{bulan}/{tahun}/{prodi}', [PembayaranController::class, 'cetak']);
     Route::get('/admin/keuangan/pembayaran/remove-duplicates/{bulan}/{tahun}', [PembayaranController::class, 'removeDuplicates']);
     Route::get('/admin/keuangan/statistik/update_total_tagihan', [StatistikKeuanganController::class, 'update_total_tagihan']);
+    Route::get('/admin/keuangan/statistik/cetak/{id}/{gelombang}', [StatistikKeuanganController::class, 'cetak']);
     Route::get('/admin/keuangan/statistik/cetak/{id}', [StatistikKeuanganController::class, 'cetak']);
     Route::get('/admin/keuangan/tagihan_total/{id}', [TagihanTotalController::class, 'index']);
     Route::get('/admin/keuangan/cetak_tagihan_total', [TagihanTotalController::class, 'cetak']);
