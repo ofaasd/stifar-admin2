@@ -53,7 +53,7 @@
                                     <a href="{{url('admin/keuangan/statistik/cetak/' . $id . '/' . request()->get('gelombang'))}}" class="btn btn-primary mb-3">Cetak</a>
                                 </div>
                                 <div class="col-md-6 text-right">
-                                    @if($get_gelombang_all)
+                                    @if(!empty($get_gelombang_all))
                                         <form method="GET" action="{{url('admin/keuangan/statistik/' . $id)}}" >
                                             <div class="d-flex justify-content-end">
                                                 <div class="input-group">
