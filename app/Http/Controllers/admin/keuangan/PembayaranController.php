@@ -230,7 +230,7 @@ class PembayaranController extends Controller
                 
                 DB::table('tb_pembayaran')->whereIn('id', $idsToDelete)->delete();
                 $deletedCount += $idsToDelete->count();
-            }
+            }   
 
             return back()->with('success', "Berhasil menghapus $deletedCount data duplikat.");
             
