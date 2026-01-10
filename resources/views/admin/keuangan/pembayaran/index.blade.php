@@ -204,7 +204,7 @@
     <script>
         $(function () {
         $('.select2_mhs').select2({
-            dropdownParent: $('#nimModal')
+            dropdownParent: $('#tambahModal')
         });
         const baseUrl = {!! json_encode(url('/')) !!};
         const title = "{{strtolower($title)}}";
