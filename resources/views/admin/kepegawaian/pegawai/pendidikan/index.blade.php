@@ -17,6 +17,7 @@
                             <div class="mb-3">
                                 <label for="jenjang_pendidikan" class="form-label">Jenjang</label>
                                 <select class="form-control" name="jenjang" id="jenjang_pendidikan">
+                                    <option value="SMA">SMA/SMK/Sederajat</option>
                                     <option value="D-I">D-I</option>
                                     <option value="D-II">D-II</option>
                                     <option value="D-III">D-III</option>
