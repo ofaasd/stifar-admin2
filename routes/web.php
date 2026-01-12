@@ -154,6 +154,8 @@ use App\Http\Controllers\admin\akademik\transkripIjazah\PrintTranskripController
 use App\Http\Controllers\admin\akademik\wisuda\AdminDaftarPendaftarWisudaController;
 use App\Http\Controllers\admin\admisi\StatistikController as AdmisiStatistikController;
 use App\Http\Controllers\admin\akademik\PenyerahanIjazahController;
+use App\Http\Controllers\admin\MenuController;
+use App\Http\Controllers\admin\PermissionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -575,7 +577,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi|baak|admin-
     Route::resource('riwayat', RiwayatPegawaiController::class)->name('index', 'pegawai');
 
     Route::resource('admin/nilai_lama', NilaiLamaController::class)->name('index', 'nilai_lama');
-    Route::resource('admin/role', RoleController::class)->name('index', 'role');
+    Route::resource('admin/role', RoleController::class)->name('role', 'role');
 
 
     Route::group(['prefix' => 'admin/skripsi/pembimbing', 'as' => 'admin.pembimbing.', 'controller' => DosenPembimbingController::class], function () {
@@ -794,7 +796,7 @@ Route::group(['middleware' => ['auth', 'role:mhs|super-admin|admin-prodi']], fun
 
     //Route::post('admin/admisi/peserta/daftar_kota',[PmbPesertaController::class, 'daftar_kota'] )->name('daftar_kota');
 });
-Route::group(['middleware' => ['auth', 'role:pegawai|admin-prodi|super-admin']], function () {
+Route::group(['middleware' => ['auth', 'role:pegawai-dosen|pegawai|admin-prodi|super-admin']], function () {
 
     Route::prefix('skripsi')->as('koor.skripsi.')->controller(SkripsiController::class)->group(function () {
         Route::get('/', 'index')->name('index');
@@ -863,7 +865,8 @@ Route::group(['middleware' => ['auth', 'role:pegawai|admin-prodi|super-admin']],
     Route::get('admin/kepegawaian/struktural/get_jabatan', [PegawaiJabatanStrukturalController::class, 'get_jabatan'])->name('get_jabatan');
     Route::post('admin/kepegawaian/struktural/get_jabatan', [PegawaiJabatanStrukturalController::class, 'get_jabatan'])->name('get_jabatan');
 
-    Route::get('/dsn/dashboard', [DashboardController::class, 'dosen'])->name('dashboard_pegawai');
+    Route::get('/dsn/dashboard', [DashboardController::class, 'dosen'])->name('dashboard_dosen');
+    Route::get('/employee/dashboard', [DashboardController::class, 'pegawai'])->name('dashboard_pegawai');
     Route::get('/admin/input-batch/{id}', [KrmController::class, 'inputAbsenBatch'])->name('dashboard_pegawai');
     Route::post('/dosen/tampil-pertemuan-absensi', [KrmController::class, 'pertemuanAbsensi'])->name('dashboard_pegawai');
     Route::post('/dosen/simpan-capaian', [KrmController::class, 'simpanCapaian'])->name('dashboard_pegawai');
@@ -980,16 +983,23 @@ Route::group(['middleware' => ['auth', 'role:pegawai|admin-prodi|super-admin']],
 
     Route::post('/dosen/absensi/save_absensi_new', [KrmController::class, 'saveAbsensiNew'] );
 });
-Route::group(['middleware' => ['auth', 'role:mhs|admin-prodi|pegawai|super-admin|baak|admin-pmb']], function () {
+Route::group(['middleware' => ['auth', 'role:mhs|admin-prodi|pegawai-dosen|pegawai|super-admin|baak|admin-pmb']], function () {
     Route::post('admin/admisi/peserta/daftar_kota', [PmbPesertaController::class, 'daftar_kota'])->name('daftar_kota_pegawai');
     Route::post('/admin/masterdata/krs/list-jadwal', [KrsController::class, 'showJadwal']);
 });
-Route::group(['middleware' => ['auth', 'role:mhs|pegawai|admin-prodi|super-admin']], function () {
+Route::group(['middleware' => ['auth', 'role:mhs|pegawai-dosen|pegawai|admin-prodi|super-admin']], function () {
     Route::get('dosen/cetak_absensi/{id}', [KrmController::class, 'cetakPertemuan']);
     Route::get('dosen/cetak_jurnal_uts/{id}', [KrmController::class, 'cetakJurnalUts']);
     Route::get('dosen/cetak_jurnal_uts/{id}/{status}', [KrmController::class, 'cetakJurnalUts']);
 });
 
-Route::group(['middleware' => ['auth', 'role:admin-prodi|pegawai|admin-prodi|super-admin']], function () {
+Route::group(['middleware' => ['auth', 'role:admin-prodi|pegawai-dosen|pegawai|admin-prodi|super-admin']], function () {
     Route::get('dosen/nilai/{id}/input', [KrmController::class, 'daftarMhsNilai']);
+});
+Route::group(['middleware' => ['auth', 'role:super-admin']], function () {
+    Route::resource('admin/menu', MenuController::class);
+    Route::put('menu/update/{id}', [MenuController::class, 'update'])->name('menu.custom_update');
+    Route::resource('admin/permission', PermissionController::class);
+    // Tambahan jika form update Anda menggunakan URL spesifik
+    Route::put('admin/permission/update/{id}', [PermissionController::class, 'update'])->name('permission.custom_update');
 });

@@ -95,7 +95,7 @@
       <!-- Page Body Start-->
       <div class="page-body-wrapper">
         <!-- Page Sidebar Start-->
-        @role('super-admin')
+        {{-- @role('super-admin')
             @include('layouts.sidebar')
         @endrole
         @role('admin-prodi')
@@ -106,14 +106,15 @@
             @include('layouts.sidebar_pegawai')
         @endrole
         @role('mhs')
-            @include('layouts.sidebar_mhs')
+            @include('layouts.sidebar')
         @endrole
         @role('admin-pmb')
             @include('layouts.sidebar_admin_pmb')
         @endrole
         @role('baak')
             @include('layouts.sidebar_baak')
-        @endrole
+        @endrole --}}
+        @include('layouts.sidebar')
 
         <!-- Page Sidebar Ends-->
         <div class="page-body">

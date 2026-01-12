@@ -141,9 +141,9 @@
                     render: function render(data, type, full, meta) {
                         return (
                         '<div class="d-inline-block text-nowrap">' +
-                        '<button class="btn btn-sm btn-icon edit-record text-primary" data-id="'
-                            .concat(full['id'], '" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal"')
-                            .concat(title, '"><i class="fa fa-pencil"></i></button>') +
+                        '<a href="'.concat(baseUrl).concat(page, '/').concat(full['id'], '/edit') +'" class="btn btn-sm btn-icon edit-record text-primary" data-id="'
+                            .concat(full['id'], '"')
+                            .concat(title, '"><i class="fa fa-pencil"></i></a>') +
                         '<button class="btn btn-sm btn-icon delete-record text-primary" data-id="'.concat(
                             full['id'],
                             '"><i class="fa fa-trash"></i></button>'

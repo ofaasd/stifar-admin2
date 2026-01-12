@@ -29,7 +29,7 @@
                         <h5>{{$title}}</h5>
                     </div>
                     <div class="card-body">
-                        <form class="form theme-form" method="POST" action="{{url('admin/role/store')}}">
+                        <form class="form theme-form" method="POST" action="{{url('admin/role')}}">
                             @csrf
                             <div class="mb-3 row">
                                 <label class="col-sm-3 col-form-label">Role Name</label>
@@ -43,18 +43,42 @@
                                     <input class="form-control" type="text" name="guard_name" placeholder="Guard Name" value="web">
                                 </div>
                             </div>
-                            <div class="mb-3 row">
-                                <label class="col-sm-3 col-form-label">Permissions</label>
-                                <div class="col-sm-9">
-                                    @foreach($permission as $perm)
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="permission[]" value="{{$perm->id}}" id="flexCheckDefault{{$perm->id}}">   
-                                            <label class="form-check-label" for="flexCheckDefault{{$perm->id}}">
-                                                {{$perm->name}}
-                                            </label>
+                            <div class="row">
+                                @foreach($groupedPermissions as $groupName => $permissions)
+                                    <div class="card mb-3 border-light shadow-sm col-md-4">
+                                        <div class="card-header bg-primary">
+                                            <div class="form-check">
+                                                <input class="form-check-input parent-checkbox" 
+                                                    type="checkbox" 
+                                                    id="parent-{{ $groupName }}" 
+                                                    data-group="{{ $groupName }}">
+                                                <label class="form-check-label fw-bold text-uppercase" for="parent-{{ $groupName }}">
+                                                    {{ $groupName }}
+                                                </label>
+                                            </div>
                                         </div>
-                                    @endforeach
-                                </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                @foreach($permissions as $permission)
+                                                    <div class="col-md-12 mb-2">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input child-checkbox" 
+                                                                name="permissions[]" 
+                                                                type="checkbox" 
+                                                                value="{{ $permission->name }}" 
+                                                                id="perm-{{ $permission->id }}" 
+                                                                data-group="{{ $groupName }}">
+                                                            <label class="form-check-label" for="perm-{{ $permission->id }}">
+                                                                {{ str_replace($groupName.'.', '', $permission->name) }}
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
                             <div class="mb-3 row">
                                 <div class="col-sm-9 offset-sm-3">
                                     <button type="submit" class="btn btn-primary">Submit</button>
@@ -68,3 +92,39 @@
         </div>
     </div>
 @endsection 
+
+@section('script')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ambil semua checkbox parent
+            const parentCheckboxes = document.querySelectorAll('.parent-checkbox');
+
+            parentCheckboxes.forEach(parent => {
+                parent.addEventListener('change', function() {
+                    const groupName = this.getAttribute('data-group');
+                    // Cari semua child yang punya data-group yang sama
+                    const children = document.querySelectorAll(`.child-checkbox[data-group="${groupName}"]`);
+                    
+                    children.forEach(child => {
+                        child.checked = this.checked;
+                    });
+                });
+            });
+
+            // Opsional: Jika semua child dicentang manual, parent otomatis tercentang
+            const childCheckboxes = document.querySelectorAll('.child-checkbox');
+            childCheckboxes.forEach(child => {
+                child.addEventListener('change', function() {
+                    const groupName = this.getAttribute('data-group');
+                    const parent = document.querySelector(`.parent-checkbox[data-group="${groupName}"]`);
+                    const sameGroupChildren = document.querySelectorAll(`.child-checkbox[data-group="${groupName}"]`);
+                    const checkedChildren = document.querySelectorAll(`.child-checkbox[data-group="${groupName}"]:checked`);
+
+                    parent.checked = (sameGroupChildren.length === checkedChildren.length);
+                    // Indeterminate state (opsional: jika hanya sebagian tercentang)
+                    parent.indeterminate = (checkedChildren.length > 0 && checkedChildren.length < sameGroupChildren.length);
+                });
+            });
+        });
+    </script>
+@endsection

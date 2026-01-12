@@ -4,9 +4,10 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Role as role;
-use App\Models\Permission as permission;
+use App\Models\Menu;
 use App\Models\RoleHasPermission as role_has_permission;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class RoleController extends Controller
 {
@@ -91,48 +92,71 @@ class RoleController extends Controller
     }
     public function store(Request $request)
     {
-        //
-        $id = $request->id;
+        // 1. Validasi Input
+        $request->validate([
+            'name' => 'required|unique:roles,name',
+            'permissions' => 'required|array', // Mengambil array dari checkbox permissions[]
+        ]);
 
-        if ($id) {
-            $role = role::updateOrCreate(
-                ['id' => $id],
-                [
-                    'name' => $request->name, 
-                    'guard_name' => $request->guard_name, 
-                ]
-            );
+        // 2. Buat Role Baru
+        $role = Role::create(['name' => $request->name]);
 
-            return response()->json('Updated');
-        } else {
-            $role = role::updateOrCreate(
-                ['id' => $id],
-                [
-                    'name' => $request->name, 
-                    'guard_name' => $request->guard_name, 
-                ]
-            );
-            if ($role) {
-                return response()->json('Created');
-            } else {
-                return response()->json('Failed Create Academic');
-            }
-        }
+        // 3. Hubungkan ke Permission
+        // syncPermissions akan otomatis mencocokkan nama permission yang dikirim dari form
+        $role->syncPermissions($request->permissions);
+
+        return redirect()->route('role.index')->with('success', 'Role dan Permission berhasil dibuat.');
     }
     public function create(){
         $title = "Create Role";
-        $permission = permission::all();    
+        $allPermissions = Permission::all();
+    
+        $groupedPermissions = [];
+        foreach ($allPermissions as $permission) {
+            // Pecah string berdasarkan titik (.)
+            $parts = explode('-', $permission->name);
+            $group = $parts[0]; // Ini akan jadi Parent
+            
+            $groupedPermissions[$group][] = $permission;
+        } 
         // $role_has_permission = role_has_permission::all();  
-        return view('admin.role.create', compact('title', 'permission'));
+        return view('admin.role.create', compact('title', 'allPermissions','groupedPermissions'));
     }
-    public function edit(string $id)
+    public function edit(Role $role)
     {
-        //
-        $where = ['id' => $id];
+        $title = "Edit Role";
+        // Ambil semua permission untuk ditampilkan di pilihan
+        $allPermissions = Permission::all();
 
-        $role = role::where($where)->first();
+        // Kelompokkan seperti pada fungsi create agar tampilan tetap konsisten (Parent-Child)
+        $groupedPermissions = [];
+        foreach ($allPermissions as $permission) {
+            $parts = explode('-', $permission->name);
+            $group = $parts[0];
+            $groupedPermissions[$group][] = $permission;
+        }
 
-        return response()->json($role);
+        // Ambil hanya ID/Nama permission yang sudah dimiliki oleh role ini
+        $rolePermissions = $role->permissions->pluck('name')->toArray();
+
+        return view('admin.role.edit', compact('role', 'groupedPermissions', 'rolePermissions', 'title'));
+    }
+    public function update(Request $request, Role $role)
+    {
+        // 1. Validasi
+        $request->validate([
+            'name' => 'required|unique:roles,name,' . $role->id,
+            'permissions' => 'required|array',
+        ]);
+
+        // 2. Update Nama Role
+        $role->update(['name' => $request->name]);
+
+        // 3. Sinkronisasi Permission
+        // Metode ini sangat praktis karena ia menghapus yang lama dan menyisipkan yang baru secara otomatis
+        $role->syncPermissions($request->permissions);
+
+        return redirect()->route('role.index')->with('success', 'Role berhasil diperbarui.');
     }
     public function destroy(string $id)
     {

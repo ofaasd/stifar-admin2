@@ -105,6 +105,16 @@ class DashboardController extends Controller
         $no = 1;
         return view('index_mhs',compact('mahasiswa','krs','no'));
     }
+    public function pegawai(){
+        $user_id = Auth::user()->id;
+        $pegawai = PegawaiBiodatum::where('user_id',$user_id)->first();
+        $perwalian = Mahasiswa::where('id_dsn_wali',$pegawai->id)->count();
+        $tahun_ajaran = TahunAjaran::where('status','Aktif')->first();
+        
+        
+        $no = 1;
+        return view('index_pegawai_new',compact('perwalian','no'));
+    }
     public function dosen(){
         $user_id = Auth::user()->id;
         $pegawai = PegawaiBiodatum::where('user_id',$user_id)->first();

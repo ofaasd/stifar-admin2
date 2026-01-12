@@ -125,11 +125,26 @@ class LoginController extends Controller
 
                     return $redirect;
                 }
-            }elseif($role[0] == "pegawai"){
+            }elseif($role[0] == "pegawai-dosen"){
                 $pegawai = PegawaiBiodatum::where('user_id',Auth::user()->id)->first();
                 $berkas = PegawaiBerkasPendukung::where("id_pegawai", $pegawai->id)->latest()->first();
 
                 $redirect = redirect('dsn/dashboard');
+                if ($ta->id != optional($berkas)->id_ta) {
+                    $redirect->with(
+                        [
+                            'herregistrasi'=> true,
+                            'role'=> $role[0],
+                        ]
+                    );
+                }
+
+                return $redirect;
+            }elseif($role[0] == "pegawai"){
+                $pegawai = PegawaiBiodatum::where('user_id',Auth::user()->id)->first();
+                $berkas = PegawaiBerkasPendukung::where("id_pegawai", $pegawai->id)->latest()->first();
+
+                $redirect = redirect('employee/dashboard');
                 if ($ta->id != optional($berkas)->id_ta) {
                     $redirect->with(
                         [
