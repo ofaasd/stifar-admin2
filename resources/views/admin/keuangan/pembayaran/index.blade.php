@@ -12,7 +12,7 @@
 @endsection
 
 @section('breadcrumb-title')
-    <h3>{{$title2}} Bulan {{$list_bulan[$bulan]}} Tahun {{$tahun}}</h3>
+    <h3>{{$title2}} Bulan {{$list_bulan[(int)$bulan]}} Tahun {{$tahun}}</h3>
 @endsection
 
 @section('breadcrumb-items')
@@ -32,6 +32,7 @@
                         <button class="btn btn-warning" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#filterModal" id="filter-record">Filter Pembayaran</button>
                         <button class="btn btn-info" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#importModal" id="import-record">+ Import Pembayaran</button>
                         <a href="{{ url('admin/keuangan/pembayaran/cetak', ['bulan' => $bulan, 'tahun' => $tahun, 'prodi' => $prodi]) }}" class="btn btn-info" data-original-title="test" id="cetak-record"><i class="fa fa-print"></i> Cetak Pembayaran</a>
+                        <a href="{{ url('admin/keuangan/pembayaran/remove-duplicates', ['bulan' => $bulan, 'tahun' => $tahun]) }}" class="btn btn-warning" data-original-title="test" id="cetak-record"><i class="fa fa-trash"></i> Hapus Duplikasi Pembayaran</a>
                         
                         @endif
                         <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
@@ -203,7 +204,7 @@
     <script>
         $(function () {
         $('.select2_mhs').select2({
-            dropdownParent: $('#nimModal')
+            dropdownParent: $('#tambahModal')
         });
         const baseUrl = {!! json_encode(url('/')) !!};
         const title = "{{strtolower($title)}}";

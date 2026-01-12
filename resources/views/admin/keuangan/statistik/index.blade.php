@@ -47,14 +47,39 @@
                             <i class="fa fa-warning"></i> Data Dibawah merupakan data statistik keuangan mahasiswa global yang sudah di inputkan pada halaman total pembayaran
                     </div>
                     <div class="card-body" style="overflow-x:scroll">
-                            <a href="{{url('admin/keuangan/statistik/update_total_tagihan')}}" class="btn btn-primary mb-3">Update Total Tagihan</a>
-                            <a href="{{url('admin/keuangan/statistik/cetak/' . $id)}}" class="btn btn-primary mb-3">Cetak</a>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <a href="{{url('admin/keuangan/statistik/update_total_tagihan')}}" class="btn btn-primary mb-3">Update Total Tagihan</a>
+                                    <a href="{{url('admin/keuangan/statistik/cetak/' . $id . '/' . request()->get('gelombang'))}}" class="btn btn-primary mb-3">Cetak</a>
+                                </div>
+                                <div class="col-md-6 text-right">
+                                    @if(!empty($get_gelombang_all))
+                                        <form method="GET" action="{{url('admin/keuangan/statistik/' . $id)}}" >
+                                            <div class="d-flex justify-content-end">
+                                                <div class="input-group">
+                                                    <select name="gelombang" class="form-control">
+                                                        <option value="0">--Semua Gelombang--</option>
+                                                        @foreach($get_gelombang_all as $gel)
+                                                            <option value="{{$gel->id}}" {{(request()->get('gelombang') == $gel->id)?"selected":""}}>Apoteker angkatan {{$gel->no_gel}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                    <div class="input-group-append">
+                                                        <button type="submit" class="btn btn-primary">Filter</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    @endif
+                                </div>
+                            </div>
+                            
                             @csrf
                             <table class="table table-stripped">
                                 <thead>
                                     <tr>
                                         <th>No</th>
                                         <th>Gelombang</th>
+                                        <th>Nopen</th>
                                         <th>NIM</th>
                                         <th>Nama</th>
                                         <th>Total Tagihan</th>
@@ -72,6 +97,7 @@
                                             {{$no++}}    
                                         </td>
                                         <td>{{$row['gelombang']}}</td>
+                                        <td>{{$row['nopen']}}</td>
                                         <td>{{$row['nim']}}</td>
                                         <td>{{$row['nama']}}</td>
                                         <td>{{$row['total_bayar']}}</td>

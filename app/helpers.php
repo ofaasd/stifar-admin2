@@ -13,22 +13,21 @@ class helpers
     public static $number_key = '3EYdFkP7uhk5RX6D';
     public static $wa_api = 'X2Y7UZOZT0WVQVTG';
 
-    public static function getNilaiHuruf(int $nilai)
+    public static function getNilaiHuruf(float $nilai)
     {
-
-        if($nilai > 75){
+        if($nilai >= 76){
             return 'A';
-        }elseif($nilai > 70 && $nilai <= 75){
+        }elseif($nilai >= 71){ // Anda tidak perlu mengecek && $nilai <= 75 lagi
             return 'AB';
-        }elseif($nilai > 65 && $nilai <= 70){
+        }elseif($nilai >= 66){
             return 'B';
-        }elseif($nilai > 60 && $nilai <= 65){
+        }elseif($nilai >= 61){
             return 'BC';
-        }elseif($nilai > 55 && $nilai <= 60){
+        }elseif($nilai >= 56){
             return 'C';
-        }elseif($nilai > 50 && $nilai <= 55){
+        }elseif($nilai >= 51){
             return 'CD';
-        }elseif($nilai > 41 && $nilai <= 50){
+        }elseif($nilai >= 41){
             return 'D';
         }else{
             return 'E';

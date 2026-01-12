@@ -12,6 +12,7 @@ use App\Models\TbPembayaran;
 use App\Imports\PembayaranImport;
 use Maatwebsite\Excel\Facades\Excel;  
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
 
 class PembayaranController extends Controller
 {
@@ -201,6 +202,41 @@ class PembayaranController extends Controller
     public function create()
     {
         //
+    }
+
+    public function removeDuplicates()
+    {
+        try {
+            // 1. Cari kriteria data yang dianggap duplikat
+            $duplicates = DB::table('tb_pembayaran') // Ganti dengan nama tabel Anda
+                ->select('nim', 'jumlah', 'tanggal_bayar', DB::raw('COUNT(*) as total'))
+                ->groupBy('nim', 'jumlah', 'tanggal_bayar')
+                ->havingRaw('COUNT(*) > 1')
+                ->get();
+
+            $deletedCount = 0;
+
+            foreach ($duplicates as $duplicate) {
+                // 2. Ambil ID dari data yang duplikat, urutkan dari yang paling lama (ID terkecil)
+                $ids = DB::table('tb_pembayaran')
+                    ->where('nim', $duplicate->nim)
+                    ->where('jumlah', $duplicate->jumlah)
+                    ->where('tanggal_bayar', $duplicate->tanggal_bayar)
+                    ->orderBy('id', 'asc')
+                    ->pluck('id');
+
+                // 3. Sisihkan ID pertama (index 0), lalu hapus sisanya
+                $idsToDelete = $ids->slice(1); 
+                
+                DB::table('tb_pembayaran')->whereIn('id', $idsToDelete)->delete();
+                $deletedCount += $idsToDelete->count();
+            }   
+
+            return back()->with('success', "Berhasil menghapus $deletedCount data duplikat.");
+            
+        } catch (\Exception $e) {
+            return back()->with('error', "Terjadi kesalahan: " . $e->getMessage());
+        }
     }
 
     /**
