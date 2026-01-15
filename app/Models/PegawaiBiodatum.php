@@ -9,6 +9,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Presence;
 
 /**
  * Class PegawaiBiodatum
@@ -121,4 +122,9 @@ class PegawaiBiodatum extends Model
         'user_id',
         'nuptk',
 	];
+	public function presences()
+    {
+        // Parameter: (Model Anak, Foreign Key di tabel anak, Primary Key di tabel ini)
+        return $this->hasMany(Presence::class, 'user_id', 'id');
+    }
 }

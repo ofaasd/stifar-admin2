@@ -9,6 +9,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\PegawaiBiodatum; // Pastikan namespace ini benar
 
 /**
  * Class Presence
@@ -60,7 +61,7 @@ class Presence extends Model
 
 	protected $fillable = [
 		'is_remote',
-		'user_id',
+		'user_id', //relate ke pegawai_biodata / ke pegawai
 		'day',
 		'start',
 		'lat_start',
@@ -81,4 +82,9 @@ class Presence extends Model
 		'end_marked_by_system',
 		'overtime'
 	];
+	public function pegawai()
+    {
+        // Parameter: (Model Tujuan, Foreign Key di tabel ini, Primary Key di tabel tujuan)
+        return $this->belongsTo(PegawaiBiodatum::class, 'user_id', 'id_pegawai');
+    }
 }

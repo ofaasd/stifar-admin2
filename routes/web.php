@@ -17,6 +17,7 @@ use App\Http\Controllers\admin\RumpunController;
 use App\Http\Controllers\admin\krs\KrsController;
 use App\Http\Controllers\mahasiswa\KhsController;
 use App\Http\Controllers\admin\FakultasController;
+use App\Http\Controllers\admin\PresenceController as AdminPresenceController;
 use App\Http\Controllers\dosen\PresenceController;
 use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\admin\KurikulumController;
@@ -495,6 +496,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi|baak|admin-
     Route::get('/admin/keuangan/cetak_tagihan_total', [TagihanTotalController::class, 'cetak']);
     Route::get('/admin/keuangan/cetak_tagihan_total/{id}', [TagihanTotalController::class, 'cetak']);
 
+    
     Route::get('attendance/report', [PresenceController::class,'report'])->name('attendance_report');
     Route::get('attendance/log', [PresenceController::class,'log'])->name('attendance_log');
     Route::get('working/get_table', [WorkingHourController::class,'get_table'])->name('get_table_working');
@@ -512,6 +514,9 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi|baak|admin-
 
     Route::get('admin/akademik/khs/{nim}', [adminKhs::class, 'show']);
 
+    Route::get('admin/presences', [AdminPresenceController::class, 'index'])->name('presences.index');
+    Route::post('admin/presences/import', [AdminPresenceController::class, 'importExcel'])->name('presences.import');
+    Route::resource('admin/presences', AdminPresenceController::class)->name('index','presence');
 
     Route::resource('admin/admisi/gelombang', GelombangController::class)->name('index','gelombang');
     Route::resource('admin/admisi/peserta', PmbPesertaController::class)->name('index','peserta');

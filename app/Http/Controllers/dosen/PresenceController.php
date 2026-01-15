@@ -102,12 +102,12 @@ class PresenceController extends Controller
 
         $image_base64 = base64_decode($image_parts[1]);
         $fileName = uniqid() . '.' . $image_type;
-
+        $pegawai = PegawaiBiodatum::where('user_id',Auth::user()->id)->first();
         $file = $folderPath . $fileName;
         if (file_put_contents($file, $image_base64)) {
             if (empty($absensi->start)) {
                 $absensi = new Presence();
-                $absensi->user_id = Auth::user()->id;
+                $absensi->user_id = $pegawai->id_pegawai;
                 $absensi->is_remote = 1;
                 $absensi->day = $request->tanggal;
                 $absensi->start = $get_hour;
