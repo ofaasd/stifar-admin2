@@ -28,12 +28,30 @@ class FingerprintImport implements ToCollection, WithStartRow
 
         foreach ($rows as $row) {
             // Mapping Index Excel (0-based) berdasarkan file absensi-finger.csv
+            // Index 0: Nama Staff (Kolom A)
             // Index 1: No. Staff (Kolom B)
             // Index 3: Tanggal (Kolom D)
             // Index 8: Masuk (Kolom I)
             // Index 10: Keluar (Kolom K)
             
             $noStaff = trim($row[1] ?? '');
+            $nama = $row[0] ?? '';
+            if($nama !== null){
+                //ambilkan 2 kata tengah dari $nama untuk di cari di database 
+                $namaParts = explode(' ', $nama);
+                if(count($namaParts) > 2){
+                    $nama = $namaParts[1] . ' ' . $namaParts[2];
+                }
+                //cek di database ada berapa nama yang mirip
+                $jml = DB::table('pegawai_biodata')
+                    ->where('nama_lengkap', 'like', '%' . $nama . '%')
+                    ->count();
+                if($jml == 1){
+                    DB::table('pegawai_biodata')
+                    ->where('nama_lengkap', 'like', '%' . $nama . '%')
+                    ->update(['no_absensi' => $noStaff]);
+                }
+            }
 
             // 1. Validasi: Lewati jika User ID tidak valid/kosong
             if (empty($noStaff) || !isset($validUserIds[$noStaff])) {

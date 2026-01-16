@@ -51,7 +51,7 @@ class PresenceController extends Controller
             // Proses Import
             Excel::import(new FingerprintImport, $request->file('file'));
             
-            return redirect()->route('presences.index')
+            return redirect()->back()
                 ->with('success', 'Data fingerprint berhasil diimport!');
                 
         } catch (\Exception $e) {
