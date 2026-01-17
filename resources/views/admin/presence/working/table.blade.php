@@ -15,8 +15,8 @@
                 <td>{{$row->email}}</td>
                 <td>
                     <div class="btn-group">
-                        <a href="javascript:void(0)"class="btn btn-primary btn-sm btn-edit" data-bs-id="{{$row->id}}" data-bs-toggle="modal" data-bs-target="#modal-add"><i class="fas fa-pencil"></i></a>
-                        <a href="javascript:void(0)"class="btn btn-danger btn-sm delete-record" data-id="{{$row->id}}"><i class="fas fa-trash"></i></a>
+                        <a href="javascript:void(0)"class="btn btn-primary btn-sm btn-edit" data-id="{{$row->id}}" data-bs-toggle="modal" data-bs-target="#modal-add"><i class="fa fa-pencil"></i></a>
+                        <a href="javascript:void(0)"class="btn btn-danger btn-sm delete-record" data-id="{{$row->id}}"><i class="fa fa-trash"></i></a>
                     </div>
                 </td>
             </tr>
@@ -79,7 +79,7 @@ $(".btn-edit").click(function(){
 $(document).on('click', '.delete-record', function () {
     const id = $(this).data('id');
     // sweetalert for confirmation of delete
-    Swal.fire({
+    swal({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
         icon: 'warning',
