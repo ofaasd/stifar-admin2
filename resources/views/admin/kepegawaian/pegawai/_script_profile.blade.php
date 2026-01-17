@@ -24,7 +24,7 @@
                 //offCanvasForm.offcanvas('hide');
                 swal({
                 title: 'Error !',
-                text: 'Data Not Saved !',
+                text: err.responseJSON.error,
                 icon: 'error',
                 customClass: {
                     confirmButton: 'btn btn-success'

@@ -119,8 +119,11 @@ class RoleController extends Controller
             
             $groupedPermissions[$group][] = $permission;
         } 
+        $permissionToMenus = \App\Models\Menu::with('parent')
+        ->get()
+        ->groupBy('permission_name');
         // $role_has_permission = role_has_permission::all();  
-        return view('admin.role.create', compact('title', 'allPermissions','groupedPermissions'));
+        return view('admin.role.create', compact('title', 'allPermissions','groupedPermissions','permissionToMenus'));
     }
     public function edit(Role $role)
     {
@@ -139,7 +142,12 @@ class RoleController extends Controller
         // Ambil hanya ID/Nama permission yang sudah dimiliki oleh role ini
         $rolePermissions = $role->permissions->pluck('name')->toArray();
 
-        return view('admin.role.edit', compact('role', 'groupedPermissions', 'rolePermissions', 'title'));
+        $permissionToMenus = \App\Models\Menu::with('parent')
+        ->get()
+        ->groupBy('permission_name');
+        
+
+        return view('admin.role.edit', compact('role', 'groupedPermissions', 'rolePermissions', 'title', 'permissionToMenus'));
     }
     public function update(Request $request, Role $role)
     {

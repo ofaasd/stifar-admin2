@@ -132,6 +132,16 @@ class PegawaiController extends Controller
             );
             return response()->json('created');
         }else{
+            // Check if no_absensi is filled and validate for duplicates
+            if (!empty($request->no_absensi) && $request->no_absensi != 0) {
+                $existing = PegawaiBiodatum::where('no_absensi', $request->no_absensi)
+                    ->where('id', '!=', $id)
+                    ->first();
+                
+                if ($existing) {
+                    return response()->json(['error' => 'Nomor Absensi sudah digunakan'], 422);
+                }
+            }
             $pegawai = PegawaiBiodatum::updateOrCreate(
                 ['id' => $id],
                 [
@@ -165,6 +175,7 @@ class PegawaiController extends Controller
                     'pekerjaan_pasangan' => $request->pekerjaan_pasangan,
                     'tempat_lahir' => $request->tempat_lahir,
                     'tanggal_lahir' => $request->tanggal_lahir,
+                    'no_absensi'=>$request->no_absensi,
                 ]
             );
             return response()->json('updated');

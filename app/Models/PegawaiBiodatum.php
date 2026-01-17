@@ -121,6 +121,7 @@ class PegawaiBiodatum extends Model
 		'kelurahan',
         'user_id',
         'nuptk',
+		'no_absensi',
 	];
 	public function presences()
     {

@@ -305,5 +305,11 @@
                 </div>
             </div>
         </div>
+        <div class="form-group row">
+            <label class="col-sm-12 col-form-label">No. Absensi : <br /><small class="text-warning"> * Digunakan untuk terkoneksi dengan mesin absensi</small></label>
+            <div class="col-sm-12">
+                <input type="text" class="form-control" name="no_absensi" value="{{$pegawai->no_absensi}}" >
+            </div>
+        </div>
     </div>
 </div>

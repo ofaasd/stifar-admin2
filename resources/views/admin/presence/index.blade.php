@@ -8,6 +8,7 @@
 @section('style')
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/vendors/datatables.css') }}">
 <link rel="stylesheet" type="text/css" href="{{asset('assets/css/vendors/sweetalert2.css')}}">
+<link rel="stylesheet" type="text/css" href="{{asset('assets/css/vendors/select2.css')}}">
 @endsection
 
 @section('breadcrumb-title')
@@ -74,22 +75,34 @@
 
     @if(session('error'))
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="bi bi-exclamation-triangle me-2"></i> {{ session('error') }}
+            <i class="bi bi-exclamation-triangle me-2"></i> {{ session('error') }} 
+            @if(session('link'))
+                <a href="{{ session('link') ?? '#' }}" class="btn btn-primary mt-2 mb-2">Perbarui Data Pegawai</a>.
+            @endif
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
     <div class="card shadow-sm mb-4 border-0">
         <div class="card-body">
             <form action="{{ url('admin/presences') }}" method="GET" class="row g-3 align-items-end">
-                <div class="col-md-4">
+                <div class="col-md-3">
+                    <label for="start_date" class="form-label fw-semibold">Pegawai</label>
+                    <select name="pegawai_id" class="js-example-basic-single form-select">
+                        <option value="">-- Semua Pegawai --</option>
+                        @foreach($pegawai as $item)
+                            <option value="{{ $item->id }}" {{ request('pegawai_id') == $item->id ? 'selected' : '' }}>{{ $item->nama_lengkap }} - {{$item->nama}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-3">
                     <label for="start_date" class="form-label fw-semibold">Dari Tanggal</label>
                     <input type="date" class="form-control" name="start_date" value="{{ $startDate }}">
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label for="end_date" class="form-label fw-semibold">Sampai Tanggal</label>
                     <input type="date" class="form-control" name="end_date" value="{{ $endDate }}">
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <button type="submit" class="btn btn-primary w-100">
                         <i class="bi bi-filter"></i> Tampilkan Data
                     </button>
@@ -101,7 +114,7 @@
     <div class="card shadow-sm border-0">
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-hover table-striped mb-0 align-middle">
+                <table class="table table-hover datatables mb-0">
                     <thead class="table-primary">
                         <tr>
                             <th scope="col" class="ps-4">Tanggal</th>
@@ -207,97 +220,13 @@
 @section('script')
     <script src="{{ asset('assets/js/datatable/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{asset('assets/js/sweet-alert/sweetalert.min.js')}}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.25/webcam.min.js"></script>
+    <script src="{{asset('assets/js/select2/select2.full.min.js')}}"></script>
+    <script src="{{asset('assets/js/select2/select2-custom.js')}}"></script>
+
     <script>
     document.addEventListener("DOMContentLoaded", function(event) {
       const baseUrl = '{!! url("") !!}';
       $(".datatables").DataTable();
-      Webcam.set({
-          width: 200,
-          height: 200,
-          image_format: 'jpeg',
-          jpeg_quality: 90
-      });
-
-      Webcam.attach( '#my_camera' );
-      $('#addNew{{$title}}Form').submit(function(e) {
-
-            e.preventDefault();
-            $("#overlay-place").html(`<div class="overlay">
-                <i class="fas fa-2x fa-sync fa-spin"></i>
-            </div>`);
-            const lat = $("#lat").val();
-            const long = $("#long").val();
-            if(lat && long){
-
-                const url = ''.concat(baseUrl).concat('/dosen/attendance');
-                // alert(url);
-                $.ajax({
-                    data: $('#addNew{{$title}}Form').serialize(),
-                    url: url,
-                    type: 'POST',
-                    success: function success(status) {
-                        // sweetalert
-                        //$("#overlay-place").html('<div class="alert alert-success">Data Saved !</div>');
-                        swal({
-                        icon: 'success',
-                        title: 'Successfully '.concat(status.nama, ' Updated !'),
-                        text: ''.concat('Absensi ', ' ').concat(' Updated Successfully.'),
-                        customClass: {
-                            confirmButton: 'btn btn-success'
-                        }
-                        });
-                        location.reload();
-                    },
-                    error: function error(err) {
-                        $("#overlay-place").html('');
-                        swal({
-                        title: 'Data Not Saved',
-                        text: ' Please take a picture first',
-                        icon: 'error',
-                        customClass: {
-                            confirmButton: 'btn btn-success'
-                        }
-                        });
-                    }
-                });
-            }else{
-                swal({
-                    title: 'Longitude and Latitude not found',
-                    text: ' Please allow location from your browser. Or Take Picture First',
-                    icon: 'error',
-                    customClass: {
-                        confirmButton: 'btn btn-success'
-                    }
-                });
-
-                $("#overlay-place").html(`<div class="alert alert-danger">Longitude and Latitude not found. please allow it from your browser. Or Take Picture First</div>`);
-            }
-      });
-
-      setInterval(function() {
-            var date = new Date();
-            $('#clock-wrapper').html(
-                date.getDate() + "-" + (date.getMonth()+1) + "-" + date.getFullYear() + " " +
-                date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds()
-                );
-        }, 500);
-    });
-    const res = document.getElementById('results');
-    function take_snapshot() {
-      Webcam.snap( function(data_uri) {
-          $(".image-tag").val(data_uri);
-          res.innerHTML = '<img src="'+data_uri+'" align="center" width="200" height="200" />';
-      } );
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showPosition);
-      } else {
-        res.innerHTML = "Geolocation is not supported by this browser.";
-      }
-    }
-    function showPosition(position) {
-      $("#lat").val(position.coords.latitude);
-      $("#long").val(position.coords.longitude);
-    }
+    })
   </script>
 @endsection

@@ -77,6 +77,13 @@
                                                                 {{ str_contains($permission->name, '.') ? explode('.', $permission->name)[1] : $permission->name }}
                                                             </label>
                                                         </div>
+                                                        @if(isset($permissionToMenus[$permission->name]))
+                                                            <ul style="list-style-type: square; margin-left: 20px; margin-top: 5px; ">
+                                                                @foreach($permissionToMenus[$permission->name] as $menu)
+                                                                    <li style="font-size:9pt;">{{ $menu->title }}</li>
+                                                                @endforeach
+                                                            </ul>
+                                                        @endif
                                                     </div>
                                                 @endforeach
                                             </div>
