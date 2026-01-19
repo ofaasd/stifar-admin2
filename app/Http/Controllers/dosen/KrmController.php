@@ -87,12 +87,13 @@ class KrmController extends Controller
         foreach($jadwal as $row){
             $nilaiValidasi[$row->id] = MasterNilai::where('id_jadwal',$row->id)->where(['validasi_tugas'=>1,'validasi_uts'=>1,'validasi_uas'=>1])->count();
             $nilaiPublish[$row->id] = MasterNilai::where('id_jadwal',$row->id)->where(['publish_tugas'=>1,'publish_uts'=>1,'publish_uas'=>1])->count();
+            $nilaiCek[$row->id] = MasterNilai::where('id_jadwal',$row->id)->where('nakhir', '!=', 0)->count();
         }
         $jumlah_input_krs = [];
         foreach($jadwal as $row){
             $jumlah_input_krs[$row->id] = Krs::where('id_jadwal',$row->id)->where('id_tahun',$id_tahun)->count();
         }
-        return view('dosen.input_nilai', compact('title','nilaiPublish','nilaiValidasi', 'jadwal', 'no', 'jumlah_input_krs',));
+        return view('dosen.input_nilai', compact('title','nilaiPublish','nilaiValidasi','nilaiCek', 'jadwal', 'no', 'jumlah_input_krs',));
     }
     public function daftarMhs($id){
         $title = "Daftar Mahasiswa";
