@@ -76,7 +76,7 @@
                                                             <td>{{ $jad['nama_ruang'] }}</td>
                                                             <td>{{ $jad['tp'] }}</td>
                                                             <td>{{ $jumlah_input_krs[$jad['id']] }} </td>
-                                                            <td><a href="#" class="btn {{($jumlah_input_krs[$jad['id']] == $nilaiValidasi[$jad['id']] ) ? 'btn-success' : 'btn-danger'}}">{{ $nilaiValidasi[$jad['id']]}}</a></td>
+                                                            <td><a href="#" class="btn {{($jumlah_input_krs[$jad['id']] == $nilaiCek[$jad['id']] ) ? 'btn-success' : 'btn-danger'}}">{{ $nilaiCek[$jad['id']]}}</a></td>
                                                             <td>
                                                                 <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                                                                     <a href="{{ url('/dosen/nilai/'.$jad['id'].'/input') }}" class="btn btn-success btn-xs"><i class="fa fa-inbox"></i>Nilai</a>

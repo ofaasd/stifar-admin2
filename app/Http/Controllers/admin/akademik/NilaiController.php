@@ -99,6 +99,7 @@ class NilaiController extends Controller
         foreach($jadwal as $row){
             $nilaiValidasi[$row->id] = MasterNilai::where('id_jadwal',$row->id)->where(['validasi_tugas'=>1,'validasi_uts'=>1,'validasi_uas'=>1])->count();
             $nilaiPublish[$row->id] = MasterNilai::where('id_jadwal',$row->id)->where(['publish_tugas'=>1,'publish_uts'=>1,'publish_uas'=>1])->count();
+            $nilaiCek[$row->id] = MasterNilai::where('id_jadwal',$row->id)->where('nakhir', '!=', 0)->count();
         }
         $no = 1;
 
@@ -134,6 +135,6 @@ class NilaiController extends Controller
         $totalMahasiswa = $angkatan->sum();
         // var_dump($list_pertemuan);
 
-        return view('admin.akademik.nilai.index', compact('nilaiPublish','nilaiValidasi','title','no', 'jadwal','id_prodi','prodi','nama','jumlah_input_krs', 'angkatan', 'totalMahasiswa'));
+        return view('admin.akademik.nilai.index', compact('nilaiPublish','nilaiValidasi','nilaiCek','title','no', 'jadwal','id_prodi','prodi','nama','jumlah_input_krs', 'angkatan', 'totalMahasiswa'));
     }
 }
