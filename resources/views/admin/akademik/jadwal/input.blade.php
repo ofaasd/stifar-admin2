@@ -78,7 +78,7 @@
                                                 <option value="TP">TP</option>
                                             </select>
                                         </div>
-                                        <button class="btn btn-primary" onclick="tambahJadwal()"><i class="fa fa-save"></i> Tambahkan</button>
+                                        <button class="btn btn-primary" onclick="tambahJadwal()" id="btntambahjadwal"><i class="fa fa-save"></i> Tambahkan</button>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="mb-3">
@@ -632,6 +632,8 @@
             var status = $('#status').val();
             var id_mk = $('#id_mk').val();
             var tahun_ajaran = $('#tahun_ajaran').val();
+            $("#btntambahjadwal").prop('disabled', true);
+            $("#btntambahjadwal").html(`<i class="fa fa-spinner fa-spin"></i> Processing...`);
 
             if(kel == ''){
                 // sweetalert
@@ -643,6 +645,8 @@
                             confirmButton: 'btn btn-danger'
                         }
                     });
+                $("#btntambahjadwal").prop('disabled', false);
+                $("#btntambahjadwal").html(`Tambahkan`);
             }
             if(kuota == ''){
                 // sweetalert
@@ -654,6 +658,8 @@
                             confirmButton: 'btn btn-danger'
                         }
                     });
+                $("#btntambahjadwal").prop('disabled', false);
+                $("#btntambahjadwal").html(`Tambahkan`);
             }
             var dsn = []
             for (let i = 0; i <= counter; i++) {
@@ -688,6 +694,8 @@
                                 confirmButton: 'btn btn-danger'
                             }
                         });
+                        $("#btntambahjadwal").prop('disabled', false);
+                        $("#btntambahjadwal").html(`Tambahkan`);
                     }
                     if(res.kode == 204){
                         swal({
@@ -698,6 +706,8 @@
                                 confirmButton: 'btn btn-danger'
                             }
                         });
+                        $("#btntambahjadwal").prop('disabled', false);
+                        $("#btntambahjadwal").html(`Tambahkan`);
                     }
                     if(res.kode == 200){
                         swal({
@@ -710,6 +720,18 @@
                         });
                         window.location.href = baseUrl+'/admin/masterdata/jadwal/create/'+id_mk;
                     }
+                },
+                error: function(xhr, status, error){
+                    swal({
+                        icon: 'error',
+                        title: 'Galat!',
+                        text: 'Terjadi kesalahan: ' + error,
+                        customClass: {
+                            confirmButton: 'btn btn-danger'
+                        }
+                    });
+                    $("#btntambahjadwal").prop('disabled', false);
+                    $("#btntambahjadwal").html(`Tambahkan`);
                 }
             });
         }
