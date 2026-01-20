@@ -112,7 +112,7 @@
                                                             {{-- <td>{{ $jad['kode_ta'] }}</td>
                                                             <td>{{ $jad['status'] }}</td> --}}
                                                             <td>{{ $jad['tp'] }}</td>
-                                                            <td>{{$jumlah_input_krs[$jad->id]}} / {{ ((int)$jad['kuota'] +(int)$jumlah_input_krs[$jad->id])}}</td>
+                                                            <td>{{$jumlah_input_krs[$jad->id]}} / {{ ($jad['kuota_tetap'] == 0) ? ((int)$jad['kuota'] +(int)$jumlah_input_krs[$jad->id]) : $jad['kuota_tetap']}}</td>
                                                             <td>
                                                                  @if(empty($jad['rps']))
                                                                         <div class="alert alert-danger">Empty</div>

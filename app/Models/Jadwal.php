@@ -17,6 +17,7 @@ class Jadwal extends Model
         'id_ruang',
         'kel',
         'kuota',
+        'kuota_tetap',
         'status',
         'tp'
     ];

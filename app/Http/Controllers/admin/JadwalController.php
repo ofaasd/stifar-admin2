@@ -44,7 +44,12 @@ class JadwalController extends Controller
                 }
             }
         }else{
-            $mk[] = MataKuliah::where('status', 'Aktif')->get();
+            $kurikulum = Kurikulum::where('thn_ajar',$ta->first()->id)->get();
+            if($kurikulum){
+                foreach($kurikulum as $row){
+                    $mk[] = MatakuliahKurikulum::select('mata_kuliahs.*')->join('mata_kuliahs','mata_kuliahs.id','=','matakuliah_kurikulums.id_mk')->where('mata_kuliahs.status','Aktif')->where('id_kurikulum',$row->id)->get();
+                }
+            }
         }
         $jumlah_kurikulum = Kurikulum::where('thn_ajar',$ta->first()->id)->count();
         $no = 1;
@@ -728,6 +733,7 @@ class JadwalController extends Controller
         $sesi = $request->sesi;
         $kel = $request->kel;
         $kuota = $request->kuota;
+        $kuota_tetap = $request->kuota;
         $status = $request->status;
         $id = $request->id;
         $tp = $request->tp;
@@ -749,6 +755,7 @@ class JadwalController extends Controller
                 'id_sesi' => $sesi,
                 'kel' => $kel,
                 'kuota' => $kuota,
+                'kuota_tetap' => $kuota_tetap,
                 'status' => $status,
                 'tp' => $tp
             ]);
@@ -764,6 +771,7 @@ class JadwalController extends Controller
         $sesi = $request->sesi;
         $kel = $request->kel;
         $kuota = $request->kuota;
+        $kuota_tetap = $request->kuota;
         $status = $request->status;
         $dsn = $request->dsn;
         $tp = $request->tp;
@@ -793,6 +801,7 @@ class JadwalController extends Controller
                                     'id_sesi' => $sesi,
                                     'kel' => $kel,
                                     'kuota' => $kuota,
+                                    'kuota_tetap' => $kuota_tetap,
                                     'status' => $status,
                                     'tp' => $tp
                                 ])->id;

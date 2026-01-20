@@ -166,27 +166,34 @@ class KrsController extends Controller
             $tabel .= '</table></div>';
             Session::put('krs', $tabel);
             return back();
-        }else{
-            $jumlah_kuota = Krs::where(['id_jadwal' => $id, 'id_tahun' => $data_jadwal['id_tahun']])->count();
-            if($data_jadwal->kuota == 0){
-                $tabel = '
-                    <div class="alert alert-danger dark" role="alert">
-                    <span class="mt-4"><b>Maaf kuota matakuliah sudah penuh</b></span>
-                    </div>
-                ';
-                Session::put('krs', $tabel);
-                return back();
-            }else{
-                Krs::create(['id_jadwal' => $id, 'id_tahun' => $data_jadwal['id_tahun'], 'id_mhs' => $mhs, 'is_publish' => 0]);
+        }
+        $cek_matkul_mhs = Krs::where(['mata_kuliahs.id' => $data_jadwal->id_mk, 'krs.id_tahun' => $data_jadwal['id_tahun'], 'id_mhs' => $mhs])->join('jadwals', 'jadwals.id', '=', 'krs.id_jadwal')->join('mata_kuliahs','mata_kuliahs.id','=','jadwals.id_mk')->count();
+        if($data_jadwal->kuota == 0){
+            $tabel = '
+                <div class="alert alert-danger dark" role="alert">
+                <span class="mt-4"><b>Maaf kuota matakuliah sudah penuh</b></span>
+                </div>
+            ';
+            Session::put('krs', $tabel);
+            return back();
+        }
+        if($cek_matkul_mhs >= 1){
+            $tabel = '
+                <div class="alert alert-danger dark" role="alert">
+                <span class="mt-4"><b>Maaf matakuliah sudah di ambil sebelumnya</b></span>
+                </div>
+            ';
+            Session::put('krs', $tabel);
+            return back();
+        }
+
+        Krs::create(['id_jadwal' => $id, 'id_tahun' => $data_jadwal['id_tahun'], 'id_mhs' => $mhs, 'is_publish' => 0]);
                 $kuota = $data_jadwal['kuota'] - 1;
                 Jadwal::where('id', $id)->update(['kuota' => $kuota]);
                 Session::put('krs', '<div class="alert alert-success dark mt-4" role="alert">Jadwal Berhasil di Tambahkan</div>');
                 //adding log to db jika ada error log cek disini
                 LogKrs::create(['id_jadwal' => $id, 'id_mhs'=>$mhs, 'id_ta' => $data_jadwal['id_tahun'], 'action'=>1]);
                 return back();
-            }
-
-        }
     }
     public function hapusadminKRS($id){
         $qr = Krs::where('id', $id)->first();

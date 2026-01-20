@@ -9,7 +9,7 @@
             <!-- <td>SKS</td> -->
             <td>Hari, Waktu</td>
             <td>Ruang</td>
-            <td>Kuota</td>
+            <td>Sisa Kuota</td>
             <td>SKS</td>
             <td>Aksi</td>
         </thead>
@@ -25,10 +25,14 @@
                 <td>{{ $j['kuota'] }}</td>
                 <td>{{ ($j->sks_teori+$j->sks_praktek) }}</td>
                 <td>
-                    <a href="{{ url('admin/masterdata/krs/input/'.$j['id'].'/'.$idmhs) }}" class="btn btn-primary btn-sm">
-                        <i class="fa fa-plus"></i>
-                        Tambahkan
-                    </a>
+                    @if($j['kuota'] == 0)
+                        <span class="btn btn-danger btn-sm">Penuh</span>
+                    @else
+                        <a href="{{ url('admin/masterdata/krs/input/'.$j['id'].'/'.$idmhs) }}" class="btn btn-primary btn-sm">
+                            <i class="fa fa-plus"></i>
+                            Tambahkan
+                        </a>
+                    @endif
                 </td>
             </tr>
         @endforeach
