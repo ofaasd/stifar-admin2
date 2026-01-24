@@ -80,7 +80,7 @@
                                     <th>Nama</th>
                                     <th>IPK</th>
                                     <th>SKS Total </th>
-                                    <th>IPK</th>
+                                    <th>IPS</th>
                                     <th>SKS Sem</th>
                                     @foreach($header_matkul as $hm)
                                         <th>{{$hm->kode_matkul}} - {{$hm->nama_matkul}}</th>
