@@ -157,6 +157,7 @@ use App\Http\Controllers\admin\admisi\StatistikController as AdmisiStatistikCont
 use App\Http\Controllers\admin\akademik\PenyerahanIjazahController;
 use App\Http\Controllers\admin\MenuController;
 use App\Http\Controllers\admin\PermissionController;
+use App\Http\Controllers\admin\LedgerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -872,6 +873,8 @@ Route::group(['middleware' => ['auth', 'role:pegawai-dosen|pegawai|admin-prodi|s
 
     Route::get('admin/kepegawaian/struktural/get_jabatan', [PegawaiJabatanStrukturalController::class, 'get_jabatan'])->name('get_jabatan');
     Route::post('admin/kepegawaian/struktural/get_jabatan', [PegawaiJabatanStrukturalController::class, 'get_jabatan'])->name('get_jabatan');
+
+    Route::get('admin/ledger', [LedgerController::class, 'index'])->name('ledger_index');
 
     Route::get('/dsn/dashboard', [DashboardController::class, 'dosen'])->name('dashboard_dosen');
     Route::get('/employee/dashboard', [DashboardController::class, 'pegawai'])->name('dashboard_pegawai');
