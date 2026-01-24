@@ -53,67 +53,74 @@ class LedgerController extends Controller
                             ->orderBy('mata_kuliahs.kode_matkul', 'asc')
                             ->get();
             $var['data_mahasiswa'] = DB::table('mahasiswa as m')
-                                    ->select([
-                                        'm.id',
-                                        'm.nim',
-                                        'm.nama',
-                                    ])
-                                    // 1. Hitung IPS (Menggunakan Bobot Manual)
-                                    ->addSelect([
-                                        'ips' => DB::table('master_nilai as mn')
-                                            ->join('mata_kuliahs as mk', 'mn.id_matkul', '=', 'mk.id')
-                                            // Rumus: SUM(SKS * BOBOT_MANUAL) / SUM(SKS)
-                                            ->selectRaw("ROUND(
-                                                SUM((mk.sks_teori + mk.sks_praktek) * ($sqlBobot)) 
-                                                / 
-                                                NULLIF(SUM(mk.sks_teori + mk.sks_praktek), 0)
-                                            , 2)")
-                                            ->whereColumn('mn.id_mhs', 'm.id')
-                                            ->where('mn.id_tahun', $id_tahun)
-                                    ])
-                                    // 2. Hitung SKS Semester Ini (Tetap sama)
-                                    ->addSelect([
-                                        'sks_sem' => DB::table('master_nilai as mn')
-                                            ->join('mata_kuliahs as mk', 'mn.id_matkul', '=', 'mk.id')
-                                            ->selectRaw('COALESCE(SUM(mk.sks_teori + mk.sks_praktek), 0)')
-                                            ->whereColumn('mn.id_mhs', 'm.id')
-                                            ->where('mn.id_tahun', $id_tahun)
-                                    ])
-                                    // 3. Hitung IPK (Menggunakan Bobot Manual)
-                                    ->addSelect([
-                                        'ipk' => DB::table('master_nilai as mn')
-                                            ->join('mata_kuliahs as mk', 'mn.id_matkul', '=', 'mk.id')
-                                            // Rumus sama, tapi filternya semua semester (NotNull nhuruf)
-                                            ->selectRaw("ROUND(
-                                                SUM((mk.sks_teori + mk.sks_praktek) * ($sqlBobot)) 
-                                                / 
-                                                NULLIF(SUM(mk.sks_teori + mk.sks_praktek), 0)
-                                            , 2)")
-                                            ->whereColumn('mn.id_mhs', 'm.id')
-                                            ->whereNotNull('mn.nhuruf')
-                                            ->where('mn.nhuruf', '!=', '') // Pastikan huruf tidak string kosong
-                                    ])
-                                    // 4. Hitung Total SKS Lulus (Tetap sama)
-                                    ->addSelect([
-                                        'total_sks' => DB::table('master_nilai as mn')
-                                            ->join('mata_kuliahs as mk', 'mn.id_matkul', '=', 'mk.id')
-                                            ->selectRaw('COALESCE(SUM(mk.sks_teori + mk.sks_praktek), 0)')
-                                            ->whereColumn('mn.id_mhs', 'm.id')
-                                            ->whereNotNull('mn.nhuruf')
-                                            ->where('mn.nhuruf', '!=', 'E') // Biasanya E tidak dihitung SKS Lulus (tergantung kebijakan kampus)
-                                    ])
-                                    // 5. AMBIL NILAI JSON (Tetap sama)
-                                    ->addSelect([
-                                        'raw_nilai_json' => DB::table('master_nilai as mn')
-                                            ->whereColumn('mn.id_mhs', 'm.id')
-                                            ->where('mn.id_tahun', $id_tahun)
-                                            ->selectRaw("JSON_ARRAYAGG(JSON_OBJECT('id_mk', mn.id_matkul, 'huruf', mn.nhuruf))")
-                                    ])
-                                    ->where('m.angkatan', $angkatan)
-                                    ->where('m.id_program_studi', $id_prodi)
-                                    ->where('m.status', 1)
-                                    ->orderBy('m.nim', 'asc')
-                                    ->get();
+                                        ->select(['m.id', 'm.nim', 'm.nama'])
+                                        
+                                        // 1. Hitung IPS (Lewat Jadwal)
+                                        ->addSelect([
+                                            'ips' => DB::table('master_nilai as mn')
+                                                ->join('jadwals as j', 'mn.id_jadwal', '=', 'j.id')      // 1. Join ke Jadwal dulu
+                                                ->join('mata_kuliahs as mk', 'j.id_mk', '=', 'mk.id')    // 2. Baru ke MK
+                                                ->selectRaw("ROUND(
+                                                    SUM((mk.sks_teori + mk.sks_praktek) * ($sqlBobot)) 
+                                                    / 
+                                                    NULLIF(SUM(mk.sks_teori + mk.sks_praktek), 0)
+                                                , 2)")
+                                                ->whereColumn('mn.id_mhs', 'm.id')
+                                                ->where('mn.id_tahun', $id_tahun) 
+                                        ])
+                                        
+                                        // 2. Hitung SKS Semester Ini (Lewat Jadwal)
+                                        ->addSelect([
+                                            'sks_sem' => DB::table('master_nilai as mn')
+                                                ->join('jadwals as j', 'mn.id_jadwal', '=', 'j.id')
+                                                ->join('mata_kuliahs as mk', 'j.id_mk', '=', 'mk.id')
+                                                ->selectRaw('COALESCE(SUM(mk.sks_teori + mk.sks_praktek), 0)')
+                                                ->whereColumn('mn.id_mhs', 'm.id')
+                                                ->where('mn.id_tahun', $id_tahun)
+                                        ])
+                                        
+                                        // 3. Hitung IPK Kumulatif (Lewat Jadwal)
+                                        ->addSelect([
+                                            'ipk' => DB::table('master_nilai as mn')
+                                                ->join('jadwals as j', 'mn.id_jadwal', '=', 'j.id')
+                                                ->join('mata_kuliahs as mk', 'j.id_mk', '=', 'mk.id')
+                                                ->selectRaw("ROUND(
+                                                    SUM((mk.sks_teori + mk.sks_praktek) * ($sqlBobot)) 
+                                                    / 
+                                                    NULLIF(SUM(mk.sks_teori + mk.sks_praktek), 0)
+                                                , 2)")
+                                                ->whereColumn('mn.id_mhs', 'm.id')
+                                                ->whereNotNull('mn.nhuruf')
+                                                ->where('mn.nhuruf', '!=', '')
+                                        ])
+                                        
+                                        // 4. Hitung Total SKS Lulus (Lewat Jadwal)
+                                        ->addSelect([
+                                            'total_sks' => DB::table('master_nilai as mn')
+                                                ->join('jadwals as j', 'mn.id_jadwal', '=', 'j.id')
+                                                ->join('mata_kuliahs as mk', 'j.id_mk', '=', 'mk.id')
+                                                ->selectRaw('COALESCE(SUM(mk.sks_teori + mk.sks_praktek), 0)')
+                                                ->whereColumn('mn.id_mhs', 'm.id')
+                                                ->whereNotNull('mn.nhuruf')
+                                                ->where('mn.nhuruf', '!=', 'E') 
+                                        ])
+                                        
+                                        // 5. AMBIL NILAI JSON (KUNCI PERUBAHAN DISINI)
+                                        // Kita harus mengambil 'mk.id' sebagai 'id_mk' agar cocok dengan Header
+                                        ->addSelect([
+                                            'raw_nilai_json' => DB::table('master_nilai as mn')
+                                                ->join('jadwals as j', 'mn.id_jadwal', '=', 'j.id')      // Join ke Jadwal
+                                                ->join('mata_kuliahs as mk', 'j.id_mk', '=', 'mk.id')    // Join ke MK
+                                                ->whereColumn('mn.id_mhs', 'm.id')
+                                                ->where('mn.id_tahun', $id_tahun)
+                                                // Perhatikan: 'id_mk' diambil dari tabel mk (mk.id), bukan mn.id_matkul
+                                                ->selectRaw("JSON_ARRAYAGG(JSON_OBJECT('id_mk', mk.id, 'huruf', mn.nhuruf))")
+                                        ])
+                                        ->where('m.angkatan', $angkatan)
+                                        ->where('m.id_program_studi', $id_prodi)
+                                        ->where('m.status', 1)
+                                        ->orderBy('m.nim', 'asc')
+                                        ->get();
 
             // ---------------------------------------------------------
             // DATA TRANSFORMATION (PHP Side)
