@@ -1,4 +1,4 @@
-@servers(['web' => 'ofaasd@103.187.147.220'])
+@servers(['web' => 'root@148.230.99.4'])
 
 @task('deploy')
     sudo su
