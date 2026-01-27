@@ -7,11 +7,12 @@ use Auth;
 use App\Models\MasterSkripsi;
 use App\Models\master_nilai;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 
 class helpers
 {
-    public static $number_key = '3EYdFkP7uhk5RX6D';
-    public static $wa_api = 'X2Y7UZOZT0WVQVTG';
+    // public static $number_key = '3EYdFkP7uhk5RX6D';
+    // public static $wa_api = 'X2Y7UZOZT0WVQVTG';
 
     public static function getNilaiHuruf(float $nilai)
     {
@@ -129,8 +130,9 @@ class helpers
 
     public static function send_wa($data)
     {
-        $number_key = self::$number_key;
-        $wa_api = self::$wa_api;
+        $wa_setting = DB::table('wa_api')->where('status',1)->first();
+        $number_key = $wa_setting->number_key;
+        $wa_api = $wa_setting->api_key;
 
         $curl = curl_init();
 
