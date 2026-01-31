@@ -27,54 +27,28 @@
                 <div class="card">
                     <div class="card-header pb-0 card-no-border">
                         <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal">+ {{$title2}}</button>
-                        <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <form action="javascript:void(0)" id="formAdd">
-                                        @csrf
-                                        <input type="hidden" name="id" id="id">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="ModalLabel">Tambah {{$title2}}</h5>
-                                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                             <div class="mb-3">
-                                                <label for="tanah " class="form-label">Tanah</label>
-                                                <select class="form-select" aria-label="Default select example" id="kode_tanah" name="kodeTanah">
-                                                    @foreach ($asetTanah as $row)
-                                                        <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="lantai" class="form-label">Lantai</label>
-                                                <select class="form-select" aria-label="Default select example" id="id_lantai" name="idLantai">
-                                                    @foreach ($masterLantai as $row)
-                                                        <option value="{{ $row->id }}">{{ $row->lantai }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="kode" class="form-label">Kode</label>
-                                                <input type="text" name="kode" id="kode" class="form-control" placeholder="H">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="nama" class="form-label">Nama</label>
-                                                <input type="text" name="nama" id="nama" class="form-control" placeholder="Gedung H">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="luas" class="form-label">Luas</label>
-                                                <div class="input-group">
-                                                        <input type="text" class="form-control" name="luas" id="luas" placeholder="12.4">
-                                                        <span class="input-group-text">m<sup>2</sup></span>
-                                                    </div>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
-                                            <button class="btn btn-primary" id="btn-submit" type="submit">Simpan</button>
-                                        </div>
-                                    </form>
+                    </div>
+                    <div class="card-body">
+                        <h5>Statistik Gedung & Bangunan</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6>Jumlah Tanah per Kode</h6>
+                                        <ul>
+                                            @foreach($statsDitanah as $kode => $jumlah)
+                                                <li>{{ $kode }}: {{ $jumlah }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6>Total Luas</h6>
+                                        <p>{{ $totalLuas }} m<sup>2</sup></p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -104,6 +78,58 @@
                 </div>
             </div>
             <!-- Zero Configuration  Ends-->
+        </div>
+    </div>
+
+    <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form action="javascript:void(0)" id="formAdd">
+                    @csrf
+                    <input type="hidden" name="id" id="id">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="ModalLabel">Tambah {{$title2}}</h5>
+                        <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                            <div class="mb-3">
+                            <label for="tanah " class="form-label">Tanah</label>
+                            <select class="form-select" aria-label="Default select example" id="kode_tanah" name="kodeTanah">
+                                @foreach ($asetTanah as $row)
+                                    <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="lantai" class="form-label">Lantai</label>
+                            <select class="form-select" aria-label="Default select example" id="id_lantai" name="idLantai">
+                                @foreach ($masterLantai as $row)
+                                    <option value="{{ $row->id }}">{{ $row->lantai }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="kode" class="form-label">Kode</label>
+                            <input type="text" name="kode" id="kode" class="form-control" placeholder="H">
+                        </div>
+                        <div class="mb-3">
+                            <label for="nama" class="form-label">Nama</label>
+                            <input type="text" name="nama" id="nama" class="form-control" placeholder="Gedung H">
+                        </div>
+                        <div class="mb-3">
+                            <label for="luas" class="form-label">Luas</label>
+                            <div class="input-group">
+                                    <input type="text" class="form-control" name="luas" id="luas" placeholder="12.4">
+                                    <span class="input-group-text">m<sup>2</sup></span>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                        <button class="btn btn-primary" id="btn-submit" type="submit">Simpan</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 @endsection

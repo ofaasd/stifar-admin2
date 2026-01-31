@@ -18,13 +18,31 @@ class AsetTanahController extends Controller
     public $indexed = ['', 'id', 'kode', 'nama', 'alamat', 'luas'];
     public function index(Request $request)
     {
-        //
         if (empty($request->input('length'))) {
             $title = "tanah";
             $title2 = "Aset Tanah";
             $indexed = $this->indexed;
             $asetTanah = AsetTanah::all();
-            return view('admin.aset.tanah.index', compact('title', 'title2', 'indexed', 'asetTanah'));
+            $statsJenisTanah = AsetTanah::select('status_tanah')
+                ->selectRaw('COUNT(*) as total')
+                ->groupBy('status_tanah')
+                ->pluck('total', 'status_tanah')
+                ->toArray();
+            $statsLuasTanah = AsetTanah::selectRaw('
+                CASE
+                    WHEN luas < 100 THEN "Kecil (< 100 m²)"
+                    WHEN luas BETWEEN 100 AND 500 THEN "Sedang (100-500 m²)"
+                    WHEN luas > 500 THEN "Besar (> 500 m²)"
+                    ELSE "Tidak Diketahui"
+                END AS kategori_luas,
+                COUNT(*) as total
+            ')
+            ->groupBy('kategori_luas')
+            ->pluck('total', 'kategori_luas')
+            ->toArray();
+            $totalLuas = AsetTanah::sum('luas');
+
+            return view('admin.aset.tanah.index', compact('title', 'title2', 'indexed', 'asetTanah', 'statsJenisTanah', 'statsLuasTanah', 'totalLuas'));
         }else{
             $columns = [
                 1 => 'id',

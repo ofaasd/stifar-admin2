@@ -35,7 +35,28 @@ class AsetBarangController extends Controller
             $dataVendor = MasterVendor::orderBy('nama', 'asc')->get();
             $dataJenisBarang = MasterJenisBarang::orderBy('kode', 'asc')->get();
             $dataKategori = MasterKategoriAset::orderBy('nama', 'asc')->get();
-            return view('admin.aset.barang.index', compact('title', 'title2', 'indexed', 'asetRuang', 'dataJenisBarang', 'dataPegawai', 'dataVendor', 'dataKategori'));
+            $statsJenisBarang = AsetBarang::select('master_jenis_barang.nama')
+                ->leftJoin('master_jenis_barang', 'master_jenis_barang.kode', '=', 'aset_barang.kode_jenis_barang')
+                ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'aset_barang.id_penanggung_jawab')
+                ->groupBy('master_jenis_barang.nama')
+                ->selectRaw('master_jenis_barang.nama, COUNT(*) as jumlah')
+                ->pluck('jumlah', 'master_jenis_barang.nama');
+
+            $statsVendorBarang = AsetBarang::select('master_vendor.nama')
+                ->leftJoin('master_vendor', 'master_vendor.kode', '=', 'aset_barang.kode_vendor')
+                ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'aset_barang.id_penanggung_jawab')
+                ->groupBy('master_vendor.nama')
+                ->selectRaw('master_vendor.nama, COUNT(*) as jumlah')
+                ->pluck('jumlah', 'master_vendor.nama');
+
+            $statsKategoriBarang = AsetBarang::select('master_kategori_aset.nama')
+                ->leftJoin('master_kategori_aset', 'master_kategori_aset.kode', '=', 'aset_barang.kode_kategori')
+                ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'aset_barang.id_penanggung_jawab')
+                ->groupBy('master_kategori_aset.nama')
+                ->selectRaw('master_kategori_aset.nama, COUNT(*) as jumlah')
+                ->pluck('jumlah', 'master_kategori_aset.nama');
+
+            return view('admin.aset.barang.index', compact('title', 'title2', 'indexed', 'asetRuang', 'dataJenisBarang', 'dataPegawai', 'dataVendor', 'dataKategori', 'statsJenisBarang', 'statsVendorBarang', 'statsKategoriBarang'));
         }else{
             $columns = [
                 1 => 'id',

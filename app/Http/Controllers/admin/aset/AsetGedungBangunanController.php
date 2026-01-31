@@ -8,6 +8,7 @@ use App\Models\AsetTanah;
 use App\Models\Lantai;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 
 class AsetGedungBangunanController extends Controller
 {
@@ -28,7 +29,14 @@ class AsetGedungBangunanController extends Controller
             $asetTanah = AsetTanah::all();
             $masterLantai = Lantai::all();
             $aset = AsetGedungBangunan::all();
-            return view('admin.aset.gedung-bangunan.index', compact('title', 'title2', 'indexed', 'asetTanah', 'masterLantai', 'aset'));
+            $gedungCountPerKode = AsetGedungBangunan::select('aset_tanah.nama', DB::raw('count(*) as total'))
+                ->leftJoin('aset_tanah', DB::raw('aset_gedung_bangunan.kode_tanah COLLATE utf8mb4_general_ci'), '=', DB::raw('aset_tanah.kode COLLATE utf8mb4_general_ci'))
+                ->groupBy('aset_tanah.nama')
+                ->get();
+
+            $statsDitanah = $gedungCountPerKode->pluck('total', 'nama');
+            $totalLuas = AsetGedungBangunan::sum('luas');
+            return view('admin.aset.gedung-bangunan.index', compact('title', 'title2', 'indexed', 'asetTanah', 'masterLantai', 'aset', 'statsDitanah', 'totalLuas'));
         }else{
             $columns = [
                 1 => 'id',

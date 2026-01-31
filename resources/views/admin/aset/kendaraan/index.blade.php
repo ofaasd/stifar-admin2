@@ -27,203 +27,39 @@
                 <div class="card">
                     <div class="card-header pb-0 card-no-border">
                         <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal">+ {{$title2}}</button>
-                        <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <form action="javascript:void(0)" id="formAdd">
-                                        @csrf
-                                        <input type="hidden" name="id" id="id">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="ModalLabel">Tambah {{$title2}}</h5>
-                                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">                                
-                                            <div class="row">
-                                                <div class="mb-3 col-6">
-                                                    <label for="kode_jenis_kendaraan " class="form-label">Jenis Kendaraan</label>
-                                                    <select class="form-select" aria-label="Default select example" id="kode_jenis_kendaraan" name="kodeJenisKendaraan">
-                                                        @foreach ($dataJenisKendaraan as $row)
-                                                            <option value="{{ $row->kode }}">{{ $row->nama }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="mb-3 col-6">
-                                                    <label for="kode_merek_kendaraan " class="form-label">Merk Kendaraan</label>
-                                                    <select class="form-select" aria-label="Default select example" id="kode_merek_kendaraan" name="kodeMerkKendaraan">
-                                                        @foreach ($dataMerkKendaraan as $row)
-                                                            <option value="{{ $row->kode }}">{{ $row->nama }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="id_penanggung_jawab" class="form-label">Penanggung Jawab</label>
-                                                    <select class="form-select" aria-label="Default select example" id="id_penanggung_jawab" name="idPenanggungJawab">
-                                                        @foreach ($dataPegawai as $row)
-                                                            <option value="{{ $row->id }}">{{ $row->nama_lengkap }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="mb-3 col-6">
-                                                    <label for="nama" class="form-label">Nama</label>
-                                                    <input type="text" name="nama" id="nama" class="form-control" placeholder="Innova Reborn">
-                                                </div>
-                                                <div class="mb-3 col-6">
-                                                    <label for="nomor_polisi" class="form-label">Nomor Polisi</label>
-                                                    <input type="text" name="nomorPolisi" id="nomor_polisi" class="form-control" placeholder="H 1234 HH">
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="tanggal_perolehan" class="form-label">Tanggal Perolehan</label>
-                                                    <input type="date" name="tanggalPerolehan" id="tanggal_perolehan" class="form-control">
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="harga_perolehan" class="form-label">Harga Perolehan</label>
-                                                    <div class="input-group">
-                                                        <input type="text" class="form-control" name="hargaPerolehan" id="harga_perolehan" placeholder="120000000">
-                                                        <span class="input-group-text">Rp</span>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="harga_penyusutan" class="form-label">Harga Penyusutan</label>
-                                                    <div class="input-group">
-                                                        <input type="text" class="form-control" name="hargaPenyusutan" id="harga_penyusutan" placeholder="35000000">
-                                                        <span class="input-group-text">Rp</span>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="nomor_rangka" class="form-label">Nomor Rangka</label>
-                                                    <input type="text" name="nomorRangka" id="nomor_rangka" class="form-control" placeholder="MHY1234567B567890">
-                                                </div>
-                                                <div class="mb-3 col-6">
-                                                    <label for="bahan_bakar" class="form-label">Bahan Bakar</label>
-                                                    <select class="form-select" aria-label="Default select example" id="bahan_bakar" name="bahanBakar">
-                                                        <option value="bensin">Bensin</option>
-                                                        <option value="solar">Solar</option>
-                                                        <option value="listrik">Listrik</option>
-                                                    </select>
-                                                </div>
-                                                <div class="mb-3 col-6">
-                                                    <label for="transmisi" class="form-label">Transmisi</label>
-                                                    <select class="form-select" aria-label="Default select example" id="transmisi" name="transmisi">
-                                                        <option value="manual">Manual</option>
-                                                        <option value="matic">Matic</option>
-                                                    </select>
-                                                </div>
-                                                <div class="mb-3 col-6">
-                                                    <label for="kapasitas_mesin" class="form-label">Kapasitas Mesin</label>
-                                                    <div class="input-group">
-                                                        <input type="text" class="form-control" name="kapasitasMesin" id="kapasitas_mesin" placeholder="2400">
-                                                        <span class="input-group-text">cc</span>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3 col-6">
-                                                    <label for="pemeriksaan_terakhir" class="form-label">Pemeriksaan Terakhir</label>
-                                                    <input type="date" name="pemeriksaanTerakhir" id="pemeriksaan_terakhir" class="form-control">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
-                                            <button class="btn btn-primary" id="btn-submit" type="submit">Simpan</button>
-                                        </div>
-                                    </form>
+                    </div>
+                    <div class="card-body">
+                        <h5>Statistik Kendaraan</h5>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6>Jenis Kendaraan</h6>
+                                        <ul>
+                                            @foreach($statJenisKendaraan as $jenis => $jumlah)
+                                                <li>{{ $jenis }}: {{ $jumlah }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="modal fade bd-example-modal-lg" id="viewModal" tabindex="-1" role="dialog" aria-labelledby="viewModal" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="ModalLabel">Detail <span id="view-judul-nama"></span></h5>
-                                        <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6>Merk Kendaraan</h6>
+                                        <ul>
+                                            @foreach($statMerkKendaraan as $merk => $jumlah)
+                                                <li>{{ $merk }}: {{ $jumlah }}</li>
+                                            @endforeach
+                                        </ul>
                                     </div>
-                                    <div class="modal-body">
-                                        <div class="row g-4">
-                                            <div class="col-12 col-md-6">
-                                                <div class="form-floating form-floating-outline">
-                                                    <p>Kode : <span id='view-kode'></span></p>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-12 col-md-6">
-                                                <div class="form-floating form-floating-outline">
-                                                    <p>Jenis : <span id='view-jenis'></span></p>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-12 col-md-6">
-                                                <div class="form-floating form-floating-outline">
-                                                    <p>Merk : <span id='view-merek'></span></p>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-12 col-md-6">
-                                                <div class="form-floating form-floating-outline">
-                                                    <p>Penanggung Jawab : <span id='view-penanggung_jawab'></span></p>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-12 col-md-6">
-                                                <div class="form-floating form-floating-outline">
-                                                    <p>Nama : <span id='view-nama_kendaraan'></span></p>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-12 col-md-6">
-                                                <div class="form-floating form-floating-outline">
-                                                    <p>Nomor Polisi : <span id='view-nomor_polisi'></span></p>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-12 col-md-6">
-                                                <div class="form-floating form-floating-outline">
-                                                    <p>Tanggal Perolehan : <span id='view-tanggal_perolehan'></span></p>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-12 col-md-6">
-                                                <div class="form-floating form-floating-outline">
-                                                    <p>Harga Perolehan : <span id='view-harga_perolehan'></span></p>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-12 col-md-6">
-                                                <div class="form-floating form-floating-outline">
-                                                    <p>Harga Penyusutan : <span id='view-harga_penyusutan'></span></p>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-12 col-md-6">
-                                                <div class="form-floating form-floating-outline">
-                                                    <p>Nomor Rangka : <span id='view-nomor_rangka'></span></p>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-12 col-md-6">
-                                                <div class="form-floating form-floating-outline">
-                                                    <p>Bahan Bakar : <span id='view-bahan_bakar'></span></p>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-12 col-md-6">
-                                                <div class="form-floating form-floating-outline">
-                                                    <p>Transmisi : <span id='view-transmisi'></span></p>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-12 col-md-6">
-                                                <div class="form-floating form-floating-outline">
-                                                    <p>Kapasitas Mesin : <span id='view-kapasitas_mesin'></span>cc</p>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-12 col-md-6">
-                                                <div class="form-floating form-floating-outline">
-                                                <p> Pemeriksaan Terakhir : <span id='view-pemeriksaan_terakhir'></span></p>
-                                                </div>
-                                            </div>
-                                           
-                                        </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6>Total Kendaraan</h6>
+                                        <p>{{ $jumlahKendaraan }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -254,6 +90,173 @@
                 </div>
             </div>
             <!-- Zero Configuration  Ends-->
+        </div>
+    </div>
+
+    <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form action="javascript:void(0)" id="formAdd">
+                    @csrf
+                    <input type="hidden" name="id" id="id">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="ModalLabel">Tambah {{$title2}}</h5>
+                        <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">                                
+                        <div class="row">
+                            <div class="mb-3 col-6">
+                                <label for="kode_jenis_kendaraan " class="form-label">Jenis Kendaraan</label>
+                                <select class="form-select" aria-label="Default select example" id="kode_jenis_kendaraan" name="kodeJenisKendaraan">
+                                    @foreach ($dataJenisKendaraan as $row)
+                                        <option value="{{ $row->kode }}">{{ $row->nama }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="mb-3 col-6">
+                                <label for="kode_merek_kendaraan " class="form-label">Merk Kendaraan</label>
+                                <select class="form-select" aria-label="Default select example" id="kode_merek_kendaraan" name="kodeMerkKendaraan">
+                                    @foreach ($dataMerkKendaraan as $row)
+                                        <option value="{{ $row->kode }}">{{ $row->nama }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="id_penanggung_jawab" class="form-label">Penanggung Jawab</label>
+                                <select class="form-select" aria-label="Default select example" id="id_penanggung_jawab" name="idPenanggungJawab">
+                                    @foreach ($dataPegawai as $row)
+                                        <option value="{{ $row->id }}">{{ $row->nama_lengkap }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="mb-3 col-6">
+                                <label for="nama" class="form-label">Nama</label>
+                                <input type="text" name="nama" id="nama" class="form-control" placeholder="Innova Reborn">
+                            </div>
+                            <div class="mb-3 col-6">
+                                <label for="nomor_polisi" class="form-label">Nomor Polisi</label>
+                                <input type="text" name="nomorPolisi" id="nomor_polisi" class="form-control" placeholder="H 1234 HH">
+                            </div>
+                            <div class="mb-3">
+                                <label for="tanggal_perolehan" class="form-label">Tanggal Perolehan</label>
+                                <input type="date" name="tanggalPerolehan" id="tanggal_perolehan" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label for="harga_perolehan" class="form-label">Harga Perolehan</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="hargaPerolehan" id="harga_perolehan" placeholder="120000000">
+                                    <span class="input-group-text">Rp</span>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="harga_penyusutan" class="form-label">Harga Penyusutan</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="hargaPenyusutan" id="harga_penyusutan" placeholder="35000000">
+                                    <span class="input-group-text">Rp</span>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="nomor_rangka" class="form-label">Nomor Rangka</label>
+                                <input type="text" name="nomorRangka" id="nomor_rangka" class="form-control" placeholder="MHY1234567B567890">
+                            </div>
+                            <div class="mb-3 col-6">
+                                <label for="bahan_bakar" class="form-label">Bahan Bakar</label>
+                                <select class="form-select" aria-label="Default select example" id="bahan_bakar" name="bahanBakar">
+                                    <option value="bensin">Bensin</option>
+                                    <option value="solar">Solar</option>
+                                    <option value="listrik">Listrik</option>
+                                </select>
+                            </div>
+                            <div class="mb-3 col-6">
+                                <label for="transmisi" class="form-label">Transmisi</label>
+                                <select class="form-select" aria-label="Default select example" id="transmisi" name="transmisi">
+                                    <option value="manual">Manual</option>
+                                    <option value="matic">Matic</option>
+                                </select>
+                            </div>
+                            <div class="mb-3 col-6">
+                                <label for="kapasitas_mesin" class="form-label">Kapasitas Mesin</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="kapasitasMesin" id="kapasitas_mesin" placeholder="2400">
+                                    <span class="input-group-text">cc</span>
+                                </div>
+                            </div>
+                            <div class="mb-3 col-6">
+                                <label for="pemeriksaan_terakhir" class="form-label">Pemeriksaan Terakhir</label>
+                                <input type="date" name="pemeriksaanTerakhir" id="pemeriksaan_terakhir" class="form-control">
+                            </div>
+                            <div class="mb-3 col-6">
+                                <label for="tanggal_pajak" class="form-label">Tanggal Pajak Kendaraan</label>
+                                <input type="date" name="tanggalPajak" id="tanggal_pajak" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                        <button class="btn btn-primary" id="btn-submit" type="submit">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-labelledby="viewModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detail <span id="view-judul-nama"></span></h5>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-4">
+                        <div class="col-12 col-md-6">
+                            <p><strong>Kode:</strong> <span id="view-kode"></span></p>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <p><strong>Jenis:</strong> <span id="view-jenis"></span></p>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <p><strong>Merk:</strong> <span id="view-merek"></span></p>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <p><strong>Penanggung Jawab:</strong> <span id="view-penanggung_jawab"></span></p>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <p><strong>Nama:</strong> <span id="view-nama_kendaraan"></span></p>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <p><strong>Nomor Polisi:</strong> <span id="view-nomor_polisi"></span></p>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <p><strong>Tanggal Perolehan:</strong> <span id="view-tanggal_perolehan"></span></p>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <p><strong>Harga Perolehan:</strong> <span id="view-harga_perolehan"></span></p>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <p><strong>Harga Penyusutan:</strong> <span id="view-harga_penyusutan"></span></p>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <p><strong>Nomor Rangka:</strong> <span id="view-nomor_rangka"></span></p>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <p><strong>Bahan Bakar:</strong> <span id="view-bahan_bakar"></span></p>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <p><strong>Transmisi:</strong> <span id="view-transmisi"></span></p>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <p><strong>Kapasitas Mesin:</strong> <span id="view-kapasitas_mesin"></span> cc</p>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <p><strong>Pemeriksaan Terakhir:</strong> <span id="view-pemeriksaan_terakhir"></span></p>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <p><strong>Tanggal Pajak Kendaraan:</strong> <span id="view-tanggal_pajak"></span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 @endsection
@@ -347,6 +350,7 @@
                 $('#id').val('');
                 $('#formAdd').trigger("reset");
             });
+            
             //Edit Record
             $(document).on('click', '.edit-record', function () {
                 const id = $(this).data('id');
@@ -358,8 +362,8 @@
                 // get data
                 $.get(''.concat(baseUrl).concat(page, '/').concat(id, '/edit'), function (data) {
                 Object.keys(data).forEach(key => {
-                    if(key == 'pemeriksaan_terakhir' || key == 'tanggal_perolehan'){
-                        var dateOnly = data[key].split(' ')[0];
+                    if(key == 'pemeriksaan_terakhir' || key == 'tanggal_perolehan' || key == 'tanggal_pajak'){
+                        var dateOnly = data[key] ? data[key].split(' ')[0] : '';
                         $('#' + key)
                             .val(dateOnly)
                             .trigger('change');
@@ -443,6 +447,7 @@
                     }
                 });
             });
+
             //delete record
             $(document).on('click', '.delete-record', function () {
                 const id = $(this).data('id');
