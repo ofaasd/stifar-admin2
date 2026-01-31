@@ -164,7 +164,7 @@
                     {
                         targets: 4, // indeks kolom ke-4 (Nama), sesuaikan jika posisinya berbeda
                         render: function (data, type, full, meta) {
-                            return '<a href="' + baseUrl.concat(page) + '/' + full['idEnkripsi'] + '">' + data + '</a>';
+                            return '<a href="' + baseUrl.concat(page) + '/' + full.idEnkripsi + '">' + data + '</a>';
                         }
                     },
                     {
@@ -177,10 +177,10 @@
                             return (
                             '<div class="d-inline-block text-nowrap">' +
                             '<button class="btn btn-sm btn-icon edit-record text-primary" data-id="'
-                                .concat(full['id'], '" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal"')
+                                .concat(full.id, '" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal"')
                                 .concat(title, '"><i class="fa fa-pencil"></i></button>') +
                             '<button class="btn btn-sm btn-icon delete-record text-primary" data-id="'.concat(
-                                full['id'],
+                                full.id,
                                 '"><i class="fa fa-trash"></i></button>'
                             )
                             );
