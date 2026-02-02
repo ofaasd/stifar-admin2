@@ -123,6 +123,11 @@
                                     <span class="input-group-text">m<sup>2</sup></span>
                                 </div>
                         </div>
+                        <div class="mb-3">
+                            <label for="foto" class="form-label">Foto</label>
+                            <input type="file" name="foto" class="form-control">
+                            <a href="" target="_blank" id="foto"><i class="fa fa-file text-dark fs-3 mt-3"></i> Lihat Foto</a>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
@@ -230,10 +235,13 @@
                 // get data
                 $.get(''.concat(baseUrl).concat(page, '/').concat(id, '/edit'), function (data) {
                 Object.keys(data).forEach(key => {
-                    //console.log(key);
-                    $('#' + key)
-                        .val(data[key])
-                        .trigger('change');
+                    if(key == 'foto'){
+                        $('#foto').attr('href', data[key]);
+                    }else{
+                        $('#' + key)
+                            .val(data[key])
+                            .trigger('change');
+                    }
                 });
                 });
             });
@@ -244,10 +252,13 @@
                 btnSubmit.prop('disabled', true); 
                 btnSubmit.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Please Wait...');
 
+                var formData = new FormData($('#formAdd')[0]);
                 $.ajax({
-                    data: $('#formAdd').serialize(),
+                    data: formData,
                     url: ''.concat(baseUrl).concat(page),
                     type: 'POST',
+                    processData: false,
+                    contentType: false,
                     success: function success(status) {
                         dt.draw();
                         $("#tambahModal").modal('hide');
@@ -265,12 +276,14 @@
                         btnSubmit.text('Simpan');
                     },
                     error: function error(err) {
-                        // offCanvasForm.offcanvas('hide');
-                        // console.log('====================================');
-                        // console.log(err);
-                        // console.log('====================================');
+                        var errorMessage = 'There was an error processing your request.';
+                        if (err.responseJSON && err.responseJSON.message) {
+                            errorMessage = err.responseJSON.error;
+                        }else if (err.responseText) {
+                            errorMessage = err.responseText;
+                        }
                         swal({
-                            title: 'Duplicate Entry!',
+                            title: errorMessage,
                             text: title + ' Not Saved !',
                             icon: 'error',
                             customClass: {
@@ -282,6 +295,7 @@
                     }
                 });
             });
+
             //delete record
             $(document).on('click', '.delete-record', function () {
                 const id = $(this).data('id');

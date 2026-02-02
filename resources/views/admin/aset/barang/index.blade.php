@@ -220,6 +220,11 @@
                                     @endforeach
                                 </select>
                             </div>
+                            <div class="mb-3 col-6">
+                                <label for="foto" class="form-label">Foto</label>
+                                <input type="file" name="foto" class="form-control">
+                                <a href="" target="_blank" id="foto"><i class="fa fa-file text-dark fs-3 mt-3"></i> Lihat Foto</a>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -317,6 +322,7 @@
                 $('#id').val('');
                 $('#formAdd').trigger("reset");
             });
+
             //Edit Record
             $(document).on('click', '.edit-record', function () {
                 const id = $(this).data('id');
@@ -340,6 +346,8 @@
                         $('#' + key)
                             .val(dateOnly)
                             .trigger('change');
+                    }else if(key == 'foto'){
+                        $('#foto').attr('href', data[key]);
                     }else{
                         $('#' + key)
                             .val(data[key])
@@ -348,6 +356,7 @@
                 });
                 });
             });
+
             //save record
             $('#formAdd').on('submit',function(e){
                 e.preventDefault();
@@ -356,15 +365,16 @@
                 btnSubmit.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Please Wait...');
 
                 const offCanvasForm = $('#formAdd');
+                var formData = new FormData($('#formAdd')[0]);
                 $.ajax({
-                    data: $('#formAdd').serialize(),
+                    data: formData,
                     url: ''.concat(baseUrl).concat(page),
                     type: 'POST',
+                    processData: false,
+                    contentType: false,
                     success: function success(status) {
                         dt.draw();
                         $("#tambahModal").modal('hide');
-
-                        // sweetalert
                         swal({
                             icon: 'success',
                             title: 'Successfully '.concat(status, '!'),
@@ -378,8 +388,14 @@
                     },
                     error: function error(err) {
                         offCanvasForm.offcanvas('hide');
+                        var errorMessage = 'There was an error processing your request.';
+                        if (err.responseJSON && err.responseJSON.error) {
+                            errorMessage = err.responseJSON.error;
+                        }else if (err.responseText) {
+                            errorMessage = err.responseText;
+                        }
                         swal({
-                            title: 'Duplicate Entry!',
+                            title: errorMessage,
                             text: title + ' Not Saved !',
                             icon: 'error',
                             customClass: {
@@ -391,6 +407,7 @@
                     }
                 });
             });
+
             //delete record
             $(document).on('click', '.delete-record', function () {
                 const id = $(this).data('id');
@@ -409,43 +426,43 @@
                 },
                 buttonsStyling: false
                 }).then(function (result) {
-                if (result) {
+                    if (result) {
 
-                    // delete the data
-                    $.ajax({
-                    type: 'DELETE',
-                    url: ''.concat(baseUrl).concat(page, '/').concat(id),
-                    data:{
-                        'id': id,
-                        '_token': '{{ csrf_token() }}',
-                    },
-                    success: function success() {
-                        dt.draw();
-                    },
-                    error: function error(_error) {
-                        // console.log(_error);
-                    }
-                    });
+                        // delete the data
+                        $.ajax({
+                        type: 'DELETE',
+                        url: ''.concat(baseUrl).concat(page, '/').concat(id),
+                        data:{
+                            'id': id,
+                            '_token': '{{ csrf_token() }}',
+                        },
+                        success: function success() {
+                            dt.draw();
+                        },
+                        error: function error(_error) {
+                            // console.log(_error);
+                        }
+                        });
 
-                    // success sweetalert
-                    swal({
-                    icon: 'success',
-                    title: 'Deleted!',
-                    text: 'The Record has been deleted!',
-                    customClass: {
-                        confirmButton: 'btn btn-success'
+                        // success sweetalert
+                        swal({
+                        icon: 'success',
+                        title: 'Deleted!',
+                        text: 'The Record has been deleted!',
+                        customClass: {
+                            confirmButton: 'btn btn-success'
+                        }
+                        });
+                    } else {
+                        swal({
+                        title: 'Cancelled',
+                        text: 'The record is not deleted!',
+                        icon: 'error',
+                        customClass: {
+                            confirmButton: 'btn btn-success'
+                        }
+                        });
                     }
-                    });
-                } else {
-                    swal({
-                    title: 'Cancelled',
-                    text: 'The record is not deleted!',
-                    icon: 'error',
-                    customClass: {
-                        confirmButton: 'btn btn-success'
-                    }
-                    });
-                }
                 });
             });
         });

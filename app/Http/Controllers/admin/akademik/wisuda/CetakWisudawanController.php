@@ -154,7 +154,7 @@ class CetakWisudawanController extends Controller
                     $nestedData['tanggal_pendaftaran'] = \Carbon\Carbon::parse($row->mulai_pendaftaran)->translatedFormat('d F Y') . ' - ' . \Carbon\Carbon::parse($row->selesai_pendaftaran)->translatedFormat('d F Y');
                     $nestedData['tanggal_pemberkasan'] = \Carbon\Carbon::parse($row->tanggal_pemberkasan)->translatedFormat('d F Y');
                     $nestedData['tanggal_gladi'] = \Carbon\Carbon::parse($row->tanggal_gladi)->translatedFormat('d F Y');
-                    $nestedData['tarif_wisuda'] = 'Rp ' . number_format($row->tarif_wisuda, 0, ',', '.');
+                    $nestedData['tarif_wisuda'] = number_format($row->tarif_wisuda, 0, ',', '.');
                     $nestedData['jml_peserta'] = $row->jml_peserta;
                     $nestedData['idEnkripsi'] = $row->idEnkripsi;
                     $data[] = $nestedData;

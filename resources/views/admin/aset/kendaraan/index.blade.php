@@ -189,6 +189,11 @@
                                 <label for="tanggal_pajak" class="form-label">Tanggal Pajak Kendaraan</label>
                                 <input type="date" name="tanggalPajak" id="tanggal_pajak" class="form-control">
                             </div>
+                            <div class="mb-3 col-6">
+                                <label for="foto" class="form-label">Foto Kendaraan</label>
+                                <input type="file" name="foto" class="form-control">
+                                <a href="" target="_blank" id="foto"><i class="fa fa-file text-dark fs-3 mt-3"></i> Lihat Foto</a>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -253,6 +258,9 @@
                         </div>
                         <div class="col-12 col-md-6">
                             <p><strong>Tanggal Pajak Kendaraan:</strong> <span id="view-tanggal_pajak"></span></p>
+                        </div>
+                        <div class="col-12">
+                            <p><strong>Foto Kendaraan:</strong> <br><a href="" target="_blank" alt="foto kendaraan" id="view-foto" style="max-width: 100%; height: auto;"><i class="fa fa-file text-dark fs-3 mt-3"></i> Lihat Foto</a></p>
                         </div>
                     </div>
                 </div>
@@ -367,6 +375,8 @@
                         $('#' + key)
                             .val(dateOnly)
                             .trigger('change');
+                    }else if(key == 'foto'){
+                            $('#foto').attr('href', data[key]);
                     }else{
                         $('#' + key)
                             .val(data[key])
@@ -392,6 +402,8 @@
                             $('#view-judul-nama').text(data[key]);
                             $('#view-' + key)
                                 .text(data[key]);
+                        }else if(key == 'foto'){
+                            $('#view-foto').attr('href', data[key]);
                         }else{
                             $('#view-' + key)
                                 .text(data[key]);
@@ -409,33 +421,36 @@
                 btnSubmit.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Please Wait...');
 
                 const offCanvasForm = $('#formAdd');
+                var formData = new FormData($('#formAdd')[0]);
                 $.ajax({
-                    data: $('#formAdd').serialize(),
+                    data: formData,
                     url: ''.concat(baseUrl).concat(page),
                     type: 'POST',
+                    contentType: false,
+                    processData: false,
                     success: function success(status) {
                         dt.draw();
                         $("#tambahModal").modal('hide');
-
-                        // sweetalert
                         swal({
                             icon: 'success',
                             title: 'Successfully '.concat(status, '!'),
                             text: ''.concat(title, ' ').concat(status, ' Successfully.'),
                             customClass: {
-                            confirmButton: 'btn btn-success'
-                        }
+                                confirmButton: 'btn btn-success'
+                            }
                         });
                         btnSubmit.prop('disabled', false);
                         btnSubmit.text('Simpan');
                     },
                     error: function error(err) {
-                        console.log('====================================');
-                        console.log(err);
-                        console.log('====================================');
-                        offCanvasForm.offcanvas('hide');
+                        var errorMessage = 'There was an error processing your request.';
+                        if (err.responseJSON && err.responseJSON.error) {
+                            errorMessage = err.responseJSON.error;
+                        }else if (err.responseText) {
+                            errorMessage = err.responseText;
+                        }
                         swal({
-                            title: 'Duplicate Entry!',
+                            title: errorMessage,
                             text: title + ' Not Saved !',
                             icon: 'error',
                             customClass: {

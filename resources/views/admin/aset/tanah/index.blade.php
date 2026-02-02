@@ -149,6 +149,11 @@
                             <input type="file" class="form-control" name="buktiFisik" id="bukti_fisik">
                             <a href="#" id="edit-view-bukti_fisik"><i class="fa fa-file text-dark fs-3 mt-3"></i></a> <span id="edit-view-text-bukti_fisik">bukti fisik</span>
                         </div>
+                        <div class="mb-2" id="field-foto">
+                            <label for="foto" class="form-label">Foto</label>
+                            <input type="file" class="form-control" name="foto" id="foto">
+                            <a href="#" id="edit-view-foto"><i class="fa fa-file text-dark fs-3 mt-3"></i></a> <span id="edit-view-text-foto">foto</span>
+                        </div>
                     </div>
                     
                     <div class="modal-footer">
@@ -220,6 +225,11 @@
                         <div class="col-12 col-md-6">
                             <div class="form-floating form-floating-outline">
                             <a class="btn btn-sm btn-primary" id='view-bukti_fisik' href="" target="_blank">Lihat Bukti</a>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="form-floating form-floating-outline">
+                            <a class="btn btn-sm btn-primary" id='view-foto' href="" target="_blank">Lihat Foto</a>
                             </div>
                         </div>
                     </div>
@@ -325,6 +335,9 @@
 
                 $('#edit-view-bukti_fisik').addClass('d-none');
                 $('#edit-view-text-bukti_fisik').addClass('d-none');
+
+                $('#edit-view-foto').addClass('d-none');
+                $('#edit-view-text-foto').addClass('d-none');
             });
             $(document).on('click', '.edit-record', function () {
                 const id = $(this).data('id');
@@ -332,9 +345,13 @@
                 $('#edit-view-bukti_fisik').removeClass('d-none');
                 $('#edit-view-text-bukti_fisik').removeClass('d-none');
 
+                $('#edit-view-foto').removeClass('d-none');
+                $('#edit-view-text-foto').removeClass('d-none');
+
                 $('#formAdd').trigger("reset");
 
                 $('#edit-view-bukti_fisik').attr('href', '#');
+                $('#edit-view-foto').attr('href', '#');
 
                 // changing the title of offcanvas
                 $('#ModalLabel').html('Edit ' + title2);
@@ -347,10 +364,9 @@
                             $('#' + key)
                                 .val(dateOnly)
                                 .trigger('change');
-                        }else if(key == 'bukti_fisik'){
-                            var href = baseUrl + '/assets/images/aset/tanah/' + data[key]
+                        }else if(key == 'bukti_fisik' || key == 'foto'){
                             $('#edit-view-'+ key)
-                                .attr('href', href)
+                                .attr('href', data[key])
                                 .attr('target', '_blank');
                         }else{
                             $('#' + key)
@@ -373,10 +389,9 @@
                 // get data
                 $.get(''.concat(baseUrl).concat(page, '/').concat(id), function (data) {
                     Object.keys(data).forEach(key => {
-                        if(key == 'bukti_fisik'){
-                            var href = baseUrl + '/assets/images/aset/tanah/' + data[key]
+                        if(key == 'bukti_fisik' || key == 'foto'){
                             $('#view-'+ key)
-                                .attr('href', href)
+                                .attr('href', data[key])
                                 .attr('target', '_blank');
                         }else if(key == 'nama'){
                             $('#view-judul-nama').text(data[key]);
@@ -419,6 +434,9 @@
                         btnSubmit.prop('disabled', false);
                     },
                     error: function error(err) {
+                        console.log('====================================');
+                        console.log(err);
+                        console.log('====================================');
                         offCanvasForm.offcanvas('hide');
                         swal({
                             title: 'Duplicate Entry!',

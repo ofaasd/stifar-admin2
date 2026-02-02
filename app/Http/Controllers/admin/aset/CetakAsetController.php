@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers\admin\aset;
 
+use App\Models\AsetTanah;
 use App\Models\AsetBarang;
 use App\Models\MasterRuang;
 use Illuminate\Http\Request;
 use App\Models\AsetKendaraan;
-use App\Models\MasterJenisBarang;
-use App\Http\Controllers\Controller;
-use App\Models\AsetGedungBangunan;
-use App\Models\AsetTanah;
-use App\Models\MasterJenisKendaaran;
-
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\MasterJenisBarang;
+use App\Models\AsetGedungBangunan;
+use Illuminate\Support\Facades\DB;
+
+use App\Http\Controllers\Controller;
+use App\Models\MasterJenisKendaaran;
 
 class CetakAsetController extends Controller
 {
@@ -50,7 +51,12 @@ class CetakAsetController extends Controller
 
             if($type === 'all'){
                 $title = "Semua";
-                $asetBarang = AsetBarang::all();
+                $asetBarang = AsetBarang::select([
+                    'aset_barang.*',
+                    'master_ruang.nama_ruang',
+                ])
+                ->leftJoin('master_ruang', DB::raw("REPLACE(master_ruang.nama_ruang, ' ', '')"), '=', 'aset_barang.kode_ruang')
+                ->get();
                 $asetGedung = AsetGedungBangunan::all();
                 $asetKendaraan = AsetKendaraan::all();
                 $asetTanah = AsetTanah::all();
@@ -59,13 +65,25 @@ class CetakAsetController extends Controller
 
             }elseif ($type === 'barang') {
                 $title = MasterJenisBarang::where('kode', $value)->pluck('nama')->first();
-                $data = AsetBarang::where('kode_jenis_barang', $value)->get();
+                $data = AsetBarang::select([
+                    'aset_barang.*',
+                    'master_ruang.nama_ruang',
+                ])
+                ->leftJoin('master_ruang', DB::raw("REPLACE(master_ruang.nama_ruang, ' ', '')"), '=', 'aset_barang.kode_ruang')
+                ->where('kode_jenis_barang', $value)
+                ->get();
             } elseif ($type === 'kendaraan') {
                 $data = AsetKendaraan::where('kode_jenis_kendaraan', $value)->get();
                 $title = MasterJenisKendaaran::where('kode', $value)->pluck('nama')->first();
             } elseif ($type === 'ruang') {
                 $title = MasterRuang::whereRaw('REPLACE(nama_ruang, " ", "") = ?', [$value])->pluck('nama_ruang')->first();
-                $data = AsetBarang::whereRaw('REPLACE(kode_ruang, " ", "") = ?', [$value])->get();
+                $data = AsetBarang::select([
+                    'aset_barang.*',
+                    'master_ruang.nama_ruang',
+                ])
+                ->leftJoin('master_ruang', DB::raw("REPLACE(master_ruang.nama_ruang, ' ', '')"), '=', 'aset_barang.kode_ruang')
+                ->whereRaw('REPLACE(kode_ruang, " ", "") = ?', [$value])
+                ->get();
             } else {
                 return response()->json("tidak ditemukan");
             }

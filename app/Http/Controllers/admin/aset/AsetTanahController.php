@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\AsetTanah;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\File;
+use Intervention\Image\Laravel\Facades\Image;
 
 class AsetTanahController extends Controller
 {
@@ -155,6 +157,22 @@ class AsetTanahController extends Controller
             mkdir($tujuan_upload, 0777, true);
         }
 
+        $fileFoto = $request->file('foto');
+        $fileNameFoto = null;
+
+        if ($fileFoto) {
+            $image = Image::read($fileFoto->getRealPath());
+
+            $fileNameFoto = time() . '.' . $fileFoto->getClientOriginalExtension();
+            $tujuanUpload = public_path('assets/images/aset/tanah');
+
+            if (!File::exists($tujuanUpload)) {
+                File::makeDirectory($tujuanUpload, 0755, true);
+            }
+
+            $image->save($tujuanUpload . '/' . $fileNameFoto, 70);
+        }
+
         if ($id) 
         {
             if($request->hasFile('buktiFisik')){
@@ -162,34 +180,46 @@ class AsetTanahController extends Controller
                 $cutter = time() . '-' . $request->kode . '-' . $file->getClientOriginalName();
                 $fileName = str_replace(' ', '-', $cutter);
 
+                $updateData =[
+                    'kode' => $request->kode, 
+                    'nama' => $request->nama, 
+                    'alamat' => $request->alamat, 
+                    'luas' => $request->luas, 
+                    'tanggal_perolehan' => $request->tanggalPerolehan, 
+                    'no_sertifikat' => $request->noSertifikat, 
+                    'status_tanah' => $request->statusTanah, 
+                    'keterangan' => $request->keterangan, 
+                    'bukti_fisik' => $fileName
+                ];
+                
+                if ($fileNameFoto) {
+                    $updateData['foto'] = $fileNameFoto;
+                }
+
                 $asetTanah = AsetTanah::updateOrCreate(
                     ['id' => $id],
-                    [
-                        'kode' => $request->kode, 
-                        'nama' => $request->nama, 
-                        'alamat' => $request->alamat, 
-                        'luas' => $request->luas, 
-                        'tanggal_perolehan' => $request->tanggalPerolehan, 
-                        'no_sertifikat' => $request->noSertifikat, 
-                        'status_tanah' => $request->statusTanah, 
-                        'keterangan' => $request->keterangan, 
-                        'bukti_fisik' => $fileName
-                    ]
+                    $updateData
                 );
                 $file->move($tujuan_upload, $fileName);
             }else{
+                $updateData =[
+                    'kode' => $request->kode, 
+                    'nama' => $request->nama, 
+                    'alamat' => $request->alamat, 
+                    'luas' => $request->luas, 
+                    'tanggal_perolehan' => $request->tanggalPerolehan, 
+                    'no_sertifikat' => $request->noSertifikat, 
+                    'status_tanah' => $request->statusTanah, 
+                    'keterangan' => $request->keterangan, 
+                ];
+
+                if ($fileNameFoto) {
+                    $updateData['foto'] = $fileNameFoto;
+                }
+
                 $asetTanah = AsetTanah::updateOrCreate(
                     ['id' => $id],
-                    [
-                        'kode' => $request->kode, 
-                        'nama' => $request->nama, 
-                        'alamat' => $request->alamat, 
-                        'luas' => $request->luas, 
-                        'tanggal_perolehan' => $request->tanggalPerolehan, 
-                        'no_sertifikat' => $request->noSertifikat, 
-                        'status_tanah' => $request->statusTanah, 
-                        'keterangan' => $request->keterangan, 
-                    ]
+                    $updateData
                 );
             }
             return response()->json('Updated');
@@ -205,35 +235,48 @@ class AsetTanahController extends Controller
                 $cutter = time() . '-' . $request->kode . '-' . $file->getClientOriginalName();
                 $fileName = str_replace(' ', '-', $cutter);
 
+                $updateData = [
+                    'kode' => $request->kode, 
+                    'nama' => $request->nama, 
+                    'alamat' => $request->alamat, 
+                    'luas' => $request->luas, 
+                    'tanggal_perolehan' => $request->tanggalPerolehan, 
+                    'no_sertifikat' => $request->noSertifikat, 
+                    'status_tanah' => $request->statusTanah, 
+                    'keterangan' => $request->keterangan, 
+                    'bukti_fisik' => $fileName
+                ];
+
+                if ($fileNameFoto) {
+                    $updateData['foto'] = $fileNameFoto;
+                }
+
                 $asetTanah = AsetTanah::updateOrCreate(
                     ['id' => $id],
-                    [
-                        'kode' => $request->kode, 
-                        'nama' => $request->nama, 
-                        'alamat' => $request->alamat, 
-                        'luas' => $request->luas, 
-                        'tanggal_perolehan' => $request->tanggalPerolehan, 
-                        'no_sertifikat' => $request->noSertifikat, 
-                        'status_tanah' => $request->statusTanah, 
-                        'keterangan' => $request->keterangan, 
-                        'bukti_fisik' => $fileName
-                    ]
+                    $updateData
                 );
+
                 $file->move($tujuan_upload, $fileName);
             }else
             {
+                $updateData =[
+                    'kode' => $request->kode, 
+                    'nama' => $request->nama, 
+                    'alamat' => $request->alamat, 
+                    'luas' => $request->luas, 
+                    'tanggal_perolehan' => $request->tanggalPerolehan, 
+                    'no_sertifikat' => $request->noSertifikat, 
+                    'status_tanah' => $request->statusTanah, 
+                    'keterangan' => $request->keterangan, 
+                ];
+
+                if ($fileNameFoto) {
+                    $updateData['foto'] = $fileNameFoto;
+                }
+
                 $asetTanah = AsetTanah::updateOrCreate(
                     ['id' => $id],
-                    [
-                        'kode' => $request->kode, 
-                        'nama' => $request->nama, 
-                        'alamat' => $request->alamat, 
-                        'luas' => $request->luas, 
-                        'tanggal_perolehan' => $request->tanggalPerolehan, 
-                        'no_sertifikat' => $request->noSertifikat, 
-                        'status_tanah' => $request->statusTanah, 
-                        'keterangan' => $request->keterangan, 
-                    ]
+                    $updateData
                 );
             }
 
@@ -261,6 +304,9 @@ class AsetTanahController extends Controller
             $asetTanah->tanggal_perolehan = $asetTanah->tanggal_perolehan ? Carbon::parse($asetTanah->tanggal_perolehan)
                 ->locale('id')
                 ->translatedFormat('d F Y') : '';
+
+            $asetTanah->bukti_fisik = $asetTanah->bukti_fisik ? asset('assets/images/aset/tanah/' . $asetTanah->bukti_fisik) : '#';
+            $asetTanah->foto = $asetTanah->foto ? asset('assets/images/aset/tanah/' . $asetTanah->foto) : '#';
         }
 
         return response()->json($asetTanah);
@@ -277,6 +323,11 @@ class AsetTanahController extends Controller
         $where = ['id' => $id];
 
         $asetTanah = AsetTanah::where($where)->first();
+
+        if ($asetTanah) {
+            $asetTanah->foto = $asetTanah->foto ? asset('assets/images/aset/tanah/' . $asetTanah->foto) : '#';
+            $asetTanah->bukti_fisik = $asetTanah->bukti_fisik ? asset('assets/images/aset/tanah/' . $asetTanah->bukti_fisik) : '#';
+        }
 
         return response()->json($asetTanah);
     }
@@ -303,10 +354,15 @@ class AsetTanahController extends Controller
             return response()->json(['message' => 'Data tidak ditemukan.'], 404);
         }
 
-        $lokasiBukti = 'assets/images/aset/tanah/' . $asetTanah->buktifisik;
+        $lokasiBukti = 'assets/images/aset/tanah/' . $asetTanah->bukti_fisik;
+        $lokasiFoto = 'assets/images/aset/tanah/' . $asetTanah->foto;
 
         if (file_exists($lokasiBukti) && is_file($lokasiBukti)) {
             unlink($lokasiBukti);
+        }
+
+        if (file_exists($lokasiFoto) && is_file($lokasiFoto)) {
+            unlink($lokasiFoto);
         }
 
         $asetTanah->delete();

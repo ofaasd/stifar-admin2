@@ -14,6 +14,9 @@ use App\Models\PegawaiBiodatum;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\File;
+use Intervention\Image\Laravel\Facades\Image;
+use Carbon\Carbon;
 
 class AsetBarangController extends Controller
 {
@@ -197,6 +200,7 @@ class AsetBarangController extends Controller
                 'elektronik'      => 'required',
                 'pemeriksaanTerakhir'      => 'required',
                 'kodeKategori'      => 'required',
+                'foto'      => 'nullable|image|max:2048'
             ]);
             
             $kodeRuang = $validatedData['kodeRuang'];
@@ -208,10 +212,24 @@ class AsetBarangController extends Controller
 
             $nomorUrutBaru2 = $nomorUrutTerbesar2 + 1;
             $label = $kodeRuang . "/" . $kodeJenisBarang . "/" . $nomorUrutBaru2;
+
+            $file = $request->file('foto');
+            $fileName = null;
+
+            if ($file) {
+                $image = Image::read($file->getRealPath());
+
+                $fileName = time() . '.' . $file->getClientOriginalExtension();
+                $tujuanUpload = public_path('assets/images/aset/barang');
+
+                if (!File::exists($tujuanUpload)) {
+                    File::makeDirectory($tujuanUpload, 0755, true);
+                }
+
+                $image->save($tujuanUpload . '/' . $fileName, 70);
+            }
             
-            $save = AsetBarang::updateOrCreate(
-                ['id' => $id],
-                [
+            $updateData = [
                     'nama' => $validatedData['nama'],
                     'kode_jenis_barang' => $kodeJenisBarang,
                     'spesifikasi' => $validatedData['spesifikasi'],
@@ -232,7 +250,15 @@ class AsetBarangController extends Controller
                     'elektronik' => $validatedData['elektronik'],
                     'pemeriksaan_terakhir' => $validatedData['pemeriksaanTerakhir'],
                     'kode_kategori' => $validatedData['kodeKategori']
-                ]
+                ];
+
+            if ($fileName) {
+                $updateData['foto'] = $fileName;
+            }
+
+            $save = AsetBarang::updateOrCreate(
+                ['id' => $id],
+                $updateData
             );
 
             if ($id) {
@@ -267,11 +293,11 @@ class AsetBarangController extends Controller
     {
         $data = AsetBarang::where("id", $id)->first();
 
-        $data->tanggal_pembelian = \Carbon\Carbon::parse($data->tanggal_pembelian)->format('Y-m-d');
-        $data->pemeriksaan_terakhir = \Carbon\Carbon::parse($data->pemeriksaan_terakhir)->format('Y-m-d');
-
-
         if ($data) {
+            $data->tanggal_pembelian = Carbon::parse($data->tanggal_pembelian)->format('Y-m-d');
+            $data->pemeriksaan_terakhir = Carbon::parse($data->pemeriksaan_terakhir)->format('Y-m-d');
+            $data->foto = $data->foto ? asset('assets/images/aset/barang/' . $data->foto) : '#';
+            
             return response()->json($data); // Kembalikan objek KategoriAset langsung
         } else {
             return response()->json([
@@ -297,6 +323,23 @@ class AsetBarangController extends Controller
     */
     public function destroy(string $id)
     {
-        $data = AsetBarang::where('id', $id)->delete();
+        $data = AsetBarang::where('id', $id)->first();
+
+        if(!$data){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Barang not found',
+            ], 404);
+        }
+
+        $lokasiFoto = public_path('assets/images/aset/barang/' . $data->foto);
+
+        if (file_exists($lokasiFoto) && is_file($lokasiFoto)) {
+            unlink($lokasiFoto);
+        }
+
+        $data->delete();
+
+        return response()->json('Deleted');
     }
 }

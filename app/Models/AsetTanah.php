@@ -20,6 +20,7 @@ class AsetTanah extends Model
         'no_sertifikat',
         'status_tanah',
         'keterangan',
-        'bukti_fisik'
+        'bukti_fisik',
+        'foto'
     ];
 }

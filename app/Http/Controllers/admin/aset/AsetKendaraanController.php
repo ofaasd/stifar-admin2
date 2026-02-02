@@ -13,6 +13,8 @@ use App\Models\MerkKendaraan;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\File;
+use Intervention\Image\Laravel\Facades\Image;
 
 class AsetKendaraanController extends Controller
 {
@@ -189,6 +191,7 @@ class AsetKendaraanController extends Controller
                 'kapasitasMesin'      => 'required',
                 'pemeriksaanTerakhir'      => 'required',
                 'tanggalPajak'      => 'nullable',
+                'foto'      => 'nullable|image|max:2048'
             ]);
 
             $kodeJenisKendaraan = $validatedData['kodeJenisKendaraan'];
@@ -200,26 +203,48 @@ class AsetKendaraanController extends Controller
 
             $nomorUrutBaru2 = $nomorUrutTerbesar2 + 1;
             $kode = $kodeJenisKendaraan . "/" . $kodeMerkKendaraan . "/" . $nomorUrutBaru2;
+
+            $file = $request->file('foto');
+            $fileName = null;
+
+            if ($file) {
+                $image = Image::read($file->getRealPath());
+
+                $fileName = time() . '.' . $file->getClientOriginalExtension();
+                $tujuanUpload = public_path('assets/images/aset/kendaraan');
+
+                if (!File::exists($tujuanUpload)) {
+                    File::makeDirectory($tujuanUpload, 0755, true);
+                }
+
+                $image->save($tujuanUpload . '/' . $fileName, 70);
+            }
             
+            $updateData = [
+                'kode' => $kode,
+                'kode_jenis_kendaraan' => $validatedData['kodeJenisKendaraan'],
+                'kode_merek_kendaraan' => $validatedData['kodeMerkKendaraan'],
+                'id_penanggung_jawab' => $validatedData['idPenanggungJawab'],
+                'nama' => $validatedData['nama'],
+                'nomor_polisi' => $validatedData['nomorPolisi'],
+                'tanggal_perolehan' => $validatedData['tanggalPerolehan'],
+                'harga_perolehan' => $validatedData['hargaPerolehan'],
+                'harga_penyusutan' => $validatedData['hargaPenyusutan'],
+                'nomor_rangka' => $validatedData['nomorRangka'],
+                'bahan_bakar' => $validatedData['bahanBakar'],
+                'transmisi' => $validatedData['transmisi'],
+                'kapasitas_mesin' => $validatedData['kapasitasMesin'],
+                'pemeriksaan_terakhir' => $validatedData['pemeriksaanTerakhir'],
+                'tanggal_pajak' => $validatedData['tanggalPajak'],
+            ];
+
+            if ($fileName) {
+                $updateData['foto'] = $fileName;
+            }
+
             $save = AsetKendaraan::updateOrCreate(
                 ['id' => $id],
-                [
-                    'kode' => $kode,
-                    'kode_jenis_kendaraan' => $validatedData['kodeJenisKendaraan'],
-                    'kode_merek_kendaraan' => $validatedData['kodeMerkKendaraan'],
-                    'id_penanggung_jawab' => $validatedData['idPenanggungJawab'],
-                    'nama' => $validatedData['nama'],
-                    'nomor_polisi' => $validatedData['nomorPolisi'],
-                    'tanggal_perolehan' => $validatedData['tanggalPerolehan'],
-                    'harga_perolehan' => $validatedData['hargaPerolehan'],
-                    'harga_penyusutan' => $validatedData['hargaPenyusutan'],
-                    'nomor_rangka' => $validatedData['nomorRangka'],
-                    'bahan_bakar' => $validatedData['bahanBakar'],
-                    'transmisi' => $validatedData['transmisi'],
-                    'kapasitas_mesin' => $validatedData['kapasitasMesin'],
-                    'pemeriksaan_terakhir' => $validatedData['pemeriksaanTerakhir'],
-                    'tanggal_pajak' => $validatedData['tanggalPajak']
-                ]
+                $updateData
             );
 
             if ($id) {
@@ -230,7 +255,7 @@ class AsetKendaraanController extends Controller
 
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Failed to save Kategori Aset',
+                'message' => 'Failed to save Aset Kendaraan',
                 'error' => $e->getMessage(),
             ], 500);
         }
@@ -278,6 +303,8 @@ class AsetKendaraanController extends Controller
 
             $data->harga_penyusutan = $data->harga_penyusutan ? number_format($data->harga_penyusutan, 0, ',', '.') : 'Tidak ada data';
             $data->harga_perolehan = $data->harga_perolehan ? number_format($data->harga_perolehan, 0, ',', '.') : 'Tidak ada data';
+
+            $data->foto = $data->foto ? asset('assets/images/aset/kendaraan/' . $data->foto) : '#';
         }
 
         return response()->json($data);
@@ -294,7 +321,8 @@ class AsetKendaraanController extends Controller
         $data = AsetKendaraan::where("id", $id)->first();
 
         if ($data) {
-            return response()->json($data); // Kembalikan objek KategoriAset langsung
+            $data->foto = $data->foto ? asset('assets/images/aset/kendaraan/' . $data->foto) : '#';
+            return response()->json($data); // Kembalikan objek Kendaraan langsung
         } else {
             return response()->json([
                 'status' => 'error',
@@ -319,6 +347,20 @@ class AsetKendaraanController extends Controller
     */
     public function destroy(string $id)
     {
-        $data = AsetKendaraan::where('id', $id)->delete();
+        $data = AsetKendaraan::where('id', $id)->first();
+
+        if (!$data) {
+            return response()->json(['message' => 'Data tidak ditemukan.'], 404);
+        }
+
+        $lokasiFoto = 'assets/images/aset/kendaraan/' . $data->foto;
+
+        if (file_exists($lokasiFoto) && is_file($lokasiFoto)) {
+            unlink($lokasiFoto);
+        }
+
+        $data->delete();
+
+        return response()->json(['message' => 'Data berhasil dihapus.'], 200);
     }
 }

@@ -34,5 +34,6 @@ class AsetBarang extends Model
         'inventaris_lama',
         'inventaris_baru',
         'keterangan',
+        'foto'
     ];
 }
