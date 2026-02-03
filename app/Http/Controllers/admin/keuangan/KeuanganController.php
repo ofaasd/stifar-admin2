@@ -259,7 +259,7 @@ class KeuanganController extends Controller
                 ]
             );
         }
-
+        return back();
         // $user = User::create([
         //     'name' => $new_pegawai->nama_lengkap,
         //     'email' => $request->email,

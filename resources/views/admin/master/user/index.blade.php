@@ -28,6 +28,7 @@
                     <div class="card-header pb-0 card-no-border">
                         @if(empty($link))
                         <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal" id="add-record">+ {{$title2}}</button>
+                        <a href="{{url('/admin/keuangan/generate_user_mhs')}}" class="btn btn-success" id="generateUser">Generate User Mahasiswa</a>
                         @endif
                         <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
                             <div class="modal-dialog" role="document">
