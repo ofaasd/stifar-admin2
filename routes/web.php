@@ -101,7 +101,7 @@ use App\Http\Controllers\admin\keuangan\ProdiBukaTutupController;
 use App\Http\Controllers\admin\skripsi\DosenPembimbingController;
 use App\Http\Controllers\mahasiswa\skripsi\NilaiSidangController;
 use App\Http\Controllers\mahasiswa\skripsi\PembimbingController1;
-use App\Http\Controllers\admin\akademik\KhsController as adminKhs;
+use App\Http\Controllers\admin\akademik\khsController as adminKhs;
 use App\Http\Controllers\admin\akademik\PengaturanUjianController;
 use App\Http\Controllers\admin\kepegawaian\PegawaiKaryaController;
 use App\Http\Controllers\admin\keuangan\SettingKeuanganController;

@@ -13,6 +13,8 @@ use App\Models\MerkKendaraan;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\File;
+use Intervention\Image\Laravel\Facades\Image;
 
 class AsetKendaraanController extends Controller
 {
@@ -22,9 +24,22 @@ class AsetKendaraanController extends Controller
     * Terakhir diedit: 6 November 2025
     * Editor: faiz
     */
-    public $indexed = ['', 'id', 'kode', 'nomorPolisi', 'namaKendaraan', 'transmisi', 'namaPenanggungJawab'];
+    public $indexed = ['', 'id', 'kode', 'nomorPolisi', 'nama', 'transmisi', 'namaPenanggungJawab'];
     public function index(Request $request)
     {
+        $query = AsetKendaraan::select([
+                'aset_kendaraan.*',
+                'aset_kendaraan.nama',
+                'aset_kendaraan.nomor_polisi AS nomorPolisi',
+                'master_jenis_kendaraan.kode AS kodeJenisKendaraan',
+                'pegawai_biodata.nama_lengkap AS namaPenanggungJawab',
+                'master_merk_kendaraan.kode AS kodeMerkKendaraan',
+                DB::raw('DATE(aset_kendaraan.pemeriksaan_terakhir) AS pemeriksaanTerakhir')
+            ])
+            ->leftJoin('master_jenis_kendaraan', 'master_jenis_kendaraan.kode', '=', 'aset_kendaraan.kode_jenis_kendaraan')
+            ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'aset_kendaraan.id_penanggung_jawab')
+            ->leftJoin('master_merk_kendaraan', 'master_merk_kendaraan.kode', '=', 'aset_kendaraan.kode_merek_kendaraan');
+
         if (empty($request->input('length'))) {
             $title = "kendaraan";
             $title2 = "Aset Kendaraan";
@@ -32,13 +47,29 @@ class AsetKendaraanController extends Controller
             $dataJenisKendaraan = MasterJenisKendaaran::orderBy('kode', 'asc')->get();
             $dataMerkKendaraan = MerkKendaraan::orderBy('kode', 'asc')->get();
             $dataPegawai = PegawaiBiodatum::orderBy('nama_lengkap', 'asc')->get();
-            return view('admin.aset.kendaraan.index', compact('title', 'title2', 'indexed', 'dataJenisKendaraan', 'dataMerkKendaraan', 'dataPegawai'));
+            $statJenisKendaraan = AsetKendaraan::select('master_jenis_kendaraan.nama')
+                ->leftJoin('master_jenis_kendaraan', 'master_jenis_kendaraan.kode', '=', 'aset_kendaraan.kode_jenis_kendaraan')
+                ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'aset_kendaraan.id_penanggung_jawab')
+                ->leftJoin('master_merk_kendaraan', 'master_merk_kendaraan.kode', '=', 'aset_kendaraan.kode_merek_kendaraan')
+                ->groupBy('master_jenis_kendaraan.nama')
+                ->selectRaw('master_jenis_kendaraan.nama, COUNT(*) as jumlah')
+                ->pluck('jumlah', 'master_jenis_kendaraan.nama');
+            $statMerkKendaraan = AsetKendaraan::select('master_merk_kendaraan.nama')
+                ->leftJoin('master_jenis_kendaraan', 'master_jenis_kendaraan.kode', '=', 'aset_kendaraan.kode_jenis_kendaraan')
+                ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'aset_kendaraan.id_penanggung_jawab')
+                ->leftJoin('master_merk_kendaraan', 'master_merk_kendaraan.kode', '=', 'aset_kendaraan.kode_merek_kendaraan')
+                ->groupBy('master_merk_kendaraan.nama')
+                ->selectRaw('master_merk_kendaraan.nama, COUNT(*) as jumlah')
+                ->pluck('jumlah', 'master_merk_kendaraan.nama');
+            $jumlahKendaraan = $query->count();
+
+            return view('admin.aset.kendaraan.index', compact('title', 'title2', 'indexed', 'dataJenisKendaraan', 'dataMerkKendaraan', 'dataPegawai', 'statJenisKendaraan', 'statMerkKendaraan', 'jumlahKendaraan'));
         }else{
             $columns = [
                 1 => 'id',
                 2 => 'kode',
                 3 => 'nomorPolisi',
-                4 => 'namaKendaraan',
+                4 => 'nama',
                 5 => 'transmisi',
                 6 => 'namaPenanggungJawab',
             ];
@@ -54,84 +85,33 @@ class AsetKendaraanController extends Controller
             $order = $columns[$request->input('order.0.column')];
             $dir = $request->input('order.0.dir');
 
-
             if (empty($request->input('search.value'))) {
-                $getData = AsetKendaraan::select([
-                    'aset_kendaraan.*',
-                    'aset_kendaraan.nama AS namaKendaraan',
-                    'aset_kendaraan.nomor_polisi AS nomorPolisi',
-                    'master_jenis_kendaraan.kode AS kodeJenisKendaraan',
-                    'pegawai_biodata.nama_lengkap AS namaPenanggungJawab',
-                    'master_merk_kendaraan.kode AS kodeMerkKendaraan',
-                    DB::raw('DATE(aset_kendaraan.pemeriksaan_terakhir) AS pemeriksaanTerakhir')
-                ])
-                ->leftJoin('master_jenis_kendaraan', 'master_jenis_kendaraan.kode', '=', 'aset_kendaraan.kode_jenis_kendaraan')
-                ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'aset_kendaraan.id_penanggung_jawab')
-                ->leftJoin('master_merk_kendaraan', 'master_merk_kendaraan.kode', '=', 'aset_kendaraan.kode_merek_kendaraan')
-                ->offset($start)
+                $getData = $query->offset($start)
                 ->limit($limit)
                 ->orderBy($order, $dir)
                 ->get();
             } else {
                 $search = $request->input('search.value');
 
-                $getData = AsetKendaraan::select([
-                    'aset_kendaraan.*',
-                    'master_jenis_kendaraan.kode AS kodeJenisKendaraan',
-                    'pegawai_biodata.nama_lengkap AS namaPenanggungJawab',
-                    'master_merk_kendaraan.kode AS kodeMerkKendaraan',
-                    DB::raw('DATE(aset_kendaraan.pemeriksaan_terakhir) AS pemeriksaanTerakhir')
-                ])
-                ->leftJoin('master_jenis_kendaraan', 'master_jenis_kendaraan.kode', '=', 'aset_kendaraan.kode_jenis_kendaraan')
-                ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'aset_kendaraan.id_penanggung_jawab')
-                ->leftJoin('master_merk_kendaraan', 'master_merk_kendaraan.kode', '=', 'aset_kendaraan.kode_merek_kendaraan')
-                ->where('aset_kendaraan.id', 'LIKE', "%{$search}%")
-                ->orWhere('namaRuang', 'LIKE', "%{$search}%")
-                ->orWhere('namaPenanggungJawab', 'LIKE', "%{$search}%")
-                ->orWhere('kodeJenisKendaraan', 'LIKE', "%{$search}%")
-                ->orWhere('kodeMerkKendaraan', 'LIKE', "%{$search}%")
-                ->orWhere('aset_kendaraan.kode', 'LIKE', "%{$search}%")
+                $getData = $query->where('aset_kendaraan.id', 'LIKE', "%{$search}%")
+                ->orWhere('pegawai_biodata.nama_lengkap', 'LIKE', "%{$search}%")
+                ->orWhere('master_jenis_kendaraan.kode', 'LIKE', "%{$search}%")
+                ->orWhere('master_merk_kendaraan.kode', 'LIKE', "%{$search}%")
                 ->orWhere('aset_kendaraan.nama', 'LIKE', "%{$search}%")
                 ->orWhere('aset_kendaraan.nomor_polisi', 'LIKE', "%{$search}%")
-                ->orWhere('aset_kendaraan.tanggal_perolehan', 'LIKE', "%{$search}%")
-                ->orWhere('aset_kendaraan.harga_perolehan', 'LIKE', "%{$search}%")
-                ->orWhere('aset_kendaraan.harga_penyusutan', 'LIKE', "%{$search}%")
-                ->orWhere('aset_kendaraan.nomor_rangka', 'LIKE', "%{$search}%")
-                ->orWhere('aset_kendaraan.bahan_bakar', 'LIKE', "%{$search}%")
-                ->orWhere('aset_kendaraan.transmisi', 'LIKE', "%{$search}%")
-                ->orWhere('aset_kendaraan.kapasitas_mesin', 'LIKE', "%{$search}%")
-                ->orWhere('pemeriksaanTerakhir', 'LIKE', "%{$search}%")
+                ->orWhere(DB::raw('DATE(aset_kendaraan.pemeriksaan_terakhir)'), 'LIKE', "%{$search}%")
                 ->offset($start)
                 ->limit($limit)
                 ->orderBy($order, $dir)
                 ->get();
 
-               $getData = AsetKendaraan::select([
-                    'aset_kendaraan.*',
-                    'master_jenis_kendaraan.kode AS kodeJenisKendaraan',
-                    'pegawai_biodata.nama_lengkap AS namaPenanggungJawab',
-                    'master_merk_kendaraan.kode AS kodeMerkKendaraan',
-                    DB::raw('DATE(aset_kendaraan.pemeriksaan_terakhir) AS pemeriksaanTerakhir')
-                ])
-                ->leftJoin('master_jenis_kendaraan', 'master_jenis_kendaraan.kode', '=', 'aset_kendaraan.kode_jenis_kendaraan')
-                ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'aset_kendaraan.id_penanggung_jawab')
-                ->leftJoin('master_merk_kendaraan', 'master_merk_kendaraan.kode', '=', 'aset_kendaraan.kode_merk_kendaraan')
-                ->where('aset_kendaraan.id', 'LIKE', "%{$search}%")
-                ->orWhere('namaRuang', 'LIKE', "%{$search}%")
-                ->orWhere('namaPenanggungJawab', 'LIKE', "%{$search}%")
-                ->orWhere('kodeJenisKendaraan', 'LIKE', "%{$search}%")
-                ->orWhere('kodeMerkKendaraan', 'LIKE', "%{$search}%")
-                ->orWhere('aset_kendaraan.kode', 'LIKE', "%{$search}%")
+               $totalFiltered = $query->where('aset_kendaraan.id', 'LIKE', "%{$search}%")
+                ->orWhere('pegawai_biodata.nama_lengkap', 'LIKE', "%{$search}%")
+                ->orWhere('master_jenis_kendaraan.kode', 'LIKE', "%{$search}%")
+                ->orWhere('master_merk_kendaraan.kode', 'LIKE', "%{$search}%")
                 ->orWhere('aset_kendaraan.nama', 'LIKE', "%{$search}%")
                 ->orWhere('aset_kendaraan.nomor_polisi', 'LIKE', "%{$search}%")
-                ->orWhere('aset_kendaraan.tanggal_perolehan', 'LIKE', "%{$search}%")
-                ->orWhere('aset_kendaraan.harga_perolehan', 'LIKE', "%{$search}%")
-                ->orWhere('aset_kendaraan.harga_penyusutan', 'LIKE', "%{$search}%")
-                ->orWhere('aset_kendaraan.nomor_rangka', 'LIKE', "%{$search}%")
-                ->orWhere('aset_kendaraan.bahan_bakar', 'LIKE', "%{$search}%")
-                ->orWhere('aset_kendaraan.transmisi', 'LIKE', "%{$search}%")
-                ->orWhere('aset_kendaraan.kapasitas_mesin', 'LIKE', "%{$search}%")
-                ->orWhere('pemeriksaanTerakhir', 'LIKE', "%{$search}%")
+                ->orWhere(DB::raw('DATE(aset_kendaraan.pemeriksaan_terakhir)'), 'LIKE', "%{$search}%")
                 ->count();
             }
 
@@ -149,7 +129,7 @@ class AsetKendaraanController extends Controller
                     $nestedData['id'] = $row->id;
                     $nestedData['kode'] = $row->kode;
                     $nestedData['nomorPolisi'] = $row->nomorPolisi;
-                    $nestedData['namaKendaraan'] = $row->namaKendaraan;
+                    $nestedData['nama'] = $row->nama;
                     $nestedData['transmisi'] = $row->transmisi;
                     $nestedData['namaPenanggungJawab'] = $row->namaPenanggungJawab;
                     $data[] = $nestedData;
@@ -210,6 +190,8 @@ class AsetKendaraanController extends Controller
                 'transmisi'      => 'required',
                 'kapasitasMesin'      => 'required',
                 'pemeriksaanTerakhir'      => 'required',
+                'tanggalPajak'      => 'nullable',
+                'foto'      => 'nullable|image|max:2048'
             ]);
 
             $kodeJenisKendaraan = $validatedData['kodeJenisKendaraan'];
@@ -221,25 +203,48 @@ class AsetKendaraanController extends Controller
 
             $nomorUrutBaru2 = $nomorUrutTerbesar2 + 1;
             $kode = $kodeJenisKendaraan . "/" . $kodeMerkKendaraan . "/" . $nomorUrutBaru2;
+
+            $file = $request->file('foto');
+            $fileName = null;
+
+            if ($file) {
+                $image = Image::read($file->getRealPath());
+
+                $fileName = time() . '.' . $file->getClientOriginalExtension();
+                $tujuanUpload = public_path('assets/images/aset/kendaraan');
+
+                if (!File::exists($tujuanUpload)) {
+                    File::makeDirectory($tujuanUpload, 0755, true);
+                }
+
+                $image->save($tujuanUpload . '/' . $fileName, 70);
+            }
             
+            $updateData = [
+                'kode' => $kode,
+                'kode_jenis_kendaraan' => $validatedData['kodeJenisKendaraan'],
+                'kode_merek_kendaraan' => $validatedData['kodeMerkKendaraan'],
+                'id_penanggung_jawab' => $validatedData['idPenanggungJawab'],
+                'nama' => $validatedData['nama'],
+                'nomor_polisi' => $validatedData['nomorPolisi'],
+                'tanggal_perolehan' => $validatedData['tanggalPerolehan'],
+                'harga_perolehan' => $validatedData['hargaPerolehan'],
+                'harga_penyusutan' => $validatedData['hargaPenyusutan'],
+                'nomor_rangka' => $validatedData['nomorRangka'],
+                'bahan_bakar' => $validatedData['bahanBakar'],
+                'transmisi' => $validatedData['transmisi'],
+                'kapasitas_mesin' => $validatedData['kapasitasMesin'],
+                'pemeriksaan_terakhir' => $validatedData['pemeriksaanTerakhir'],
+                'tanggal_pajak' => $validatedData['tanggalPajak'],
+            ];
+
+            if ($fileName) {
+                $updateData['foto'] = $fileName;
+            }
+
             $save = AsetKendaraan::updateOrCreate(
                 ['id' => $id],
-                [
-                    'kode' => $kode,
-                    'kode_jenis_kendaraan' => $validatedData['kodeJenisKendaraan'],
-                    'kode_merek_kendaraan' => $validatedData['kodeMerkKendaraan'],
-                    'id_penanggung_jawab' => $validatedData['idPenanggungJawab'],
-                    'nama' => $validatedData['nama'],
-                    'nomor_polisi' => $validatedData['nomorPolisi'],
-                    'tanggal_perolehan' => $validatedData['tanggalPerolehan'],
-                    'harga_perolehan' => $validatedData['hargaPerolehan'],
-                    'harga_penyusutan' => $validatedData['hargaPenyusutan'],
-                    'nomor_rangka' => $validatedData['nomorRangka'],
-                    'bahan_bakar' => $validatedData['bahanBakar'],
-                    'transmisi' => $validatedData['transmisi'],
-                    'kapasitas_mesin' => $validatedData['kapasitasMesin'],
-                    'pemeriksaan_terakhir' => $validatedData['pemeriksaanTerakhir'],
-                ]
+                $updateData
             );
 
             if ($id) {
@@ -250,7 +255,7 @@ class AsetKendaraanController extends Controller
 
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Failed to save Kategori Aset',
+                'message' => 'Failed to save Aset Kendaraan',
                 'error' => $e->getMessage(),
             ], 500);
         }
@@ -282,15 +287,24 @@ class AsetKendaraanController extends Controller
         if ($data) {
             $data->tanggal_perolehan = $data->tanggal_perolehan ? Carbon::parse($data->tanggal_perolehan)
                 ->locale('id')
-                ->translatedFormat('d F Y') : '';
+                ->translatedFormat('d F Y') : 'Tidak ada data';
 
-            $data->transmisi = $data->transmisi ? ucwords($data->transmisi) : '';
+            $data->transmisi = $data->transmisi ? ucwords($data->transmisi) : 'Tidak ada data';
 
-            $data->bahan_bakar = $data->bahan_bakar ? ucwords($data->bahan_bakar) : '';
+            $data->bahan_bakar = $data->bahan_bakar ? ucwords($data->bahan_bakar) : 'Tidak ada data';
 
             $data->pemeriksaan_terakhir = $data->pemeriksaan_terakhir ? Carbon::parse($data->pemeriksaan_terakhir)
                 ->locale('id')
-                ->translatedFormat('d F Y') : '';
+                ->translatedFormat('d F Y') : 'Tidak ada data';
+
+            $data->tanggal_pajak = $data->tanggal_pajak ? Carbon::parse($data->tanggal_pajak)
+                ->locale('id')
+                ->translatedFormat('d F Y') : 'Tidak ada data';
+
+            $data->harga_penyusutan = $data->harga_penyusutan ? number_format($data->harga_penyusutan, 0, ',', '.') : 'Tidak ada data';
+            $data->harga_perolehan = $data->harga_perolehan ? number_format($data->harga_perolehan, 0, ',', '.') : 'Tidak ada data';
+
+            $data->foto = $data->foto ? asset('assets/images/aset/kendaraan/' . $data->foto) : '#';
         }
 
         return response()->json($data);
@@ -307,7 +321,8 @@ class AsetKendaraanController extends Controller
         $data = AsetKendaraan::where("id", $id)->first();
 
         if ($data) {
-            return response()->json($data); // Kembalikan objek KategoriAset langsung
+            $data->foto = $data->foto ? asset('assets/images/aset/kendaraan/' . $data->foto) : '#';
+            return response()->json($data); // Kembalikan objek Kendaraan langsung
         } else {
             return response()->json([
                 'status' => 'error',
@@ -332,6 +347,20 @@ class AsetKendaraanController extends Controller
     */
     public function destroy(string $id)
     {
-        $data = AsetKendaraan::where('id', $id)->delete();
+        $data = AsetKendaraan::where('id', $id)->first();
+
+        if (!$data) {
+            return response()->json(['message' => 'Data tidak ditemukan.'], 404);
+        }
+
+        $lokasiFoto = 'assets/images/aset/kendaraan/' . $data->foto;
+
+        if (file_exists($lokasiFoto) && is_file($lokasiFoto)) {
+            unlink($lokasiFoto);
+        }
+
+        $data->delete();
+
+        return response()->json(['message' => 'Data berhasil dihapus.'], 200);
     }
 }

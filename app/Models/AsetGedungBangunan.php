@@ -17,5 +17,6 @@ class AsetGedungBangunan extends Model
         'kode',
         'nama',
         'luas',
+        'foto',
     ];
 }

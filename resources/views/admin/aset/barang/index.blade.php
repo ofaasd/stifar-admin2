@@ -27,137 +27,50 @@
                 <div class="card">
                     <div class="card-header pb-0 card-no-border">
                         <button class="btn btn-primary" type="button" id="btn-tambah" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal">+ {{$title2}}</button>
-                        <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <form action="javascript:void(0)" id="formAdd">
-                                        @csrf
-                                        <input type="hidden" name="id" id="id">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="ModalLabel">Tambah {{$title2}}</h5>
-                                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="row">
-                                                <div class="mb-3 col-6">
-                                                    <label for="kode_ruang " class="form-label">Ruang</label>
-                                                    <select class="form-select" aria-label="Default select example" id="kode_ruang" name="kodeRuang">
-                                                        @foreach ($asetRuang as $row)
-                                                            <option value="{{ str_replace(' ', '', $row->nama_ruang) }}">{{ $row->nama_ruang }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="mb-3 col-6">
-                                                    <label for="id_penanggung_jawab" class="form-label">Penanggung Jawab</label>
-                                                    <select class="form-select" aria-label="Default select example" id="id_penanggung_jawab" name="idPenanggungJawab">
-                                                        @foreach ($dataPegawai as $row)
-                                                            <option value="{{ $row->id }}">{{ $row->nama_lengkap }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="mb-3 col-6">
-                                                    <label for="kode_jenis_barang" class="form-label">Jenis Barang</label>
-                                                    <select class="form-select" aria-label="Default select example" id="kode_jenis_barang" name="kodeJenisBarang">
-                                                        @foreach ($dataJenisBarang as $row)
-                                                            <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="mb-3 col-6">
-                                                    <label for="kode_vendor" class="form-label">Vendor</label>
-                                                    <select class="form-select" aria-label="Default select example" id="kode_vendor" name="kodeVendor">
-                                                        @foreach ($dataVendor as $row)
-                                                            <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="spesifikasi" class="form-label">Spesifikasi</label>
-                                                    <input type="text" name="spesifikasi" id="spesifikasi" class="form-control" placeholder="kayu, tinggi 2cm">
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="nama" class="form-label">Nama</label>
-                                                    <input type="text" name="nama" id="nama" class="form-control" placeholder="Kursi Kelas">
-                                                </div>
-                                                <div class="mb-3 col-6">
-                                                    <label for="elektronik" class="form-label">Barang Elektronik ?</label>
-                                                    <select class="form-select" aria-label="Default select example" id="elektronik" name="elektronik">
-                                                        <option value="1">Iya</option>
-                                                        <option value="0">Bukan</option>
-                                                    </select>
-                                                </div>
-                                                <div class="mb-3 col-6">
-                                                    <label for="kondisi_fisik" class="form-label">Kondisi Fisik</label>
-                                                    <select class="form-select" aria-label="Default select example" id="kondisi_fisik" name="kondisiFisik">
-                                                        <option value="baik">Baik</option>
-                                                        <option value="rusak">Rusak</option>
-                                                    </select>
-                                                </div>
-                                                <div class="mb-3 col-6">
-                                                    <label for="estimasi_pemakaian" class="form-label">Estimasi Pemakaian</label>
-                                                    <div class="input-group">
-                                                        <input type="number" step="0.1" class="form-control" name="estimasiPemakaian" id="estimasi_pemakaian" placeholder="12.4">
-                                                        <span class="input-group-text">tahun</span>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3 col-6">
-                                                    <label for="durasi_pemakaian" class="form-label">Durasi Pemakaian</label>
-                                                    <div class="input-group">
-                                                        <input type="number" step="0.1" class="form-control" name="durasiPemakaian" id="durasi_pemakaian" placeholder="4">
-                                                        <span class="input-group-text">tahun</span>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="anggaran" class="form-label">Anggaran</label>
-                                                    <input type="number" name="anggaran" id="anggaran" class="form-control" placeholder="200000">
-                                                </div>
-                                                <div class="mb-3 col-6">
-                                                    <label for="jumlah" class="form-label">Jumlah</label>
-                                                    <input type="number" name="jumlah" id="jumlah" class="form-control" placeholder="40">
-                                                </div>
-                                                <div class="mb-3 col-6">
-                                                    <label for="tanggal_pembelian" class="form-label">Tanggal Pembelian</label>
-                                                    <input type="date" name="tanggalPembelian" id="tanggal_pembelian" class="form-control">
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="harga" class="form-label">Harga</label>
-                                                    <input type="number" name="harga" id="harga" class="form-control" placeholder="2000000">
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="keterangan" class="form-label">Keterangan</label>
-                                                    <input type="text" name="keterangan" id="keterangan" class="form-control">
-                                                </div>
-                                                <div class="mb-3 col-6">
-                                                    <label for="inventaris_lama" class="form-label">Kode Inventaris Lama</label>
-                                                    <input type="text" name="inventarisLama" id="inventaris_lama" class="form-control">
-                                                </div>
-                                                <div class="mb-3 col-6">
-                                                    <label for="inventaris_baru" class="form-label">Kode Inventaris Baru</label>
-                                                    <input type="text" name="inventarisBaru" id="inventaris_baru" class="form-control">
-                                                </div>
-                                                <div class="mb-3 col-6">
-                                                    <label for="pemeriksaan_terakhir" class="form-label">Pemeriksaan Terakhir</label>
-                                                    <input type="date" name="pemeriksaanTerakhir" id="pemeriksaan_terakhir" class="form-control">
-                                                </div>
-                                                <div class="mb-3 col-6">
-                                                    <label for="kode_kategori" class="form-label">Kategori</label>
-                                                    <select class="form-select" aria-label="Default select example" id="kode_kategori" name="kodeKategori">
-                                                        @foreach ($dataKategori as $row)
-                                                            <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
-                                            <button class="btn btn-primary" id="btn-submit" type="submit">Simpan</button>
-                                        </div>
-                                    </form>
+                    </div>
+
+                    <div class="card-body">
+                        <h5>Statistik Barang</h5>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6>Jumlah Barang per Jenis</h6>
+                                        <ul>
+                                            @foreach($statsJenisBarang as $nama => $jumlah)
+                                                <li>{{ $nama ?? '' }}: {{ $jumlah }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6>Jumlah Barang per Vendor</h6>
+                                        <ul>
+                                            @foreach($statsVendorBarang as $nama => $jumlah)
+                                                <li>{{ $nama ?? '' }}: {{ $jumlah }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6>Jumlah Barang per Kategori</h6>
+                                        <ul>
+                                            @foreach($statsKategoriBarang as $nama => $jumlah)
+                                                <li>{{ $nama == '' ? 'Tidak Diketahui' : $nama }}: {{ $jumlah }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    
                     <div class="card-body">
                         <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
                         <div class="table-responsive">
@@ -184,6 +97,142 @@
                 </div>
             </div>
             <!-- Zero Configuration  Ends-->
+        </div>
+    </div>
+
+    <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form action="javascript:void(0)" id="formAdd">
+                    @csrf
+                    <input type="hidden" name="id" id="id">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="ModalLabel">Tambah {{$title2}}</h5>
+                        <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="mb-3 col-6">
+                                <label for="kode_ruang " class="form-label">Ruang</label>
+                                <select class="form-select" aria-label="Default select example" id="kode_ruang" name="kodeRuang">
+                                    @foreach ($asetRuang as $row)
+                                        <option value="{{ str_replace(' ', '', $row->nama_ruang) }}">{{ $row->nama_ruang }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="mb-3 col-6">
+                                <label for="id_penanggung_jawab" class="form-label">Penanggung Jawab</label>
+                                <select class="form-select" aria-label="Default select example" id="id_penanggung_jawab" name="idPenanggungJawab">
+                                    @foreach ($dataPegawai as $row)
+                                        <option value="{{ $row->id }}">{{ $row->nama_lengkap }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="mb-3 col-6">
+                                <label for="kode_jenis_barang" class="form-label">Jenis Barang</label>
+                                <select class="form-select" aria-label="Default select example" id="kode_jenis_barang" name="kodeJenisBarang">
+                                    @foreach ($dataJenisBarang as $row)
+                                        <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="mb-3 col-6">
+                                <label for="kode_vendor" class="form-label">Vendor</label>
+                                <select class="form-select" aria-label="Default select example" id="kode_vendor" name="kodeVendor">
+                                    @foreach ($dataVendor as $row)
+                                        <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="spesifikasi" class="form-label">Spesifikasi</label>
+                                <input type="text" name="spesifikasi" id="spesifikasi" class="form-control" placeholder="kayu, tinggi 2cm">
+                            </div>
+                            <div class="mb-3">
+                                <label for="nama" class="form-label">Nama</label>
+                                <input type="text" name="nama" id="nama" class="form-control" placeholder="Kursi Kelas">
+                            </div>
+                            <div class="mb-3 col-6">
+                                <label for="elektronik" class="form-label">Barang Elektronik ?</label>
+                                <select class="form-select" aria-label="Default select example" id="elektronik" name="elektronik">
+                                    <option value="1">Iya</option>
+                                    <option value="0">Bukan</option>
+                                </select>
+                            </div>
+                            <div class="mb-3 col-6">
+                                <label for="kondisi_fisik" class="form-label">Kondisi Fisik</label>
+                                <select class="form-select" aria-label="Default select example" id="kondisi_fisik" name="kondisiFisik">
+                                    <option value="baik">Baik</option>
+                                    <option value="rusak">Rusak</option>
+                                </select>
+                            </div>
+                            <div class="mb-3 col-6">
+                                <label for="estimasi_pemakaian" class="form-label">Estimasi Pemakaian</label>
+                                <div class="input-group">
+                                    <input type="number" step="0.1" class="form-control" name="estimasiPemakaian" id="estimasi_pemakaian" placeholder="12.4">
+                                    <span class="input-group-text">tahun</span>
+                                </div>
+                            </div>
+                            <div class="mb-3 col-6">
+                                <label for="durasi_pemakaian" class="form-label">Durasi Pemakaian</label>
+                                <div class="input-group">
+                                    <input type="number" step="0.1" class="form-control" name="durasiPemakaian" id="durasi_pemakaian" placeholder="4">
+                                    <span class="input-group-text">tahun</span>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="anggaran" class="form-label">Anggaran</label>
+                                <input type="number" name="anggaran" id="anggaran" class="form-control" placeholder="200000">
+                            </div>
+                            <div class="mb-3 col-6">
+                                <label for="jumlah" class="form-label">Jumlah</label>
+                                <input type="number" name="jumlah" id="jumlah" class="form-control" placeholder="40">
+                            </div>
+                            <div class="mb-3 col-6">
+                                <label for="tanggal_pembelian" class="form-label">Tanggal Pembelian</label>
+                                <input type="date" name="tanggalPembelian" id="tanggal_pembelian" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label for="harga" class="form-label">Harga</label>
+                                <input type="number" name="harga" id="harga" class="form-control" placeholder="2000000">
+                            </div>
+                            <div class="mb-3">
+                                <label for="keterangan" class="form-label">Keterangan</label>
+                                <input type="text" name="keterangan" id="keterangan" class="form-control">
+                            </div>
+                            <div class="mb-3 col-6">
+                                <label for="inventaris_lama" class="form-label">Kode Inventaris Lama</label>
+                                <input type="text" name="inventarisLama" id="inventaris_lama" class="form-control">
+                            </div>
+                            <div class="mb-3 col-6">
+                                <label for="inventaris_baru" class="form-label">Kode Inventaris Baru</label>
+                                <input type="text" name="inventarisBaru" id="inventaris_baru" class="form-control">
+                            </div>
+                            <div class="mb-3 col-6">
+                                <label for="pemeriksaan_terakhir" class="form-label">Pemeriksaan Terakhir</label>
+                                <input type="date" name="pemeriksaanTerakhir" id="pemeriksaan_terakhir" class="form-control">
+                            </div>
+                            <div class="mb-3 col-6">
+                                <label for="kode_kategori" class="form-label">Kategori</label>
+                                <select class="form-select" aria-label="Default select example" id="kode_kategori" name="kodeKategori">
+                                    @foreach ($dataKategori as $row)
+                                        <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="mb-3 col-6">
+                                <label for="foto" class="form-label">Foto</label>
+                                <input type="file" name="foto" class="form-control">
+                                <a href="" target="_blank" id="foto"><i class="fa fa-file text-dark fs-3 mt-3"></i> Lihat Foto</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                        <button class="btn btn-primary" id="btn-submit" type="submit">Simpan</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 @endsection
@@ -273,6 +322,7 @@
                 $('#id').val('');
                 $('#formAdd').trigger("reset");
             });
+
             //Edit Record
             $(document).on('click', '.edit-record', function () {
                 const id = $(this).data('id');
@@ -296,6 +346,8 @@
                         $('#' + key)
                             .val(dateOnly)
                             .trigger('change');
+                    }else if(key == 'foto'){
+                        $('#foto').attr('href', data[key]);
                     }else{
                         $('#' + key)
                             .val(data[key])
@@ -304,6 +356,7 @@
                 });
                 });
             });
+
             //save record
             $('#formAdd').on('submit',function(e){
                 e.preventDefault();
@@ -312,15 +365,16 @@
                 btnSubmit.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Please Wait...');
 
                 const offCanvasForm = $('#formAdd');
+                var formData = new FormData($('#formAdd')[0]);
                 $.ajax({
-                    data: $('#formAdd').serialize(),
+                    data: formData,
                     url: ''.concat(baseUrl).concat(page),
                     type: 'POST',
+                    processData: false,
+                    contentType: false,
                     success: function success(status) {
                         dt.draw();
                         $("#tambahModal").modal('hide');
-
-                        // sweetalert
                         swal({
                             icon: 'success',
                             title: 'Successfully '.concat(status, '!'),
@@ -334,8 +388,14 @@
                     },
                     error: function error(err) {
                         offCanvasForm.offcanvas('hide');
+                        var errorMessage = 'There was an error processing your request.';
+                        if (err.responseJSON && err.responseJSON.error) {
+                            errorMessage = err.responseJSON.error;
+                        }else if (err.responseText) {
+                            errorMessage = err.responseText;
+                        }
                         swal({
-                            title: 'Duplicate Entry!',
+                            title: errorMessage,
                             text: title + ' Not Saved !',
                             icon: 'error',
                             customClass: {
@@ -347,6 +407,7 @@
                     }
                 });
             });
+
             //delete record
             $(document).on('click', '.delete-record', function () {
                 const id = $(this).data('id');
@@ -365,43 +426,43 @@
                 },
                 buttonsStyling: false
                 }).then(function (result) {
-                if (result) {
+                    if (result) {
 
-                    // delete the data
-                    $.ajax({
-                    type: 'DELETE',
-                    url: ''.concat(baseUrl).concat(page, '/').concat(id),
-                    data:{
-                        'id': id,
-                        '_token': '{{ csrf_token() }}',
-                    },
-                    success: function success() {
-                        dt.draw();
-                    },
-                    error: function error(_error) {
-                        // console.log(_error);
-                    }
-                    });
+                        // delete the data
+                        $.ajax({
+                        type: 'DELETE',
+                        url: ''.concat(baseUrl).concat(page, '/').concat(id),
+                        data:{
+                            'id': id,
+                            '_token': '{{ csrf_token() }}',
+                        },
+                        success: function success() {
+                            dt.draw();
+                        },
+                        error: function error(_error) {
+                            // console.log(_error);
+                        }
+                        });
 
-                    // success sweetalert
-                    swal({
-                    icon: 'success',
-                    title: 'Deleted!',
-                    text: 'The Record has been deleted!',
-                    customClass: {
-                        confirmButton: 'btn btn-success'
+                        // success sweetalert
+                        swal({
+                        icon: 'success',
+                        title: 'Deleted!',
+                        text: 'The Record has been deleted!',
+                        customClass: {
+                            confirmButton: 'btn btn-success'
+                        }
+                        });
+                    } else {
+                        swal({
+                        title: 'Cancelled',
+                        text: 'The record is not deleted!',
+                        icon: 'error',
+                        customClass: {
+                            confirmButton: 'btn btn-success'
+                        }
+                        });
                     }
-                    });
-                } else {
-                    swal({
-                    title: 'Cancelled',
-                    text: 'The record is not deleted!',
-                    icon: 'error',
-                    customClass: {
-                        confirmButton: 'btn btn-success'
-                    }
-                    });
-                }
                 });
             });
         });

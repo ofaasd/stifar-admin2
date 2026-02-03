@@ -63,8 +63,9 @@
     <table class="label-table">
         <thead>
             <tr>
-                <th style="width: 8%;">No</th>
+                <th style="width: 3%;">No</th>
                 <th>Nama</th>
+                <th style="width: 12%;">Ruang</th>
                 <th style="width: 12%;">Jumlah</th>
             </tr>
         </thead>
@@ -73,6 +74,7 @@
             <tr>
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ $row->nama }}</td>
+                <td>{{ $row->nama_ruang ?? '-' }}</td>
                 <td>{{ $row->jumlah ?? '-' }}</td>
             </tr>
         @endforeach

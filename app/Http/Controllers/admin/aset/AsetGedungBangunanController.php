@@ -8,6 +8,9 @@ use App\Models\AsetTanah;
 use App\Models\Lantai;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+use Intervention\Image\Laravel\Facades\Image;
 
 class AsetGedungBangunanController extends Controller
 {
@@ -28,7 +31,14 @@ class AsetGedungBangunanController extends Controller
             $asetTanah = AsetTanah::all();
             $masterLantai = Lantai::all();
             $aset = AsetGedungBangunan::all();
-            return view('admin.aset.gedung-bangunan.index', compact('title', 'title2', 'indexed', 'asetTanah', 'masterLantai', 'aset'));
+            $gedungCountPerKode = AsetGedungBangunan::select('aset_tanah.nama', DB::raw('count(*) as total'))
+                ->leftJoin('aset_tanah', DB::raw('aset_gedung_bangunan.kode_tanah COLLATE utf8mb4_general_ci'), '=', DB::raw('aset_tanah.kode COLLATE utf8mb4_general_ci'))
+                ->groupBy('aset_tanah.nama')
+                ->get();
+
+            $statsDitanah = $gedungCountPerKode->pluck('total', 'nama');
+            $totalLuas = AsetGedungBangunan::sum('luas');
+            return view('admin.aset.gedung-bangunan.index', compact('title', 'title2', 'indexed', 'asetTanah', 'masterLantai', 'aset', 'statsDitanah', 'totalLuas'));
         }else{
             $columns = [
                 1 => 'id',
@@ -140,18 +150,40 @@ class AsetGedungBangunanController extends Controller
                                 : 'required|string|unique:aset_gedung_bangunan,kode',
                 'nama'      => 'required|string',
                 'luas'      => 'required|string',
+                'foto'      => 'nullable|image|max:2048',
             ]);
 
+            $file = $request->file('foto');
+            $fileName = null;
+
+            if ($file) {
+                $image = Image::read($file->getRealPath());
+
+                $fileName = time() . '.' . $file->getClientOriginalExtension();
+                $tujuanUpload = public_path('assets/images/aset/gedung-bangunan');
+
+                if (!File::exists($tujuanUpload)) {
+                    File::makeDirectory($tujuanUpload, 0755, true);
+                }
+    
+                $image->save($tujuanUpload . '/' . $fileName, 70);
+            }
+
+            $updateData = [
+                'kode_tanah' => $validatedData['kodeTanah'],
+                'id_lantai' => $validatedData['idLantai'],
+                'kode' => $validatedData['kode'],
+                'nama' => $validatedData['nama'],
+                'luas' => $validatedData['luas']
+            ];
+
+            if ($fileName) {
+                $updateData['foto'] = $fileName;
+            }
 
             $save = AsetGedungBangunan::updateOrCreate(
                 ['id' => $id],
-                [
-                    'kode_tanah' => $validatedData['kodeTanah'],
-                    'id_lantai' => $validatedData['idLantai'],
-                    'kode' => $validatedData['kode'],
-                    'nama' => $validatedData['nama'],
-                    'luas' => $validatedData['luas']
-                ]
+                $updateData
             );
 
             if ($id) {
@@ -162,7 +194,7 @@ class AsetGedungBangunanController extends Controller
 
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Failed to save Kategori Aset',
+                'message' => 'Failed to save Aset Gedung dan Bangunan',
                 'error' => $e->getMessage(),
             ], 500);
         }
@@ -185,6 +217,10 @@ class AsetGedungBangunanController extends Controller
     public function edit(string $id)
     {
         $data = AsetGedungBangunan::where("id", $id)->first();
+
+        if ($data) {
+            $data->foto = asset('assets/images/aset/gedung-bangunan/' . $data->foto);
+        }
 
         if ($data) {
             return response()->json($data); // Kembalikan objek KategoriAset langsung
@@ -212,6 +248,20 @@ class AsetGedungBangunanController extends Controller
     */
     public function destroy(string $id)
     {
-        $data = AsetGedungBangunan::where('id', $id)->delete();
+        $data = AsetGedungBangunan::where('id', $id)->first();
+
+        if (!$data) {
+            return response()->json(['message' => 'Data tidak ditemukan.'], 404);
+        }
+
+        $lokasiFoto = 'assets/images/aset/gedung-bangunan/' . $data->foto;
+
+        if (file_exists($lokasiFoto) && is_file($lokasiFoto)) {
+            unlink($lokasiFoto);
+        }
+
+        $data->delete();
+
+        return response()->json(['message' => 'Data berhasil dihapus.']);
     }
 }

@@ -26,5 +26,7 @@ class AsetKendaraan extends Model
         'transmisi',
         'kapasitas_mesin',
         'pemeriksaan_terakhir',
+        'tanggal_pajak',
+        'foto',
     ];
 }
