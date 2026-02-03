@@ -48,7 +48,7 @@
                                     <select name="jalur" id="jalur" class="form-control">
                                         <option value="0">--Pilih Jalur</option>
                                         @foreach($jalur as $row)
-                                            <option value="{{$row->id}}" {{($peserta->jalur_pendaftaran == $row->id)?"selected":""}}>{{$row->nama}}</option>
+                                            <option value="{{$row->id}}" {{($curr_jalur == $row->id)?"selected":""}}>{{$row->nama}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -132,13 +132,14 @@ const get_jurusan = () =>
         success: function(data){
             //alert(data);
             //alert(data);
+            console.log(data);
             temp = "";
 
-            data.forEach((item, index) => {
-                temp += `<div class="mb-2"> <label for='prodi'>Program Studi ${index + 1}</label>
+            data.forEach((items, index) => {
+                temp += `<div class="mb-2"><label for='prodi'>Program Studi ${index + 1}</label>
                 <select name='prodi[]' class="form-control">`;
-                item.forEach((item2, index2) => {
-                    temp += `<option value='${item2.id_program_studi}'>${item2.nama_prodi} ${item2.keterangan ? $item2.keterangan : ""}</option>`;
+                items.forEach((item) => {
+                    temp += `<option value='${item.id_program_studi}'>${item.nama_prodi} ${item.keterangan || ""}</option>`;
                 });
                 temp += `</select></div>`;
             });

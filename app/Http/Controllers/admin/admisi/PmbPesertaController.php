@@ -311,12 +311,19 @@ class PmbPesertaController extends Controller
         $gelombang = [];
         $pilihan = 0;
         $prodi = [];
-        if($peserta->jalur_pendaftaran != 0 && !empty($peserta->jalur_pendaftaran)){
-            $gelombang = PmbGelombang::where('id_jalur', $peserta->jalur_pendaftaran)->get();
+        
+        if($peserta->gelombang != 0 && !empty($peserta->gelombang)){
+            $curr_gelombang = PmbGelombang::where('id',$peserta->gelombang)->first();
+            $curr_jalur =  $curr_gelombang->id_jalur;
+            $gelombang = PmbGelombang::where('id_jalur', $curr_jalur)->get();
+            // $gelombang = PmbGelombang::where('id',$peserta->gelombang)->get();
+            // $jalur = PmbJalur::where('id', $peserta->jalur_pendaftaran)->first();
+            // $gelombang = PmbGelombang::where('id_jalur', $peserta->jalur_pendaftaran)->get();
+            
             $pilihan = PmbGelombang::where('id',$peserta->gelombang)->first()->pilihan;
-            $prodi = PmbJalurProdi::select('pmb_jalur_prodi.*','program_studi.nama_prodi')->join('program_studi','program_studi.id','pmb_jalur_prodi.id_program_studi')->where('id_jalur',$peserta->jalur_pendaftaran)->get();
+            $prodi = PmbJalurProdi::select('pmb_jalur_prodi.*','program_studi.nama_prodi')->join('program_studi','program_studi.id','pmb_jalur_prodi.id_program_studi')->where('id_jalur',$curr_gelombang->id_jalur)->get();
         }
-        return view('admin.admisi.peserta.edit_gelombang', compact('title','ta','pilihan','prodi','gelombang','jalur','peserta','id','action'));
+        return view('admin.admisi.peserta.edit_gelombang', compact('title','ta','pilihan','prodi','gelombang','curr_gelombang','curr_jalur','jalur','peserta','id','action'));
     }
     public function edit_asal_sekolah(string $id)
     {
