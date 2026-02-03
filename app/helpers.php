@@ -132,7 +132,7 @@ class helpers
     {
         $wa_setting = DB::table('wa_api')->where('status',1)->first();
         $number_key = $wa_setting->number_key;
-        $wa_api = $wa_setting->api_key;
+        $wa_api = $wa_setting->wa_api;
 
         $curl = curl_init();
 
