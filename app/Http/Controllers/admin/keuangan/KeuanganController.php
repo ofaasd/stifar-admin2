@@ -577,8 +577,9 @@ class KeuanganController extends Controller
             $data[] = $nestedData;
         }
         // $program_studi = $prodi;
+        $title = "Keuangan Mahasiswa";
         $pembayaran_terakhir = TbPembayaran::orderBy('tanggal_bayar','desc')->limit(1)->first()->tanggal_bayar ?? '-';
         
-        return view('admin.keuangan.dashboard',compact('jumlah_krs','jumlah_uts','jumlah_uas','jumlah_mhs','ta','total_bayar_statistik','total_tagihan_statistik','prodi','pembayaran_terakhir'));
+        return view('admin.keuangan.dashboard',compact('jumlah_krs','jumlah_uts','jumlah_uas','jumlah_mhs','ta','total_bayar_statistik','total_tagihan_statistik','prodi','pembayaran_terakhir','title'));
     }
 }
