@@ -11,6 +11,11 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\ModelHasRole;
 use App\Models\Prodi;
+use App\Models\TagihanKeuangan;
+use App\Models\JenisKeuangan;
+use App\Models\Tagihan;
+use App\Models\DetailTagihanKeuangan as DetailTagihanKeuanganTotal;
+use App\Models\TbPembayaran; 
 
 class KeuanganController extends Controller
 {
@@ -395,7 +400,185 @@ class KeuanganController extends Controller
         $jumlah_uts = MasterKeuanganMh::where('id_tahun_ajaran',$ta->id)->where('uts',1)->join('mahasiswa','mahasiswa.id','=','master_keuangan_mhs.id_mahasiswa')->where('mahasiswa.status',1)->count();
         $jumlah_uas = MasterKeuanganMh::where('id_tahun_ajaran',$ta->id)->where('uas',1)->join('mahasiswa','mahasiswa.id','=','master_keuangan_mhs.id_mahasiswa')->where('mahasiswa.status',1)->count();
         $jumlah_mhs = MasterKeuanganMh::where('id_tahun_ajaran',$ta->id)->join('mahasiswa','mahasiswa.id','=','master_keuangan_mhs.id_mahasiswa')->where('mahasiswa.status',1)->count();
-
-        return view('admin.keuangan.dashboard',compact('jumlah_krs','jumlah_uts','jumlah_uas','jumlah_mhs','ta'));
+        $total_bayar_statistik = [];
+        $total_tagihan_statistik = [];
+        //hitung jumlah keuangan yang masuk dan berapa yang harus dibbayarkan 
+        $angkatan = 2025;
+        $tagihan = Mahasiswa::where('angkatan','>=',$angkatan)->where('status',1)
+                            ->get();
+        $nama = []; 
+        $prodi = Prodi::all(); 
+        foreach($prodi as $row){
+            $nama_prodi = explode(' ',$row->nama_prodi);
+            $nama[$row->id] = $nama_prodi[0] . " " . $nama_prodi[1];
+            $total_bayar_statistik[$row->id] = 0;
+            $total_tagihan_statistik[$row->id] = 0;
+        }                          
+        $data = [];
+        $list_keu = [];
+        $list_tagihan = [];
+        
+        $tahun = TahunAjaran::where('status','Aktif')->first();
+        $jenis = JenisKeuangan::whereIn('id',[1,2,6,9,10,11,12])->get();
+        foreach($tagihan as $tag){
+            $id = $tag->id_program_studi;
+            
+            if($id == 1|| $id == 2 || $id == 5){
+                $real_tagihan = TagihanKeuangan::where('nim',$tag->nim)->where('id_tahun',$tahun->id)->where('periode',date('m'))->where('tahun',date('Y'));
+            }elseif($id == 3 || $id == 4){
+                $real_tagihan = TagihanKeuangan::where('nim',$tag->nim)->where('id_tahun',$tahun->id);
+            }
+            if($real_tagihan->count() > 0){
+                $list_tagihan[$tag->id] = $real_tagihan->first();
+                $id_tagihan = $list_tagihan[$tag->id]->id;
+                foreach($jenis as $jen){
+                    $list_keu[$tag->id][$jen->id] = DetailTagihanKeuangan::where('id_tagihan',$id_tagihan)->where('id_jenis',$jen->id)->first()->jumlah ?? 0;
+                }
+            }else{
+                foreach($jenis as $jen){
+                    $list_keu[$tag->id][$jen->id] = 0;
+                }
+            }
+        }
+        // dd($list_tagihan);
+        foreach ($tagihan as $index => $row) {
+            $upp_bulan = 0;
+            $upp_semester = 0;
+            $dpp = 0;
+            
+            $tagihan_total = Tagihan::where('nim',$row->nim)->first();
+            $total_bayar = $tagihan_total->pembayaran ?? 0;
+            //jika prodi D3
+            $status_bayar = false;
+            $new_total_tagihan = 0;
+            $i = 1;
+            $pengurangan = 0;        
+            if(!empty($tagihan_total->id)){                        
+                if($id == 1 || $id == 2){
+                    $detail_tagihan = DetailTagihanKeuanganTotal::where('id_tagihan',$tagihan_total->id)->get();
+                    foreach($detail_tagihan as $dt){
+                        
+                        
+                        if($dt->id_jenis == 8){
+                            $total_bayar = $total_bayar - $dt->jumlah;
+                            $new_total_tagihan += $dt->jumlah;
+                            
+                        }elseif($dt->id_jenis == 2 && $i == 1){
+                            $total_bayar = $total_bayar - $dt->jumlah;
+                            $new_total_tagihan += $dt->jumlah;
+                            $i++;
+                            
+                        }elseif($dt->id_jenis == 2 && $i > 1){
+                            //dipecah UPP per bulan
+                            $mahasiswa = Mahasiswa::where('nim',$row->nim)->first();
+                            
+                            $upp_bulan = $dt->jumlah / 30;
+                        
+                            
+                            $bulan_mhs = $mahasiswa->bulan_awal;
+                            $tahun_mhs = $mahasiswa->angkatan;
+                            $tagihan_bulan = date('m');
+                            $tagihan_tahun = date('Y');
+                            $pengurangan = ($tagihan_tahun * 12 + $tagihan_bulan) - ($tahun_mhs * 12 + $bulan_mhs) + 1;//ditambah 1 karena julidi hitung
+                            $bulanan = $upp_bulan * $pengurangan;
+                            $new_total_tagihan += $bulanan;
+                            $total_bayar = $total_bayar - $bulanan;
+                            if($total_bayar >= 0){
+                                $status_bayar = true;
+                            }
+                            
+                        }
+                    }
+                }elseif($id == 5){
+                    
+                    $detail_tagihan = DetailTagihanKeuanganTotal::where('id_tagihan',$tagihan_total->id)->get();
+                    foreach($detail_tagihan as $dt){
+                        
+                        
+                        if($dt->id_jenis == 8){
+                            $total_bayar = $total_bayar - $dt->jumlah;
+                            $new_total_tagihan += $dt->jumlah;
+                            
+                        }elseif($dt->id_jenis == 2 && $i == 1){
+                            $total_bayar = $total_bayar - $dt->jumlah;
+                            $new_total_tagihan += $dt->jumlah;
+                            $i++;
+                            
+                        }elseif($dt->id_jenis == 2 && $i > 1){
+                            //dipecah UPP per bulan
+                            $mahasiswa = Mahasiswa::where('nim',$row->nim)->first();
+                            
+                            $upp_bulan = $dt->jumlah / 8;
+                            
+                            $bulan_mhs = $mahasiswa->bulan_awal;
+                            $tahun_mhs = $mahasiswa->angkatan;
+                            $tagihan_bulan = date('m');
+                            $tagihan_tahun = date('Y');
+                            $pengurangan = ($tagihan_tahun * 12 + $tagihan_bulan) - ($tahun_mhs * 12 + $bulan_mhs) + 1;//ditambah 1 karena julidi hitung
+                            $bulanan = $upp_bulan * $pengurangan;
+                            $new_total_tagihan += $bulanan;
+                            $total_bayar = $total_bayar - $bulanan;
+                            if($total_bayar >= 0){
+                                $status_bayar = true;
+                            }
+                            
+                        }
+                    }
+                }else{
+                    $detail_tagihan = DetailTagihanKeuanganTotal::where('id_tagihan',$tagihan_total->id)->get();
+                    $i = 0;
+                    foreach($detail_tagihan as $dt){
+                        if($dt->id_jenis == 2 && $i == 0){
+                            $new_total_tagihan += $dt->jumlah;
+                            $total_bayar = $total_bayar - $dt->jumlah;
+                            $upp_semester = $dt->jumlah;
+                            $i++;
+                        }elseif($dt->id_jenis == 8){
+                            $new_total_tagihan += $dt->jumlah;
+                            $total_bayar = $total_bayar - $dt->jumlah;
+                            if($total_bayar >= 0){
+                                $status_bayar = true;
+                            }
+                        }elseif($dt->id_jenis == 1){
+                            $dpp = $dt->jumlah;
+                        }
+                    }
+                }
+            }
+                                    
+            $nestedData = [];
+            $nestedData['id'] = $row->id;
+            $nestedData['nim'] = $row->nim;
+            $nestedData['nama'] = $row->nama;
+            $nestedData['prodi'] = $nama[$row->id_program_studi];
+            foreach($jenis as $jen){
+                if($jen->id == 1){
+                    $nestedData[str_replace(' ', '', $jen->nama)] = "RP. " . number_format($dpp, 0, ',', '.');
+                }elseif($jen->id == 2){
+                    $nestedData[str_replace(' ', '', $jen->nama)] = "RP. " . number_format($upp_semester, 0, ',', '.');
+                }elseif($jen->id == 6){
+                    $nestedData[str_replace(' ', '', $jen->nama)] = "RP. " . number_format($upp_bulan, 0, ',', '.');
+                }else{
+                    $nestedData[str_replace(' ', '', $jen->nama)] = "RP. " . number_format($list_keu[$row->id][$jen->id], 0, ',', '.');
+                }
+            }
+            $tagihan_total_bayar = $tagihan_total->pembayaran ?? 0;
+            $status = ($tagihan_total_bayar >= $new_total_tagihan) ? 1 : 0;
+            // $nestedData['total'] = $list_tagihan[$row->id]->total ?? 0;
+            $nestedData['total'] = $new_total_tagihan ?? 0;
+            
+            $total_bayar_statistik[$row->id_program_studi] += $new_total_tagihan ?? 0;
+            // $nestedData['total_bayar'] = $list_tagihan[$row->id]->total_bayar ?? 0;
+            $nestedData['total_bayar'] = $tagihan_total_bayar ?? 0;
+            $total_tagihan_statistik[$row->id_program_studi] += $tagihan_total_bayar ?? 0;
+            $nestedData['status'] = $status ?? 0;
+            $nestedData['id_tagihan'] = $row->id ?? 0;
+            $nestedData['is_publish'] = $row->is_publish_keuangan ?? 0;
+            $data[] = $nestedData;
+        }
+        // $program_studi = $prodi;
+        $pembayaran_terakhir = TbPembayaran::orderBy('tanggal_bayar','desc')->limit(1)->first()->tanggal_bayar ?? '-';
+        
+        return view('admin.keuangan.dashboard',compact('jumlah_krs','jumlah_uts','jumlah_uas','jumlah_mhs','ta','total_bayar_statistik','total_tagihan_statistik','prodi','pembayaran_terakhir'));
     }
 }

@@ -164,18 +164,26 @@
             </div>  
           </div>
         </div>
-      <div class="col-xxl-6 col-sm-6 box-col-6">
-        <div class="card profile-box">
-          <div class="card-header">
-            Total Pembayaran / Tunggakan Mahasiswa
+    </div>
+    <div class="col-xxl-12 col-sm-12 box-col-12">
+        <div class="card" style="width:100%;overflow:hidden;background:#FFF59D; opacity:0.95;">
+          <div class="card-header text-dark">
+            <h5 class="f-w-600">Statistik Pembayaran per Program Studi <small class="text-dark" style="font-size:10pt">(Update Pembayaran terakhir (tanggal : {{date('d-m-Y', strtotime($pembayaran_terakhir))}}))</small></h5>
           </div>
-          <div class="card-body">
-            <div class="media">
-              <div class="media-body">
-                <div class="greeting-user">
-                    <table>
+          <div class="card-body" style="width:100%;overflow-x:hidden;padding:0;">
+            <div class="media" style="width:100%;">
+              <div class="media-body p-3" style="width:100%;overflow-x:hidden;">
+                <div class="greeting-user" style="width:100%;overflow-x:hidden;">
+                    <div class="chart-container" style="height:500px;width:100%;max-width:100%;box-sizing:border-box;overflow:hidden;overflow-x:hidden;padding:12px;background:transparent;border-radius:6px;position:relative;">
+                        <canvas id="bar-chart" style="background:#ffffff;padding:10px;border-radius:6px;display:block;width:100%;max-width:100%;height:100%;box-sizing:border-box;"></canvas>
+                    </div>
+                    <br />
+                </div>
+                <div class="table-responsive bg-white p-3" style="border-radius:6px;">
+                    <h2 class="text-dark">Detail Statistik Pembayaran per Prodi</h2>
+                    <table class="table table-bordered text-white">
                         @foreach($prodi as $p)
-                          <tr><td>{{$p->nama_prodi}}</td><td> : </td><td>Rp. {{number_format($total_pembayaran[$p->id])}}/{{number_format($total_tunggakan[$p->id])}}</td></tr>  
+                        <tr><td>{{$p->nama_prodi}}</td><td > : </td><td >Rp. {{number_format($total_bayar_statistik[$p->id])}}/{{number_format($total_tagihan_statistik[$p->id])}} (Total Bayar / Total Tagihan)</td></tr>  
                         @endforeach
                     </table>
                 </div>
@@ -184,7 +192,6 @@
           </div>
         </div>
     </div>
-</div>
 </div>
     <script type="text/javascript">
         var session_layout = '{{ session()->get('layout') }}';
@@ -205,4 +212,93 @@
 <script src="{{ asset('assets/js/typeahead-search/typeahead-custom.js') }}"></script> --}}
 <script src="{{ asset('assets/js/height-equal.js') }}"></script>
 <script src="{{ asset('assets/js/animation/wow/wow.min.js') }}"></script>
+<script>
+    new WOW().init();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  (function(){
+    // Prepare data from Blade variables (serialize only needed fields)
+    var prodi = @json($prodi->map(function($p){ return ['id' => $p->id, 'nama_prodi' => $p->nama_prodi]; }));
+    var bayarMap = @json($total_bayar_statistik ?? []);
+    var tagihanMap = @json($total_tagihan_statistik ?? []);
+
+    var labels = prodi.map(function(p){ return p.nama_prodi; });
+    var bayarData = prodi.map(function(p){ return Number(bayarMap[p.id] ?? 0); });
+    var tunggakanData = prodi.map(function(p, i){
+      var t = Number(tagihanMap[p.id] ?? 0);
+      var b = Number(bayarMap[p.id] ?? 0);
+      return Math.max(0, t - b);
+    });
+
+    // Scale numbers to millions for shorter display
+    var scaleFactor = 1000000; // 1 = 1 juta
+    var bayarDataScaled = bayarData.map(function(v){ return +(v/scaleFactor); });
+    var tunggakanDataScaled = tunggakanData.map(function(v){ return +(v/scaleFactor); });
+
+    var ctx = document.getElementById('bar-chart');
+    if(ctx){
+            new Chart(ctx.getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Total Bayar',
+                      data: bayarDataScaled,
+                      backgroundColor: 'rgba(54, 162, 235, 0.85)',
+                      barPercentage: 0.45,
+                      categoryPercentage: 0.6,
+                      borderRadius: 4
+            },
+            {
+              label: 'Tunggakan',
+                      data: tunggakanDataScaled,
+                      backgroundColor: 'rgba(255, 99, 132, 0.85)',
+                      barPercentage: 0.45,
+                      categoryPercentage: 0.6,
+                      borderRadius: 4
+            }
+          ]
+        },
+                options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  interaction: {mode: 'index', intersect: false},
+                  scales: {
+                    x: {
+                      stacked: true,
+                      ticks: {
+                        autoSkip: true,
+                        maxRotation: 45,
+                        minRotation: 0
+                      }
+                    },
+                    y: {
+                      stacked: true,
+                      beginAtZero: true,
+                      ticks: {
+                        callback: function(value){
+                          return Number(value).toLocaleString(undefined,{maximumFractionDigits:2}) + ' jt';
+                        }
+                      }
+                    }
+                  },
+                  plugins: {
+                    tooltip: {
+                      callbacks: {
+                        label: function(context){
+                          var val = context.parsed.y || context.parsed || 0;
+                          return context.dataset.label + ': Rp. ' + Number(val).toLocaleString(undefined,{maximumFractionDigits:2}) + ' jt';
+                        }
+                      }
+                    },
+                    legend: { position: 'top' }
+                  },
+                  layout: { padding: { top: 6, right: 6, left: 6, bottom: 6 } }
+                }
+      });
+    }
+  })();
+</script>
 @endsection
