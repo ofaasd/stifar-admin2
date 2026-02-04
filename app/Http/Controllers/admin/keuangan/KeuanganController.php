@@ -387,4 +387,15 @@ class KeuanganController extends Controller
     {
         //
     }
+    public function dashboard()
+    {
+        //hitung mahasiswa yang diijinkan KRS, UTS dan UAS
+        $ta = TahunAjaran::where('status','Aktif')->first();
+        $jumlah_krs = MasterKeuanganMh::where('id_tahun_ajaran',$ta->id)->where('krs',1)->join('mahasiswa','mahasiswa.id','=','master_keuangan_mhs.id_mahasiswa')->where('mahasiswa.status',1)->count();
+        $jumlah_uts = MasterKeuanganMh::where('id_tahun_ajaran',$ta->id)->where('uts',1)->join('mahasiswa','mahasiswa.id','=','master_keuangan_mhs.id_mahasiswa')->where('mahasiswa.status',1)->count();
+        $jumlah_uas = MasterKeuanganMh::where('id_tahun_ajaran',$ta->id)->where('uas',1)->join('mahasiswa','mahasiswa.id','=','master_keuangan_mhs.id_mahasiswa')->where('mahasiswa.status',1)->count();
+        $jumlah_mhs = MasterKeuanganMh::where('id_tahun_ajaran',$ta->id)->join('mahasiswa','mahasiswa.id','=','master_keuangan_mhs.id_mahasiswa')->where('mahasiswa.status',1)->count();
+
+        return view('admin.keuangan.dashboard',compact('jumlah_krs','jumlah_uts','jumlah_uas','jumlah_mhs','ta'));
+    }
 }

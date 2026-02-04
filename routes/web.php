@@ -468,6 +468,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi|baak|admin-
     Route::get('/admin/masterdata/krs/input/{id}/{mhs}', [KrsController::class, 'tambahadminKRS']);
     // Route::post('/admin/masterdata/krs/list-jadwal', [KrsController::class, 'showJadwal']);
 
+    Route::get('/admin/keuangan/dashboard', [KeuanganController::class, 'dashboard']);
     Route::get('/admin/keuangan/generate_mhs', [KeuanganController::class, 'generate_mhs']);
     Route::get('/admin/keuangan/generate_angkatan', [KeuanganController::class, 'generate_angkatan']);
     Route::get('/admin/keuangan/generate_user_mhs', [KeuanganController::class, 'generate_user_mhs']);

@@ -96,6 +96,7 @@ class NilaiController extends Controller
         }
         $nilaiPublish = [];
         $nilaiValidasi = [];
+        $nilaiCek = [];
         foreach($jadwal as $row){
             $nilaiValidasi[$row->id] = MasterNilai::where('id_jadwal',$row->id)->where(['validasi_tugas'=>1,'validasi_uts'=>1,'validasi_uas'=>1])->count();
             $nilaiPublish[$row->id] = MasterNilai::where('id_jadwal',$row->id)->where(['publish_tugas'=>1,'publish_uts'=>1,'publish_uas'=>1])->count();
