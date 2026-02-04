@@ -17,7 +17,7 @@
 @endsection
 
 @section('breadcrumb-title')
-    <h3>Default</h3>
+    <h3>{{$title}}</h3>
 @endsection
 
 @section('style')
