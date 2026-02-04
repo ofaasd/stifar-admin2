@@ -175,6 +175,7 @@
                                             <div class="mb-3">
                                                 <label for="judul" class="form-label">Prodi</label>
                                                 <select name="prodi" class="form-control">
+                                                    <option value="0">Semua Prodi</option>
                                                     @foreach($prodi as $row)
                                                         <option value="{{$row->id}}">{{$row->nama_prodi}}</option>
                                                     @endforeach
@@ -183,6 +184,7 @@
                                             <div class="mb-3">
                                                 <label for="nama" class="form-label">Tahun Angkatan</label>
                                                 <select name="angkatan" class="form-control">
+                                                    <option value="0">Semua Angkatan</option>
                                                 @php
                                                     $tahun = date('Y');
                                                     if(date('m') < 6){

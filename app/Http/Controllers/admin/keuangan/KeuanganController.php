@@ -169,8 +169,15 @@ class KeuanganController extends Controller
         $angkatan = $request->angkatan;
         $kegiatan = $request->kegiatan;
         $action = $request->action;
-
-        $mahasiswa = Mahasiswa::where('id_program_studi',$prodi)->where('angkatan',$angkatan)->get();
+        if($prodi == 0 && $angkatan == 0){
+            $mahasiswa = Mahasiswa::all();
+        }else if($prodi == 0){
+            $mahasiswa = Mahasiswa::where('angkatan',$angkatan)->get();
+        }else if($angkatan == 0){
+            $mahasiswa = Mahasiswa::where('id_program_studi',$prodi)->get();
+        }else{
+            $mahasiswa = Mahasiswa::where('id_program_studi',$prodi)->where('angkatan',$angkatan)->get();
+        }
         foreach($mahasiswa as $row){
             if($kegiatan == 1){
                 $u_mahasiswa = MasterKeuanganMh::where('id_mahasiswa',$row->id)->update([
@@ -227,7 +234,7 @@ class KeuanganController extends Controller
             //     'uas' => 1,
             // ]);
         }
-        //return back();
+        return back();
     }
     public function generate_user_mhs(){
 
