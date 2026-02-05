@@ -99,7 +99,7 @@ class KhsController extends Controller
         if($idmhs == 0){
             dd('User not found');
         }
-        $tahun_ajaran = TahunAjaran::where('status','Aktif')->first();
+        $curr_tahun_ajaran = TahunAjaran::where('status','Aktif')->first();
         $tahun_ajaran_all = TahunAjaran::orderBy('id','desc')->get();
         $jumlah_ips = [];
         $nilai = [];
@@ -132,8 +132,8 @@ class KhsController extends Controller
                         ->where('id_mhs',$idmhs)
                         ->get();
 
-            echo $ta . " - " ;
-            echo $idmhs;
+            // echo $ta . " - " ;
+            // echo $idmhs;
             $jumlah_matkul=0;
             $jumlah_sks = 0;
             $sks = [];
@@ -147,8 +147,10 @@ class KhsController extends Controller
                 $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_huruf'] = '-';
                 $jumlah_matkul++;
             }
-            dd($sks);
+            
             $get_nilai = master_nilai::where(['nim'=>$mhs->nim,'id_tahun'=>$ta])->get();
+            echo $ta . " - " . $mhs->nim . "<br>";
+            exit;
             $total_nilai = 0;
             foreach($get_nilai as $row){
                 if($row->publish_tugas == 1){
