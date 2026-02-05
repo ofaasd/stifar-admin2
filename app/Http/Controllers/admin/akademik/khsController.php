@@ -182,6 +182,7 @@ class KhsController extends Controller
             $tahun_ajaran_keterangan = implode(",",$tahun_ajaran_keterangan);
             $no = 1;
             $permission = MasterKeuanganMh::where('id_mahasiswa',$idmhs)->first();
+        dd($sks);
         return view('admin.akademik.khs.index', compact('mhs','tahun_ajaran','title','new_total_nilai','tahun_ajaran_keterangan', 'permission','mk', 'krs', 'no','tahun_ajaran_all', 'idmhs','nilai','jumlah_matkul','jumlah_valid','id'));
     }
 }
