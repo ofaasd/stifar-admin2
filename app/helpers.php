@@ -2,12 +2,13 @@
 
 namespace App;
 
-use App\Models\ActivityLog;
 use Auth;
-use App\Models\MasterSkripsi;
+use App\Models\Krs;
+use App\Models\ActivityLog;
 use App\Models\master_nilai;
-use Illuminate\Support\Facades\Crypt;
+use App\Models\MasterSkripsi;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Crypt;
 
 class helpers
 {
@@ -35,7 +36,7 @@ class helpers
         }
     }
 
-    public static function getDaftarNilaiMhs($nim)
+    private static function baseNilaiQuery($nim)
     {
         return master_nilai::select(
                 'master_nilai.*',
@@ -45,17 +46,42 @@ class helpers
                 'b.nama_matkul',
                 'b.nama_matkul_eng',
                 'b.sks_teori',
-                'b.sks_praktek',
-                'b.kode_matkul'
+                'b.sks_praktek'
             )
             ->leftJoin('jadwals as a', 'master_nilai.id_jadwal', '=', 'a.id')
             ->join('mata_kuliahs as b', function($join) {
                 $join->on('a.id_mk', '=', 'b.id')
-                        ->orOn('master_nilai.id_matkul', '=', 'b.id');
+                     ->orOn('master_nilai.id_matkul', '=', 'b.id');
             })
-            ->where('nim', $nim)
+            ->where('nim', $nim);
+    }
+
+    // nilai akhir udah keluar
+    public static function getDaftarNilaiMhs($nim)
+    {
+        return self::baseNilaiQuery($nim)
             ->whereNotNull('master_nilai.nakhir')
             ->get();
+    }
+
+    // nilai semua tanpa filter nilai akhir
+    public static function getAllNilai($nim, $idTahun = null)
+    {
+        return self::baseNilaiQuery($nim)
+            ->when($idTahun, function ($query, $idTahun) {
+                return $query->where('master_nilai.id_tahun', $idTahun);
+            })
+            ->get();
+    }
+
+    public static function GetKrsMhs($mhs, $idTahun)
+    {
+        return Krs::select('krs.*', 'a.hari', 'a.kel', 'b.nama_matkul', 'b.sks_teori', 'b.sks_praktek','b.kode_matkul')
+                    ->join('jadwals as a', 'krs.id_jadwal', '=', 'a.id')
+                    ->join('mata_kuliahs as b', 'a.id_mk', '=', 'b.id')
+                    ->where('krs.id_tahun', $idTahun)
+                    ->where('id_mhs', $mhs->id)
+                    ->get();
     }
 
     public function getIPK($nim)

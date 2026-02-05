@@ -47,14 +47,21 @@
                         <div class="btn-showcase"><a class="btn btn-light" href="https://www.linkedin.com/login" target="_blank"><i class="txt-linkedin" data-feather="linkedin"></i> LinkedIn </a><a class="btn btn-light" href="https://twitter.com/login?lang=en" target="_blank"><i class="txt-twitter" data-feather="twitter"></i>twitter</a><a class="btn btn-light" href="https://www.facebook.com/" target="_blank"><i class="txt-fb" data-feather="facebook"></i>facebook</a></div>
                      </div> --}}
                      <p class="mt-4 mb-0 text-center mb-4">Atau </p>
-                     <div class="row">
-                        <div class="col-md-6">
-                            <a class="btn btn-info" href="{{  route('register') }}">Aktivasi Dosen</a>
+                      
+                      <div class="row">
+                        {{-- Tombol Kiri: Aktivasi Dosen --}}
+                        <div class="col-md-6 mb-2">
+                            <a class="btn btn-info w-100" href="{{ route('register') }}">Aktivasi Dosen</a>
                         </div>
-                        <div class="col-md-6">
-                            {{-- <a class="btn btn-success" href="{{  route('register_mahasiswa') }}">Aktivasi Mhs</a> --}}
+
+                        {{-- Tombol Kanan: Link dengan Logo (Misal: Login Wali) --}}
+                        <div class="col-md-6 mb-2">
+                            {{-- Ganti 'parent.login' dengan nama route tujuan Anda --}}
+                            <a class="btn btn-light w-100" href="{{ route('parent') }}" style="border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                                <span>Login Wali</span>
+                            </a>
                         </div>
-                     </div>
+                      </div>
                   </form>
                </div>
             </div>
