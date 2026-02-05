@@ -158,6 +158,7 @@ use App\Http\Controllers\admin\akademik\PenyerahanIjazahController;
 use App\Http\Controllers\admin\MenuController;
 use App\Http\Controllers\admin\PermissionController;
 use App\Http\Controllers\admin\LedgerController;
+use App\Http\Controllers\OpenFeederController;
 
 /*
 |--------------------------------------------------------------------------
@@ -208,6 +209,9 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi|baak|admin-
     //Route::middleware('auth')->group(function(){
     Route::get('/dashboard',[DashboardController::class, 'index'] )->name('dashboard');
     Route::get('/dashboard_akademik',[DashboardController::class, 'akademik'] )->name('dashboard_akademik');
+
+    // Open feeder - list template import files
+    Route::get('/open-feeder', [OpenFeederController::class, 'index'])->name('open-feeder.index');
 
     Route::post('admin/admisi/peserta/daftar_kota',[PmbPesertaController::class, 'daftar_kota'] )->name('daftar_kota');
     Route::post('admin/admisi/peserta/get_gelombang',[PmbPesertaController::class, 'get_gelombang'] )->name('get_gelombang');

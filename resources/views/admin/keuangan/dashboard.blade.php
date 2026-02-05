@@ -225,16 +225,13 @@
 
     var labels = prodi.map(function(p){ return p.nama_prodi; });
     var bayarData = prodi.map(function(p){ return Number(bayarMap[p.id] ?? 0); });
-    var tunggakanData = prodi.map(function(p, i){
-      var t = Number(tagihanMap[p.id] ?? 0);
-      var b = Number(bayarMap[p.id] ?? 0);
-      return Math.max(0, t - b);
-    });
+    // Gunakan data total tagihan sebagai dataset kedua (sebelumnya dihitung sebagai tunggakan)
+    var tagihanData = prodi.map(function(p){ return Number(tagihanMap[p.id] ?? 0); });
 
     // Scale numbers to millions for shorter display
     var scaleFactor = 1000000; // 1 = 1 juta
     var bayarDataScaled = bayarData.map(function(v){ return +(v/scaleFactor); });
-    var tunggakanDataScaled = tunggakanData.map(function(v){ return +(v/scaleFactor); });
+    var tunggakanDataScaled = tagihanData.map(function(v){ return +(v/scaleFactor); });
 
     var ctx = document.getElementById('bar-chart');
     if(ctx){
@@ -252,7 +249,7 @@
                       borderRadius: 4
             },
             {
-              label: 'Tunggakan',
+              label: 'Total Tagihan',
                       data: tunggakanDataScaled,
                       backgroundColor: 'rgba(255, 99, 132, 0.85)',
                       barPercentage: 0.45,
@@ -267,7 +264,7 @@
                   interaction: {mode: 'index', intersect: false},
                   scales: {
                     x: {
-                      stacked: true,
+                      
                       ticks: {
                         autoSkip: true,
                         maxRotation: 45,
@@ -275,7 +272,7 @@
                       }
                     },
                     y: {
-                      stacked: true,
+                      
                       beginAtZero: true,
                       ticks: {
                         callback: function(value){
