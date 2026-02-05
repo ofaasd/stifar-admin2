@@ -146,6 +146,7 @@ class KhsController extends Controller
                 $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_huruf'] = '-';
                 $jumlah_matkul++;
             }
+            dd($sks);
             $get_nilai = master_nilai::where(['nim'=>$mhs->nim,'id_tahun'=>$ta])->get();
             $total_nilai = 0;
             foreach($get_nilai as $row){
@@ -182,7 +183,7 @@ class KhsController extends Controller
             $tahun_ajaran_keterangan = implode(",",$tahun_ajaran_keterangan);
             $no = 1;
             $permission = MasterKeuanganMh::where('id_mahasiswa',$idmhs)->first();
-        dd($sks);
+        
         return view('admin.akademik.khs.index', compact('mhs','tahun_ajaran','title','new_total_nilai','tahun_ajaran_keterangan', 'permission','mk', 'krs', 'no','tahun_ajaran_all', 'idmhs','nilai','jumlah_matkul','jumlah_valid','id'));
     }
 }
