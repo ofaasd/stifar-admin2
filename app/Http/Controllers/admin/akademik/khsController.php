@@ -132,7 +132,7 @@ class KhsController extends Controller
                         ->where('id_mhs',$idmhs)
                         ->get();
 
-            echo $ta;
+            echo $ta . " - " ;
             echo $idmhs;
             $jumlah_matkul=0;
             $jumlah_sks = 0;
