@@ -149,7 +149,6 @@ class KhsController extends Controller
             }
             
             $get_nilai = master_nilai::where(['nim'=>$mhs->nim,'id_tahun'=>$ta])->get();
-            dd($get_nilai);
             $total_nilai = 0;
             foreach($get_nilai as $row){
                 if($row->publish_tugas == 1){
@@ -176,8 +175,6 @@ class KhsController extends Controller
 
             
             }
-            echo "keluar";
-            exit;
 
             $krs[$ta] = $krs_now;
             if(!empty($jumlah_sks) || $jumlah_sks != 0){
