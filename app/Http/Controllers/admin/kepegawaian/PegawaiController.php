@@ -30,6 +30,18 @@ class PegawaiController extends Controller
     public function index()
     {
         $pegawai_biodata = PegawaiBiodatum::all();
+        $jabatan_fungsional = [];
+        $jabatan_fungsional[0] = "";
+        $list_jabatan_fungsional = JabatanFungsional::all();
+        foreach($list_jabatan_fungsional as $row){
+            $jabatan_fungsional[$row->id] = $row->jabatan;
+        }
+        $jabatan_struktural = [];
+        $jabatan_struktural[0] = "";    
+        $list_jabatan_struktural = JabatanStruktural::all();
+        foreach($list_jabatan_struktural as $row){
+            $jabatan_struktural[$row->id] = $row->jabatan;
+        }
         foreach($pegawai_biodata as $row){
             $pegawai = Pegawai::where('nama',$row->nama_lengkap)->first();
             if($pegawai){
@@ -46,8 +58,9 @@ class PegawaiController extends Controller
         foreach($programStudi as $row){
             $homebase[$row->id] = $row->nama_prodi;
         }
+        
         $fake_id = 0;
-        return view('admin/kepegawaian/pegawai/index', compact('title','pegawai','homebase','fake_id'));
+        return view('admin/kepegawaian/pegawai/index', compact('title','pegawai','homebase','fake_id','jabatan_fungsional','jabatan_struktural'));
     }
 
     /**
