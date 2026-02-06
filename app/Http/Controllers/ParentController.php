@@ -117,8 +117,26 @@ class ParentController extends Controller
             }
         }
 
+        $krs = Krs::select('krs.*', 'a.hari','a.kode_jadwal','a.kel', 'b.nama_matkul', 'b.sks_teori', 'b.sks_praktek','b.kode_matkul', 'c.nama_sesi', 'd.nama_ruang')
+                ->join('jadwals as a', 'krs.id_jadwal', '=', 'a.id')
+                ->leftJoin('mata_kuliahs as b', 'a.id_mk', '=', 'b.id')
+                ->leftJoin('waktus as c', 'a.id_sesi', '=', 'c.id')
+                ->leftJoin('master_ruang as d', 'a.id_ruang', '=', 'd.id')
+                ->where('krs.id_tahun', $taAktif->id)
+                ->where('id_mhs',$mhs->id)
+                ->orderByRaw("CASE a.hari 
+                    WHEN 'Senin' THEN 1 
+                    WHEN 'Selasa' THEN 2 
+                    WHEN 'Rabu' THEN 3 
+                    WHEN 'Kamis' THEN 4 
+                    WHEN 'Jumat' THEN 5 
+                    WHEN 'Sabtu' THEN 6 
+                    WHEN 'Minggu' THEN 7 
+                    ELSE 8 END")
+                ->get();
+
         $title = "Parent | " . $mhs->nama;
-        return view('parent.show', compact('mhs', 'tahunAjaran', 'krsNow', 'nilai','jumlahMatkul','jumlahValid', 'title', 'taAktif'));
+        return view('parent.show', compact('mhs', 'tahunAjaran', 'krsNow', 'nilai','jumlahMatkul','jumlahValid', 'title', 'taAktif', 'krs'));
 
     }
 }

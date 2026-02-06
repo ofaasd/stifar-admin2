@@ -233,11 +233,65 @@
                         </button>
                     </h2>
                     <div id="collapseMainKRS" class="accordion-collapse collapse" aria-labelledby="headingKRS" data-bs-parent="#accordionAkademik">
-                        <div class="accordion-body bg-light">
-                            <div class="text-center py-4 text-muted">
-                                <i class="fa fa-wrench mb-2 f-24"></i><br>
-                                Fitur KRS Mahasiswa akan segera hadir di sini.
+                        <div class="accordion-body bg-white p-3">
+                            <div class="table-responsive w-100">
+                                <table class="table table-hover table-striped mb-0 w-100 border" id="tablekrs" style="font-size: 13px;">
+                                    <thead class="bg-light">
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>Kode</th>
+                                            <th>Nama Matakuliah</th>
+                                            <th>Kelas</th>
+                                            <th>Hari, Waktu</th>
+                                            <th>Ruang</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @php
+                                            $total_krs = 0;
+                                            $no = 1; // Inisialisasi nomor
+                                        @endphp
+                                        
+                                        @if(isset($krs) && count($krs) > 0)
+                                            @foreach($krs as $row_krs)
+                                                <tr>
+                                                    <td>{{ $no++ }}</td>
+                                                    {{-- Menggunakan syntax array/object sesuai snippet Anda --}}
+                                                    <td>{{ $row_krs['kode_jadwal'] ?? '-' }}</td>
+                                                    <td>{{ $row_krs['nama_matkul'] ?? '-' }}</td>
+                                                    <td>{{ $row_krs['kel'] ?? '-' }}</td>
+                                                    <td>
+                                                        {{ $row_krs['hari'] ?? '' }}, {{ $row_krs['nama_sesi'] ?? '' }}
+                                                    </td>
+                                                    <td>{{ $row_krs['nama_ruang'] ?? '-' }}</td>
+                                                    
+                                                    {{-- Hitung SKS --}}
+                                                    @php 
+                                                        $sks_item = ($row_krs->sks_teori ?? 0) + ($row_krs->sks_praktek ?? 0); 
+                                                    @endphp
+                                                </tr>
+                                                @php
+                                                    $total_krs += $sks_item;
+                                                @endphp
+                                            @endforeach
+                                        @else
+                                            <tr>
+                                                <td colspan="9" class="text-center text-muted p-4">Belum ada Kartu Rencana Studi (KRS) yang diambil.</td>
+                                            </tr>
+                                        @endif
+                                    </tbody>
+                                    
+                                    @if(isset($krs) && count($krs) > 0)
+                                    <tfoot class="bg-light fw-bold">
+                                        <tr>
+                                            <td colspan="5" class="text-end pe-3">Total SKS</td>
+                                            <td class="text-center">{{$total_krs}}</td>
+                                        </tr>
+                                    </tfoot>
+                                    @endif
+                                </table>
                             </div>
+
                         </div>
                     </div>
                 </div>
