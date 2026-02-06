@@ -52,6 +52,7 @@ class ParentController extends Controller
 
         $taAktif = TahunAjaran::where('status','Aktif')->first();
 
+        $kualitas = $this->helpers->getArrKualitas();
         $getNilai = $this->helpers->getDaftarNilaiMhs($mhs->nim);
 
         $totalSks = 0;
@@ -61,61 +62,13 @@ class ParentController extends Controller
             $totalSks += $sks;
             if($row->validasi_tugas == 1 && $row->validasi_uts == 1 && $row->validasi_uas == 1)
             {
-                $totalIps +=  ($row->sks_teori+$row->sks_praktek) * $this->helpers->getKualitas($row['nhuruf']);
+                $totalIps +=  ($row->sks_teori+$row->sks_praktek) * $this->helpers->getKualitas($row->nhuruf);
             }
+            
         }
         $mhs->totalSks = $totalSks;
         $mhs->totalIps = $totalIps;
         $mhs->ipk = $totalSks > 0 ? number_format($totalIps / $totalSks, 2) : 0;
-
-        $krsNow = [];
-        $nilai = [];
-        $jumlahMatkul=0;
-        $jumlahValid = 0;
-        foreach($tahunAjaran as $taRow){
-            $ta = $taRow->id;
-            $krsNow = $this->helpers->GetKrsMhs($mhs, $ta);
-            
-            foreach($krsNow as $row){
-                $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_tgs'] = '-';
-                $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uts'] = '-';
-                $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uas'] = '-';
-                $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_akhir'] = '-';
-                $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_huruf'] = '-';
-                $jumlahMatkul++;
-            }
-
-            $getNilai = $this->helpers->getAllNilai($mhs->nim, $ta);
-
-            foreach($getNilai as $row){
-                if($row->publish_tugas == 1){
-                    $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_tgs'] = $row->ntugas;
-                    // $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_tgs'] = "-";
-                }
-
-                if($row->publish_uts == 1){
-                    $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uts'] = $row->nuts;
-                    // $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uts'] = "-";
-                }
-                if($row->publish_uas == 1){
-                    $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uas'] = $row->nuas;
-                    // $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_uas'] = '-';
-                }
-                    
-                $nilai[$row->id_jadwal][$ta][$mhs->nim]['sks_teori'] = $row->sks_teori;
-                $nilai[$row->id_jadwal][$ta][$mhs->nim]['sks_praktek'] = $row->sks_praktek;
-                // if($row->publish_tugas == 1 && $row->publish_uts == 1 && $row->publish_uas == 1){
-                //     $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_akhir'] = $row->nakhir;
-                //     $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_huruf'] = $row->nhuruf;
-                // }
-                if($row->validasi_tugas == 1 && $row->validasi_uts == 1 && $row->validasi_uas == 1){
-                    $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_akhir'] = $row->nakhir;
-                    $nilai[$row->id_jadwal][$ta][$mhs->nim]['nilai_huruf'] = $row->nhuruf;
-                    $jumlahValid++;
-                }
-
-            }
-        }
 
         $krs = Krs::select('krs.*', 'a.hari','a.kode_jadwal','a.kel', 'b.nama_matkul', 'b.sks_teori', 'b.sks_praktek','b.kode_matkul', 'c.nama_sesi', 'd.nama_ruang')
                 ->join('jadwals as a', 'krs.id_jadwal', '=', 'a.id')
@@ -136,7 +89,7 @@ class ParentController extends Controller
                 ->get();
 
         $title = "Parent | " . $mhs->nama;
-        return view('parent.show', compact('mhs', 'tahunAjaran', 'krsNow', 'nilai','jumlahMatkul','jumlahValid', 'title', 'taAktif', 'krs'));
+        return view('parent.show', compact('mhs', 'getNilai', 'title', 'taAktif', 'krs', 'kualitas'));
 
     }
 }

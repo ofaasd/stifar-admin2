@@ -124,6 +124,21 @@ class helpers
         return $totalSks;
     }
 
+    public static function getArrKualitas()
+    {
+        return [
+            'A' => 4,
+            'AB' => 3.5,
+            'B' => 3,
+            'BC' => 2.5,
+            'C' => 2,
+            'CD' => 1.5,
+            'D' => 1,
+            'ED' => 0.5,
+            'E' => 0
+        ];
+    }
+
     public static function getKualitas(string $huruf)
     {
         if($huruf == 'A'){
@@ -140,7 +155,9 @@ class helpers
             return 1.5;
         }elseif($huruf == 'D'){
             return 1;
-        }else{
+        }else if($huruf == 'ED'){
+            return 0.5;
+        }else if($huruf == 'E'){
             return 0;
         }
     }

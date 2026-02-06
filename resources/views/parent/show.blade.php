@@ -133,92 +133,47 @@
 
                 {{-- ITEM 1: KHS (Kartu Hasil Studi) --}}
                 <div class="accordion-item mb-3 border-0 shadow-sm rounded overflow-hidden">
-                    <h2 class="accordion-header" id="headingKHS">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMainKHS" aria-expanded="true" aria-controls="collapseMainKHS">
-                            <i class="fa fa-graduation-cap me-2 f-18"></i> Kartu Hasil Studi (KHS)
+                    <h2 class="accordion-header" id="headingDaftarNilai">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMainDaftarNilai" aria-expanded="true" aria-controls="collapseMainDaftarNilai">
+                            <i class="fa fa-graduation-cap me-2 f-18"></i> Daftar Nilai
                         </button>
                     </h2>
                     
-                    {{-- Isi KHS (Looping Tahun Ajaran ada di sini) --}}
-                    <div id="collapseMainKHS" class="accordion-collapse collapse show" aria-labelledby="headingKHS" data-bs-parent="#accordionAkademik">
+                    <div id="collapseMainDaftarNilai" class="accordion-collapse collapse show" aria-labelledby="headingDaftarNilai" data-bs-parent="#accordionAkademik">
                         <div class="accordion-body bg-light">
                             
-                            {{-- ACCORDION CHILD (KHS per Semester) - id="accordionKHS" --}}
-                            <div class="accordion" id="accordionKHS">
-                                @if(isset($tahunAjaran) && count($tahunAjaran) > 0)
-                                    @foreach($tahunAjaran as $rowTa)
-                                        @php 
-                                            $ta = $rowTa->id;
-                                            $sks_semester = 0;
-                                            $found_data = false;
-                                            $khsSemesterIni = []; 
-
-                                            foreach($krsNow as $k) {
-                                                if(isset($nilai[$k->id_jadwal][$ta][$mhs->nim])) {
-                                                    $sks_semester += ($k->sks_teori + $k->sks_praktek);
-                                                    $found_data = true;
-                                                    $khsSemesterIni[] = $k;
-                                                }
-                                            }
-                                        @endphp
-
-                                        <div class="card mb-3 border">
-                                            {{-- Header Semester --}}
-                                            <div class="card-header bg-white p-3 btn-header collapsed" 
-                                                 data-bs-toggle="collapse" 
-                                                 data-bs-target="#collapseTa{{$ta}}" 
-                                                 aria-expanded="false">
-                                                <div class="row align-items-center">
-                                                    <div class="col-md-8 d-flex align-items-center">
-                                                        <i class="fa fa-chevron-down me-3 header-icon text-primary"></i>
-                                                        <span class="mb-0 fw-bold text-dark">{{$rowTa->keterangan}}</span>
-                                                    </div>
-                                                    <div class="col-md-4 text-end">
-                                                        <span class="badge bg-primary">SKS: {{ $sks_semester }}</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            {{-- Body Semester --}}
-                                            {{-- Perhatikan data-bs-parent="#accordionKHS" agar antar semester saling menutup --}}
-                                            <div id="collapseTa{{$ta}}" class="collapse" data-bs-parent="#accordionKHS">
-                                                <div class="card-body p-0">
-                                                    <div class="table-responsive">
-                                                        <table class="table table-hover mb-0" style="font-size: 13px;">
-                                                            <thead class="bg-light">
-                                                                <tr>
-                                                                    <th class="text-center">Kode</th>
-                                                                    <th>Matakuliah</th>
-                                                                    <th class="text-center">SKS</th>
-                                                                    <th class="text-center">Nilai</th>
-                                                                    <th class="text-center">Huruf</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                @if(count($khsSemesterIni) > 0)
-                                                                    @foreach($khsSemesterIni as $rowKrs)
-                                                                        @php $val = $nilai[$rowKrs->id_jadwal][$ta][$mhs->nim]; @endphp
-                                                                        <tr>
-                                                                            <td class="text-center">{{ $rowKrs['kode_matkul'] }}</td>
-                                                                            <td>{{ $rowKrs['nama_matkul'] }}</td>
-                                                                            <td class="text-center">{{ ($rowKrs->sks_teori+$rowKrs->sks_praktek) }}</td>
-                                                                            <td class="text-center font-weight-bold">{{ $val['nilai_akhir'] }}</td>
-                                                                            <td class="text-center"><span class="badge badge-info">{{ $val['nilai_huruf'] }}</span></td>
-                                                                        </tr>
-                                                                    @endforeach
-                                                                @else
-                                                                    <tr><td colspan="5" class="text-center text-muted p-3">Belum ada nilai.</td></tr>
-                                                                @endif
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                @else
-                                    <div class="alert alert-light text-center">Data akademik belum tersedia.</div>
-                                @endif
+                            {{-- ACCORDION CHILD (Per Semester) --}}
+                            <div class="accordion" id="accordionDaftarNilai">
+                                <div class="mt-4">
+                                    <div class="mt-2"></div>
+                                    <table class="table table-hover table-border-horizontal mb-3" id="tablekrs">
+                                        <thead>
+                                            <th>Kode</th>
+                                            <th>Nama Matakuliah</th>
+                                            <th>SKS</th>
+                                            <th>Nilai Akhir</th>
+                                        </thead>
+                                        <tbody>
+                                            @php $totalSks = 0; $totalIps = 0; @endphp
+                                            @foreach($getNilai as $rowKrs)
+                                                @php $totalSks += ($rowKrs->sks_teori+$rowKrs->sks_praktek);@endphp
+                                                <tr>
+                                                    <td>{{ $rowKrs['kode_matkul'] }}</td>
+                                                    <td>{{ $rowKrs['nama_matkul'] }}</td>
+                                                    <td>{{ ($rowKrs->sks_teori+$rowKrs->sks_praktek) }}</td>
+                                                    <td>
+                                                        @if($rowKrs->validasi_tugas == 1 && $rowKrs->validasi_uts == 1 && $rowKrs->validasi_uas == 1)
+                                                            @php $totalIps +=  ($rowKrs->sks_teori+$rowKrs->sks_praktek) * $kualitas[$rowKrs['nhuruf']]; @endphp
+                                                            {{ $rowKrs['nakhir']}} | {{ $rowKrs['nhuruf']}}
+                                                        @else
+                                                            - | -
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div> {{-- End Accordion Child --}}
 
                         </div>
