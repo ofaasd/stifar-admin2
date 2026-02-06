@@ -714,7 +714,7 @@ Route::group(['middleware' => ['auth', 'role:mhs|super-admin|admin-prodi']], fun
 
     Route::get('/mhs/absensi/history/{id_jadwal}', [mhsAbsensiController::class, 'setAbsensiSatuan'] );
     Route::get('/mhs/absensi/save/{id_jadwal}', [mhsAbsensiController::class, 'saveAbsensi'] );
-    Route::group(['prefix' => 'mahasiswa/pengajuan', 'as' => 'mhs.pengajuan.', 'controller' => PengajuanController::class], function () {
+    Route::group(['prefix' => 'mahasiswa/pengajuan/tugas-akhir', 'as' => 'mhs.pengajuan.tugas-akhir.', 'controller' => PengajuanController::class], function () {
         Route::get('/', 'index')->name('index');
     });
     Route::group(['prefix' => 'mahasiswa/skripsi/pengajuan/pembimbing', 'as' => 'mhs.pengajuan.pembimbing.', 'controller' => PengajuanPembimbingController::class], function () {
