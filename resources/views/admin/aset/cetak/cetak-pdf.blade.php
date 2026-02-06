@@ -65,8 +65,18 @@
             <tr>
                 <th style="width: 3%;">No</th>
                 <th>Nama</th>
-                <th style="width: 12%;">Ruang</th>
-                <th style="width: 12%;">Jumlah</th>
+                @if ($type != "ruang" && $type != "kendaraan")
+                    <th style="width: 12%;">Ruang</th>
+                @elseif ($type == "kendaraan")
+                    <th>Nomor Rangka</th>
+                    <th>Nomor Polisi</th>
+                    <th>Tanggal Pajak</th>
+                    <th>Penanggung Jawab</th>
+                @endif
+                
+                @if ($type != "kendaraan")
+                    <th style="width: 12%;">Jumlah</th>
+                @endif
             </tr>
         </thead>
         <tbody>
@@ -74,8 +84,18 @@
             <tr>
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ $row->nama }}</td>
-                <td>{{ $row->nama_ruang ?? '-' }}</td>
-                <td>{{ $row->jumlah ?? '-' }}</td>
+                @if ($type != "ruang" && $type != "kendaraan")
+                    <td>{{ $row->nama_ruang ?? '-' }}</td>
+                @elseif ($type == "kendaraan")
+                    <td>{{ $row->nomor_rangka ?? '-' }}</td>
+                    <td>{{ $row->nomor_polisi ?? '-' }}</td>
+                    <td>{{ $row->tanggal_pajak ?? '-' }}</td>
+                    <td>{{ $row->penanggung_jawab ?? '-' }}</td>
+                @endif
+
+                @if ($type != "kendaraan")
+                    <td>{{ $row->jumlah ?? '-' }}</td>
+                @endif
             </tr>
         @endforeach
         </tbody>

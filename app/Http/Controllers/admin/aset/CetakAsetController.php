@@ -52,11 +52,17 @@ class CetakAsetController extends Controller
             if($type === 'all'){
                 $title = "Semua";
                 $asetBarang = AsetBarang::select([
-                    'aset_barang.*',
+                    'aset_barang.kode_ruang',
                     'master_ruang.nama_ruang',
+                    DB::raw('COUNT(*) as jumlah'),
+                    DB::raw("GROUP_CONCAT(aset_barang.nama SEPARATOR ', ') as nama")
                 ])
-                ->leftJoin('master_ruang', DB::raw("REPLACE(master_ruang.nama_ruang, ' ', '')"), '=', 'aset_barang.kode_ruang')
+                ->leftJoin('master_ruang', function($join) {
+                    $join->on(DB::raw("REPLACE(master_ruang.nama_ruang, ' ', '')"), '=', 'aset_barang.kode_ruang');
+                })
+                ->groupBy('aset_barang.kode_ruang', 'master_ruang.nama_ruang')
                 ->get();
+                
                 $asetGedung = AsetGedungBangunan::all();
                 $asetKendaraan = AsetKendaraan::all();
                 $asetTanah = AsetTanah::all();
@@ -66,23 +72,38 @@ class CetakAsetController extends Controller
             }elseif ($type === 'barang') {
                 $title = MasterJenisBarang::where('kode', $value)->pluck('nama')->first();
                 $data = AsetBarang::select([
-                    'aset_barang.*',
+                    'aset_barang.kode_ruang',
                     'master_ruang.nama_ruang',
+                    DB::raw('COUNT(*) as jumlah'),
+                    DB::raw("GROUP_CONCAT(aset_barang.nama SEPARATOR ', ') as nama")
                 ])
                 ->leftJoin('master_ruang', DB::raw("REPLACE(master_ruang.nama_ruang, ' ', '')"), '=', 'aset_barang.kode_ruang')
+                ->groupBy('aset_barang.kode_ruang', 'master_ruang.nama_ruang')
                 ->where('kode_jenis_barang', $value)
                 ->get();
             } elseif ($type === 'kendaraan') {
-                $data = AsetKendaraan::where('kode_jenis_kendaraan', $value)->get();
+                $data = AsetKendaraan::select([
+                    'aset_kendaraan.nama',
+                    'aset_kendaraan.nomor_rangka',
+                    'aset_kendaraan.nomor_polisi',
+                    'aset_kendaraan.tanggal_pajak',
+                    'pegawai_biodata.nama_lengkap as penanggung_jawab',
+                ])
+                ->where('kode_jenis_kendaraan', $value)
+                ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'aset_kendaraan.id_penanggung_jawab')
+                ->get();
                 $title = MasterJenisKendaaran::where('kode', $value)->pluck('nama')->first();
             } elseif ($type === 'ruang') {
                 $title = MasterRuang::whereRaw('REPLACE(nama_ruang, " ", "") = ?', [$value])->pluck('nama_ruang')->first();
                 $data = AsetBarang::select([
-                    'aset_barang.*',
+                    'aset_barang.nama',
+                    'aset_barang.kode_ruang',
                     'master_ruang.nama_ruang',
+                    DB::raw('COUNT(*) as jumlah'),
                 ])
                 ->leftJoin('master_ruang', DB::raw("REPLACE(master_ruang.nama_ruang, ' ', '')"), '=', 'aset_barang.kode_ruang')
                 ->whereRaw('REPLACE(kode_ruang, " ", "") = ?', [$value])
+                ->groupBy('aset_barang.nama', 'aset_barang.kode_ruang', 'master_ruang.nama_ruang')
                 ->get();
             } else {
                 return response()->json("tidak ditemukan");
@@ -96,7 +117,7 @@ class CetakAsetController extends Controller
                 $title = str_replace(' ', '', $title);
             }
 
-            $pdf = Pdf::loadView('admin.aset.cetak.cetak-pdf', compact('data', 'title', 'logo'));
+            $pdf = Pdf::loadView('admin.aset.cetak.cetak-pdf', compact('data', 'title', 'logo', 'type'));
             return response()->json([
                 'message'   => 'Berhasil cetak',
                 'pdf' => base64_encode($pdf->output()),
