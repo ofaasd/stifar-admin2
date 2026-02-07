@@ -80,7 +80,7 @@
             </tr>
         </thead>
         <tbody>
-        @foreach($data as $row)
+        @forelse($data as $row)
             <tr>
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ $row->nama }}</td>
@@ -97,7 +97,11 @@
                     <td>{{ $row->jumlah ?? '-' }}</td>
                 @endif
             </tr>
-        @endforeach
+        @empty
+            <tr>
+                <td colspan="5" style="text-align: center;">Data tidak tersedia</td>
+            </tr>
+        @endforelse
         </tbody>
     </table>
 </body>
