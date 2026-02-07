@@ -99,7 +99,18 @@
             </tr>
         @empty
             <tr>
-                <td colspan="5" style="text-align: center;">Data tidak tersedia</td>
+                @php
+                    $colspan = 2;
+                    if ($type != "ruang" && $type != "kendaraan") {
+                        $colspan += 1;
+                    } elseif ($type == "kendaraan") {
+                        $colspan += 4;
+                    }
+                    if ($type != "kendaraan") {
+                        $colspan += 1;
+                    }
+                @endphp
+                <td colspan="{{ $colspan }}" style="text-align: center;">Data tidak tersedia</td>
             </tr>
         @endforelse
         </tbody>
