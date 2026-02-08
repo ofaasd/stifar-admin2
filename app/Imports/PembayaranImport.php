@@ -20,7 +20,7 @@ class PembayaranImport implements ToCollection
                 'jumlah' => $row[1],
                 'keterangan' => $row[2] ?? '',
                 'status' => 1,
-                'tanggal_bayar' => date('Y-m-d'),
+                'tanggal_bayar' => $row[3] ?? date('Y-m-d'),
             ]);
         }
     }
