@@ -92,7 +92,7 @@ class TagihanController extends Controller
             $order = $columns[$request->input('order.0.column')];
             $dir = $request->input('order.0.dir');
 
-            $angkatan = 2025;
+            $angkatan = 2024;
             //tidak bisa karena mahasiswa bulan masuk untuk 2024 blm ada datanya
             // if($id == "5"){
             //     $angkatan = 2024;

@@ -18,7 +18,7 @@ class PembayaranImport implements ToCollection
             $pembayaran = TbPembayaran::create([
                 'nim' => $row[0],
                 'jumlah' => $row[1],
-                'keterangan' => 'SIsa tunggakan terakhir hari Senin 6 Oktober 2025',
+                'keterangan' => $row[2] ?? '',
                 'status' => 1,
                 'tanggal_bayar' => date('Y-m-d'),
             ]);
