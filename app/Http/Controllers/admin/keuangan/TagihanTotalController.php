@@ -11,6 +11,8 @@ use App\Imports\TagihanImport;
 use App\Imports\TagihanS1Import;
 use App\Models\JenisKeuangan;
 use App\Models\Prodi;
+use App\Models\TahunAjaran;
+
 use Maatwebsite\Excel\Facades\Excel;  
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -310,5 +312,43 @@ class TagihanTotalController extends Controller
         $filename = 'rekap-total-tagihan-' . $id . '.pdf';
         $pdf = PDF::loadView('admin.keuangan.tagihan_total.cetak_tagihan_total', $data);
         return $pdf->download($filename);
+    }
+    //fungsi ini untuk menghitung ulang jumlah pembayaran pada prodi S1 dan S2 karena menggunakan DPP dan UPP per semester dimana UPP yang digunakan hanya record detail pembyaran UPP pertama
+    public function update_jumlah_upp(Int $id_prodi){
+        //ambil data mahasiswaa berdasarkan id_prodi (Data yang diolah adalah data angkatan 2024 keatas / > 2024) dan status adalah aktif (1)
+        $mahasiswa = Mahasiswa::where('id_program_studi',$id_prodi)->where('angkatan','>=',2024)->where('status',1)->get();
+        foreach($mahasiswa as $mhs){
+            $tagihan = Tagihan::where('nim',$mhs->nim)->first();
+            //tambahkan kondisi mahasiswa yang diproses adalaha mahasiswa yang memiliki tagihan detail DPP dan UPP selain itu skip perhitungan
+            
+            if($tagihan){
+                $detail_tagihan = DetailTagihanKeuangan::where('id_tagihan',$tagihan->id)->where('id_jenis',1)->count();
+                if($detail_tagihan > 0){
+                //hitung banyaknya TA dari pertama kali angkatan tersebut masuk misal 2024 kode ta adalah 20241 untuk semester ganjll dan 20242 untuk semester genap
+                $angkatan = $mhs->angkatan;
+                $kode_ta = $angkatan . '1'; //default semester ganjil
+                $ta_now = TahunAjaran::where('status',1)->first();
+                $semester_count = TahunAjaran::where('kode_ta', '>=', $kode_ta)
+                    ->where('kode_ta', '<=', $ta_now->kode_ta)
+                    ->count();
+                
+                    $detail_tagihan = DetailTagihanKeuangan::where('id_tagihan',$tagihan->id)->get();
+                    $total_bayar = 0;
+                    foreach($detail_tagihan as $detail){
+                        //jika jenis keuangan adalah UPP (id_jenis = 2) maka ambil hanya record pertama
+                        if($detail->id_jenis == 2){
+                            $total_bayar += $detail->jumlah*$semester_count;
+                            break; //keluar dari loop setelah mengambil record pertama
+                        }else{
+                            $total_bayar += $detail->jumlah;
+                        }
+                    }
+                    //update total_bayar pada tabel tagihan
+                    Tagihan::where('id',$tagihan->id)->update(['total_bayar' => $total_bayar]);
+                    
+                }
+            }
+        }
+        redirect()->back()->with('success', 'Jumlah tagihan UPP berhasil diperbarui.');
     }
 }

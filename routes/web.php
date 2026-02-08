@@ -502,6 +502,7 @@ Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi|baak|admin-
     Route::get('/admin/keuangan/statistik/cetak/{id}', [StatistikKeuanganController::class, 'cetak']);
     Route::get('/admin/keuangan/tagihan_total/{id}', [TagihanTotalController::class, 'index']);
     Route::get('/admin/keuangan/cetak_tagihan_total', [TagihanTotalController::class, 'cetak']);
+    Route::get('/admin/keuangan/tagihan_total/update_jumlah_upp/{id_prodi}', [TagihanTotalController::class, 'update_jumlah_upp']);
     Route::get('/admin/keuangan/cetak_tagihan_total/{id}', [TagihanTotalController::class, 'cetak']);
 
     

@@ -43,6 +43,7 @@
                         @if(empty($link))
                         <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal" id="add-record">+ Add Tagihan Total</button>
                         <button class="btn btn-info" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#importModal" id="import-record">+ Import Tagihan Total</button>
+                        <a href="{{url('admin/keuangan/tagihan_total/update_jumlah_upp/'.$id)}}" class="btn btn-secondary">Update Jumlah Tagihan</a>
                         <a href="{{url('admin/keuangan/cetak_tagihan_total/'.$id)}}" class="btn btn-success" target="_blank">Download Tagihan Total</a>
                         @endif
                         <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModal" aria-hidden="true">
@@ -137,6 +138,12 @@
                         </div>
                     </div>    
                     <div class="card-body">
+                        <div class="alert alert-warning mb-4" role="alert">
+                            <h4 class="alert-heading">Info!</h4>
+                            <p>
+                                Gunakan tombol update jumlah tagihan untuk memperbarui total tagihan apabila ada penggantian tahun akademik untuk menyesuaikan UPP
+                            </p>
+                        </div>
                         <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
                         <div class="table-responsive">
                             <table class="display" id="basic-1">
@@ -383,6 +390,7 @@
                             confirmButton: 'btn btn-danger'
                         }
                     });
+                    btnSubmit.prop('disabled', false);
                 }
             });
         });
