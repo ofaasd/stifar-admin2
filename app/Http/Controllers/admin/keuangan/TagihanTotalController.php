@@ -324,11 +324,11 @@ class TagihanTotalController extends Controller
             if($tagihan){
                 $detail_tagihan = DetailTagihanKeuangan::where('id_tagihan',$tagihan->id)->where('id_jenis',1)->count();
                 if($detail_tagihan > 0){
-                //hitung banyaknya TA dari pertama kali angkatan tersebut masuk misal 2024 kode ta adalah 20241 untuk semester ganjll dan 20242 untuk semester genap
-                $angkatan = $mhs->angkatan;
-                $kode_ta = $angkatan . '1'; //default semester ganjil
-                $ta_now = TahunAjaran::where('status',1)->first();
-                $semester_count = TahunAjaran::where('kode_ta', '>=', $kode_ta)
+                    //hitung banyaknya TA dari pertama kali angkatan tersebut masuk misal 2024 kode ta adalah 20241 untuk semester ganjll dan 20242 untuk semester genap
+                    $angkatan = $mhs->angkatan;
+                    $kode_ta = $angkatan . '1'; //default semester ganjil
+                    $ta_now = TahunAjaran::where('status',1)->first();
+                    $semester_count = TahunAjaran::where('kode_ta', '>=', $kode_ta)
                     ->where('kode_ta', '<=', $ta_now->kode_ta)
                     ->count();
                 
@@ -349,6 +349,6 @@ class TagihanTotalController extends Controller
                 }
             }
         }
-        redirect()->back()->with('success', 'Jumlah tagihan UPP berhasil diperbarui.');
+        return redirect()->back()->with('success', 'Jumlah tagihan UPP berhasil diperbarui.');
     }
 }
