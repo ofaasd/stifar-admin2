@@ -279,10 +279,14 @@
                     orderable: false,
                     targets: 12,
                     render: function render(data, type, full) {
+                        //const rupiah = new Intl.NumberFormat('id-ID', {
+                        //    style: 'currency',
+                        //    currency: 'IDR',
+                        //    minimumFractionDigits: 0
+                        //}).format(Number(full['total'] ?? 0));
                         const rupiah = new Intl.NumberFormat('id-ID', {
-                            style: 'currency',
-                            currency: 'IDR',
-                            minimumFractionDigits: 0
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 0
                         }).format(Number(full['total'] ?? 0));
                         return `<span>${rupiah}</span>`;
 
@@ -294,9 +298,8 @@
                     targets: 13,
                     render: function render(data, type, full) {
                         const rupiah = new Intl.NumberFormat('id-ID', {
-                            style: 'currency',
-                            currency: 'IDR',
-                            minimumFractionDigits: 0
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 0
                         }).format(Number(full['total_bayar'] ?? 0));
                         return `<span>${rupiah}</span>`;
 

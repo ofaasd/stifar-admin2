@@ -350,13 +350,13 @@ class TagihanController extends Controller
                     $nestedData['prodi'] = $nama[$row->id_program_studi];
                     foreach($jenis as $jen){
                         if($jen->id == 1){
-                            $nestedData[str_replace(' ', '', $jen->nama)] = "RP. " . number_format($dpp, 0, ',', '.');
+                            $nestedData[str_replace(' ', '', $jen->nama)] = "" . number_format($dpp, 0, ',', '.');
                         }elseif($jen->id == 2){
-                            $nestedData[str_replace(' ', '', $jen->nama)] = "RP. " . number_format($upp_semester, 0, ',', '.');
+                            $nestedData[str_replace(' ', '', $jen->nama)] = "" . number_format($upp_semester, 0, ',', '.');
                         }elseif($jen->id == 6){
-                            $nestedData[str_replace(' ', '', $jen->nama)] = "RP. " . number_format($upp_bulan, 0, ',', '.');
+                            $nestedData[str_replace(' ', '', $jen->nama)] = "" . number_format($upp_bulan, 0, ',', '.');
                         }else{
-                            $nestedData[str_replace(' ', '', $jen->nama)] = "RP. " . number_format($list_keu[$row->id][$jen->id], 0, ',', '.');
+                            $nestedData[str_replace(' ', '', $jen->nama)] = "" . number_format($list_keu[$row->id][$jen->id], 0, ',', '.');
                         }
                     }
                     $tagihan_total_bayar = $tagihan_total->pembayaran ?? 0;
