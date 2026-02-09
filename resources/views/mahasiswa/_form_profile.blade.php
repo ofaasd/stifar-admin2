@@ -88,10 +88,26 @@
             </div>
         </div>
         <div class="mb-2">
+            <label class="col-sm-12 col-form-label">Tanggal Lahir Ibu: </label>
+            <div class="col-sm-12">
+                <div class="input-group">
+                    <input type="date" name="tgl_lahir_ibu" class="form-control" id="tgl_lahir_ibu"  value="{{$mahasiswa->tgl_lahir_ibu ?? ''}}">
+                </div>
+            </div>
+        </div>
+        <div class="mb-2">
             <label class="col-sm-12 col-form-label">Nama Ayah: </label>
             <div class="col-sm-12">
                 <div class="input-group">
                     <input type="text" name="nama_ayah" class="form-control" id="nama_ayah"  value="{{$mahasiswa->nama_ayah ?? ''}}">
+                </div>
+            </div>
+        </div>
+        <div class="mb-2">
+            <label class="col-sm-12 col-form-label">Tanggal Lahir Ayah: </label>
+            <div class="col-sm-12">
+                <div class="input-group">
+                    <input type="date" name="tgl_lahir_ayah" class="form-control" id="tgl_lahir_ayah"  value="{{$mahasiswa->tgl_lahir_ayah ?? ''}}">
                 </div>
             </div>
         </div>

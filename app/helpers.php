@@ -5,6 +5,7 @@ namespace App;
 use Auth;
 use App\Models\Krs;
 use App\Models\ActivityLog;
+use App\Models\TahunAjaran;
 use App\Models\master_nilai;
 use App\Models\MasterSkripsi;
 use Illuminate\Support\Facades\DB;
@@ -84,6 +85,11 @@ class helpers
                     ->get();
     }
 
+    public static function getTahunAjaranAktif()
+    {
+        return TahunAjaran::where('status','Aktif')->first();
+    }
+
     public function getIPK($nim)
     {
         $getNilai = self::getDaftarNilaiMhs($nim);
@@ -98,6 +104,19 @@ class helpers
             }
         }
         return $totalSks > 0 ? number_format($totalIps / $totalSks, 2) : 0;
+    }
+
+    public function getIPS($nim, $idTahun)
+    {
+        $getNilai = self::getAllNilai($nim, $idTahun);
+        $totalIps = 0;
+        foreach ($getNilai as $row) {
+            if($row->validasi_tugas == 1 && $row->validasi_uts == 1 && $row->validasi_uas == 1)
+            {
+                $totalIps +=  ($row->sks_teori+$row->sks_praktek) * $this->getKualitas($row->nhuruf);
+            }
+        }
+        return $totalIps > 0 ? $totalIps : 0;
     }
 
     public function getAccByPengajuanSkripsi($idMaster)

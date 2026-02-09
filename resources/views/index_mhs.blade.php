@@ -67,7 +67,7 @@
       <div class="col-xxl-2 col-sm-3 box-col-3">
         <div class="card">
             <div class="card-body b-l-primary border-3 text-center">
-                <h4>0</h2>
+                <h4>{{ $ipk }}</h4>
                 <h6>IPK</h6>
             </div>
         </div>
@@ -75,7 +75,7 @@
       <div class="col-xxl-2 col-sm-3 box-col-3">
         <div class="card">
             <div class="card-body b-r-primary border-3 text-center">
-                <h4>0</h4>
+                <h4>{{ $ips }}</h4>
                 <h6>IPS Terakhir</h6>
             </div>
         </div>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\admin;
 
+use App\helpers;
 use Auth;
 use App\Models\Krs;
 use App\Models\Prodi;
@@ -11,7 +12,6 @@ use App\Models\Mahasiswa;
 use App\Models\MataKuliah;
 use App\Models\PmbPesertum;
 use App\Models\TahunAjaran;
-use Illuminate\Http\Request;
 use App\Models\PegawaiBiodatum;
 use App\Models\PmbPesertaOnline;
 use Illuminate\Support\Facades\DB;
@@ -20,7 +20,13 @@ use App\Http\Controllers\Controller;
 
 class DashboardController extends Controller
 {
-    //
+    protected $helpers;
+
+    public function __construct()
+    {
+        $this->helpers = new helpers();
+    }
+
     public function index(){
         $tahun_ajaran = TahunAjaran::where('status','Aktif')->first();
         $ta = $tahun_ajaran->id;
@@ -102,8 +108,10 @@ class DashboardController extends Controller
                     ->where('id_mhs',$mahasiswa->id)
                     ->where('is_publish',1)
                     ->get();
+        $ipk = $this->helpers->getIPK($mahasiswa->nim);
+        $ips = $this->helpers->getIPS($mahasiswa->nim, $ta);
         $no = 1;
-        return view('index_mhs',compact('mahasiswa','krs','no'));
+        return view('index_mhs',compact('mahasiswa','krs','no','ipk','ips'));
     }
     public function pegawai(){
         $user_id = Auth::user()->id;
