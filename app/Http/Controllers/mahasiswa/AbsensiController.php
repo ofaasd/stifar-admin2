@@ -52,6 +52,10 @@ class AbsensiController extends Controller
         foreach($krs as $row){
             $pertemuan[$row->id_jadwal] = [];
             $list_pertemuan = Pertemuan::where(['id_jadwal'=>$row->id_jadwal,'buka_kehadiran'=>1])->where('tgl_pertemuan','like','%' . date('Y-m-d') .'%')->get();
+            $jumlah_pertemuan = Pertemuan::where(['id_jadwal'=>$row->id_jadwal])->count();
+            
+            $persen_kehadiran[$row->id_jadwal] = number_format(AbsensiModel::where('id_jadwal',$row->id_jadwal)->where('id_mhs',$idmhs)->where('type',1)->count() / max(1, $jumlah_pertemuan) * 100, 2);
+            //$persen_kehadiran[$row->id_jadwal] = $list_pertemuan->count() / max(1, $jumlah_pertemuan) * 100;
             foreach($list_pertemuan as $list){
                 $pertemuan[$row->id_jadwal][$list->id] = $list->no_pertemuan;
             }
@@ -59,7 +63,7 @@ class AbsensiController extends Controller
         $no = 1;
 
         $permission = MasterKeuanganMh::where('id_mahasiswa',$idmhs)->first();
-        return view('mahasiswa.absensi.index', compact('prodi','pertemuan','mhs','title', 'permission','mk', 'krs', 'no', 'ta', 'idmhs'));
+        return view('mahasiswa.absensi.index', compact('prodi','pertemuan','mhs','title', 'permission','mk', 'krs', 'no', 'ta', 'idmhs','persen_kehadiran'));
     }
     public function setAbsensiSatuan($id_jadwal){
         $title = "Absensi";

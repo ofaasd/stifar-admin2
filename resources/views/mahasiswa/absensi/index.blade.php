@@ -44,6 +44,7 @@
                                         <td>Ruang</td>
                                         <td>SKS</td>
                                         <td>Presensi</td>
+                                        <td>% Kehadiran</td>
                                     </thead>
                                     <tbody>
                                         @php
@@ -66,6 +67,13 @@
                                                         @endforeach
                                                     @endif --}}
                                                     <a href="{{url("/mhs/absensi/history/" . $row_krs->id_jadwal)}}" class="btn btn-primary btn-sm" >Detail Presensi</a>
+                                                </td>
+                                                <td>
+                                                    @if(!empty($persen_kehadiran[$row_krs['id_jadwal']]))
+                                                        {{ $persen_kehadiran[$row_krs['id_jadwal']] }} %
+                                                    @else
+                                                        0 %
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @endforeach
