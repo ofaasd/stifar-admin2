@@ -26,13 +26,13 @@ class PmbPesertaController extends Controller
     public function index(Request $request,$id_gelombang=0)
     {
         //
-
-        $ta_min = PmbGelombang::selectRaw('max(ta_awal) as ta_min')->limit(1)->first()->ta_min;
-        $curr_ta = $ta_min;
+        $ta_max = PmbGelombang::selectRaw('max(ta_awal) as ta_max')->limit(1)->first()->ta_max;
+        $ta_min = PmbGelombang::selectRaw('min(ta_awal) as ta_min')->limit(1)->first()->ta_min;
+        $curr_ta = $ta_max;
         if($id_gelombang == 0){
-            $curr_gelombang = PmbGelombang::where('ta_awal',$ta_min)->orderBy('id','desc')->limit(1)->first();
+            $curr_gelombang = PmbGelombang::where('ta_awal',$ta_max)->orderBy('id','desc')->limit(1)->first();
             $id_gelombang = $curr_gelombang->id;
-            $gelombang = PmbGelombang::where('ta_awal',$ta_min)->orderBy('id','desc')->get();
+            $gelombang = PmbGelombang::where('ta_awal',$ta_max)->orderBy('id','desc')->get();
         }else{
             $curr_ta = PmbGelombang::where('id',$id_gelombang)->first()->ta_awal;
             $gelombang = PmbGelombang::where('ta_awal',$curr_ta)->orderBy('id','desc')->get();

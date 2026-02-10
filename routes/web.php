@@ -246,6 +246,11 @@ Route::group(['middleware' => ['auth', 'role:akademik|aset|skripsi|wisuda|kepega
     Route::get('admin/admisi/verifikasi/pembayaran/gelombang/{id}', [VerifikasiController::class, 'pembayaran'])->name('pembayaran_filter_gelombang');
     Route::get('admin/admisi/verifikasi/{id}/show', [VerifikasiController::class, 'show'])->name('verifikasi_show');
     Route::get('admin/admisi/statistik', [AdmisiStatistikController::class, 'index'])->name('admisi_statistik');
+    Route::get('admin/admisi/statistik/gender-data', [AdmisiStatistikController::class, 'getGenderData'])->name('admisi_statistik_gender');
+    Route::get('admin/admisi/statistik/validasi-data', [AdmisiStatistikController::class, 'getValidasiData'])->name('admisi_statistik_validasi');
+    Route::get('admin/admisi/statistik/lolos-data', [AdmisiStatistikController::class, 'getLolosData'])->name('admisi_statistik_lolos');
+    Route::get('admin/admisi/statistik/map-data', [AdmisiStatistikController::class, 'getMapData'])->name('admisi_statistik_map');
+    Route::get('admin/admisi/statistik/get-domisili-map-data', [AdmisiStatistikController::class, 'getDomisiliMapData'])->name('admisi_statistik_domisili_map');
     Route::get('admin/statistik/pegawai', [AdmisiStatistikController::class, 'pegawai'])->name('pegawai_statistik');
 
     Route::get('admin/admisi/pengumuman', [PengumumanController::class, 'index'])->name('pengumuman');

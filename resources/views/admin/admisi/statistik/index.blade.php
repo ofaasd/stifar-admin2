@@ -7,6 +7,18 @@
 <link rel="stylesheet" type="text/css" href="{{asset('assets/css/vendors/sweetalert2.css')}}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/vendors/echart.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/vendors/animate.css') }}">
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+  /* Grid Layout untuk 2 Peta */
+  .maps-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr; /* 2 Kolom */
+      gap: 20px;
+  }
+  @media (max-width: 768px) {
+      .maps-grid { grid-template-columns: 1fr; } /* Mobile 1 Kolom */
+  }
+</style>
 @endsection
 
 @section('breadcrumb-title')
@@ -32,23 +44,32 @@
                         </div>
                     </div>
                     <div class="card-body">
-                      <div class="col-xxl-12 col-lg-12 box-col-12">
-                        <div class="card">
-                            <div class="card-header card-no-border">
-                              <h5>Statistik Admisi Per Tahun</h5>
-                            </div>
-                            <div class="card-body pt-0">
-                              <div class="row m-0 overall-card">
-                                <div class="col-xl-9 col-md-12 col-sm-7 p-0">
-                                  <div class="chart-right">
-                                    <div class="row">
-                                      <div class="col-xl-12">
-                                        <div class="card-body p-0">
-                                          <ul class="balance-data">
-                                            <li><span class="circle bg-primary"> </span><span class="f-light ms-1">Tahun</span></li>
-                                          </ul>
-                                          <div class="current-sale-container">
-                                            <div id="chart-currently2"></div>
+                      <div class="row g-3">
+                        
+                        <div class="col-xxl-4 col-lg-4 box-col-4">
+                          <div class="card">
+                              <div class="card-header card-no-border">
+                                <h5>Statistik Gender Pendaftar per Gelombang</h5>
+                              </div>
+                              <div class="card-body pt-0">
+                                <div class="row m-0 overall-card">
+                                  <div class="col-xl-12 col-md-12 col-sm-12 p-0">
+                                    <div class="chart-right">
+                                      <div class="row">
+                                        <div class="col-xl-12">
+                                          <div class="card-body p-0">
+                                            <div class="col-md-12 mb-5">
+                                              <select id="filter-gelombang" class="form-control" style="width: 100%;">
+                                                  @foreach($list_gelombang as $g)
+                                                      <option value="{{ $g->id }}">
+                                                          {{ $g->nama_gel }} ({{ $g->ta_awal }}/{{ $g->ta_akhir }})
+                                                      </option>
+                                                  @endforeach
+                                              </select>
+                                            </div>
+                                            <div class="current-sale-container">
+                                              <div id="chart-gender"></div>
+                                            </div>
                                           </div>
                                         </div>
                                       </div>
@@ -56,26 +77,32 @@
                                   </div>
                                 </div>
                               </div>
-                            </div>
+                          </div>
                         </div>
-                      </div>
-                      <div class="col-xxl-12 col-lg-12 box-col-12">
-                        <div class="card">
-                            <div class="card-header card-no-border">
-                              <h5>Statistik Admisi Per Prodi TA {{$ta_awal}}</h5>
-                            </div>
-                            <div class="card-body pt-0">
-                              <div class="row m-0 overall-card">
-                                <div class="col-xl-9 col-md-12 col-sm-7 p-0">
-                                  <div class="chart-right">
-                                    <div class="row">
-                                      <div class="col-xl-12">
-                                        <div class="card-body p-0">
-                                          <ul class="balance-data">
-                                            <li><span class="circle bg-primary"> </span><span class="f-light ms-1">Tahun</span></li>
-                                          </ul>
-                                          <div class="current-sale-container">
-                                            <div id="chart-prodi"></div>
+                        <div class="col-xxl-4 col-lg-4 box-col-4">
+                          <div class="card">
+                              <div class="card-header card-no-border">
+                                <h5>Statistik Jumlah Validasi Pendaftar per Gelombang</h5>
+                              </div>
+                              <div class="card-body pt-0">
+                                <div class="row m-0 overall-card">
+                                  <div class="col-xl-12 col-md-12 col-sm-12 p-0">
+                                    <div class="chart-right">
+                                      <div class="row">
+                                        <div class="col-xl-12">
+                                          <div class="card-body p-0">
+                                            <div class="col-md-12 mb-5">
+                                              <select id="filter-gelombang-validasi" class="form-control" style="width: 100%;">
+                                                  @foreach($list_gelombang as $g)
+                                                      <option value="{{ $g->id }}">
+                                                          {{ $g->nama_gel }} ({{ $g->ta_awal }}/{{ $g->ta_akhir }})
+                                                      </option>
+                                                  @endforeach
+                                              </select>
+                                            </div>
+                                            <div class="current-sale-container">
+                                              <div id="chart-validasi"></div>
+                                            </div>
                                           </div>
                                         </div>
                                       </div>
@@ -83,10 +110,131 @@
                                   </div>
                                 </div>
                               </div>
-                            </div>
+                          </div>
+                        </div>
+                        <div class="col-xxl-4 col-lg-4 box-col-4">
+                          <div class="card">
+                              <div class="card-header card-no-border">
+                                <h5>Statistik Jumlah Pendaftar Lolos per Gelombang</h5>
+                              </div>
+                              <div class="card-body pt-0">
+                                <div class="row m-0 overall-card">
+                                  <div class="col-xl-12 col-md-12 col-sm-12 p-0">
+                                    <div class="chart-right">
+                                      <div class="row">
+                                        <div class="col-xl-12">
+                                          <div class="card-body p-0">
+                                            <div class="col-md-12 mb-5">
+                                              <select id="filter-gelombang-lolos" class="form-control" style="width: 100%;">
+                                                  @foreach($list_gelombang as $g)
+                                                      <option value="{{ $g->id }}">
+                                                          {{ $g->nama_gel }} ({{ $g->ta_awal }}/{{ $g->ta_akhir }})
+                                                      </option>
+                                                  @endforeach
+                                              </select>
+                                            </div>
+                                            <div class="current-sale-container">
+                                              <div id="chart-lolos"></div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                          </div>
+                        </div>
+                        <div class="col-xxl-5 col-lg-5 box-col-5">
+                          <div class="card">
+                              <div class="card-header card-no-border">
+                                <h5>Statistik Total Pendaftar Per Tahun</h5>
+                              </div>
+                              <div class="card-body pt-0">
+                                <div class="row m-0 overall-card">
+                                  <div class="col-xl-12 col-md-12 col-sm-7 p-0">
+                                    <div class="chart-right">
+                                      <div class="row">
+                                        <div class="col-xl-12">
+                                          <div class="card-body p-0">
+                                            <ul class="balance-data">
+                                              <li><span class="circle bg-primary"> </span><span class="f-light ms-1">Tahun</span></li>
+                                            </ul>
+                                            <div class="current-sale-container">
+                                              <div id="chart-currently2"></div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                          </div>
+                        </div>
+                        <div class="col-xxl-7 col-lg-7 box-col-7">
+                          <div class="card">
+                              <div class="card-header card-no-border">
+                                <h5>Statistik Admisi Per Prodi per Tahun Ajaran</h5>
+                              </div>
+                              <div class="card-body">
+                                <div class="row m-0 overall-card">
+                                  <div class="col-xl-10 col-md-10 col-sm-7 p-0">
+                                    <div class="chart-right">
+                                      <div class="row">
+                                        <div class="col-xl-12">
+                                          <div class="card-body p-0">
+                                            <ul class="balance-data">
+                                              
+                                            </ul>
+                                            <div class="current-sale-container">
+                                              <div id="chart-prodi"></div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                          </div>
+                        </div>
+                        
+                        <div class="col-xxl-12 col-lg-12 box-col-12">
+                          <div class="card">
+                              <div class="card-header card-no-border">
+                                <h5>Peta Sebaran Asal Sekolah</h5>
+                              </div>
+                              <div class="card-body">
+                                <div class="row g-3">
+                                  <div class="col-md-12">
+                                    <select id="filter-ta" class="form-control">
+                                      <option value="">Semua Tahun</option>
+                                      @foreach($list_ta as $ta)
+                                          <option value="{{ $ta['id'] }}">{{ $ta['text'] }}</option>
+                                      @endforeach
+                                    </select>
+                                  </div>
+                                  <div class="col-md-12">
+                                    <div class="maps-grid">
+                                      <div>
+                                          <h4>🗺️ Sebaran Asal Sekolah</h4>
+                                          <div id="peta-sekolah" class="map-wrapper"></div>
+                                      </div>
+
+                                      <div>
+                                          <h4>📍 Sebaran Domisili (KTP)</h4>
+                                          <div id="peta-domisili" class="map-wrapper"></div>
+                                      </div>
+                                  </div>
+                                  </div>
+                                </div>
+                                
+                              </div>
+                          </div>
                         </div>
                       </div>
-                      <div class="col-xxl-12 col-lg-12 box-col-12">
+                      <!-- <div class="col-xxl-12 col-lg-12 box-col-12">
                         <div class="card">
                             <div class="card-header card-no-border">
                               <h5>Statistik Admisi Per Jenis Kelamin TA {{$curr_gelombang->ta_awal}} / {{$curr_gelombang->ta_akhir}}</h5>
@@ -144,38 +292,7 @@
                               </div>
                             </div>
                           </div>
-                      </div>
-                      <div class="col-xxl-12 col-lg-12 box-col-12">
-                        <div class="card">
-                            <div class="card-header card-no-border">
-                              <h5>Statistik Admisi Jumlah Pendaftar Per Agama TA {{$curr_gelombang->ta_awal}} / {{$curr_gelombang->ta_akhir}}</h5>
-                            </div>
-                            <div class="card-body pt-0">
-                              <div class="row m-0 overall-card">
-                                <div class="col-xl-9 col-md-12 col-sm-7 p-0">
-                                  <div class="chart-right">
-                                    <div class="row">
-                                      <div class="col-xl-12">
-                                        <div class="card-body p-0">
-                                          <ul class="balance-data mt-3">
-                                            @php $warna = ['#7366ff','#f73164','#9b59b6','#f1c40f','#2ecc71','#34495e']; $i = 0 @endphp
-                                            @foreach($agama as $key => $value)
-                                            <li><span class="circle" style="background:{{$warna[$i]}}"> </span><span class="f-light ms-1">{{$value}}</span></li>
-                                            @php $i++ @endphp
-                                            @endforeach
-                                          </ul>
-                                          <div class="current-sale-container">
-                                            <div id="chart-currently4"></div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                      </div>
+                      </div> -->
                     </div>
                 </div>
                 
@@ -189,6 +306,7 @@
 <script src="{{ asset('assets/js/dashboard/default.js') }}"></script>
 <script src="{{ asset('assets/js/notify/index.js') }}"></script>
 <script src="{{ asset('assets/js/typeahead/handlebars.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 {{-- <script src="{{ asset('assets/js/typeahead/typeahead.bundle.js') }}"></script>
 <script src="{{ asset('assets/js/typeahead/typeahead.custom.js') }}"></script> --}}
@@ -196,6 +314,10 @@
 <script src="{{ asset('assets/js/typeahead-search/typeahead-custom.js') }}"></script> --}}
 <script src="{{ asset('assets/js/height-equal.js') }}"></script>
 <script src="{{ asset('assets/js/animation/wow/wow.min.js') }}"></script>  
+
+<script src="https://code.highcharts.com/maps/highmaps.js"></script>
+<script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/mapdata/countries/id/id-all.js"></script>
 <script>
     var options = {
       series: [
@@ -354,7 +476,7 @@
     ],
     chart:{
       type:'bar',
-      height:300,
+      height:500,
       stacked:true,
       toolbar:{
         show:false,
@@ -447,7 +569,7 @@
           breakpoint: 1661,
           options:{
             chart: {
-                height: 290,
+                height: 400,
             }
           }
         },
@@ -750,160 +872,318 @@
       ]
   };  
   var options5 = {
-      series: [
-      {
-        name:'Tahun',
-        data:[{!!$jumlah_prodi!!}]
-      }
-    ],
-    chart:{
-      type:'bar',
-      height:300,
-      stacked:true,
-      toolbar:{
-        show:false,
-      },
-      
-      dropShadow: {
-        enabled: true,
-        top: 8,
-        left: 0,
-        blur: 10,
-        opacity: 0.1
-      }
+    series: @json($series),
+    chart: {
+        type: 'bar',
+        height: 450,
+        toolbar: { show: true }
     },
     plotOptions: {
-      bar:{
-        horizontal: false,
-        columnWidth: '25px',
-        borderRadius: 0,
-        
-      },
+        bar: {
+            horizontal: false,
+            columnWidth: '60%',
+            endingShape: 'rounded'
+        },
     },
-    colors:[CubaAdminConfig.primary,CubaAdminConfig.secondary,'#9b59b6','#f1c40f','#2ecc71','#2c3e50'],
-    grid: {
-      show:true,
-      borderColor: 'var(--chart-border)',
-    },
-    dataLabels:{
-      enabled: false,
+    dataLabels: {
+        enabled: false
     },
     stroke: {
-      width: 2,
-      dashArray: 0,
-      lineCap: 'butt',
-      colors: "#fff",
+        show: true,
+        width: 2,
+        colors: ['transparent']
+    },
+    xaxis: {
+        categories: @json($categories), // Data Tahun Ajaran
+        title: {
+            text: 'Tahun Ajaran'
+        }
+    },
+    yaxis: {
+        title: {
+            text: 'Jumlah Mahasiswa'
+        }
     },
     fill: {
-      opacity: 1
+        opacity: 1
     },
+    tooltip: {
+        y: {
+            formatter: function (val) {
+                return val + " Mahasiswa"
+            }
+        }
+    },
+    // Warna-warna bar, bisa disesuaikan
+    colors: ['#008FFB', '#00E396', '#FEB019', '#FF4560', '#775DD0', '#546E7A', '#26a69a'],
     legend: {
-      show:false
-    },
-    states: {
-      hover: {
-        filter: {
-          type: 'darken',
-          value: 1,
-        }
-      }
-    },
-    
-    yaxis: {
-      tickAmount: 3,
-      labels: {
-        show: true,
-        style: {
-          fontFamily: 'Rubik, sans-serif',
-        },
-      },
-      axisBorder:{
-        show:false,
-      },
-      axisTicks:{
-        show: false,
-      },
-    },
-    xaxis:{
-      categories:[
-        {!!$list_prodi!!}
-      ],
-      labels: {
-        style: {
-          fontFamily: 'Rubik, sans-serif',
-        },
-      },
-      axisBorder:{
-        show:false,
-      },
-    axisTicks:{
-        show: false,
-      },
-    },
-    states: {
-      hover: {
-        filter: {
-          type: 'darken',
-          value: 1,
-        }
-      }
-    },
-    responsive: [
-        {
-          breakpoint: 1661,
-          options:{
-            chart: {
-                height: 290,
-            }
-          }
-        },
-          {
-          breakpoint: 767,
-          options:{
-            plotOptions: {
-              bar:{
-                columnWidth: '35px',
-              },
-            },
-              yaxis: {
-                  labels: {
-                    show: false,
-                  }
-                }
-          }
-        },
-        {
-          breakpoint: 481,
-          options:{
-            chart: {
-                height: 200,
-            }
-          }
-        },
-        {
-          breakpoint: 420,
-          options:{
-            chart: {
-                height: 170,
-            },
-            plotOptions: {
-              bar:{
-                columnWidth: '40px',
-              },
-            },
-          }
-        },
-      ]
+        position: 'bottom'
+    }
   };
-  const chart = new ApexCharts(document.querySelector("#chart-currently"), options);
-  chart.render();
+  // const chart = new ApexCharts(document.querySelector("#chart-currently"), options);
+  // chart.render();
   const chart2 = new ApexCharts(document.querySelector("#chart-currently2"), options2);
   chart2.render();
-  const chart3 = new ApexCharts(document.querySelector("#chart-currently3"), options3);
-  chart3.render();
-  const chart4 = new ApexCharts(document.querySelector("#chart-currently4"), options4);
-  chart4.render();
+  // const chart3 = new ApexCharts(document.querySelector("#chart-currently3"), options3);
+  // chart3.render();
+  // const chart4 = new ApexCharts(document.querySelector("#chart-currently4"), options4);
+  // chart4.render();
   const chart5 = new ApexCharts(document.querySelector("#chart-prodi"), options5);
   chart5.render();
+  $(document).ready(function() {
+    // --- 1. Inisialisasi Select2 ---
+    $('#filter-gelombang').select2({
+        placeholder: "Pilih Gelombang Pendaftaran",
+        allowClear: false
+    });
+    $('#filter-gelombang-validasi').select2({
+        placeholder: "Pilih Gelombang Pendaftaran",
+        allowClear: false
+    });
+
+    // --- 2. Konfigurasi Awal ApexCharts ---
+    var options_gender = {
+        series: [0, 0], // Data awal kosong dulu
+        labels: ['Laki-laki', 'Perempuan'],
+        chart: {
+            type: 'pie', // Bisa diganti 'donut'
+            height: 350
+        },
+        colors: ['#008FFB', '#FF4560'], // Biru untuk Laki, Merah Muda untuk Perempuan
+        legend: {
+            position: 'bottom'
+        },
+        dataLabels: {
+            enabled: true,
+            formatter: function (val, opts) {
+                // Menampilkan angka jumlah asli, bukan persentase default
+                return opts.w.config.series[opts.seriesIndex]
+            },
+        },
+        tooltip: {
+            y: {
+                formatter: function(value) {
+                    return value + " Orang";
+                }
+            }
+        },
+        noData: {
+            text: 'Loading...'
+        }
+    };
+
+    var chart_gender = new ApexCharts(document.querySelector("#chart-gender"), options_gender);
+    chart_gender.render();
+
+    // --- 3. Fungsi AJAX Fetch Data ---
+    function updateChartGender(gelombangId) {
+        $.ajax({
+            url: "{{ url('admin/admisi/statistik/gender-data') }}", 
+            type: 'GET',
+            data: { gelombang_id: gelombangId },
+            success: function(response) {
+                // Update Data Chart dengan method updateSeries() milik ApexCharts
+                // response.series berisi array [jumlah_laki, jumlah_perempuan]
+                chart_gender.updateSeries(response.series);
+            },
+            error: function(xhr) {
+                console.log('Error:', xhr);
+                alert('Gagal memuat data grafik.');
+            }
+        });
+    }
+  
+    var options_validasi = {
+        series: [0, 0], // Data awal kosong dulu
+        labels: ['Sudah Validasi', 'Belum Validasi'],
+        chart: {
+            type: 'pie', // Bisa diganti 'donut'
+            height: 350
+        },
+        colors: ['#008FFB', '#FF4560'], // Biru untuk Laki, Merah Muda untuk Perempuan
+        legend: {
+            position: 'bottom'
+        },
+        dataLabels: {
+            enabled: true,
+            formatter: function (val, opts) {
+                // Menampilkan angka jumlah asli, bukan persentase default
+                return opts.w.config.series[opts.seriesIndex]
+            },
+        },
+        tooltip: {
+            y: {
+                formatter: function(value) {
+                    return value + " Orang";
+                }
+            }
+        },
+        noData: {
+            text: 'Loading...'
+        }
+    };
+
+    var chart_validasi = new ApexCharts(document.querySelector("#chart-validasi"), options_validasi);
+    chart_validasi.render();
+
+    // --- 3. Fungsi AJAX Fetch Data ---
+    function updateChartValidasi(gelombangId) {
+        $.ajax({
+            url: "{{ url('admin/admisi/statistik/validasi-data') }}", 
+            type: 'GET',
+            data: { gelombang_id: gelombangId },
+            success: function(response) {
+                // Update Data Chart dengan method updateSeries() milik ApexCharts
+                // response.series berisi array [jumlah_sudah_validasi, jumlah_belum_validasi]
+                chart_validasi.updateSeries(response.series);
+            },
+            error: function(xhr) {
+                console.log('Error:', xhr);
+                alert('Gagal memuat data grafik.');
+            }
+        });
+    }
+
+    var options_lolos = {
+        series: [0, 0], // Data awal kosong dulu
+        labels: ['Sudah Lolos', 'Belum Lolos'],
+        chart: {
+            type: 'pie', // Bisa diganti 'donut'
+            height: 350
+        },
+        colors: ['#008FFB', '#FF4560'], // Biru untuk Laki, Merah Muda untuk Perempuan
+        legend: {
+            position: 'bottom'
+        },
+        dataLabels: {
+            enabled: true,
+            formatter: function (val, opts) {
+                // Menampilkan angka jumlah asli, bukan persentase default
+                return opts.w.config.series[opts.seriesIndex]
+            },
+        },
+        tooltip: {
+            y: {
+                formatter: function(value) {
+                    return value + " Orang";
+                }
+            }
+        },
+        noData: {
+            text: 'Loading...'
+        }
+    };
+
+    var chart_lolos = new ApexCharts(document.querySelector("#chart-lolos"), options_lolos);
+    chart_lolos.render();
+
+    // --- 3. Fungsi AJAX Fetch Data ---
+    function updateChartLolos(gelombangId) {
+        $.ajax({
+            url: "{{ url('admin/admisi/statistik/lolos-data') }}", 
+            type: 'GET',
+            data: { gelombang_id: gelombangId },
+            success: function(response) {
+                // Update Data Chart dengan method updateSeries() milik ApexCharts
+                // response.series berisi array [jumlah_sudah_lolos, jumlah_belum_lolos]
+                chart_lolos.updateSeries(response.series);
+            },
+            error: function(xhr) {
+                console.log('Error:', xhr);
+                alert('Gagal memuat data grafik.');
+            }
+        });
+    }
+    
+    // Ketika Select2 berubah nilai
+    $('#filter-gelombang').on('change', function() {
+        var selectedId = $(this).val();
+        updateChartGender(selectedId);
+    });
+    $('#filter-gelombang-validasi').on('change', function() {
+        var selectedId = $(this).val();
+        updateChartValidasi(selectedId);
+    });
+    $('#filter-gelombang-lolos').on('change', function() {
+        var selectedId = $(this).val();
+        updateChartLolos(selectedId);
+    });
+
+    // Trigger manual saat halaman pertama kali dibuka
+    // Agar grafik langsung muncul sesuai pilihan pertama (terbaru)
+    var initialId = $('#filter-gelombang').val();
+    var initialId = $('#filter-gelombang-validasi').val();
+    var initialId = $('#filter-gelombang-lolos').val();
+    if(initialId) {
+        updateChartGender(initialId);
+        updateChartValidasi(initialId);
+        updateChartLolos(initialId);
+    }
+    $('#filter-ta').select2({
+        placeholder: "Pilih Tahun Ajaran",
+        allowClear: true
+    });
+
+    // --- FUNGSI GENERATOR OPSI PETA (Agar tidak menulis ulang) ---
+    function getMapOptions(title, colorMin, colorMax) {
+        return {
+            chart: { map: 'countries/id/id-all' },
+            title: { text: '' },
+            mapNavigation: { enabled: true, buttonOptions: { verticalAlign: 'bottom' } },
+            colorAxis: {
+                min: 0,
+                minColor: colorMin,
+                maxColor: colorMax
+            },
+            series: [{
+                data: [],
+                name: 'Jumlah',
+                states: { hover: { color: '#BADA55' } },
+                dataLabels: { enabled: true, format: '{point.name}' },
+                tooltip: { pointFormat: '{point.name}: <b>{point.value}</b> Orang' }
+            }],
+            credits: { enabled: false }
+        };
+    }
+
+    // 1. Inisialisasi Chart
+    var chartSekolah = Highcharts.mapChart('peta-sekolah', getMapOptions('Asal Sekolah', '#E0F7FA', '#006064')); // Biru
+    var chartDomisili = Highcharts.mapChart('peta-domisili', getMapOptions('Domisili', '#FFF3E0', '#E65100')); // Oranye
+
+    // 2. Fungsi Load Data (Global untuk kedua peta)
+    function loadAllMaps(taAwal) {
+        // Tampilkan Loading
+        chartSekolah.showLoading('Memuat...');
+        chartDomisili.showLoading('Memuat...');
+
+        // Request AJAX Peta Sekolah
+        $.ajax({
+            url: "{{ url('admin/admisi/statistik/map-data') }}",
+            data: { ta_awal: taAwal },
+            success: function(data) {
+                chartSekolah.series[0].setData(data);
+                chartSekolah.hideLoading();
+            }
+        });
+
+        // Request AJAX Peta Domisili
+        $.ajax({
+            url: "{{ url('admin/admisi/statistik/get-domisili-map-data') }}",
+            data: { ta_awal: taAwal },
+            success: function(data) {
+                chartDomisili.series[0].setData(data);
+                chartDomisili.hideLoading();
+            }
+        });
+    }
+
+    // 3. Event Listener
+    $('#filter-ta').on('change', function() {
+        loadAllMaps($(this).val());
+    });
+
+    // Load Awal
+    loadAllMaps('');
+});
 </script>
 @endsection
