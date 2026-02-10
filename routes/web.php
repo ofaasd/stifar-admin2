@@ -813,7 +813,7 @@ Route::group(['middleware' => ['auth', 'role:mhs|super-admin|admin-prodi']], fun
 
     //Route::post('admin/admisi/peserta/daftar_kota',[PmbPesertaController::class, 'daftar_kota'] )->name('daftar_kota');
 });
-Route::group(['middleware' => ['auth', 'role:pegawai-dosen|pegawai|admin-prodi|super-admin']], function () {
+Route::group(['middleware' => ['auth', 'role:pegawai-dosen|pegawai|admin-prodi|kepegawaian|super-admin']], function () {
 
     Route::prefix('skripsi')->as('koor.skripsi.')->controller(SkripsiController::class)->group(function () {
         Route::get('/', 'index')->name('index');
