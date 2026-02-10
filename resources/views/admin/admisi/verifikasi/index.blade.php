@@ -27,6 +27,54 @@
 @section('content')
     <div class="container-fluid">
         <div class="row">
+            <div class="col-sm-12 mb-2">
+                <div class="row">
+                    <div class="col-md-3 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header pb-0">
+                                <h6 class="mb-0">Status Pembayaran</h6>
+                            </div>
+                            <div class="card-body d-flex justify-content-center align-items-center">
+                                <div id="chartBayar"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header pb-0">
+                                <h6 class="mb-0">Status Verifikasi</h6>
+                            </div>
+                            <div class="card-body d-flex justify-content-center align-items-center">
+                                <div id="chartVerifikasi"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header pb-0">
+                                <h6 class="mb-0">Status Kelolosan</h6>
+                            </div>
+                            <div class="card-body d-flex justify-content-center align-items-center">
+                                <div id="chartLolos"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header pb-0">
+                                <h6 class="mb-0">Peminat per Prodi (Pilihan 1)</h6>
+                            </div>
+                            <div class="card-body">
+                                <div id="chartProdi"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
                 <div class="alert alert-primary inverse alert-dismissible fade show" role="alert"><i class="icon-help-alt"></i>
@@ -201,7 +249,6 @@
                 my_data.push(data_obj);
             });
             //alert(data_obj);
-            console.log(my_data);
 
             const dt = $("#basic-1").DataTable({
                 processing: true,
@@ -325,6 +372,71 @@
                     }
                 ]
             });
+
+            // 1. Chart Pembayaran (Pie)
+            var totalSudahBayar = {{ $stat_bayar->sudah_bayar ?? 0 }};
+            var totalBelumBayar = {{ $stat_bayar->belum_bayar ?? 0 }};
+
+            var optionsBayar = {
+                series: [totalSudahBayar, totalBelumBayar],
+                chart: { type: 'pie', height: 280 },
+                labels: ['Sudah Bayar', 'Belum Bayar'],
+                colors: ['#24695c', '#d22d3d'],
+                legend: { position: 'bottom' },
+                dataLabels: { enabled: true, formatter: function (val, opts) { return opts.w.config.series[opts.seriesIndex] } }
+            };
+            new ApexCharts(document.querySelector("#chartBayar"), optionsBayar).render();
+
+            // 2. Chart Verifikasi (Donut)
+            var verifTerima = {{ $stat_verifikasi->diterima ?? 0 }};
+            var verifTolak = {{ $stat_verifikasi->ditolak ?? 0 }};
+            var verifBelum = {{ $stat_verifikasi->belum ?? 0 }};
+
+            var optionsVerif = {
+                series: [verifTerima, verifTolak, verifBelum],
+                chart: { type: 'donut', height: 280 },
+                labels: ['Diterima', 'Ditolak', 'Belum'],
+                colors: ['#24695c', '#d22d3d', '#f8d62b'], // Hijau, Merah, Kuning
+                legend: { position: 'bottom' },
+                plotOptions: { pie: { donut: { size: '65%' } } },
+                dataLabels: { enabled: true }
+            };
+            new ApexCharts(document.querySelector("#chartVerifikasi"), optionsVerif).render();
+
+            // 3. 
+            var sudahLolos = {{ $stat_lolos->lolos ?? 0 }};
+            var belumLolos = {{ $stat_lolos->belum_lolos ?? 0 }};
+            var tidakLolos = {{ $stat_lolos->belum ?? 0 }};
+
+            var optionsVerif = {
+                series: [sudahLolos, belumLolos, tidakLolos],
+                chart: { type: 'donut', height: 280 },
+                labels: ['Sudah Lolos', 'Belum Lolos', 'Tidak Lolos'],
+                colors: ['#24695c', '#d22d3d', '#f8d62b'], // Hijau, Merah, Kuning
+                legend: { position: 'bottom' },
+                plotOptions: { pie: { donut: { size: '65%' } } },
+                dataLabels: { enabled: true }
+            };
+            new ApexCharts(document.querySelector("#chartLolos"), optionsVerif).render();
+
+            // 3. Chart Prodi (Bar)
+            var labelProdi = [];
+            var dataProdi = [];
+            @foreach($stat_prodi as $sp)
+                labelProdi.push("{{ $sp->nama_prodi }}");
+                dataProdi.push({{ $sp->total }});
+            @endforeach
+
+            var optionsProdi = {
+                series: [{ name: 'Peserta', data: dataProdi }],
+                chart: { type: 'bar', height: 280, toolbar: {show: false} },
+                plotOptions: { bar: { borderRadius: 4, horizontal: true } },
+                xaxis: { categories: labelProdi },
+                colors: ['#7366ff'],
+                dataLabels: { enabled: true }
+            };
+            new ApexCharts(document.querySelector("#chartProdi"), optionsProdi).render();
+
             $('#tambahModal').on('hidden.bs.modal', function () {
                 $('#formAdd').trigger("reset");
                 $("#alert").html('');
@@ -347,7 +459,6 @@
                             $("#alert").html('<div class="alert alert-success mb-4">No. Pendaftaran Tersedia dan dapat digunakan</div>');
                         }
                     }
-                    console.log(key);
                     $('#' + key)
                         .val(data[0][key])
                         .trigger('change');

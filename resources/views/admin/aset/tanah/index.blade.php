@@ -152,6 +152,7 @@
                         <div class="mb-2" id="field-foto">
                             <label for="foto" class="form-label">Foto</label>
                             <input type="file" class="form-control" name="foto" id="foto">
+                            <small class="text-muted">Ukuran maksimal 2MB. Semua jenis gambar diperbolehkan.</small>
                             <a href="#" id="edit-view-foto"><i class="fa fa-file text-dark fs-3 mt-3"></i></a> <span id="edit-view-text-foto">foto</span>
                         </div>
                     </div>

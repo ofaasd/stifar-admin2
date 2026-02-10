@@ -192,6 +192,7 @@
                             <div class="mb-3 col-6">
                                 <label for="foto" class="form-label">Foto Kendaraan</label>
                                 <input type="file" name="foto" class="form-control">
+                                <small class="text-muted">Ukuran maksimal 2MB. Semua jenis gambar diperbolehkan.</small>
                                 <a href="" target="_blank" id="foto"><i class="fa fa-file text-dark fs-3 mt-3"></i> Lihat Foto</a>
                             </div>
                         </div>
