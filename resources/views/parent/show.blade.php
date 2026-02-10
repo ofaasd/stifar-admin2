@@ -479,54 +479,21 @@
                         </button>
                     </h2>
                     <div id="collapseUjian" class="accordion-collapse collapse" aria-labelledby="headingUjian" data-bs-parent="#accordionAkademik">
-                        <div class="accordion-body bg-white p-3">
-                            
-                            {{-- Cek Variable Jadwal (Sesuaikan dengan nama variabel dari controller Anda) --}}
-                            @if(isset($jadwal_ujian) && count($jadwal_ujian) > 0)
-                                <div class="alert alert-warning mb-3">
-                                    <i class="fa fa-exclamation-triangle me-1"></i> Harap hadir 15 menit sebelum ujian dimulai.
+                        <div class="accordion-body bg-light">
+                            <div class="text-center py-5">
+                                <div class="mb-3">
+                                    {{-- Ikon Coming Soon --}}
+                                    <span class="fa-stack fa-2x text-muted opacity-50">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-clock-o fa-stack-1x fa-inverse"></i>
+                                    </span>
                                 </div>
-                                
-                                <div class="table-responsive">
-                                    <table class="table table-hover table-striped mb-0" style="font-size: 13px;">
-                                        <thead class="bg-light">
-                                            <tr>
-                                                <th>Tanggal</th>
-                                                <th>Waktu</th>
-                                                <th>Matakuliah</th>
-                                                <th>Jenis</th>
-                                                <th>Ruang</th>
-                                                <th class="text-center">Kursi</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($jadwal_ujian as $ujian)
-                                                <tr>
-                                                    {{-- Contoh format tanggal: Senin, 20 Jan 2026 --}}
-                                                    <td>{{ \Carbon\Carbon::parse($ujian->tanggal)->isoFormat('dddd, D MMM Y') }}</td>
-                                                    <td>{{ date('H:i', strtotime($ujian->jam_mulai)) }} - {{ date('H:i', strtotime($ujian->jam_selesai)) }}</td>
-                                                    <td>{{ $ujian->nama_matkul }}</td>
-                                                    <td>
-                                                        <span class="badge {{ $ujian->jenis == 'UTS' ? 'bg-info' : 'bg-primary' }}">
-                                                            {{ $ujian->jenis }}
-                                                        </span>
-                                                    </td>
-                                                    <td>{{ $ujian->nama_ruang }}</td>
-                                                    <td class="text-center fw-bold">{{ $ujian->no_kursi ?? '-' }}</td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            @else
-                                {{-- Empty State --}}
-                                <div class="text-center py-4 text-muted">
-                                    <img src="{{ asset('assets/images/dashboard/cartoon.svg') }}" alt="No Data" style="width: 100px; opacity: 0.5;" class="mb-3 grayscale">
-                                    <h6 class="fw-bold">Belum Ada Jadwal Ujian</h6>
-                                    <p class="f-12 mb-0">Jadwal UTS/UAS belum dipublikasikan oleh bagian akademik.</p>
-                                </div>
-                            @endif
-
+                                <h5 class="text-dark fw-bold">Fitur Segera Hadir</h5>
+                                <p class="text-muted mb-0">
+                                    Modul Jadwal Ujian sedang dalam tahap pengembangan.<br>
+                                    Anda akan segera dapat memantau jadwal ujian mahasiswa di sini.
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -539,67 +506,21 @@
                         </button>
                     </h2>
                     <div id="collapseHistory" class="accordion-collapse collapse" aria-labelledby="headingHistory" data-bs-parent="#accordionAkademik">
-                        <div class="accordion-body bg-white p-3">
-
-                            {{-- 
-                                Logic: Pastikan controller mengirim variabel $khs_semester_lalu 
-                                atau ambil dari array $nilai dengan index tahun ajaran sebelumnya 
-                            --}}
-                            
-                            @if(isset($khs_semester_lalu) && count($khs_semester_lalu) > 0)
-                                
-                                {{-- Ringkasan IPS & SKS --}}
-                                <div class="row mb-3">
-                                    <div class="col-md-12">
-                                        <div class="card bg-light border-0 p-3">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div>
-                                                    <h6 class="mb-1 fw-bold text-dark">Ringkasan Semester {{ $nama_semester_lalu ?? 'Lalu' }}</h6>
-                                                    <span class="text-muted f-12">Prestasi akademik semester sebelumnya</span>
-                                                </div>
-                                                <div class="text-end">
-                                                    <span class="badge bg-success p-2 f-12 me-2">IPS: {{ $ips_semester_lalu ?? '0.00' }}</span>
-                                                    <span class="badge bg-secondary p-2 f-12">SKS: {{ $sks_semester_lalu ?? '0' }}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                        <div class="accordion-body bg-light">
+                            <div class="text-center py-5">
+                                <div class="mb-3">
+                                    {{-- Ikon Coming Soon --}}
+                                    <span class="fa-stack fa-2x text-muted opacity-50">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-clock-o fa-stack-1x fa-inverse"></i>
+                                    </span>
                                 </div>
-
-                                {{-- Tabel Nilai Ringkas --}}
-                                <div class="table-responsive">
-                                    <table class="table table-sm table-hover mb-0" style="font-size: 13px;">
-                                        <thead class="bg-light">
-                                            <tr>
-                                                <th>Matakuliah</th>
-                                                <th class="text-center">SKS</th>
-                                                <th class="text-center">Nilai</th>
-                                                <th class="text-center">Huruf</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($khs_semester_lalu as $row)
-                                                <tr>
-                                                    <td>{{ $row->nama_matkul }}</td>
-                                                    <td class="text-center">{{ $row->sks }}</td>
-                                                    <td class="text-center fw-bold">{{ $row->nilai_akhir }}</td>
-                                                    <td class="text-center">
-                                                        <span class="badge badge-info">{{ $row->nilai_huruf }}</span>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                            @else
-                                {{-- Empty State --}}
-                                <div class="text-center py-4 text-muted">
-                                    <i class="fa fa-file-text-o mb-2 f-24 opacity-50"></i><br>
-                                    Data semester lalu tidak ditemukan atau Anda adalah mahasiswa baru.
-                                </div>
-                            @endif
-
+                                <h5 class="text-dark fw-bold">Fitur Segera Hadir</h5>
+                                <p class="text-muted mb-0">
+                                    Modul Hasil Semester Lalu sedang dalam tahap pengembangan.<br>
+                                    Anda akan segera dapat memantau hasil semester lalu mahasiswa di sini.
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
