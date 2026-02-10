@@ -182,7 +182,7 @@ Route::get('/register_mahasiswa', [LoginController::class, 'register_mahasiswa']
 Route::post('/actionRegister', [LoginController::class, 'actionRegister'])->name('actionRegister');
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 
-Route::group(['middleware' => ['auth', 'role:super-admin|admin-prodi|baak|admin-pmb',]], function () {
+Route::group(['middleware' => ['auth', 'role:akademik|aset|skripsi|wisuda|kepegawaian|super-admin|admin-prodi|baak|admin-pmb',]], function () {
     // route dosen
     Route::get('/dosen/perwalian', [DosenController::class, 'index'])->name('Perwalian');
     Route::get('/dosen/{id}/krs', [DosenController::class, 'detailKRS'])->name('detailKRS');
@@ -813,7 +813,7 @@ Route::group(['middleware' => ['auth', 'role:mhs|super-admin|admin-prodi']], fun
 
     //Route::post('admin/admisi/peserta/daftar_kota',[PmbPesertaController::class, 'daftar_kota'] )->name('daftar_kota');
 });
-Route::group(['middleware' => ['auth', 'role:pegawai-dosen|pegawai|admin-prodi|super-admin']], function () {
+Route::group(['middleware' => ['auth', 'role:pegawai-dosen|pegawai|admin-prodi|kepegawaian|super-admin']], function () {
 
     Route::prefix('skripsi')->as('koor.skripsi.')->controller(SkripsiController::class)->group(function () {
         Route::get('/', 'index')->name('index');

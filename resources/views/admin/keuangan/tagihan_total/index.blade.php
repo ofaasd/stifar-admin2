@@ -154,7 +154,7 @@
                                         <th>Gelombang</th>
                                         <th>NIM</th>
                                         <th>Nama</th>
-                                        <th>Total Bayar</th>
+                                        <th>Total Tagihan</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
