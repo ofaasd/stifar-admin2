@@ -22,6 +22,32 @@
 @section('content')
     <div class="container-fluid">
         <div class="row">
+            
+            <div class="col-sm-12 mb-2">
+                <div class="row">
+                    <div class="col-lg-6 col-3 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header pb-0">
+                                <h6 class="mb-0">Statistik ruang pada gedung</h6>
+                            </div>
+                            <div class="card-body d-flex justify-content-center align-items-center">
+                                <div id="chartGedung"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-3 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header pb-0">
+                                <h6 class="mb-0">Statistik Jenis Ruang</h6>
+                            </div>
+                            <div class="card-body d-flex justify-content-center align-items-center">
+                                <div id="chartJenis"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
                 <div class="card">
@@ -203,6 +229,124 @@
                     searchPlaceholder: 'Search..'
                 },
             });
+
+            // Chart Gedung
+            const gedungData = @json($statGedung ?? []);
+            if (document.querySelector("#chartGedung") && Object.keys(gedungData).length > 0) {
+                
+                const gedungLabels = Object.keys(gedungData); // ['Gedung A', 'Gedung B']
+                const gedungValues = Object.values(gedungData); // [10, 5]
+
+                var optionsGedung = {
+                    series: [{
+                        name: 'Jumlah Aset',
+                        data: gedungValues
+                    }],
+                    chart: {
+                        type: 'bar', // Bisa diganti 'bar' (vertikal) atau 'pie'
+                        height: 300,
+                        toolbar: { show: false },
+                        fontFamily: 'Rubik, sans-serif',
+                    },
+                    plotOptions: {
+                        bar: {
+                            borderRadius: 4,
+                            columnWidth: '50%', // Lebar batang
+                            distributed: true // Warna beda-beda tiap batang
+                        }
+                    },
+                    dataLabels: {
+                        enabled: true,
+                        style: { fontSize: '12px', colors: ['#fff'] }
+                    },
+                    xaxis: {
+                        categories: gedungLabels,
+                        labels: {
+                            style: { fontSize: '11px' },
+                            rotate: -45 // Miringkan label jika nama gedung panjang
+                        },
+                        title: { text: 'Gedung' }
+                    },
+                    yaxis: {
+                        title: { text: 'Total Ruang' }
+                    },
+                    colors: ['#7366ff', '#f73164', '#51bb25', '#f8d62b', '#544fff'], // Warna-warni
+                    legend: { show: false }, // Sembunyikan legend jika pakai distributed colors
+                    tooltip: {
+                        y: {
+                            formatter: function (val) {
+                                return val + " Item"
+                            }
+                        }
+                    }
+                };
+
+                var chartGedung = new ApexCharts(document.querySelector("#chartGedung"), optionsGedung);
+                chartGedung.render();
+
+            } else if (document.querySelector("#chartGedung")) {
+                // Tampilan jika data kosong
+                document.querySelector("#chartGedung").innerHTML = "<div class='text-center p-5 text-muted'>Data Gedung Kosong</div>";
+            }
+
+            // Chart Jenis
+            const jenisData = @json($statJenis ?? []);
+            if (document.querySelector("#chartJenis") && Object.keys(jenisData).length > 0) {
+                
+                const jenisLabels = Object.keys(jenisData); // ['Jenis A', 'Jenis B']
+                const jenisValues = Object.values(jenisData); // [10, 5]
+
+                var optionsJenis = {
+                    series: [{
+                        name: 'Jumlah Aset',
+                        data: jenisValues
+                    }],
+                    chart: {
+                        type: 'bar', // Bisa diganti 'bar' (vertikal) atau 'pie'
+                        height: 300,
+                        toolbar: { show: false },
+                        fontFamily: 'Rubik, sans-serif',
+                    },
+                    plotOptions: {
+                        bar: {
+                            borderRadius: 4,
+                            columnWidth: '50%', // Lebar batang
+                            distributed: true // Warna beda-beda tiap batang
+                        }
+                    },
+                    dataLabels: {
+                        enabled: true,
+                        style: { fontSize: '12px', colors: ['#fff'] }
+                    },
+                    xaxis: {
+                        categories: jenisLabels,
+                        labels: {
+                            style: { fontSize: '11px' },
+                            rotate: -45 // Miringkan label jika nama jenis panjang
+                        },
+                        title: { text: 'Jenis' }
+                    },
+                    yaxis: {
+                        title: { text: 'Total Ruang' }
+                    },
+                    colors: ['#7366ff', '#f73164', '#51bb25', '#f8d62b', '#544fff'], // Warna-warni
+                    legend: { show: false }, // Sembunyikan legend jika pakai distributed colors
+                    tooltip: {
+                        y: {
+                            formatter: function (val) {
+                                return val + " Item"
+                            }
+                        }
+                    }
+                };
+
+                var chartJenis = new ApexCharts(document.querySelector("#chartJenis"), optionsJenis);
+                chartJenis.render();
+
+            } else if (document.querySelector("#chartJenis")) {
+                // Tampilan jika data kosong
+                document.querySelector("#chartJenis").innerHTML = "<div class='text-center p-5 text-muted'>Data Jenis Kosong</div>";
+            }
 
             $('#tambahModal').on('hidden.bs.modal', function () {
                 $('#id').val('');

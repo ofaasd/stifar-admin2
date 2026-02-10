@@ -8,6 +8,7 @@ use App\Models\MasterRuang;
 use Illuminate\Http\Request;
 use App\Models\MasterJenisRuang;
 use App\Models\AsetGedungBangunan;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Crypt;
 
@@ -33,13 +34,29 @@ class RuangController extends Controller
         ->leftJoin('aset_gedung_bangunan', 'aset_gedung_bangunan.kode', '=', 'master_ruang.kode_gedung')
         ->groupBy('master_ruang.id');
 
+        // 1. Definisikan Base Query (Tanpa select/group by spesifik dulu agar fleksibel)
+        $query1 = MasterRuang::leftJoin('master_lantai', 'master_lantai.id', '=', 'master_ruang.lantai_id')
+            ->leftJoin('master_jenis_ruang', 'master_jenis_ruang.kode', '=', 'master_ruang.kode_jenis')
+            ->leftJoin('aset_gedung_bangunan', 'aset_gedung_bangunan.kode', '=', 'master_ruang.kode_gedung');
+
+        // 2. Buat Statistik (Gunakan clone agar query utama tidak terganggu)
+        $statGedung = $query1->clone()
+            ->select('aset_gedung_bangunan.kode', DB::raw('count(*) as total'))
+            ->groupBy('aset_gedung_bangunan.kode')
+            ->pluck('total', 'aset_gedung_bangunan.kode');
+
+        $statJenis = $query1->clone()
+            ->select('master_jenis_ruang.kode', DB::raw('count(*) as total'))
+            ->groupBy('master_jenis_ruang.kode')
+            ->pluck('total', 'master_jenis_ruang.kode');
+
         if (empty($request->input('length'))) {
             $title = "Ruang";
             $indexed = $this->indexed;
             $asetGedung = AsetGedungBangunan::all();
             $asetJenisRuang = MasterJenisRuang::all();
             $asetLantai = Lantai::all();
-            return view('admin.master.ruang.index', compact('title','indexed', 'asetGedung', 'asetJenisRuang', 'asetLantai'));
+            return view('admin.master.ruang.index', compact('title','indexed', 'asetGedung', 'asetJenisRuang', 'asetLantai', 'statGedung', 'statJenis'));
         }else{
             $columns = [
                 1 => 'master_ruang.id',
