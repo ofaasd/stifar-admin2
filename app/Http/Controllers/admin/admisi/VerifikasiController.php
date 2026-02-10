@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers\admin\admisi;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\PmbPesertaOnline;
-use App\Models\PmbJalur;
-use App\Models\PmbJalurProdi;
-use App\Models\Wilayah;
-use App\Models\PmbTum as ta;
-use App\Models\PmbGelombang;
-use App\Models\PmbAsalSekolah;
-use App\Models\PmbNilaiRapor;
-use App\Models\Prodi;
-use App\Models\BuktiRegistrasi;
-use App\Models\BankDataVa;
 use App\helpers;
+use App\Models\Prodi;
+use App\Models\Wilayah;
+use App\Models\PmbJalur;
+use App\Models\BankDataVa;
+use App\Models\PmbGelombang;
+use App\Models\PmbTum as ta;
+use Illuminate\Http\Request;
+use App\Models\PmbJalurProdi;
+use App\Models\PmbNilaiRapor;
+use App\Models\PmbAsalSekolah;
+use App\Models\BuktiRegistrasi;
+use App\Models\PmbPesertaOnline;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 
 class VerifikasiController extends Controller
 {
@@ -39,13 +40,41 @@ class VerifikasiController extends Controller
             $request->session()->put('gelombang', $id_gelombang);
         }
 
+        $stat_bayar = PmbPesertaOnline::where('gelombang', $id_gelombang)
+            ->selectRaw('sum(case when is_bayar = 1 then 1 else 0 end) as sudah_bayar')
+            ->selectRaw('sum(case when is_bayar = 0 then 1 else 0 end) as belum_bayar')
+            ->first();
+
+        // 2. Statistik Status Verifikasi (0=Belum, 1=Terima, 2=Tolak)
+        $stat_verifikasi = PmbPesertaOnline::where('gelombang', $id_gelombang)
+            ->selectRaw('sum(case when is_verifikasi = "1" then 1 else 0 end) as diterima')
+            ->selectRaw('sum(case when is_verifikasi = "2" then 1 else 0 end) as ditolak')
+            ->selectRaw('sum(case when is_verifikasi = "0" OR is_verifikasi IS NULL then 1 else 0 end) as belum')
+            ->first();
+
+        $stat_lolos = PmbPesertaOnline::where('gelombang', $id_gelombang)
+            ->selectRaw('sum(case when is_lolos = "1" then 1 else 0 end) as lolos')
+            ->selectRaw('sum(case when is_lolos = "2" then 1 else 0 end) as belum_lolos')
+            ->selectRaw('sum(case when is_lolos = "0" OR is_lolos IS NULL then 1 else 0 end) as belum')
+            ->first();
+
+        // 3. Statistik Peminat per Prodi (Pilihan 1)
+        $stat_prodi = PmbPesertaOnline::select([
+            'program_studi.nama_prodi',
+            DB::raw('count(*) as total')
+        ])
+        ->leftJoin('program_studi', 'program_studi.id', '=', 'pmb_peserta_online.pilihan1')
+        ->where('pmb_peserta_online.gelombang', $id_gelombang)
+        ->groupBy('program_studi.nama_prodi')
+        ->get();
+
         if (empty($request->input('length'))) {
             $title = "Verifikasi";
             $title2 = "Verifikasi Peserta";
             $indexed = $this->indexed;
             $bank = BankDataVa::all();
 
-            return view('admin.admisi.verifikasi.index', compact('id_gelombang','curr_ta','gelombang','ta_max','ta_min','title','title2','indexed','bank'));
+            return view('admin.admisi.verifikasi.index', compact('id_gelombang','curr_ta','gelombang','ta_max','ta_min','title','title2','indexed','bank', 'stat_bayar','stat_verifikasi','stat_prodi', 'stat_lolos'));
         }else{
 
             $gelombang = PmbGelombang::all();

@@ -22,6 +22,32 @@
 @section('content')
     <div class="container-fluid">
         <div class="row">
+            <div class="col-sm-12 mb-4">
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="card h-100">
+                            <div class="card-header pb-0">
+                                <h5>Status Pembayaran</h5>
+                            </div>
+                            <div class="card-body d-flex justify-content-center align-items-center">
+                                <div id="chartBayar"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-7">
+                        <div class="card h-100">
+                            <div class="card-header pb-0">
+                                <h5>Peminat per Prodi (Pilihan 1)</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="chartProdi"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
                 <div class="card">
@@ -106,9 +132,6 @@
                 my_data.push(data_obj);
             });
 
-            //alert(data_obj);
-            console.log(my_data);
-
             const dt = $("#basic-1").DataTable({
                 processing: true,
                 serverSide: true,
@@ -181,6 +204,70 @@
                     searchPlaceholder: 'Search..'
                 },
             });
+
+            var totalSudahBayar = {{ $stat_bayar->sudah_bayar ?? 0 }};
+            var totalBelumBayar = {{ $stat_bayar->belum_bayar ?? 0 }};
+
+            var optionsBayar = {
+                series: [totalSudahBayar, totalBelumBayar],
+                chart: {
+                    type: 'pie',
+                    height: 300
+                },
+                labels: ['Sudah Bayar', 'Belum Bayar'],
+                colors: ['#24695c', '#d22d3d'], // Hijau & Merah
+                legend: {
+                    position: 'bottom'
+                },
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        chart: { width: 300 },
+                        legend: { position: 'bottom' }
+                    }
+                }]
+            };
+            var chartBayar = new ApexCharts(document.querySelector("#chartBayar"), optionsBayar);
+            chartBayar.render();
+
+            // 2. Data Grafik Prodi
+            var labelProdi = [];
+            var dataProdi = [];
+
+            @foreach($stat_prodi as $sp)
+                labelProdi.push("{{ $sp->nama_prodi }}");
+                dataProdi.push({{ $sp->total }});
+            @endforeach
+
+            var optionsProdi = {
+                series: [{
+                    name: 'Jumlah Peminat',
+                    data: dataProdi
+                }],
+                chart: {
+                    type: 'bar',
+                    height: 300
+                },
+                plotOptions: {
+                    bar: {
+                        borderRadius: 4,
+                        horizontal: true, // Bar ke samping agar nama prodi panjang muat
+                        distributed: true
+                    }
+                },
+                dataLabels: {
+                    enabled: true
+                },
+                xaxis: {
+                    categories: labelProdi
+                },
+                colors: ['#24695c', '#ba895d', '#d22d3d', '#e2c636', '#222222'],
+                legend: { show: false }
+            };
+            var chartProdi = new ApexCharts(document.querySelector("#chartProdi"), optionsProdi);
+            chartProdi.render();
+
+
             $('#tambahModal').on('hidden.bs.modal', function () {
                 $('#formAdd').trigger("reset");
             });

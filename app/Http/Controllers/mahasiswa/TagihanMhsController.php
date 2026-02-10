@@ -133,6 +133,7 @@ class TagihanMhsController extends Controller
         
         return view('mahasiswa.tagihan', compact('title','mhs','upp_bulan', 'upp_semester','dpp','new_total_tagihan','tagihan_total_bayar','status','bayar_dpp'));
     }
+    
     public function riwayat(){
         $title = "Riwayat Tagihan Mahasiswa";
         $mhs = Mahasiswa::where('user_id',Auth::id())->first();

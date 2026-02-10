@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers\admin\admisi;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\PmbPesertaOnline;
-use App\Models\PmbJalur;
-use App\Models\PmbJalurProdi;
-use App\Models\Wilayah;
-use App\Models\PmbTum as ta;
-use App\Models\PmbGelombang;
-use App\Models\PmbAsalSekolah;
-use App\Models\PmbNilaiRapor;
-use App\Models\Prodi;
 use Image;
 use Session;
+use App\Models\Prodi;
+use App\Models\Wilayah;
+use App\Models\PmbJalur;
+use App\Models\PmbGelombang;
+use App\Models\PmbTum as ta;
+use Illuminate\Http\Request;
+use App\Models\PmbJalurProdi;
+use App\Models\PmbNilaiRapor;
+use App\Models\PmbAsalSekolah;
+use App\Models\PmbPesertaOnline;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 
 class PmbPesertaController extends Controller
 {
@@ -38,12 +39,27 @@ class PmbPesertaController extends Controller
             $request->session()->put('gelombang', $id_gelombang);
         }
 
+        // grafik
+        $stat_bayar = PmbPesertaOnline::where('gelombang', $id_gelombang)
+            ->selectRaw('sum(case when is_bayar = 1 then 1 else 0 end) as sudah_bayar')
+            ->selectRaw('sum(case when is_bayar = 0 then 1 else 0 end) as belum_bayar')
+            ->first();
+
+        $stat_prodi = PmbPesertaOnline::select([
+            'program_studi.nama_prodi',
+            DB::raw('count(*) as total')
+        ])
+        ->leftJoin('program_studi', 'program_studi.id', '=', 'pmb_peserta_online.pilihan1')
+        ->where('pmb_peserta_online.gelombang', $id_gelombang)
+        ->groupBy('program_studi.nama_prodi')
+        ->get();
+
         if (empty($request->input('length'))) {
             $title = "Peserta";
             $indexed = $this->indexed;
             $ta_max = PmbGelombang::selectRaw('max(ta_awal) as ta_max')->limit(1)->first()->ta_max;
 
-            return view('admin.admisi.peserta.index', compact('id_gelombang','curr_ta','gelombang','ta_max','ta_min','title','indexed'));
+            return view('admin.admisi.peserta.index', compact('id_gelombang','curr_ta','gelombang','ta_max','ta_min','title','indexed','stat_bayar','stat_prodi'));
         }else{
             $gelombang = PmbGelombang::all();
             $gel = [];
