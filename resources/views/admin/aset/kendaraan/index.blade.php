@@ -22,48 +22,37 @@
 @section('content')
     <div class="container-fluid">
         <div class="row">
+            <div class="col-sm-12 mb-2">
+                <div class="row">
+                    <div class="col-lg-6 col-3 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header pb-0">
+                                <h6 class="mb-0">Statistik Jenis Kendaraan</h6>
+                            </div>
+                            <div class="card-body d-flex justify-content-center align-items-center">
+                                <div id="chartJenis"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-3 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header pb-0">
+                                <h6 class="mb-0">Statistik Merk Kendaraan</h6>
+                            </div>
+                            <div class="card-body d-flex justify-content-center align-items-center">
+                                <div id="chartMerk"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header pb-0 card-no-border">
                         <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal">+ {{$title2}}</button>
-                    </div>
-                    <div class="card-body">
-                        <h5>Statistik Kendaraan</h5>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h6>Jenis Kendaraan</h6>
-                                        <ul>
-                                            @foreach($statJenisKendaraan as $jenis => $jumlah)
-                                                <li>{{ $jenis }}: {{ $jumlah }}</li>
-                                            @endforeach
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h6>Merk Kendaraan</h6>
-                                        <ul>
-                                            @foreach($statMerkKendaraan as $merk => $jumlah)
-                                                <li>{{ $merk }}: {{ $jumlah }}</li>
-                                            @endforeach
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h6>Total Kendaraan</h6>
-                                        <p>{{ $jumlahKendaraan }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                     <div class="card-body">
                         <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
@@ -355,6 +344,111 @@
                     searchPlaceholder: 'Search..'
                 },
             });
+
+            // Chart Jenis
+            const jenisData = @json($statJenisKendaraan ?? []);
+            if (document.querySelector("#chartJenis") && Object.keys(jenisData).length > 0) {
+                
+                const jenisLabels = Object.keys(jenisData); // ['Jenis A', 'Jenis B']
+                const jenisValues = Object.values(jenisData); // [10, 5]
+
+                var optionsJenis = {
+                    series: [{
+                        name: 'Jumlah Aset',
+                        data: jenisValues
+                    }],
+                    chart: {
+                        type: 'bar', // Bisa diganti 'bar' (vertikal) atau 'pie'
+                        height: 300,
+                        toolbar: { show: false },
+                        fontFamily: 'Rubik, sans-serif',
+                    },
+                    plotOptions: {
+                        bar: {
+                            borderRadius: 4,
+                            columnWidth: '50%', // Lebar batang
+                            distributed: true // Warna beda-beda tiap batang
+                        }
+                    },
+                    dataLabels: {
+                        enabled: true,
+                        style: { fontSize: '12px', colors: ['#fff'] }
+                    },
+                    xaxis: {
+                        categories: jenisLabels,
+                        labels: {
+                            style: { fontSize: '11px' },
+                            rotate: -45 // Miringkan label jika nama jenis panjang
+                        },
+                        title: { text: 'Jenis' }
+                    },
+                    yaxis: {
+                        title: { text: 'Total Ruang' }
+                    },
+                    colors: ['#7366ff', '#f73164', '#51bb25', '#f8d62b', '#544fff'], // Warna-warni
+                    legend: { show: false }, // Sembunyikan legend jika pakai distributed colors
+                    tooltip: {
+                        y: {
+                            formatter: function (val) {
+                                return val + " Item"
+                            }
+                        }
+                    }
+                };
+
+                var chartJenis = new ApexCharts(document.querySelector("#chartJenis"), optionsJenis);
+                chartJenis.render();
+
+            } else if (document.querySelector("#chartJenis")) {
+                // Tampilan jika data kosong
+                document.querySelector("#chartJenis").innerHTML = "<div class='text-center p-5 text-muted'>Data Jenis Kosong</div>";
+            }
+            
+            // Chart Merk
+            const merkData = @json($statMerkKendaraan ?? []);
+            if (document.querySelector("#chartMerk") && Object.keys(merkData).length > 0) {
+                
+                const merkLabels = Object.keys(merkData);
+                const merkValues = Object.values(merkData);
+
+                var optionsMerk = {
+                    series: merkValues,
+                    chart: {
+                        type: 'pie',
+                        height: 300,
+                        toolbar: { show: false },
+                        fontFamily: 'Rubik, sans-serif',
+                    },
+                    labels: merkLabels,
+                    plotOptions: {
+                        pie: {
+                            donut: {
+                                size: '65%'
+                            }
+                        }
+                    },
+                    dataLabels: {
+                        enabled: true,
+                        style: { fontSize: '12px', colors: ['#fff'] }
+                    },
+                    colors: ['#7366ff', '#f73164', '#51bb25', '#f8d62b', '#544fff'],
+                    legend: { show: false },
+                    tooltip: {
+                        y: {
+                            formatter: function (val) {
+                                return val + " Item"
+                            }
+                        }
+                    }
+                };
+
+                var chartMerk = new ApexCharts(document.querySelector("#chartMerk"), optionsMerk);
+                chartMerk.render();
+
+            } else if (document.querySelector("#chartMerk")) {
+                document.querySelector("#chartMerk").innerHTML = "<div class='text-center p-5 text-muted'>Data Merk Kosong</div>";
+            }
+
             $('#tambahModal').on('hidden.bs.modal', function () {
                 $('#id').val('');
                 $('#formAdd').trigger("reset");

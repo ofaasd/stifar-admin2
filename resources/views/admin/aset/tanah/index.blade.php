@@ -22,6 +22,32 @@
 @section('content')
     <div class="container-fluid">
         <div class="row">
+            <div class="col-sm-12 mb-2">
+                <div class="row">
+                    <div class="col-lg-6 col-3 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header pb-0">
+                                <h6 class="mb-0">Statistik Status Tanah</h6>
+                            </div>
+                            <div class="card-body d-flex justify-content-center align-items-center">
+                                <div id="chartStatus"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-3 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header pb-0">
+                                <h6 class="mb-0">Statistik Kategori Luas Tanah</h6>
+                            </div>
+                            <div class="card-body d-flex justify-content-center align-items-center">
+                                <div id="chartLuas"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
                 <div class="card">
@@ -29,36 +55,6 @@
                         @if(empty($link))
                         <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal" id="add-record">+ {{$title2}}</button>
                         @endif
-                    </div>
-                    <div class="card-body">
-                        <h5>Statistik Tanah</h5>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h6>Status Tanah</h6>
-                                        <ul>
-                                            @foreach($statsJenisTanah as $status => $jumlah)
-                                                <li>{{ $status }}: {{ $jumlah }}</li>
-                                            @endforeach
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h6>Kategori Luas Tanah</h6>
-                                        <ul>
-                                            @foreach($statsLuasTanah as $kategori => $jumlah)
-                                                <li>{{ $kategori }}: {{ $jumlah }}</li>
-                                            @endforeach
-                                        </ul>
-                                        <p>Total Luas Tanah: {{ $totalLuas }} m²</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                     <div class="card-body">
                         <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
@@ -325,6 +321,124 @@
                     searchPlaceholder: 'Search..'
                 },
             });
+
+            // Chart Status Tanah
+            const jenisData = @json($statStatusTanah ?? []);
+            if (document.querySelector("#chartStatus") && Object.keys(jenisData).length > 0) {
+                
+                const jenisLabels = Object.keys(jenisData); // ['Jenis A', 'Jenis B']
+                const jenisValues = Object.values(jenisData); // [10, 5]
+
+                var optionsJenis = {
+                    series: [{
+                        name: 'Jumlah Status Tanah',
+                        data: jenisValues
+                    }],
+                    chart: {
+                        type: 'bar', // Bisa diganti 'bar' (vertikal) atau 'pie'
+                        height: 300,
+                        toolbar: { show: false },
+                        fontFamily: 'Rubik, sans-serif',
+                    },
+                    plotOptions: {
+                        bar: {
+                            borderRadius: 4,
+                            columnWidth: '50%', // Lebar batang
+                            distributed: true // Warna beda-beda tiap batang
+                        }
+                    },
+                    dataLabels: {
+                        enabled: true,
+                        style: { fontSize: '12px', colors: ['#fff'] }
+                    },
+                    xaxis: {
+                        categories: jenisLabels,
+                        labels: {
+                            style: { fontSize: '11px' },
+                            rotate: -45 // Miringkan label jika nama jenis panjang
+                        },
+                        title: { text: 'Status Tanah' }
+                    },
+                    yaxis: {
+                        title: { text: 'Total Luas Tanah (m²)' }
+                    },
+                    colors: ['#7366ff', '#f73164', '#51bb25', '#f8d62b', '#544fff'], // Warna-warni
+                    legend: { show: false }, // Sembunyikan legend jika pakai distributed colors
+                    tooltip: {
+                        y: {
+                            formatter: function (val) {
+                                return val + " m²";
+                            }
+                        }
+                    }
+                };
+
+                var chartStatus = new ApexCharts(document.querySelector("#chartStatus"), optionsJenis);
+                chartStatus.render();
+
+            } else if (document.querySelector("#chartStatus")) {
+                // Tampilan jika data kosong
+                document.querySelector("#chartStatus").innerHTML = "<div class='text-center p-5 text-muted'>Data Status Kosong</div>";
+            }
+            
+            // Chart Kategori Luas
+            const luasData = @json($statsLuasTanah ?? []);
+            if (document.querySelector("#chartLuas") && Object.keys(luasData).length > 0) {
+                
+                const luasLabels = Object.keys(luasData); // ['Kategori A', 'Kategori B']
+                const luasValues = Object.values(luasData); // [10, 5]
+
+                var optionsLuas = {
+                    series: [{
+                        name: 'Jumlah Luas Tanah (m²)',
+                        data: luasValues
+                    }],
+                    chart: {
+                        type: 'bar', // Bisa diganti 'bar' (vertikal) atau 'pie'
+                        height: 300,
+                        toolbar: { show: false },
+                        fontFamily: 'Rubik, sans-serif',
+                    },
+                    plotOptions: {
+                        bar: {
+                            borderRadius: 4,
+                            columnWidth: '50%', // Lebar batang
+                            distributed: true // Warna beda-beda tiap batang
+                        }
+                    },
+                    dataLabels: {
+                        enabled: true,
+                        style: { fontSize: '12px', colors: ['#fff'] }
+                    },
+                    xaxis: {
+                        categories: luasLabels,
+                        labels: {
+                            style: { fontSize: '11px' },
+                            rotate: -45 // Miringkan label jika nama jenis panjang
+                        },
+                        title: { text: 'Kategori Luas' }
+                    },
+                    yaxis: {
+                        title: { text: 'Total Luas Tanah (m²)' }
+                    },
+                    colors: ['#7366ff', '#f73164', '#51bb25', '#f8d62b', '#544fff'], // Warna-warni
+                    legend: { show: false }, // Sembunyikan legend jika pakai distributed colors
+                    tooltip: {
+                        y: {
+                            formatter: function (val) {
+                                return val + " m²";
+                            }
+                        }
+                    }
+                };
+
+                var chartLuas = new ApexCharts(document.querySelector("#chartLuas"), optionsLuas);
+                chartLuas.render();
+
+            } else if (document.querySelector("#chartLuas")) {
+                // Tampilan jika data kosong
+                document.querySelector("#chartLuas").innerHTML = "<div class='text-center p-5 text-muted'>Data Luas Kosong</div>";
+            }
 
             $('#tambahModal').on('hidden.bs.modal', function () {
                 $('#formAdd').trigger("reset");

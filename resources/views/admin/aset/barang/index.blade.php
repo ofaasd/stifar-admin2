@@ -32,42 +32,64 @@
                     <div class="card-body">
                         <h5>Statistik Barang</h5>
                         <div class="row">
+                            
                             <div class="col-md-4">
-                                <div class="card">
+                                <div class="card shadow-sm">
                                     <div class="card-body">
-                                        <h6>Jumlah Barang per Jenis</h6>
-                                        <ul>
-                                            @foreach($statsJenisBarang as $nama => $jumlah)
-                                                <li>{{ $nama ?? '' }}: {{ $jumlah }}</li>
-                                            @endforeach
-                                        </ul>
-                                    </div>
+                                        <h6 class="mb-3 border-bottom pb-2">Jumlah Barang per Jenis</h6>
+                                        
+                                        <div style="height: 260px; overflow-y: auto;">
+                                            <ul class="list-group list-group-flush">
+                                                @foreach($statsJenisBarang as $nama => $jumlah)
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                                        {{ $nama ?? 'Tanpa Nama' }}
+                                                        <span class="badge bg-primary rounded-pill">{{ $jumlah }}</span>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                        </div>
                                 </div>
                             </div>
+
                             <div class="col-md-4">
-                                <div class="card">
+                                <div class="card shadow-sm">
                                     <div class="card-body">
-                                        <h6>Jumlah Barang per Vendor</h6>
-                                        <ul>
-                                            @foreach($statsVendorBarang as $nama => $jumlah)
-                                                <li>{{ $nama ?? '' }}: {{ $jumlah }}</li>
-                                            @endforeach
-                                        </ul>
-                                    </div>
+                                        <h6 class="mb-3 border-bottom pb-2">Jumlah Barang per Vendor</h6>
+                                        
+                                        <div style="height: 260px; overflow-y: auto;">
+                                            <ul class="list-group list-group-flush">
+                                                @foreach($statsVendorBarang as $nama => $jumlah)
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                                        {{ $nama ?? 'Tanpa Nama' }}
+                                                        <span class="badge bg-success rounded-pill">{{ $jumlah }}</span>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                        </div>
                                 </div>
                             </div>
+
                             <div class="col-md-4">
-                                <div class="card">
+                                <div class="card shadow-sm">
                                     <div class="card-body">
-                                        <h6>Jumlah Barang per Kategori</h6>
-                                        <ul>
-                                            @foreach($statsKategoriBarang as $nama => $jumlah)
-                                                <li>{{ $nama == '' ? 'Tidak Diketahui' : $nama }}: {{ $jumlah }}</li>
-                                            @endforeach
-                                        </ul>
-                                    </div>
+                                        <h6 class="mb-3 border-bottom pb-2">Jumlah Barang per Kategori</h6>
+                                        
+                                        <div style="height: 260px; overflow-y: auto;">
+                                            <ul class="list-group list-group-flush">
+                                                @foreach($statsKategoriBarang as $nama => $jumlah)
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                                        {{ $nama == '' ? 'Tidak Diketahui' : $nama }}
+                                                        <span class="badge bg-info rounded-pill">{{ $jumlah }}</span>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                        </div>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                     
