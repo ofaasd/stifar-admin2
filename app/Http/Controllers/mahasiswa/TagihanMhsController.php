@@ -112,7 +112,7 @@ class TagihanMhsController extends Controller
                         $semester_count = TahunAjaran::where('kode_ta', '>=', $kode_ta)
                         ->where('kode_ta', '<=', $ta_now->kode_ta)
                         ->count();
-                        $new_total_tagihan += $dt->jumlah;
+                        $new_total_tagihan += ($dt->jumlah*$semester_count);
                         $total_bayar = $total_bayar - ($dt->jumlah*$semester_count);
                         $upp_semester = $dt->jumlah;
                         $i++;
