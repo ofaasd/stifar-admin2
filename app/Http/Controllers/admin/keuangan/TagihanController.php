@@ -208,7 +208,7 @@ class TagihanController extends Controller
                         //hitung jumlah semester 
                         $angkatan = $row->angkatan;
                         $kode_ta = $angkatan . '1'; //default semester ganjil
-                        $ta_now = TahunAjaran::where('status',1)->first();
+                        $ta_now = TahunAjaran::where('status','Aktif')->first();
                         $semester_count = TahunAjaran::where('kode_ta', '>=', $kode_ta)
                         ->where('kode_ta', '<=', $ta_now->kode_ta)
                         ->count();
@@ -273,7 +273,7 @@ class TagihanController extends Controller
                         //hitung jumlah semester 
                         $angkatan = $row->angkatan;
                         $kode_ta = $angkatan . '1'; //default semester ganjil
-                        $ta_now = TahunAjaran::where('status',1)->first();
+                        $ta_now = TahunAjaran::where('status','Aktif')->first();
                         $semester_count = TahunAjaran::where('kode_ta', '>=', $kode_ta)
                         ->where('kode_ta', '<=', $ta_now->kode_ta)
                         ->count();

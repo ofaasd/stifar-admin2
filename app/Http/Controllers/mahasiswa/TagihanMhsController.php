@@ -106,8 +106,14 @@ class TagihanMhsController extends Controller
                 $i = 0;
                 foreach($detail_tagihan as $dt){
                     if($dt->id_jenis == 2 && $i == 0){
+                        $angkatan = $mhs->angkatan;
+                        $kode_ta = $angkatan . '1'; //default semester ganjil
+                        $ta_now = TahunAjaran::where('status','Aktif')->first();
+                        $semester_count = TahunAjaran::where('kode_ta', '>=', $kode_ta)
+                        ->where('kode_ta', '<=', $ta_now->kode_ta)
+                        ->count();
                         $new_total_tagihan += $dt->jumlah;
-                        $total_bayar = $total_bayar - $dt->jumlah;
+                        $total_bayar = $total_bayar - ($dt->jumlah*$semester_count);
                         $upp_semester = $dt->jumlah;
                         $i++;
                     }elseif($dt->id_jenis == 8){
