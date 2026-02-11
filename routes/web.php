@@ -80,6 +80,7 @@ use App\Http\Controllers\admin\master\AsetKategoriController;
 use App\Http\Controllers\admin\master\AtributProdiController;
 use App\Http\Controllers\admin\master\RenstraProdiController;
 use App\Http\Controllers\ArsipAdminDaftarWisudawanController;
+use App\Http\Controllers\OpenFeederController;
 use App\Http\Controllers\mahasiswa\LaporPembayaranController;
 use App\Http\Controllers\mahasiswa\MahasiswaBerkasController;
 use App\Http\Controllers\admin\admisi\PeringkatPmdpController;
