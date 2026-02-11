@@ -593,8 +593,16 @@ class KeuanganController extends Controller
             ->pluck('angkatan');
         $title = "Keuangan Mahasiswa";
         $pembayaran_terakhir = TbPembayaran::orderBy('tanggal_bayar','desc')->limit(1)->first()->tanggal_bayar ?? '-';
+
+        $prodi_bulanan = DB::table('program_studi')
+            ->where(function($q) {
+                $q->where('nama_prodi', 'LIKE', '%D3%')
+                  ->orWhere('nama_prodi', 'LIKE', '%Apoteker%');
+            })
+            ->whereNull('deleted_at')
+            ->pluck('nama_prodi', 'id');
         
-        return view('admin.keuangan.dashboard',compact('jumlah_krs','jumlah_uts','jumlah_uas','jumlah_mhs','ta','total_bayar_statistik','total_tagihan_statistik','prodi','pembayaran_terakhir','title','tahunBayar','angkatan'));
+        return view('admin.keuangan.dashboard',compact('jumlah_krs','jumlah_uts','jumlah_uas','jumlah_mhs','ta','total_bayar_statistik','total_tagihan_statistik','prodi','pembayaran_terakhir','title','tahunBayar','angkatan','prodi_bulanan'));
     }
     public function getData(Request $request)
     {
@@ -662,6 +670,55 @@ class KeuanganController extends Controller
             'series' => $series,
             'categories' => ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'],
             'table_data' => $tableData // <--- Kirim data tabel ke view
+        ]);
+    }
+    public function getDataBulanan(Request $request)
+    {
+        // Validasi Input (Wajib diisi semua agar akurat)
+        if (!$request->prodi || !$request->angkatan || !$request->bulan || !$request->tahun) {
+            return response()->json(['error' => 'Filter tidak lengkap'], 400);
+        }
+
+        $prodiId = $request->prodi;
+        $angkatan = $request->angkatan;
+        $bulan = $request->bulan;
+        $tahun = $request->tahun;
+
+        // --- LANGKAH 1: Hitung Total Mahasiswa Aktif (Target) ---
+        // Ini adalah penyebut (denominator)
+        $totalMahasiswa = DB::table('mahasiswa')
+            ->where('id_program_studi', $prodiId)
+            ->where('angkatan', $angkatan)
+            ->where('status', 1) // Hanya mahasiswa AKTIF
+            ->whereNull('deleted_at')
+            ->count();
+
+        // --- LANGKAH 2: Hitung Mahasiswa yang SUDAH Bayar ---
+        // Kita cari mahasiswa prodi tsb yang punya transaksi di bulan & tahun yang dipilih
+        $sudahBayar = DB::table('tb_pembayaran as p')
+            ->join('mahasiswa as m', 'p.nim', '=', 'm.nim')
+            ->where('m.id_program_studi', $prodiId)
+            ->where('m.angkatan', $angkatan)
+            ->where('m.status', 1) // Pastikan status aktif
+            ->whereMonth('p.tanggal_bayar', $bulan)
+            ->whereYear('p.tanggal_bayar', $tahun)
+            ->whereNull('p.deleted_at')
+            ->distinct('p.nim') // Penting! 1 Mhs bayar 2x tetap dihitung 1 orang
+            ->count('p.nim');
+
+        // --- LANGKAH 3: Hitung Sisanya (Belum Bayar) ---
+        $belumBayar = $totalMahasiswa - $sudahBayar;
+
+        // Safety check (kalau data tidak sinkron/minus)
+        if ($belumBayar < 0) $belumBayar = 0;
+
+        return response()->json([
+            'series' => [$sudahBayar, $belumBayar],
+            'labels' => ['Sudah Bayar', 'Belum Bayar'],
+            'details' => [
+                'total_mhs' => $totalMahasiswa,
+                'persen_bayar' => $totalMahasiswa > 0 ? round(($sudahBayar / $totalMahasiswa) * 100, 1) : 0
+            ]
         ]);
     }
 }

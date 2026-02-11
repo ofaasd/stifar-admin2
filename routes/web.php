@@ -482,6 +482,7 @@ Route::group(['middleware' => ['auth', 'role:akademik|aset|skripsi|wisuda|kepega
 
     Route::get('/admin/keuangan/dashboard', [KeuanganController::class, 'dashboard']);
     Route::get('/admin/keuangan/dashboard/get-data', [KeuanganController::class, 'getData']);
+    Route::get('/admin/keuangan/dashboard/get-data-bulanan', [KeuanganController::class, 'getDataBulanan']);
     Route::get('/admin/keuangan/generate_mhs', [KeuanganController::class, 'generate_mhs']);
     Route::get('/admin/keuangan/generate_angkatan', [KeuanganController::class, 'generate_angkatan']);
     Route::get('/admin/keuangan/generate_user_mhs', [KeuanganController::class, 'generate_user_mhs']);

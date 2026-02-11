@@ -239,7 +239,7 @@
     </div>
 
     <div class="row mt-4">
-        <div class="col-12">
+        <div class="col-7">
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-white py-3 border-bottom">
                     <h5 class="mb-0 text-dark fw-bold">📋 Rekapitulasi Total Pembayaran</h5>
@@ -266,6 +266,82 @@
                             </tfoot>
                         </table>
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-5">
+          <div class="card shadow-sm mb-4">
+                <div class="card-header py-3">
+                    <h5 class="mb-0 fw-bold text-primary">💰 Monitoring Pembayaran Bulanan</h5>
+                    <small class="text-muted">Khusus Prodi D3 & Apoteker (Tagihan Bulanan)</small>
+                </div>
+                <div class="card-body">
+                    
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-3">
+                            <!-- <label class="form-label fw-bold small">Program Studi</label> -->
+                            <select id="filter-prodi-bulanan" class="form-select select2">
+                                <option value=""></option> @foreach($prodi_bulanan as $id => $nama)
+                                    <option value="{{ $id }}">{{ $nama }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <!-- <label class="form-label fw-bold small">Angkatan</label> -->
+                            <select id="filter-angkatan-bulanan" class="form-select select2">
+                                @foreach($angkatan as $akt)
+                                    <option value="{{ $akt }}">{{ $akt }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <!-- <label class="form-label fw-bold small">Bulan Transaksi</label> -->
+                            <select id="filter-bulan-bulanan" class="form-select select2">
+                                @foreach(range(1,12) as $m)
+                                    <option value="{{ $m }}" {{ $m == date('n') ? 'selected' : '' }}>
+                                        {{ date('F', mktime(0, 0, 0, $m, 10)) }} ({{ $m }})
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <!-- <label class="form-label fw-bold small">Tahun Transaksi</label> -->
+                            <select id="filter-tahun-bulanan" class="form-select select2">
+                                @foreach($tahunBayar as $thn)
+                                    <option value="{{ $thn }}" {{ $thn == date('Y') ? 'selected' : '' }}>{{ $thn }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <div id="chart-tagihan-bulanan" style="min-height: 350px;"></div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <h6 class="text-muted text-uppercase fw-bold mb-3">Ringkasan Data</h6>
+                            
+                            <div class="stat-card blue">
+                                <div class="stat-value" id="val-sudah">0</div>
+                                <div class="stat-label">Mahasiswa Sudah Bayar</div>
+                            </div>
+
+                            <div class="stat-card red">
+                                <div class="stat-value" id="val-belum">0</div>
+                                <div class="stat-label">Mahasiswa Belum Bayar</div>
+                            </div>
+
+                            <div class="mt-3 p-3 bg-dark rounded text-center">
+                                <small>Total Mahasiswa Aktif</small>
+                                <h4 class="fw-bold mb-0" id="val-total">0</h4>
+                                <small class="text-light">Persentase Lunas: <span id="val-persen">0%</span></small>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -319,10 +395,11 @@
   $(document).ready(function() {
             
     // 1. Setup Select2 agar pas di Bootstrap
-    $('#filter-tahun, #filter-angkatan').select2({
-        width: '100%',
-        theme: "classic" // Atau hapus line ini jika ingin default
-    });
+    $('.select2').select2({
+          theme: 'bootstrap-5',
+          width: '100%',
+          placeholder: 'Pilih opsi...'
+      });
 
     // 2. Formatter Rupiah (Untuk Tooltip & Axis)
     const formatRupiah = (number) => {
@@ -448,6 +525,95 @@
 
     // Load Awal
     loadData();
+
+
+    //Bagian chart data bulanan
+    var options_bulanan = {
+            series: [], // Data Kosong Awal
+            labels: ['Sudah Bayar', 'Belum Bayar'],
+            chart: {
+                type: 'donut', // Bisa diganti 'pie'
+                height: 350,
+                fontFamily: 'Segoe UI, sans-serif',
+                animations: { enabled: true }
+            },
+            colors: ['#008FFB', '#FF4560'], // Biru (Lunas), Merah (Belum)
+            plotOptions: {
+                pie: {
+                    donut: {
+                        size: '65%',
+                        labels: {
+                            show: true,
+                            name: { show: true },
+                            value: { show: true },
+                            total: {
+                                show: true,
+                                label: 'Total',
+                                formatter: function (w) {
+                                    // Menampilkan total mahasiswa di tengah donut
+                                    return w.globals.seriesTotals.reduce((a, b) => a + b, 0)
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            dataLabels: { enabled: true },
+            legend: { position: 'bottom' },
+            noData: { text: 'Silakan pilih Prodi terlebih dahulu...' }
+        };
+
+        var chart_bulanan = new ApexCharts(document.querySelector("#chart-tagihan-bulanan"), options_bulanan);
+        chart_bulanan.render();
+
+        // 3. Fungsi Load Data
+        function loadDataBulanan() {
+            var prodi = $('#filter-prodi-bulanan').val();
+            var angkatan = $('#filter-angkatan-bulanan').val();
+            var bulan = $('#filter-bulan-bulanan').val();
+            var tahun = $('#filter-tahun-bulanan').val();
+
+            // Jangan load jika prodi belum dipilih (karena wajib)
+            if (!prodi) return;
+
+            // Tampilkan loading di chart
+            chart_bulanan.updateOptions({ noData: { text: 'Memuat data...' }, series: [] });
+
+            $.ajax({
+                url: "{{ url('admin/keuangan/dashboard/get-data-bulanan') }}",
+                type: "GET",
+                data: { 
+                    prodi: prodi, 
+                    angkatan: angkatan, 
+                    bulan: bulan, 
+                    tahun: tahun 
+                },
+                success: function(res) {
+                    // Update Chart
+                    chart_bulanan.updateSeries(res.series);
+
+                    // Update Angka Ringkasan di Samping
+                    $('#val-sudah').text(res.series[0]); // Index 0 = Sudah
+                    $('#val-belum').text(res.series[1]); // Index 1 = Belum
+                    $('#val-total').text(res.details.total_mhs);
+                    $('#val-persen').text(res.details.persen_bayar + '%');
+                },
+                error: function(e) {
+                    console.error(e);
+                    alert('Gagal memuat data.');
+                }
+            });
+        }
+
+        // 4. Trigger Filter
+        $('#filter-prodi-bulanan, #filter-angkatan-bulanan, #filter-bulan-bulanan, #filter-tahun-bulanan').on('change', function() {
+            loadDataBulanan();
+        });
+
+        // Cek jika sudah ada pilihan awal (misal saat refresh), trigger load
+        if ($('#filter-prodi-bulanan').val()) {
+            loadDataBulanan();
+        }
 });
 </script>
 @endsection
