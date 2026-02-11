@@ -231,6 +231,46 @@ class StatistikController extends Controller
             'labels' => ['Sudah Lolos', 'Belum Lolos']
         ]);
     }
+    public function getTop10Data(Request $request)
+    {
+        $taAwal = $request->input('ta_awal');
+
+        // 1. Top 10 Asal Sekolah (Berdasarkan Kota Sekolah)
+        $topSekolah = DB::table('pmb_asal_sekolah as s')
+            ->join('pmb_peserta_online as p', 's.id_peserta', '=', 'p.id')
+            ->join('pmb_gelombang as g', 'p.gelombang', '=', 'g.id')
+            ->join('wilayah as w', 's.kota_id', '=', 'w.id_wil') // Join ke Master Wilayah
+            ->select('w.nm_wil as nama_kota', DB::raw('count(s.id) as total'))
+            ->whereNull('s.deleted_at')
+            ->whereNull('p.deleted_at')
+            ->when($taAwal, function ($q) use ($taAwal) {
+                return $q->where('g.ta_awal', $taAwal);
+            })
+            ->groupBy('w.nm_wil')
+            ->orderByDesc('total')
+            ->limit(10)
+            ->get();
+
+        // 2. Top 10 Domisili Pendaftar (Berdasarkan Alamat KTP/Tinggal)
+        // Asumsi field 'kotakab' di pmb_peserta_online berisi KODE WILAYAH (match dengan wilayah.id_wil)
+        $topDomisili = DB::table('pmb_peserta_online as p')
+            ->join('pmb_gelombang as g', 'p.gelombang', '=', 'g.id')
+            ->join('wilayah as w', 'p.kotakab', '=', 'w.id_wil') // Join ke Master Wilayah
+            ->select('w.nm_wil as nama_kota', DB::raw('count(p.id) as total'))
+            ->whereNull('p.deleted_at')
+            ->when($taAwal, function ($q) use ($taAwal) {
+                return $q->where('g.ta_awal', $taAwal);
+            })
+            ->groupBy('w.nm_wil')
+            ->orderByDesc('total')
+            ->limit(10)
+            ->get();
+
+        return response()->json([
+            'sekolah' => $topSekolah,
+            'domisili' => $topDomisili
+        ]);
+    }
     public function getMapData(Request $request)
     {
         $taAwal = $request->input('ta_awal');

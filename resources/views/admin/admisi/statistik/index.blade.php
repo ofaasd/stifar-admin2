@@ -18,6 +18,37 @@
   @media (max-width: 768px) {
       .maps-grid { grid-template-columns: 1fr; } /* Mobile 1 Kolom */
   }
+  .row-tables {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 30px;
+      border-top: 1px solid #eee;
+      padding-top: 20px;
+  }
+  @media (max-width: 768px) {
+      .row-tables { grid-template-columns: 1fr; }
+  }
+
+  /* Styling Tabel Sederhana & Bersih */
+  .table-data {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+  }
+  .table-data th {
+      background: #f8f9fa;
+      padding: 10px;
+      text-align: left;
+      border-bottom: 2px solid #ddd;
+      font-weight: 600;
+      color: #555;
+  }
+  .table-data td {
+      padding: 8px 10px;
+      border-bottom: 1px solid #eee;
+  }
+  .table-data tr:hover { background-color: #f1f1f1; }
 </style>
 @endsection
 
@@ -157,9 +188,6 @@
                                       <div class="row">
                                         <div class="col-xl-12">
                                           <div class="card-body p-0">
-                                            <ul class="balance-data">
-                                              <li><span class="circle bg-primary"> </span><span class="f-light ms-1">Tahun</span></li>
-                                            </ul>
                                             <div class="current-sale-container">
                                               <div id="chart-currently2"></div>
                                             </div>
@@ -216,15 +244,49 @@
                                     </select>
                                   </div>
                                   <div class="col-md-12">
-                                    <div class="maps-grid">
-                                      <div>
+                                    <div class="row g-3">
+                                      <div class="col-md-6">
+                                        <div>
                                           <h4>🗺️ Sebaran Asal Sekolah</h4>
                                           <div id="peta-sekolah" class="map-wrapper"></div>
+                                        </div>
+                                      </div>
+                                      <div class="col-md-6">
+                                        <h4>📍 Sebaran Domisili (KTP)</h4>
+                                        <div id="peta-domisili" class="map-wrapper"></div>
+                                      </div>
+                                    </div>
+                                    <div class="row-tables">
+                                      <div class="table-wrapper">
+                                        <h4>🏫 Top 10 Kota Asal Sekolah</h4>
+                                        <table class="table-data">
+                                            <thead>
+                                                <tr>
+                                                    <th width="10%">#</th>
+                                                    <th>Nama Kota/Kab</th>
+                                                    <th width="20%" class="text-right">Jumlah</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tbody-sekolah">
+                                                <tr><td colspan="3" class="text-center">Memuat...</td></tr>
+                                            </tbody>
+                                        </table>
                                       </div>
 
-                                      <div>
-                                          <h4>📍 Sebaran Domisili (KTP)</h4>
-                                          <div id="peta-domisili" class="map-wrapper"></div>
+                                      <div class="table-wrapper">
+                                        <h4>🏠 Top 10 Kota Domisili</h4>
+                                        <table class="table-data">
+                                            <thead>
+                                                <tr>
+                                                    <th width="10%">#</th>
+                                                    <th>Nama Kota/Kab</th>
+                                                    <th width="20%" class="text-right">Jumlah</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tbody-domisili">
+                                                <tr><td colspan="3" class="text-center">Memuat...</td></tr>
+                                            </tbody>
+                                        </table>
                                       </div>
                                   </div>
                                   </div>
@@ -1150,11 +1212,28 @@
     var chartSekolah = Highcharts.mapChart('peta-sekolah', getMapOptions('Asal Sekolah', '#E0F7FA', '#006064')); // Biru
     var chartDomisili = Highcharts.mapChart('peta-domisili', getMapOptions('Domisili', '#FFF3E0', '#E65100')); // Oranye
 
+    function renderTable(tbodyId, data) {
+      var html = '';
+      if(data.length === 0) {
+          html = '<tr><td colspan="3" class="text-center">Tidak ada data</td></tr>';
+      } else {
+          $.each(data, function(index, item) {
+              html += `<tr>
+                  <td>${index + 1}</td>
+                  <td>${item.nama_kota}</td>
+                  <td class="text-right"><strong>${item.total}</strong></td>
+              </tr>`;
+          });
+      }
+      $(tbodyId).html(html);
+  }
     // 2. Fungsi Load Data (Global untuk kedua peta)
     function loadAllMaps(taAwal) {
         // Tampilkan Loading
         chartSekolah.showLoading('Memuat...');
         chartDomisili.showLoading('Memuat...');
+        $('#tbody-sekolah').html('<tr><td colspan="3" class="text-center">Sedang memuat data...</td></tr>');
+        $('#tbody-domisili').html('<tr><td colspan="3" class="text-center">Sedang memuat data...</td></tr>');
 
         // Request AJAX Peta Sekolah
         $.ajax({
@@ -1175,6 +1254,21 @@
                 chartDomisili.hideLoading();
             }
         });
+
+        $.ajax({
+          url: "{{ url('admin/admisi/statistik/get-top-10-data') }}",
+          data: { ta_awal: taAwal },
+          success: function(response) {
+              // Render Tabel Sekolah
+              renderTable('#tbody-sekolah', response.sekolah);
+              // Render Tabel Domisili
+              renderTable('#tbody-domisili', response.domisili);
+          },
+          error: function() {
+              $('#tbody-sekolah').html('<tr><td colspan="3" class="text-center text-danger">Gagal memuat</td></tr>');
+              $('#tbody-domisili').html('<tr><td colspan="3" class="text-center text-danger">Gagal memuat</td></tr>');
+          }
+      });
     }
 
     // 3. Event Listener

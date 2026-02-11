@@ -251,6 +251,7 @@ Route::group(['middleware' => ['auth', 'role:akademik|aset|skripsi|wisuda|kepega
     Route::get('admin/admisi/statistik/lolos-data', [AdmisiStatistikController::class, 'getLolosData'])->name('admisi_statistik_lolos');
     Route::get('admin/admisi/statistik/map-data', [AdmisiStatistikController::class, 'getMapData'])->name('admisi_statistik_map');
     Route::get('admin/admisi/statistik/get-domisili-map-data', [AdmisiStatistikController::class, 'getDomisiliMapData'])->name('admisi_statistik_domisili_map');
+    Route::get('admin/admisi/statistik/get-top-10-data', [AdmisiStatistikController::class, 'getTop10Data'])->name('admisi_statistik_top_10_domisili');
     Route::get('admin/statistik/pegawai', [AdmisiStatistikController::class, 'pegawai'])->name('pegawai_statistik');
 
     Route::get('admin/admisi/pengumuman', [PengumumanController::class, 'index'])->name('pengumuman');
