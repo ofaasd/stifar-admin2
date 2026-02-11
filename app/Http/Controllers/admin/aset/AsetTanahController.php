@@ -25,11 +25,12 @@ class AsetTanahController extends Controller
             $title2 = "Aset Tanah";
             $indexed = $this->indexed;
             $asetTanah = AsetTanah::all();
-            $statsJenisTanah = AsetTanah::select('status_tanah')
+            $statStatusTanah = AsetTanah::select('status_tanah')
                 ->selectRaw('COUNT(*) as total')
                 ->groupBy('status_tanah')
                 ->pluck('total', 'status_tanah')
                 ->toArray();
+
             $statsLuasTanah = AsetTanah::selectRaw('
                 CASE
                     WHEN luas < 100 THEN "Kecil (< 100 m²)"
@@ -44,7 +45,7 @@ class AsetTanahController extends Controller
             ->toArray();
             $totalLuas = AsetTanah::sum('luas');
 
-            return view('admin.aset.tanah.index', compact('title', 'title2', 'indexed', 'asetTanah', 'statsJenisTanah', 'statsLuasTanah', 'totalLuas'));
+            return view('admin.aset.tanah.index', compact('title', 'title2', 'indexed', 'asetTanah', 'statStatusTanah', 'statsLuasTanah', 'totalLuas'));
         }else{
             $columns = [
                 1 => 'id',

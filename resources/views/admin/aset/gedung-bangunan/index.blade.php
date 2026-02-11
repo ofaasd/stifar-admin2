@@ -22,36 +22,36 @@
 @section('content')
     <div class="container-fluid">
         <div class="row">
+
+            <div class="col-sm-12 mb-2">
+                <div class="row">
+                    <div class="col-lg-6 col-3 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header pb-0">
+                                <h6 class="mb-0">Statistik Tanah</h6>
+                            </div>
+                            <div class="card-body d-flex justify-content-center align-items-center">
+                                <div id="chartTanah"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-3 mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6>Total Luas</h6>
+                                <p>{{ $totalLuas }} m<sup>2</sup></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Zero Configuration  Starts-->
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header pb-0 card-no-border">
                         <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#tambahModal">+ {{$title2}}</button>
-                    </div>
-                    <div class="card-body">
-                        <h5>Statistik Gedung & Bangunan</h5>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h6>Jumlah Tanah per Kode</h6>
-                                        <ul>
-                                            @foreach($statsDitanah as $kode => $jumlah)
-                                                <li>{{ $kode }}: {{ $jumlah }}</li>
-                                            @endforeach
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h6>Total Luas</h6>
-                                        <p>{{ $totalLuas }} m<sup>2</sup></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                     <div class="card-body">
                         <textarea name='column' id='my_column' style="display:none">@foreach($indexed as $value) {{$value . "\n"}} @endforeach</textarea>
@@ -221,6 +221,60 @@
                     searchPlaceholder: 'Search..'
                 },
             });
+
+            // Chart Tanah Ditempati
+            const jenisData = @json($statsDitanah ?? []);
+            
+            if (document.querySelector("#chartTanah") && Object.keys(jenisData).length > 0) {
+                
+                const jenisLabels = Object.keys(jenisData);
+                const jenisValues = Object.values(jenisData);
+
+                var optionsJenis = {
+                    series: jenisValues, 
+                    labels: jenisLabels, 
+                    chart: {
+                        type: 'pie', // Ubah tipe jadi pie
+                        height: 260,
+                        toolbar: { show: true },
+                        fontFamily: 'Rubik, sans-serif',
+                    },
+                    dataLabels: {
+                        enabled: true,
+                        formatter: function (val) {
+                            return val.toFixed(1) + "%"; // Menampilkan persentase
+                        },
+                        style: {
+                            fontSize: '12px',
+                            colors: ['#fff']
+                        }
+                    },
+                    colors: ['#7366ff', '#f73164', '#51bb25', '#f8d62b', '#544fff'],
+                    
+                    // Legend wajib nyala untuk Pie Chart agar data terbaca
+                    legend: {
+                        show: true,
+                        position: 'bottom',
+                        horizontalAlign: 'center' 
+                    },
+                    
+                    tooltip: {
+                        y: {
+                            formatter: function (val) {
+                                return val + " Item";
+                            }
+                        }
+                    }
+                };
+
+                var chartTanah = new ApexCharts(document.querySelector("#chartTanah"), optionsJenis);
+                chartTanah.render();
+
+            } else if (document.querySelector("#chartTanah")) {
+                // Tampilan jika data kosong
+                document.querySelector("#chartTanah").innerHTML = "<div class='text-center p-5 text-muted'>Data Tanah Kosong</div>";
+            }
+
             $('#tambahModal').on('hidden.bs.modal', function () {
                 $('#id').val('');
                 $('#formAdd').trigger("reset");

@@ -47,6 +47,7 @@ class AsetKendaraanController extends Controller
             $dataJenisKendaraan = MasterJenisKendaaran::orderBy('kode', 'asc')->get();
             $dataMerkKendaraan = MerkKendaraan::orderBy('kode', 'asc')->get();
             $dataPegawai = PegawaiBiodatum::orderBy('nama_lengkap', 'asc')->get();
+            
             $statJenisKendaraan = AsetKendaraan::select('master_jenis_kendaraan.nama')
                 ->leftJoin('master_jenis_kendaraan', 'master_jenis_kendaraan.kode', '=', 'aset_kendaraan.kode_jenis_kendaraan')
                 ->leftJoin('pegawai_biodata', 'pegawai_biodata.id', '=', 'aset_kendaraan.id_penanggung_jawab')
