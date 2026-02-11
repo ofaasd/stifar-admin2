@@ -110,15 +110,17 @@ class helpers
     {
         $getNilai = self::getAllNilai($nim, $idTahun);
         $totalIps = 0;
+        $totalSKS = 0;
         foreach ($getNilai as $row) {
             if($row->validasi_tugas == 1 && $row->validasi_uts == 1 && $row->validasi_uas == 1)
             {
                 $totalIps +=  ($row->sks_teori+$row->sks_praktek) * $this->getKualitas($row->nhuruf);
+                $totalSKS += ($row->sks_teori+$row->sks_praktek);
             }
         }
         $totalIPS = ($totalIps > 0) ? $totalIps : 0;
         if($totalIPS > 0){
-            $totalIPS = $totalIPS/4;
+            $totalIPS = $totalIPS/$totalSKS;
         }
         //buat pemnbulatan ke 2 desimal
          $totalIPS = number_format((float)$totalIPS, 2, '.', '');

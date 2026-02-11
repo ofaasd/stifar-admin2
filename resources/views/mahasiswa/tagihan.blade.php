@@ -135,7 +135,7 @@
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
-                                                        <th>Total DPP Dibayar</th>
+                                                        <th>Total DPP yang Sudah Dibayarkan</th>
                                                         <th>Rp. {{number_format(($bayar_dpp),0,",",".")}}</th>
                                                     </tr>
                                                     <tr>

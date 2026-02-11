@@ -63,7 +63,7 @@
                 <th>Gelombang</th>
                 <th>NIM</th>
                 <th>Nama</th>
-                <th>Total Bayar (Rp.)</th>
+                <th>Total Tagihan (Rp.)</th>
             </tr>
         </thead>
         <tbody>
