@@ -340,42 +340,26 @@ class StatistikController extends Controller
         return $chartData;
     }
     public function pegawai(){
-        $gender = ['Laki-laki','Perempuan'];
-        $jumlah_gender = [];
-        foreach($gender as $key=>$value){
-            if($value == "Laki-laki"){
-                $jumlah_gender[$key] = PegawaiBiodatum::where('status_pegawai','aktif')->where('jenis_kelamin','L')->count();
-            }else{
-                $jumlah_gender[$key] = PegawaiBiodatum::where('status_pegawai','aktif')->where('jenis_kelamin','P')->count();
-            }
-        }
-        $gender = implode("\",\"",$gender);
-        $gender = "\"" . $gender . "\"";
-        $jumlah_gender = implode("\",\"",$jumlah_gender);
-        $jumlah_gender = "\"" . $jumlah_gender . "\"";
+       $dataRaw = DB::table('pegawai_biodata')
+            ->select('jenis_kelamin', DB::raw('count(*) as total'))
+            ->whereNull('deleted_at')
+            ->where('status_pegawai', 'aktif') 
+            ->groupBy('jenis_kelamin')
+            ->pluck('total', 'jenis_kelamin'); // Hasil: ['L' => 10, 'P' => 5]
 
-        $agama = [
-            1 => "islam",
-            2 => "kristen", 
-            3 => "katolik", 
-            4 => "hindu", 
-            5 => "budha", 
-            6 => "konghucu", 
-        ];
-        $jumlah_agama = [];
-        foreach($agama as $key=>$value){
-            $jumlah_agama[$key] = PegawaiBiodatum::where('status_pegawai','aktif')->where('agama',$key)->count();
-        }
-        $agama = implode("\",\"",$agama);
-        $agama = "\"" . $agama . "\"";
-        $jumlah_agama = implode("\",\"",$jumlah_agama);
-        $jumlah_agama = "\"" . $jumlah_agama . "\"";
+        // 2. Format Data untuk ApexCharts
+        // Pastikan urutannya konsisten. Jika data kosong, beri nilai 0.
+        $totalLaki = $dataRaw['L'] ?? 0;
+        $totalPerempuan = $dataRaw['P'] ?? 0;
+
+        $series_gender = [$totalLaki, $totalPerempuan];
+        $labels_gender = ['Laki-laki', 'Perempuan'];
 
         $program_studi = Prodi::all();
         $jumlah_prodi = [];
         $list_prodi = [];
         foreach($program_studi as $row){
-            $jumlah_prodi[$row->id] = PegawaiBiodatum::where('id_progdi',$row->id)->count();
+            $jumlah_prodi[$row->id] = PegawaiBiodatum::where('id_progdi',$row->id)->where('status_pegawai', 'aktif')->count();
             $list_prodi[$row->id] = $row->nama_prodi;
         }
         $list_prodi = implode("\",\"",$list_prodi);
@@ -384,7 +368,105 @@ class StatistikController extends Controller
         $jumlah_prodi = "\"" . $jumlah_prodi . "\"";
 
         $title = "Statistik Pegawai";
+
+        $prodiList = DB::table('program_studi')
+            ->select('id', 'nama_prodi')
+            ->whereNull('deleted_at')
+            ->orderBy('nama_prodi', 'asc')
+            ->get();
+
+        // 2. Ambil Data Master Jabfung (Untuk Series)
+        $jabfungList = DB::table('jabatan_fungsional')
+            ->orderBy('id', 'asc')
+            ->get();
+
+        // 3. Ambil Data Transaksi (Jumlah Pegawai)
+        // Kita Group berdasarkan Prodi dan Jabfung
+        $dataRaw = DB::table('pegawai_biodata')
+            ->select('id_progdi', 'id_jabfung', DB::raw('count(*) as total'))
+            ->where('status_pegawai', 'aktif') // Hanya pegawai aktif
+            ->whereNull('deleted_at')
+            ->groupBy('id_progdi', 'id_jabfung')
+            ->get();
+
+        // 4. Transformasi Data untuk ApexCharts
+        // Format: Series A (Jabfung A) -> [Jumlah di Prodi 1, Jumlah di Prodi 2, ...]
         
-        return view('admin.admisi.statistik.pegawai', compact('title','gender','jumlah_gender','agama','jumlah_agama', 'list_prodi','jumlah_prodi'));
+        $categories = $prodiList->pluck('nama_prodi')->toArray(); // X-Axis Labels
+        $series = [];
+
+        // Loop 1: Untuk setiap Jabatan Fungsional yang ada di database
+        foreach ($jabfungList as $jf) {
+            $dataPerProdi = [];
+            
+            foreach ($prodiList as $prodi) {
+                // Cari data yang cocok (Prodi X dan Jabfung Y)
+                $found = $dataRaw->first(function($item) use ($prodi, $jf) {
+                    return $item->id_progdi == $prodi->id && $item->id_jabfung == $jf->id;
+                });
+                
+                $dataPerProdi[] = $found ? (int)$found->total : 0;
+            }
+
+            $series[] = [
+                'name' => $jf->jabatan,
+                'data' => $dataPerProdi
+            ];
+        }
+
+        // Loop 2: KHUSUS untuk yang Tidak Punya Jabfung (NULL)
+        // Agar data pegawai lengkap, kita masukkan juga yang NULL sebagai "Tanpa Jabatan"
+        $dataNull = [];
+        foreach ($prodiList as $prodi) {
+            $found = $dataRaw->first(function($item) use ($prodi) {
+                return $item->id_progdi == $prodi->id && $item->id_jabfung == 0;
+            });
+            $dataNull[] = $found ? (int)$found->total : 0;
+        }
+
+        // Masukkan ke series sebagai "Belum Ada / TP"
+        $series[] = [
+            'name' => 'Belum Ada / Tenaga Pengajar',
+            'data' => $dataNull
+        ];
+
+        $posisiRaw = DB::table('pegawai_biodata as pb')
+            ->join('pegawai_posisi as pp', 'pb.id_posisi_pegawai', '=', 'pp.id')
+            ->join('program_studi as ps', 'pb.id_progdi', '=', 'ps.id') // Pastikan table program_studi ada
+            ->select('ps.nama_prodi', 'pp.nama as nama_posisi', DB::raw('count(pb.id) as total'))
+            ->where('pb.status_pegawai', 'aktif')
+            ->whereNull('pb.deleted_at')
+            ->groupBy('ps.nama_prodi', 'pp.nama')
+            ->get();
+
+        // Transformasi Data untuk ApexCharts Bar
+        // Ambil semua nama prodi unik untuk Sumbu X
+        $prodiCategories = $posisiRaw->pluck('nama_prodi')->unique()->values()->all();
+        
+        // Ambil semua jenis posisi unik (Dosen Tetap, Staff, dll) untuk Series
+        $posisiTypes = $posisiRaw->pluck('nama_posisi')->unique()->values()->all();
+
+        $barSeries = [];
+        
+        foreach ($posisiTypes as $posisi) {
+            $dataPerProdi = [];
+            
+            foreach ($prodiCategories as $prodiName) {
+                // Cari total pegawai dengan posisi X di prodi Y
+                $found = $posisiRaw->first(function($item) use ($posisi, $prodiName) {
+                    return $item->nama_posisi == $posisi && $item->nama_prodi == $prodiName;
+                });
+
+                $dataPerProdi[] = $found ? (int)$found->total : 0;
+            }
+
+            $barSeries[] = [
+                'name' => $posisi,
+                'data' => $dataPerProdi
+            ];
+        }
+        
+        
+        return view('admin.admisi.statistik.pegawai', compact('title','series_gender','labels_gender', 'list_prodi','jumlah_prodi','series','categories','barSeries', 'prodiCategories'));
     }
 }
