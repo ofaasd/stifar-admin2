@@ -6,6 +6,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/vendors/animate.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/vendors/prism.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/vendors/echart.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 @endsection
 
 @section('style')
@@ -13,6 +14,21 @@
 .widget-1{
     background-image:none;
 }
+    .select2-container .select2-selection--single {
+        height: 38px !important; /* Menyamakan tinggi dengan input bootstrap */
+        padding: 5px;
+        border: 1px solid #dee2e6;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 36px !important;
+    }
+    .loading-overlay {
+        position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(255,255,255, 0.8);
+        z-index: 50; display: none;
+        justify-content: center; align-items: center;
+        border-radius: 0.375rem;
+    }
 </style>
 @endsection
 
@@ -165,33 +181,96 @@
           </div>
         </div>
     </div>
-    <div class="col-xxl-12 col-sm-12 box-col-12">
-        <div class="card" style="width:100%;overflow:hidden;background:#FFF59D; opacity:0.95;">
-          <div class="card-header text-dark">
-            <h5 class="f-w-600">Statistik Pembayaran per Program Studi <small class="text-dark" style="font-size:10pt">(Update Pembayaran terakhir (tanggal : {{date('d-m-Y', strtotime($pembayaran_terakhir))}}))</small></h5>
+    <div class="row mb-3">
+      <div class="col-12">
+          <div class="card shadow-sm">
+              <div class="card-header bg-white py-3">
+                  <div class="row align-items-center">
+                      <div class="col-md-6">
+                          <h5 class="mb-0 text-primary fw-bold">📊 Monitoring Pembayaran Mahasiswa</h5>
+                          <small class="text-muted">Data pemasukan per Prodi & Angkatan (2024-2025)</small>
+                      </div>
+                      
+                      <div class="col-md-6 mt-3 mt-md-0">
+                          <div class="row g-2">
+                              <div class="col-md-6">
+                                  <label class="form-label small fw-bold">Tahun Transaksi</label>
+                                  <select id="filter-tahun" class="form-select select2-bs5">
+                                      @foreach($tahunBayar as $thn)
+                                          <option value="{{ $thn }}" {{ $thn == date('Y') ? 'selected' : '' }}>
+                                              Tahun {{ $thn }}
+                                          </option>
+                                      @endforeach
+                                  </select>
+                              </div>
+                              <div class="col-md-6">
+                                  <label class="form-label small fw-bold">Angkatan Mahasiswa</label>
+                                  <select id="filter-angkatan" class="form-select select2-bs5">
+                                      <option value="">Semua Angkatan (2024+)</option>
+                                      @foreach($angkatan as $akt)
+                                          <option value="{{ $akt }}">Angkatan {{ $akt }}</option>
+                                      @endforeach
+                                  </select>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
           </div>
-          <div class="card-body" style="width:100%;overflow-x:hidden;padding:0;">
-            <div class="media" style="width:100%;">
-              <div class="media-body p-3" style="width:100%;overflow-x:hidden;">
-                <div class="greeting-user" style="width:100%;overflow-x:hidden;">
-                    <div class="chart-container" style="height:500px;width:100%;max-width:100%;box-sizing:border-box;overflow:hidden;overflow-x:hidden;padding:12px;background:transparent;border-radius:6px;position:relative;">
-                        <canvas id="bar-chart" style="background:#ffffff;padding:10px;border-radius:6px;display:block;width:100%;max-width:100%;height:100%;box-sizing:border-box;"></canvas>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+          <div class="card shadow-sm position-relative">
+              <div id="loading" class="loading-overlay">
+                  <div class="spinner-border text-primary" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                  </div>
+              </div>
+
+              <div class="card-body">
+                  <div id="chart-keuangan"></div>
+              </div>
+          </div>
+      </div>
+    </div>
+    <div class="row">
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white py-3 border-bottom">
+                    <h5 class="mb-0 text-dark fw-bold">📋 Rekapitulasi Total Pembayaran</h5>
+                    <small class="text-muted">Rincian total per prodi dalam satu tahun sesuai filter di atas.</small>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover align-middle mb-0">
+                            <thead class="bg-light text-uppercase small fw-bold text-muted">
+                                <tr>
+                                    <th class="ps-4" width="5%">#</th>
+                                    <th>Program Studi</th>
+                                    <th class="text-end pe-4">Total Pendapatan (Rp)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-rekap">
+                                <tr><td colspan="3" class="text-center py-4">Memuat data...</td></tr>
+                            </tbody>
+                            <tfoot class="bg-light fw-bold border-top">
+                                <tr>
+                                    <td colspan="2" class="text-end pe-3">GRAND TOTAL</td>
+                                    <td class="text-end pe-4 text-primary" id="grand-total">Rp 0</td>
+                                </tr>
+                            </tfoot>
+                        </table>
                     </div>
-                    <br />
                 </div>
-                <div class="table-responsive bg-white p-3" style="border-radius:6px;">
-                    <h2 class="text-dark">Detail Statistik Pembayaran per Prodi</h2>
-                    <table class="table table-bordered text-white">
-                        @foreach($prodi as $p)
-                        <tr><td>{{$p->nama_prodi}}</td><td > : </td><td >Rp. {{number_format($total_bayar_statistik[$p->id])}}/{{number_format($total_tagihan_statistik[$p->id])}} (Total Bayar / Total Tagihan)</td></tr>  
-                        @endforeach
-                    </table>
-                </div>
-              </div>  
-            </div>  
-          </div>
+            </div>
         </div>
     </div>
+</div>
 </div>
     <script type="text/javascript">
         var session_layout = '{{ session()->get('layout') }}';
@@ -212,6 +291,7 @@
 <script src="{{ asset('assets/js/typeahead-search/typeahead-custom.js') }}"></script> --}}
 <script src="{{ asset('assets/js/height-equal.js') }}"></script>
 <script src="{{ asset('assets/js/animation/wow/wow.min.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     new WOW().init();
 </script>
@@ -233,69 +313,141 @@
     var bayarDataScaled = bayarData.map(function(v){ return +(v/scaleFactor); });
     var tunggakanDataScaled = tagihanData.map(function(v){ return +(v/scaleFactor); });
 
-    var ctx = document.getElementById('bar-chart');
-    if(ctx){
-            new Chart(ctx.getContext('2d'), {
-        type: 'bar',
-        data: {
-          labels: labels,
-          datasets: [
-            {
-              label: 'Total Bayar',
-                      data: bayarDataScaled,
-                      backgroundColor: 'rgba(54, 162, 235, 0.85)',
-                      barPercentage: 0.45,
-                      categoryPercentage: 0.6,
-                      borderRadius: 4
-            },
-            {
-              label: 'Total Tagihan',
-                      data: tunggakanDataScaled,
-                      backgroundColor: 'rgba(255, 99, 132, 0.85)',
-                      barPercentage: 0.45,
-                      categoryPercentage: 0.6,
-                      borderRadius: 4
-            }
-          ]
-        },
-                options: {
-                  responsive: true,
-                  maintainAspectRatio: false,
-                  interaction: {mode: 'index', intersect: false},
-                  scales: {
-                    x: {
-                      
-                      ticks: {
-                        autoSkip: true,
-                        maxRotation: 45,
-                        minRotation: 0
-                      }
-                    },
-                    y: {
-                      
-                      beginAtZero: true,
-                      ticks: {
-                        callback: function(value){
-                          return Number(value).toLocaleString(undefined,{maximumFractionDigits:2}) + ' jt';
-                        }
-                      }
-                    }
-                  },
-                  plugins: {
-                    tooltip: {
-                      callbacks: {
-                        label: function(context){
-                          var val = context.parsed.y || context.parsed || 0;
-                          return context.dataset.label + ': Rp. ' + Number(val).toLocaleString(undefined,{maximumFractionDigits:2}) + ' jt';
-                        }
-                      }
-                    },
-                    legend: { position: 'top' }
-                  },
-                  layout: { padding: { top: 6, right: 6, left: 6, bottom: 6 } }
-                }
-      });
-    }
+    
   })();
+
+  $(document).ready(function() {
+            
+    // 1. Setup Select2 agar pas di Bootstrap
+    $('#filter-tahun, #filter-angkatan').select2({
+        width: '100%',
+        theme: "classic" // Atau hapus line ini jika ingin default
+    });
+
+    // 2. Formatter Rupiah (Untuk Tooltip & Axis)
+    const formatRupiah = (number) => {
+      return new Intl.NumberFormat('id-ID', { 
+          style: 'currency', 
+          currency: 'IDR',
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0 
+      }).format(number);
+    };
+
+    const formatSingkat = (num) => {
+        if (num >= 1000000000) return (num / 1000000000).toFixed(1) + ' M';
+        if (num >= 1000000) return (num / 1000000).toFixed(1) + ' Jt';
+        if (num >= 1000) return (num / 1000).toFixed(0) + ' Rb';
+        return num;
+    };
+
+    // 3. Konfigurasi ApexCharts
+    var options = {
+        series: [],
+        chart: {
+            type: 'bar',
+            height: 500,
+            fontFamily: 'Segoe UI, sans-serif',
+            toolbar: { show: true }
+        },
+        plotOptions: {
+            bar: {
+                horizontal: false,
+                columnWidth: '55%',
+                borderRadius: 5,
+                dataLabels: { position: 'top' }
+            },
+        },
+        dataLabels: {
+            enabled: false
+        },
+        stroke: { show: true, width: 2, colors: ['transparent'] },
+        xaxis: {
+            categories: [],
+            axisBorder: { show: false },
+            axisTicks: { show: false }
+        },
+        yaxis: {
+            title: { text: 'Nominal Pendapatan (Rp)' },
+            labels: {
+                formatter: function (val) { return formatSingkat(val); }
+            }
+        },
+        fill: { opacity: 1 },
+        tooltip: {
+            y: {
+                formatter: function (val) { return formatRupiah(val); }
+            }
+        },
+        legend: { position: 'bottom', horizontalAlign: 'center' },
+        colors: ['#0d6efd', '#6610f2', '#6f42c1', '#d63384', '#dc3545', '#fd7e14', '#ffc107', '#198754', '#20c997', '#0dcaf0'],
+        noData: { text: 'Menunggu Data...' }
+    };
+
+    var chart = new ApexCharts(document.querySelector("#chart-keuangan"), options);
+    chart.render();
+
+    // 4. Fungsi Load Data AJAX
+    
+    function loadData() {
+      var tahun = $('#filter-tahun').val();
+      var angkatan = $('#filter-angkatan').val();
+
+      $('#loading').css('display', 'flex'); 
+
+      $.ajax({
+          url: "{{ url('admin/keuangan/dashboard/get-data') }}",
+          type: "GET",
+          data: { 
+              tahun_bayar: tahun,
+              angkatan: angkatan
+          },
+          success: function(res) {
+              // 1. Update Chart
+              chart.updateOptions({
+                  xaxis: { categories: res.categories },
+                  series: res.series
+              });
+
+              // 2. Update Table (BARU)
+              var html = '';
+              var grandTotal = 0;
+
+              if (res.table_data.length > 0) {
+                  $.each(res.table_data, function(index, item) {
+                      grandTotal += item.total; // Hitung Grand Total
+                      
+                      html += `<tr>
+                          <td class="ps-4 text-center text-muted">${index + 1}</td>
+                          <td class="fw-bold text-dark">${item.prodi}</td>
+                          <td class="text-end pe-4 font-monospace">${formatRupiah(item.total)}</td>
+                      </tr>`;
+                  });
+              } else {
+                  html = `<tr><td colspan="3" class="text-center py-4 text-muted">Tidak ada data transaksi</td></tr>`;
+              }
+
+              // Render ke HTML
+              $('#tbody-rekap').html(html);
+              $('#grand-total').text(formatRupiah(grandTotal));
+
+              $('#loading').hide();
+          },
+          error: function(e) {
+              console.error(e);
+              $('#loading').hide();
+              $('#tbody-rekap').html('<tr><td colspan="3" class="text-center text-danger">Gagal memuat data</td></tr>');
+          }
+      });
+  }
+
+    // 5. Event Listener untuk Filter
+    $('#filter-tahun, #filter-angkatan').on('change', function() {
+        loadData();
+    });
+
+    // Load Awal
+    loadData();
+});
 </script>
 @endsection

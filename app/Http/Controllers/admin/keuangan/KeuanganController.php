@@ -16,6 +16,7 @@ use App\Models\JenisKeuangan;
 use App\Models\Tagihan;
 use App\Models\DetailTagihanKeuangan as DetailTagihanKeuanganTotal;
 use App\Models\TbPembayaran; 
+use DB;
 
 class KeuanganController extends Controller
 {
@@ -576,10 +577,91 @@ class KeuanganController extends Controller
             $nestedData['is_publish'] = $row->is_publish_keuangan ?? 0;
             $data[] = $nestedData;
         }
-        // $program_studi = $prodi;
+        $tahunBayar = DB::table('tb_pembayaran')
+            ->select(DB::raw('YEAR(tanggal_bayar) as tahun'))
+            ->whereNotNull('tanggal_bayar')
+            ->distinct()
+            ->orderBy('tahun', 'desc')
+            ->pluck('tahun');
+
+        // 2. Ambil Angkatan (Hanya 2024 ke atas)
+        $angkatan = DB::table('mahasiswa')
+            ->select('angkatan')
+            ->where('angkatan', '>=', 2024) // Filter khusus sesuai permintaan
+            ->distinct()
+            ->orderBy('angkatan', 'desc')
+            ->pluck('angkatan');
         $title = "Keuangan Mahasiswa";
         $pembayaran_terakhir = TbPembayaran::orderBy('tanggal_bayar','desc')->limit(1)->first()->tanggal_bayar ?? '-';
         
-        return view('admin.keuangan.dashboard',compact('jumlah_krs','jumlah_uts','jumlah_uas','jumlah_mhs','ta','total_bayar_statistik','total_tagihan_statistik','prodi','pembayaran_terakhir','title'));
+        return view('admin.keuangan.dashboard',compact('jumlah_krs','jumlah_uts','jumlah_uas','jumlah_mhs','ta','total_bayar_statistik','total_tagihan_statistik','prodi','pembayaran_terakhir','title','tahunBayar','angkatan'));
+    }
+    public function getData(Request $request)
+    {
+        $filterTahun = $request->input('tahun_bayar', date('Y')); 
+        $filterAngkatan = $request->input('angkatan'); 
+
+        // 1. Query Utama (Tetap Sama)
+        $query = DB::table('tb_pembayaran as p')
+            ->join('mahasiswa as m', 'p.nim', '=', 'm.nim')
+            ->join('program_studi as ps', 'm.id_program_studi', '=', 'ps.id')
+            ->select(
+                'ps.nama_prodi',
+                DB::raw('MONTH(p.tanggal_bayar) as bulan'),
+                DB::raw('SUM(p.jumlah) as total_rupiah')
+            )
+            ->whereNull('p.deleted_at')
+            ->whereNull('m.deleted_at')
+            ->whereYear('p.tanggal_bayar', $filterTahun);
+
+        if ($filterAngkatan) {
+            $query->where('m.angkatan', $filterAngkatan);
+        } else {
+            $query->where('m.angkatan', '>=', 2024);
+        }
+
+        $dataRaw = $query->groupBy('ps.nama_prodi', 'bulan')->get();
+
+        // 2. Transformasi Data
+        $prodiList = $dataRaw->pluck('nama_prodi')->unique()->values();
+        $series = [];
+        $tableData = []; // <--- Array baru untuk Data Tabel
+
+        foreach ($prodiList as $prodi) {
+            $dataBulanan = [];
+            $totalSetahun = 0; // Variabel penampung total
+
+            for ($i = 1; $i <= 12; $i++) {
+                $found = $dataRaw->first(function($item) use ($prodi, $i) {
+                    return $item->nama_prodi == $prodi && $item->bulan == $i;
+                });
+                
+                $nilai = $found ? (int)$found->total_rupiah : 0;
+                $dataBulanan[] = $nilai;
+                $totalSetahun += $nilai; // Jumlahkan ke total
+            }
+
+            $series[] = [
+                'name' => $prodi,
+                'data' => $dataBulanan
+            ];
+
+            // Masukkan ke array tabel
+            $tableData[] = [
+                'prodi' => $prodi,
+                'total' => $totalSetahun
+            ];
+        }
+
+        // Opsional: Urutkan tabel dari nominal terbesar
+        usort($tableData, function($a, $b) {
+            return $b['total'] <=> $a['total'];
+        });
+
+        return response()->json([
+            'series' => $series,
+            'categories' => ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'],
+            'table_data' => $tableData // <--- Kirim data tabel ke view
+        ]);
     }
 }
