@@ -116,7 +116,13 @@ class helpers
                 $totalIps +=  ($row->sks_teori+$row->sks_praktek) * $this->getKualitas($row->nhuruf);
             }
         }
-        return $totalIps > 0 ? $totalIps : 0;
+        $totalIPS = ($totalIps > 0) ? $totalIps : 0;
+        if($totalIPS > 0){
+            $totalIPS = $totalIPS/4;
+        }
+        //buat pemnbulatan ke 2 desimal
+         $totalIPS = number_format((float)$totalIPS, 2, '.', '');
+        return $totalIPS;
     }
 
     public function getAccByPengajuanSkripsi($idMaster)
