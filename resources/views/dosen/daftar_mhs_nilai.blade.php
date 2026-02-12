@@ -49,13 +49,13 @@
                                     </tr>
                                     <tr>
                                         <td style="padding-left: 0px;">
-                                            <input type="number" id="persentase_tugas" class="form-control form-control-sm" value="{{ $kontrak->tugas?? 0 }}">
+                                            <input type="number" step="any" id="persentase_tugas" class="form-control form-control-sm" value="{{ $kontrak->tugas?? 0 }}">
                                         </td>
                                         <td style="padding-left: 0px;">
-                                            <input type="number" id="persentase_uts" class="form-control form-control-sm" value="{{ $kontrak->uts?? 0 }}">
+                                            <input type="number" step="any" id="persentase_uts" class="form-control form-control-sm" value="{{ $kontrak->uts?? 0 }}">
                                         </td>
                                         <td style="padding-left: 0px;">
-                                            <input type="number" id="persentase_uas" class="form-control form-control-sm" value="{{ $kontrak->uas?? 0 }}">
+                                            <input type="number" step="any" id="persentase_uas" class="form-control form-control-sm" value="{{ $kontrak->uas?? 0 }}">
                                         </td>
                                     </tr>
                                     <tr>
@@ -115,13 +115,13 @@
                                                 </td>
                                                 <td>{{ $row['nama'] }}</td>
                                                 <td>
-                                                    <input type="number" max="100" min="0" onchange="simpanNilai({{ $row['idmhs'] }}, {{ $id }}, '1', $(this).val())" class="form-control" id="nilai_tugas{{ $row['idmhs'] }}" name="nilai_tugas[{{$row['nims']}}]" data-id="{{ $row['idmhs'] }}" value="{{ $row['ntugas'] }}" {{$actionvalid[1] == 1?"readonly":""}}>
+                                                    <input type="number" step="any" max="100" min="0" onchange="simpanNilai({{ $row['idmhs'] }}, {{ $id }}, '1', $(this).val())" class="form-control" id="nilai_tugas{{ $row['idmhs'] }}" name="nilai_tugas[{{$row['nims']}}]" data-id="{{ $row['idmhs'] }}" value="{{ $row['ntugas'] }}" {{$actionvalid[1] == 1?"readonly":""}}>
                                                 </td>
                                                 <td>
-                                                    <input type="number" max="100" min="0" onchange="simpanNilai({{ $row['idmhs'] }}, {{ $id }}, '2', $(this).val())" class="form-control" id="nilai_uts{{ $row['idmhs'] }}" name="nilai_uts[{{$row['nims']}}]" data-id="{{ $row['idmhs'] }}" value="{{ $row['nuts'] }}" {{$actionvalid[2] == 1?"readonly":""}}>
+                                                    <input type="number" step="any" max="100" min="0" onchange="simpanNilai({{ $row['idmhs'] }}, {{ $id }}, '2', $(this).val())" class="form-control" id="nilai_uts{{ $row['idmhs'] }}" name="nilai_uts[{{$row['nims']}}]" data-id="{{ $row['idmhs'] }}" value="{{ $row['nuts'] }}" {{$actionvalid[2] == 1?"readonly":""}}>
                                                 </td>
                                                 <td>
-                                                    <input type="number" max="100" min="0" onchange="simpanNilai({{ $row['idmhs'] }}, {{ $id }}, '3', $(this).val())" class="form-control" id="nilai_uas{{ $row['idmhs'] }}" name="nilai_uas[{{$row['nims']}}]" data-id="{{ $row['idmhs'] }}" value="{{ $row['nuas'] }}" {{$actionvalid[3] == 1?"readonly":""}}>
+                                                    <input type="number" step="any" max="100" min="0" onchange="simpanNilai({{ $row['idmhs'] }}, {{ $id }}, '3', $(this).val())" class="form-control" id="nilai_uas{{ $row['idmhs'] }}" name="nilai_uas[{{$row['nims']}}]" data-id="{{ $row['idmhs'] }}" value="{{ $row['nuas'] }}" {{$actionvalid[3] == 1?"readonly":""}}>
                                                 </td>
                                                 <td>
                                                     <span id="na{{ $row['idmhs'] }}">{{ $row['nakhir'] }} | {{ $row['nhuruf'] }}  </span>
