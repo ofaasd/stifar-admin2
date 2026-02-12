@@ -28,6 +28,7 @@ use Picqer\Barcode\BarcodeGeneratorPNG;
 use App\Models\MahasiswaBerkasPendukung;
 use App\Models\TbYudisium;
 use Intervention\Image\Drivers\Gd\Driver;
+use DB;
 
 class MahasiswaController extends Controller
 {
@@ -39,6 +40,7 @@ class MahasiswaController extends Controller
 
     public function index(Request $request)
     {
+        
         $title = "Daftar Mahasiswa";
         $mhs = Mahasiswa::get();
         $no = 1;
@@ -58,6 +60,32 @@ class MahasiswaController extends Controller
     public function get_mhs(Request $request)
     {
         $id = $request->id;
+        $selectedProdi = (!empty($request->id) || $request->id !== 0) ? $request->id : 'all';
+
+        // 2. Mulai Query
+        $query = Mahasiswa::where('status', 1); // Filter Wajib: Mahasiswa Aktif
+
+        // 3. Jika user tidak memilih 'all', filter berdasarkan id_program_studi
+        if ($selectedProdi !== 'all') {
+            $query->where('id_program_studi', $selectedProdi);
+        }
+
+        // 4. Grouping berdasarkan Angkatan & Hitung Jumlah
+        $dataAngkatan = $query->select('angkatan', DB::raw('count(*) as total'))
+                              ->groupBy('angkatan')
+                              ->orderBy('angkatan', 'desc') // Urutkan dari tahun terbaru
+                              ->get();
+
+        // Data untuk Tab/Card Navigasi (Sesuaikan ID & Nama dengan database Anda)
+        // Idealnya ini diambil dari tabel `program_studi` jika ada.
+        $listProdi = [
+            ['id' => 'all', 'nama' => 'All'],
+            ['id' => 1,'nama' => 'D3 Analisis'], // Sesuaikan ID db
+            ['id' => 2,'nama' => 'D3 Farmasi'],
+            ['id' => 3,'nama' => 'S1 Farmasi'],
+            ['id' => 4,'nama' => 'Magister Farmasi'],
+            ['id' => 5,'nama' => 'Profesi Apoteker'],
+        ];
         if($id == 0){
             $ta = TahunAjaran::where("status", "Aktif")->first();
             $mhs = Mahasiswa::select(
@@ -86,20 +114,20 @@ class MahasiswaController extends Controller
                 $nama_prodi = explode(' ',$row->nama_prodi);
                 $nama[$row->id] = $nama_prodi[0] . " " . $nama_prodi[1];
             }
-        return view('mahasiswa._table_mhs', compact('mhs', 'no', 'prodi','jumlah','nama'));
+            return view('mahasiswa._table_mhs', compact('mhs', 'no', 'prodi','jumlah','nama','dataAngkatan','selectedProdi','listProdi'));
         }else{
-        $mhs = Mahasiswa::where('id_program_studi',$id)->get();
-        $no = 1;
-        $prodi = Prodi::all();
-        $jumlah = [];
-        $nama = [];
-
-        foreach($prodi as $row){
-            $jumlah[$row->id] = Mahasiswa::where('id_program_studi',$row->id)->count();
-            $nama_prodi = explode(' ',$row->nama_prodi);
-            $nama[$row->id] = $nama_prodi[0] . " " . $nama_prodi[1];
-        }
-        return view('mahasiswa._table_mhs', compact('mhs', 'no', 'prodi','jumlah','nama'));
+            $mhs = Mahasiswa::where('id_program_studi',$id)->get();
+            $no = 1;
+            $prodi = Prodi::all();
+            $jumlah = [];
+            $nama = [];
+            $prodi_selected = Prodi::where('id', $id)->first();
+            foreach($prodi as $row){
+                $jumlah[$row->id] = Mahasiswa::where('id_program_studi',$row->id)->count();
+                $nama_prodi = explode(' ',$row->nama_prodi);
+                $nama[$row->id] = $nama_prodi[0] . " " . $nama_prodi[1];
+            }
+            return view('mahasiswa._table_mhs', compact('mhs', 'no', 'prodi','jumlah','nama','dataAngkatan','selectedProdi','listProdi','prodi_selected'));
         }
     }
 
