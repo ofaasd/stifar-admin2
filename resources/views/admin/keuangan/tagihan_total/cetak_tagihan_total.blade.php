@@ -54,7 +54,7 @@
         </tr>
     </table>
     <hr>
-    <center><b>Total Tagihan @if(empty($id))Semua Program Studi @else Program Studi {{ $nama_prodi }} @endif</b></center>
+    <center><b>Total Biaya Studi @if(empty($id))Semua Program Studi @else Program Studi {{ $nama_prodi }} @endif</b></center>
     <br>
     <table class="customers"  id="myTable" cellpadding="5" width="100%">
         <thead>
