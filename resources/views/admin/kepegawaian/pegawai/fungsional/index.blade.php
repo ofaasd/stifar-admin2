@@ -158,7 +158,8 @@
                 });
             });
             $('#modalFungsional').on('hidden.bs.modal', function () {
-                $('#formAddFungsional').trigger("reset");
+                document.getElementById('formAddFungsional').reset();
+                $('#id_fungsional').val('');
                 $('#dokumen_exist_fungsional').html('');
             });
         });

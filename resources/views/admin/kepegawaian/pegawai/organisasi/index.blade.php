@@ -104,7 +104,9 @@
                 });
             });
             $('#modalorganisasi').on('hidden.bs.modal', function () {
-                $('#formAddorganisasi').trigger("reset");
+                document.getElementById('formAddorganisasi').reset();
+                $('#id_organisasi').val('');
+                $('#dokumen_exist_organisasi').html('');
             });
         });
     </script>

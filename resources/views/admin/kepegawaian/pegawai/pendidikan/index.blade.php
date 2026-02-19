@@ -151,7 +151,8 @@
                 });
             });
             $('#modalpendidikan').on('hidden.bs.modal', function () {
-                $('#formAddpendidikan').trigger("reset");
+                document.getElementById('formAddpendidikan').reset();
+                $('#id_pendidikan').val('');
                 $('#dokumen_exist_pendidikan').html('');
             });
         });

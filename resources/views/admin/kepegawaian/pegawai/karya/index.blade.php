@@ -147,7 +147,9 @@
                 });
             });
             $('#modalkarya').on('hidden.bs.modal', function () {
-                $('#formAddkarya').trigger("reset");
+                
+                document.getElementById('formAddkarya').reset();
+                $('#id_karya').val('');
                 $('#dokumen_exist_karya').html('');
             });
         });

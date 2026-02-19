@@ -156,7 +156,8 @@
                 });
             });
             $('#modalMengajar').on('hidden.bs.modal', function () {
-                $('#formAddMengajar').trigger("reset");
+                document.getElementById('formAddmengajar').reset();
+                $('#id_mengajar').val('');
                 $('#dokumen_exist_mengajar').html('');
                 $('#dokumen_exist_sk_mengajar').html('');
             });

@@ -189,8 +189,9 @@
                 });
             });
             $('#modalStruktural').on('hidden.bs.modal', function () {
-                $('#formAddStruktural').trigger("reset");
-                $('#dokumen_exist').html('');
+                document.getElementById('formAddstruktural').reset();
+                $('#id_struktural').val('');
+                $('#dokumen_exist_struktural').html('');
             });
         });
     </script>

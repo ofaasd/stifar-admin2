@@ -123,7 +123,9 @@
                 });
             });
             $('#modalpenghargaan').on('hidden.bs.modal', function () {
-                $('#formAddpenghargaan').trigger("reset");
+                document.getElementById('formAddpenghargaan').reset();
+                $('#id_penghargaan').val('');
+                $('#dokumen_exist_penghargaan').html('');
             });
         });
     </script>

@@ -118,8 +118,10 @@
                 });
             });
             $('#modalberkas').on('hidden.bs.modal', function () {
-                $('#formAddberkas').trigger("reset");
-                $('#dokumen_exist_berkas').html('');
+                document.getElementById('formAddberkas').reset();
+                $('#id_berkas').val('');
+                $('#ktp_exist').html('');
+                $('#kk_exist').html('');
             });
         });
     </script>

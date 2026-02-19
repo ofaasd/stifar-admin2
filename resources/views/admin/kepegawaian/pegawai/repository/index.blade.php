@@ -112,7 +112,8 @@
                 });
             });
             $('#modalrepository').on('hidden.bs.modal', function () {
-                $('#formAddrepository').trigger("reset");
+                document.getElementById('formAddrepository').reset();
+                $('#id_repository').val('');
                 $('#dokumen_exist_repository').html('');
             });
         });

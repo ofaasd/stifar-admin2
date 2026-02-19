@@ -127,7 +127,9 @@
                 });
             });
             $('#modalkompetensi').on('hidden.bs.modal', function () {
-                $('#formAddkompetensi').trigger("reset");
+                document.getElementById('formAddkompetensi').reset();
+                $('#id_kompetensi').val('');
+                $('#dokumen_exist_kompetensi').html('');
             });
         });
     </script>

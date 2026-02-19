@@ -113,7 +113,8 @@
                 });
             });
             $('#modalpengabdian').on('hidden.bs.modal', function () {
-                $('#formAddpengabdian').trigger("reset");
+                document.getElementById('formAddpengabdian').reset();
+                $('#id_pengabdian').val('');
                 $('#dokumen_exist_pengabdian').html('');
             });
         });

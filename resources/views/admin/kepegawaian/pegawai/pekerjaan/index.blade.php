@@ -109,7 +109,9 @@
                 });
             });
             $('#modalpekerjaan').on('hidden.bs.modal', function () {
-                $('#formAddpekerjaan').trigger("reset");
+                document.getElementById('formAddpekerjaan').reset();
+                $('#id_pekerjaan').val('');
+                $('#dokumen_exist_pekerjaan').html('');
             });
         });
     </script>

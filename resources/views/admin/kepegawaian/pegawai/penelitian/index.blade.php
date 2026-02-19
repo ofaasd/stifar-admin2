@@ -248,7 +248,8 @@
                 });
             });
             $('#modalpenelitian').on('hidden.bs.modal', function () {
-                $('#formAddpenelitian').trigger("reset");
+               document.getElementById('formAddpenelitian').reset();
+                $('#id_penelitian').val('');
                 $('#dokumen_exist_penelitian').html('');
                 $('#proposal_exist_penelitian').html('');
                 $('#lap_kemajuan_exist_penelitian').html('');

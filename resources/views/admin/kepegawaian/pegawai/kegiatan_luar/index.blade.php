@@ -173,7 +173,11 @@
                 });
             });
             $('#modalkegiatan_luar').on('hidden.bs.modal', function () {
-                $('#formAddkegiatan_luar').trigger("reset");
+                document.getElementById('formAddkegiatan_luar').reset();
+                $('#id_kegiatan_luar').val('');
+                $('#surat_tugas_exist_kegiatan_luar').html('');
+                $('#bukti_kegiatan_exist_kegiatan_luar').html('');
+                $('#dokumen_pendukung_exist_kegiatan_luar').html('');
             });
         });
     </script>
