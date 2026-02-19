@@ -85,6 +85,6 @@ class Presence extends Model
 	public function pegawai()
     {
         // Parameter: (Model Tujuan, Foreign Key di tabel ini, Primary Key di tabel tujuan)
-        return $this->belongsTo(PegawaiBiodatum::class, 'user_id', 'no_absensi');
+        return $this->belongsTo(PegawaiBiodatum::class, 'no_absensi', 'no_absensi');
     }
 }

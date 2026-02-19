@@ -51,7 +51,9 @@
                         <input type="hidden" value="true" name="update_herregistrasi">
                     @endif
                     <div class="row">
-                        <p class="fw-bold"><span class="text-danger">*</span>Foto berformat jpg/jpeg dan maksimal berukuran 5mb </p>
+                        <div class="alert alert-warning">
+                            <p class="fw-bold"><span class="text-danger">*</span>Foto berformat jpg/jpeg dan maksimal berukuran 5mb </p>
+                        </div>
                         <small class="text-end">Terakhir diupdate <span class="fst-italic">{{ isset($berkas) ? \Carbon\Carbon::parse($berkas->updated_at)->translatedFormat('d F Y H:i:s') : "data tidak ditemukan" }}</span></small>
                         <div class="col-md-6">
                             <div class="mb-2">
@@ -91,7 +93,42 @@
                                 </div>
                                 <hr>
                             </div>
-                            
+                            <div class="mb-2">
+                                <div class="view-ijazah-smp">
+                                    <label class="col-sm-12 col-form-label">Foto ijazah SMP : </label>
+                                    <p class="fs-4" style="display: {{ isset($berkas) ? ($berkas->ijazah_smp ? 'block' : 'none') : 'none' }}">
+                                        <i class="fa fa-check-square-o text-success"></i> | 
+                                        <a href="{{ (isset($berkas->ijazah_smp)) ? asset('assets/file/berkas/dosen/ijazah_smp/' . $berkas->ijazah_smp) : '' }}" target="_blank">
+                                            <i class="fa fa-picture-o text-dark"></i>
+                                        </a> | 
+                                        <a href="#" id="edit-ijazah-smp"><i class="fa fa-pencil text-dark"></i></a>
+                                    </p>
+                                </div>
+                                <div class="col-sm-12" id="input-ijazah-smp" style="display: {{ isset($berkas) ? ($berkas->ijazah_smp ? 'none' : 'block') : 'block' }}">
+                                    <div class="input-group">
+                                        <input type="file" name="ijazah_smp" class="form-control" aria-describedby="inputGroupPrepend">
+                                    </div>
+                                </div>
+                                <hr>
+                            </div>
+                            <div class="mb-2">
+                                <div class="view-ijazah-sma">
+                                    <label class="col-sm-12 col-form-label">Foto ijazah SMA : </label>
+                                    <p class="fs-4" style="display: {{ isset($berkas) ? ($berkas->ijazah_sma ? 'block' : 'none') : 'none' }}">
+                                        <i class="fa fa-check-square-o text-success"></i> | 
+                                        <a href="{{ (isset($berkas->ijazah_sma)) ? asset('assets/file/berkas/dosen/ijazah_sma/' . $berkas->ijazah_sma) : '' }}" target="_blank">
+                                            <i class="fa fa-picture-o text-dark"></i>
+                                        </a> | 
+                                        <a href="#" id="edit-ijazah-sma"><i class="fa fa-pencil text-dark"></i></a>
+                                    </p>
+                                </div>
+                                <div class="col-sm-12" id="input-ijazah-sma" style="display: {{ isset($berkas) ? ($berkas->ijazah_sma ? 'none' : 'block') : 'block' }}">
+                                    <div class="input-group">
+                                        <input type="file" name="ijazah_sma" class="form-control" aria-describedby="inputGroupPrepend">
+                                    </div>
+                                </div>
+                                <hr>
+                            </div>
                             <div class="mb-2">
                                 <div class="view-ijazah-s1">
                                     <label class="col-sm-12 col-form-label">Foto ijazah S1 : </label>
@@ -150,7 +187,9 @@
                                 </div>
                                 <hr>
                             </div>
-
+                            @hasrole('pegawai-dosen')
+                            
+                            
                             <div class="mb-2">
                                 <div class="view-serdik-aa-pekerti">
                                     <label class="col-sm-12 col-form-label">Foto Serdik AA Pekerti : </label>
@@ -227,6 +266,7 @@
                                 </div>
                                 <hr>
                             </div>
+                            @endhasrole
                             @if(isset($curr_prodi) && $curr_prodi->jenjang == 'Apoteker')
                                 <div class="mb-2">
                                     <div class="view-serdik-kepala-guru-besar">

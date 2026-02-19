@@ -24,8 +24,9 @@ class FingerprintImport implements ToCollection, WithStartRow
     public function collection(Collection $rows)
     {
         // Cache ID Pegawai untuk validasi (biar tidak query berulang-ulang)
-        $validUserIds = DB::table('pegawai_biodata')->pluck('id')->flip()->all();
-
+        $validUserIds = DB::table('pegawai_biodata')->pluck('nama_lengkap','no_absensi')->all();
+        
+        $i = 0;
         foreach ($rows as $row) {
             // Mapping Index Excel (0-based) berdasarkan file absensi-finger.csv
             // Index 0: Nama Staff (Kolom A)
@@ -43,6 +44,7 @@ class FingerprintImport implements ToCollection, WithStartRow
                     $nama = $namaParts[1] . ' ' . $namaParts[2];
                 }
                 //cek di database ada berapa nama yang mirip
+                   
                 $jml = DB::table('pegawai_biodata')
                     ->where('nama_lengkap', 'like', '%' . $nama . '%')
                     ->count();
@@ -51,29 +53,30 @@ class FingerprintImport implements ToCollection, WithStartRow
                     ->where('nama_lengkap', 'like', '%' . $nama . '%')
                     ->update(['no_absensi' => $noStaff]);
                 }
+                
             }
-
+            
             // 1. Validasi: Lewati jika User ID tidak valid/kosong
             if (empty($noStaff) || !isset($validUserIds[$noStaff])) {
                 continue;
             }
 
-            try {
+            
                 // 2. Parse Tanggal
                 // Excel kadang membaca tanggal sebagai serial number, kadang string.
                 // Kode ini berasumsi formatnya string 'dd/mm/yyyy' sesuai CSV sebelumnya.
-                $tanggalStr = $row[3] ?? null;
-                if (!$tanggalStr) continue;
+            $tanggalStr = $row[3] ?? null;
+            if (!$tanggalStr) continue;
 
-                // Bersihkan string tanggal jika ada spasi
-                $tanggalStr = trim($tanggalStr);
-                
-                try {
-                    $dateObj = Carbon::createFromFormat('d/m/Y', $tanggalStr);
-                } catch (\Exception $e) {
-                    // Fallback jika format Excel beda (misal Y-m-d)
-                    continue; 
-                }
+            // Bersihkan string tanggal jika ada spasi
+            $tanggalStr = trim($tanggalStr);
+            
+            try {
+                $dateObj = Carbon::createFromFormat('d/m/Y', $tanggalStr);
+            } catch (\Exception $e) {
+                // Fallback jika format Excel beda (misal Y-m-d)
+                continue; 
+            }
                 
                 $tanggalSql = $dateObj->format('Y-m-d');
 
@@ -124,11 +127,7 @@ class FingerprintImport implements ToCollection, WithStartRow
                     ]
                 );
 
-            } catch (\Exception $e) {
-                // Log error jika perlu, atau skip baris yang bermasalah
-                // \Log::error("Gagal import baris staff $noStaff: " . $e->getMessage());
-                continue;
-            }
+           
         }
     }
 }
