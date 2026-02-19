@@ -70,6 +70,7 @@ class DosenBerkasController extends Controller
             'kk' => 'kk',
             'ijazah_smp' => 'ijazah_smp',
             'ijazah_sma' => 'ijazah_sma',
+            'ijazah_d3' => 'ijazah_d3',
             'ijazah_s1' => 'ijazah_s1',
             'ijazah_s2' => 'ijazah_s2',
             'ijazah_s3' => 'ijazah_s3',

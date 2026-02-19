@@ -130,6 +130,24 @@
                                 <hr>
                             </div>
                             <div class="mb-2">
+                                <div class="view-ijazah-d3">
+                                    <label class="col-sm-12 col-form-label">Foto ijazah D3 : </label>
+                                    <p class="fs-4" style="display: {{ isset($berkas) ? ($berkas->ijazah_d3 ? 'block' : 'none') : 'none' }}">
+                                        <i class="fa fa-check-square-o text-success"></i> | 
+                                        <a href="{{ (isset($berkas->ijazah_d3)) ? asset('assets/file/berkas/dosen/ijazah_d3/' . $berkas->ijazah_d3) : '' }}" target="_blank">
+                                            <i class="fa fa-picture-o text-dark"></i>
+                                        </a> | 
+                                        <a href="#" id="edit-ijazah-d3"><i class="fa fa-pencil text-dark"></i></a>
+                                    </p>
+                                </div>
+                                <div class="col-sm-12" id="input-ijazah-d3" style="display: {{ isset($berkas) ? ($berkas->ijazah_d3 ? 'none' : 'block') : 'block' }}">
+                                    <div class="input-group">
+                                        <input type="file" name="ijazah_d3" class="form-control" aria-describedby="inputGroupPrepend">
+                                    </div>
+                                </div>
+                                <hr>
+                            </div>
+                            <div class="mb-2">
                                 <div class="view-ijazah-s1">
                                     <label class="col-sm-12 col-form-label">Foto ijazah S1 : </label>
                                     <p class="fs-4" style="display: {{ isset($berkas) ? ($berkas->ijazah_s1 ? 'block' : 'none') : 'none' }}">
