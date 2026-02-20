@@ -553,7 +553,7 @@ class JadwalController extends Controller
         $pegawai = PegawaiBiodatum::all();
         $list_pegawai = [];
         foreach($pegawai as $row){
-            $list_pegawai[$row->id] = $row->nama_lengkap;
+            $list_pegawai[$row->id] = $row->gelar_depan . " " . $row->nama_lengkap . (!empty($row->gelar_belakang) ? ", " . $row->gelar_belakang : "");
         }
         $list_pengajar = [];
 
@@ -829,7 +829,7 @@ class JadwalController extends Controller
         $pegawai = PegawaiBiodatum::all();
         $list_pegawai = [];
         foreach($pegawai as $row){
-            $list_pegawai[$row->id] = $row->nama_lengkap;
+            $list_pegawai[$row->id] = $row->gelar_depan . " " . $row->nama_lengkap . (!empty($row->gelar_belakang) ? ", " . $row->gelar_belakang : "");
         }
 
         $list_pertemuan = [];
@@ -859,7 +859,7 @@ class JadwalController extends Controller
         $pegawai = PegawaiBiodatum::all();
         $list_pegawai = [];
         foreach($pegawai as $row){
-            $list_pegawai[$row->id] = $row->nama_lengkap;
+            $list_pegawai[$row->id] = $row->gelar_depan . ' ' . $row->nama_lengkap . ' ' . $row->gelar_belakang;
         }
         if($id != 0){
             $id_prodi = $id;

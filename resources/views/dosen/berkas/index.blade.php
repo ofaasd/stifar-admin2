@@ -210,7 +210,7 @@
                             
                             <div class="mb-2">
                                 <div class="view-serdik-aa-pekerti">
-                                    <label class="col-sm-12 col-form-label">Foto Serdik AA Pekerti : </label>
+                                    <label class="col-sm-12 col-form-label">Foto Sertifikat AA Pekerti : </label>
                                     <p class="fs-4" style="display: {{ isset($berkas) ? ($berkas->serdik_aa_pekerti ? 'block' : 'none') : 'none' }}">
                                         <i class="fa fa-check-square-o text-success"></i> | 
                                         <a href="{{ (isset($berkas->serdik_aa_pekerti)) ? asset('assets/file/berkas/dosen/serdik_aa_pekerti/' . $berkas->serdik_aa_pekerti) : '' }}" target="_blank">
@@ -229,7 +229,7 @@
 
                             <div class="mb-2">
                                 <div class="view-serdik-aa">
-                                    <label class="col-sm-12 col-form-label">Foto Serdik AA : </label>
+                                    <label class="col-sm-12 col-form-label">Foto Jabfa Asisten Ahli : </label>
                                     <p class="fs-4" style="display: {{ isset($berkas) ? ($berkas->serdik_aa ? 'block' : 'none') : 'none' }}">
                                         <i class="fa fa-check-square-o text-success"></i> | 
                                         <a href="{{ (isset($berkas->serdik_aa)) ? asset('assets/file/berkas/dosen/serdik_aa/' . $berkas->serdik_aa) : '' }}" target="_blank">
@@ -249,7 +249,7 @@
 
                             <div class="mb-2">
                                 <div class="view-serdik-lektor">
-                                    <label class="col-sm-12 col-form-label">Foto Serdik lektor : </label>
+                                    <label class="col-sm-12 col-form-label">Foto Jabfa Lektor : </label>
                                     <p class="fs-4" style="display: {{ isset($berkas) ? ($berkas->serdik_lektor ? 'block' : 'none') : 'none' }}">
                                         <i class="fa fa-check-square-o text-success"></i> | 
                                         <a href="{{ (isset($berkas->serdik_lektor)) ? asset('assets/file/berkas/dosen/serdik_lektor/' . $berkas->serdik_lektor) : '' }}" target="_blank">
@@ -268,7 +268,7 @@
 
                             <div class="mb-2">
                                 <div class="view-serdik-kepala-guru-besar">
-                                    <label class="col-sm-12 col-form-label">Foto Serdik Kepala Guru Besar : </label>
+                                    <label class="col-sm-12 col-form-label">Foto Jabfa Guru Besar : </label>
                                     <p class="fs-4" style="display: {{ isset($berkas) ? ($berkas->serdik_kepala_guru_besar ? 'block' : 'none') : 'none' }}">
                                         <i class="fa fa-check-square-o text-success"></i> | 
                                         <a href="{{ (isset($berkas->serdik_kepala_guru_besar)) ? asset('assets/file/berkas/dosen/serdik_kepala_guru_besar/' . $berkas->serdik_kepala_guru_besar) : '' }}" target="_blank">

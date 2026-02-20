@@ -56,7 +56,7 @@
                 var i;
                 html += '<option value="0">--- Pilih Posisi Pegawai --- </option>';
                 for(i=0; i<data.length; i++){
-                    html += '<option value="'+ data[i].kode +'">'+data[i].nama+'</option>';
+                    html += '<option value="'+ data[i].id +'">'+data[i].nama+'</option>';
                 }
                 $('#status_pegawai').html(html);
 

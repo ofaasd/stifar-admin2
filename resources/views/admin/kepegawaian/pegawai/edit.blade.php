@@ -37,7 +37,7 @@
                                     <img class="img-70 rounded-circle" alt="" src="{{ (!empty($pegawai->foto))?asset('assets/images/pegawai/' . $pegawai->foto):asset('assets/images/user/7.jpg') }}">
                                 </div>
                               <div class="media-body">
-                                <h5 class="mb-1">{{$pegawai->nama_lengkap}}</h5>
+                                <h5 class="mb-1">{{$pegawai->gelar_depan}} {{$pegawai->nama_lengkap}} {{$pegawai->gelar_belakang}}</h5>
                                 <p>{{$posisi[$pegawai->id_posisi_pegawai] ?? 'Staff'}}</p>
                               </div>
                             </div>

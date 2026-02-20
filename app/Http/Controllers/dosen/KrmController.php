@@ -510,7 +510,7 @@ class KrmController extends Controller
         $pegawai = PegawaiBiodatum::all();
         $list_pegawai = [];
         foreach($pegawai as $row){
-            $list_pegawai[$row->id] = $row->nama_lengkap;
+            $list_pegawai[$row->id] = $row->gelar_depan . ' ' . $row->nama_lengkap . ' ' . $row->gelar_belakang;
         }
         $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
                 ->Join('pengajars', 'pengajars.id_jadwal', '=', 'jadwals.id')
@@ -607,13 +607,13 @@ class KrmController extends Controller
         // $anggota = anggota_mk::select('anggota_mks.*', 'pegawai_biodata.npp', 'pegawai_biodata.nama_lengkap', 'pegawai_biodata.gelar_belakang')
         //                 ->leftJoin('pegawai_biodata', 'anggota_mks.id_pegawai_bio', '=', 'pegawai_biodata.id')
         //                 ->where(['anggota_mks.idmk' => $jadwal->id_mk])->get();
-        $anggota = Pengajar::select('pegawai_biodata.nama_lengkap','pengajars.*')
+        $anggota = Pengajar::select('pegawai_biodata.nama_lengkap','pegawai_biodata.gelar_depan','pegawai_biodata.gelar_belakang','pengajars.*')
                             ->join('pegawai_biodata','pegawai_biodata.id','=','pengajars.id_dsn')
                             ->where('id_jadwal',$id)->get();
         $pegawai = PegawaiBiodatum::all();
         $list_pegawai = [];
         foreach($anggota as $row){
-            $list_pegawai[$row->id] = $row->nama_lengkap;
+            $list_pegawai[$row->id] = $row->gelar_depan . " " . $row->nama_lengkap . (!empty($row->gelar_belakang) ? ", " . $row->gelar_belakang : "");
         }
         $dosen = implode(", ",$list_pegawai);
 
@@ -683,13 +683,13 @@ class KrmController extends Controller
         // $anggota = anggota_mk::select('anggota_mks.*', 'pegawai_biodata.npp', 'pegawai_biodata.nama_lengkap', 'pegawai_biodata.gelar_belakang')
         //                 ->leftJoin('pegawai_biodata', 'anggota_mks.id_pegawai_bio', '=', 'pegawai_biodata.id')
         //                 ->where(['anggota_mks.idmk' => $jadwal->id_mk])->get();
-        $anggota = Pengajar::select('pegawai_biodata.nama_lengkap','pengajars.*')
+        $anggota = Pengajar::select('pegawai_biodata.nama_lengkap','pegawai_biodata.gelar_depan','pegawai_biodata.gelar_belakang','pengajars.*')
                             ->join('pegawai_biodata','pegawai_biodata.id','=','pengajars.id_dsn')
                             ->where('id_jadwal',$id)->get();
         $pegawai = PegawaiBiodatum::all();
         $list_pegawai = [];
         foreach($anggota as $row){
-            $list_pegawai[$row->id] = $row->nama_lengkap;
+            $list_pegawai[$row->id] = $row->gelar_depan . " " . $row->nama_lengkap . (!empty($row->gelar_belakang) ? ", " . $row->gelar_belakang : "");
         }
         $dosen = implode(", ",$list_pegawai);
 

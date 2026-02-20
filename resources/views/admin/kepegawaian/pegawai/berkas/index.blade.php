@@ -55,8 +55,8 @@
                 @foreach($berkas as $row)
                 <tr>
                     <td>{{++$fake_id}}</td>
-                    <td><a href="{{URL::to('assets/file/berkas') . "/" . $row->ktp}}" target="_blank" class="btn btn-info" style="margin-top:20px">Lihat File</a></td>
-                    <td><a href="{{URL::to('assets/file/berkas') . "/" . $row->kk}}" target="_blank" class="btn btn-info" style="margin-top:20px">Lihat File</a></td>
+                    <td><a href="{{URL::to('assets/file/berkas/dosen/ktp/') . "/" . $row->ktp}}" target="_blank" class="btn btn-info" style="margin-top:20px">Lihat File</a></td>
+                    <td><a href="{{URL::to('assets/file/berkas/dosen/kk/') . "/" . $row->kk}}" target="_blank" class="btn btn-info" style="margin-top:20px">Lihat File</a></td>
                     <td>
                         <a href="#" title="Edit" class="edit-record-berkas" data-id="{{$row['id']}}" data-bs-toggle="modal" data-original-title="test" data-bs-target="#modalberkas"><i class="fa fa-pencil"></i></a>
                         {{-- <button class="btn btn-sm btn-icon delete-record-berkas text-danger" data-id="{{$row->id}}"><i class="fa fa-trash"></i></button> --}}

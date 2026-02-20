@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cetak KHS</title>
+    <title>Cetak Journal Sebelum UAS</title>
     <style>
         .customers {
             font-family: Arial, Helvetica, sans-serif;
@@ -105,7 +105,7 @@
         </tr>
         <tr>
             <td height=20>
-                {{$kep_prodi->nama_lengkap}}
+                {{$kep_prodi->gelar_depan}} {{$kep_prodi->nama_lengkap}}{{(!empty($kep_prodi->gelar_belakang))?', '.$kep_prodi->gelar_belakang:''}}
             </td>
         </tr>
         
