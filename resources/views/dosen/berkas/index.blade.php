@@ -265,6 +265,24 @@
                                 </div>
                                 <hr>
                             </div>
+                            <div class="mb-2">
+                                <div class="view-serdik-lektor-kepala">
+                                    <label class="col-sm-12 col-form-label">Foto Jabfa Lektor Kepala : </label>
+                                    <p class="fs-4" style="display: {{ isset($berkas) ? ($berkas->serdik_lektor_kepala ? 'block' : 'none') : 'none' }}">
+                                        <i class="fa fa-check-square-o text-success"></i> | 
+                                        <a href="{{ (isset($berkas->serdik_lektor_kepala)) ? asset('assets/file/berkas/dosen/serdik_lektor_kepala/' . $berkas->serdik_lektor_kepala) : '' }}" target="_blank">
+                                            <i class="fa fa-picture-o text-dark"></i>
+                                        </a> | 
+                                        <a href="#" id="edit-serdik-lektor-kepala"><i class="fa fa-pencil text-dark"></i></a>
+                                    </p>
+                                </div>
+                                <div class="col-sm-12" id="input-serdik-lektor-kepala" style="display: {{ isset($berkas) ? ($berkas->serdik_lektor_kepala ? 'none' : 'block') : 'block' }}">
+                                    <div class="input-group">
+                                        <input type="file" name="serdik_lektor_kepala" class="form-control" aria-describedby="inputGroupPrepend">
+                                    </div>
+                                </div>
+                                <hr>
+                            </div>
 
                             <div class="mb-2">
                                 <div class="view-serdik-kepala-guru-besar">

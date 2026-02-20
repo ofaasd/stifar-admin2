@@ -77,6 +77,7 @@ class DosenBerkasController extends Controller
             'serdik_aa_pekerti' => 'serdik_aa_pekerti',
             'serdik_aa' => 'serdik_aa',
             'serdik_lektor' => 'serdik_lektor',
+            'serdik_lektor_kepala' => 'serdik_lektor_kepala',
             'serdik_kepala_guru_besar' => 'serdik_kepala_guru_besar',
         ];
 
