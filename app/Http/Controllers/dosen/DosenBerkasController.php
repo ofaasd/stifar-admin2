@@ -26,7 +26,7 @@ class DosenBerkasController extends Controller
             return response()->json(["message"  => "Data tidak ditemukan"]);
         }
 
-        $dosen = PegawaiBiodatum::select('pegawai_biodata.*', 'pegawai_biodata.nidn as nidnDosen', 'pegawai_biodata.id_pegawai AS idPegawai')
+        $dosen = PegawaiBiodatum::select('pegawai_biodata.*', 'pegawai_biodata.nidn as nidnDosen')
         ->where('pegawai_biodata.id', $cekUser->id)
         ->first();
         

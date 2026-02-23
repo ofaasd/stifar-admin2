@@ -22,12 +22,12 @@ class BerkasDosenController extends Controller
     public function index()
     {
         $title = "Berkas Dosen";
-        $pegawai = PegawaiBiodatum::select('pegawai_biodata.*', 'pegawai_biodata.nidn as nidnDosen', 'pegawai_biodata.id_pegawai AS idPegawai', 'pegawai_berkas_pendukung.*')
-        ->leftJoin('pegawai_berkas_pendukung', 'pegawai_berkas_pendukung.id_pegawai', '=', 'pegawai_biodata.id_pegawai')
+        $pegawai = PegawaiBiodatum::select('pegawai_biodata.*', 'pegawai_biodata.nidn as nidnDosen', 'pegawai_berkas_pendukung.*')
+        ->leftJoin('pegawai_berkas_pendukung', 'pegawai_berkas_pendukung.id_pegawai', '=', 'pegawai_biodata.id')
         ->whereIn('id_posisi_pegawai', [1,2])
         ->get()
         ->map(function ($item) {
-            $item->idEnkripsi = Crypt::encryptString($item->idPegawai . "stifar");
+            $item->idEnkripsi = Crypt::encryptString($item->id . "stifar");
             return $item;
         });
 
@@ -154,9 +154,9 @@ class BerkasDosenController extends Controller
         $idDekrip = Crypt::decryptString($idEnkripsi);
         $idPegawai = str_replace("stifar", "", $idDekrip);
 
-        $dsn = PegawaiBiodatum::select('pegawai_biodata.*', 'pegawai_biodata.nidn as nidnDosen', 'pegawai_biodata.id_pegawai AS idPegawai', 'pegawai_berkas_pendukung.*', 'pegawai_berkas_pendukung.updated_at AS timeStampBerkas')
-        ->leftJoin('pegawai_berkas_pendukung', 'pegawai_berkas_pendukung.id_pegawai', '=', 'pegawai_biodata.id_pegawai')
-        ->where('pegawai_biodata.id_pegawai', $idPegawai)
+        $dsn = PegawaiBiodatum::select('pegawai_biodata.*', 'pegawai_biodata.nidn as nidnDosen', 'pegawai_berkas_pendukung.*', 'pegawai_berkas_pendukung.updated_at AS timeStampBerkas')
+        ->leftJoin('pegawai_berkas_pendukung', 'pegawai_berkas_pendukung.id_pegawai', '=', 'pegawai_biodata.id')
+        ->where('pegawai_biodata.id', $idPegawai)
         ->first();
 
         $berkas = PegawaiBerkasPendukung::where("id_pegawai", $idPegawai)->latest()->first();

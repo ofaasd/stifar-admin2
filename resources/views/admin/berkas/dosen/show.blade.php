@@ -46,7 +46,7 @@
                   </div>
                   <form id="form-berkas" method="POST" enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" value="{{$dosen->idPegawai}}" name="id_pegawai">
+                    <input type="hidden" value="{{$dosen->id}}" name="id_pegawai">
                     @if (isset($updateHerregistrasi) && $updateHerregistrasi)
                         <input type="hidden" value="true" name="update_herregistrasi">
                     @endif
