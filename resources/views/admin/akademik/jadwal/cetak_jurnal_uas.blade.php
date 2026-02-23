@@ -53,7 +53,7 @@
     <table width="100%" align="left">
         <tr><th colspan="4">DAFTAR HADIR PERKULIAHAN</th></tr>
         <tr><td>Program Studi</td><td width="40%">: {{$jadwal->nama_prodi}}</td><td>Nama Dosen</td><td>: {{$dosen}}</td></tr>
-        <tr><td>Kode MK / Mata Kuliah</td><td>: {{$jadwal->kode_matkul}} / {{$jadwal->nama_matkul}}</td><td>Kelas / Kelompok</td><td>: 1</td></tr>
+        <tr><td>Kode MK / Mata Kuliah</td><td>: {{$jadwal->kode_matkul}} / {{$jadwal->nama_matkul}}</td><td>Kelas / Kelompok</td><td>: {{$jadwal->kel}}</td></tr>
     </table>
     <br />
     <table width="100%" class="customers" style="margin-top:20px;" cellpadding="5">
