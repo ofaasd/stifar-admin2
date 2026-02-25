@@ -53,8 +53,12 @@ class UserController extends Controller
             } else {
                 $search = $request->input('search.value');
 
-                $user = User::where('id', 'LIKE', "%{$search}%")
-                    ->orWhere('name', 'LIKE', "%{$search}%")
+                $user = User::select("users.id", "users.name", "users.email", "roles.name as role")
+                    ->where('users.id', 'LIKE', "%{$search}%")
+                    ->orWhere('users.name', 'LIKE', "%{$search}%")
+                    ->orWhere('roles.name', 'LIKE', "%{$search}%")
+                    ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+                    ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id')
                     ->offset($start)
                     ->limit($limit)
                     ->orderBy($order, $dir)
@@ -71,6 +75,7 @@ class UserController extends Controller
             // providing a dummy id instead of database ids
                 $ids = $start;
                 $role_list = [];
+                $role_list[0] = "";
                 foreach($role as $row){
                     $role_list[$row->id] = $row->name;
                 }
@@ -84,7 +89,7 @@ class UserController extends Controller
                     $nestedData['id'] = $row->id;
                     $nestedData['fake_id'] = ++$ids;
                     $nestedData['name'] = $row->name ?? "Kosong";
-                    $nestedData['role'] =   $role_list[$model_role[$row->id]] ?? "";
+                    $nestedData['role'] =   $role_list[$model_role[$row->id] ?? 0] ?? "";
                     $nestedData['email'] = $row->email;
                     $data[] = $nestedData;
                 }

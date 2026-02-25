@@ -375,7 +375,7 @@ class JadwalController extends Controller
             }
         }
 
-        $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul')
+        $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul','mata_kuliahs.rps')
             ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
             ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
             ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
