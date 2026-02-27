@@ -114,8 +114,8 @@
                                 <td>{{ $row_krs['nama_ruang'] }}</td>
                                 <td>{{ ($row_krs->sks_teori+$row_krs->sks_praktek) }}</td>
                                 <td>
-                                  @if(!empty($row_krs->rps))
-                                    <a href="{{url::to('/assets/file/rps/' . $row_krs->rps)}}" class="btn btn-primary" target="_blank">RPS & Kontrak Kuliah</a>
+                                  @if(!empty($row_krs->file_rps))
+                                    <a href="{{url::to('/assets/file/rps/' . $row_krs->file_rps)}}" class="btn btn-primary" target="_blank">RPS & Kontrak Kuliah</a>
                                   @endif
                                 </td>
                                 {{-- <td>{!!($row_krs->is_publish == 0)?'<p class="btn btn-secondary" style="font-size:8pt;">Menunggu Validasi Dosen Wali</p>':'<p class="btn btn-success" style="font-size:8pt;">Sudah Divalidasi</p>'!!}</td> --}}

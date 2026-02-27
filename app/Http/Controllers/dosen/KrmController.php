@@ -21,6 +21,7 @@ use App\Models\hari;
 use App\Models\Pengajar;
 use App\Models\LogNilai;
 use App\Models\JabatanStruktural;
+use App\Models\RpsDetail;
 use App\Models\Waktu as Sesi;
 use App\Models\master_nilai as MasterNilai;
 use Illuminate\Support\Facades\DB;
@@ -34,12 +35,18 @@ class KrmController extends Controller
         $title = "Kartu Rencana Mengajar";
         $id_tahun = TahunAjaran::where('status','Aktif')->first()->id;
         $id_dsn = PegawaiBiodatum::where('user_id', Auth::id())->first();
-        $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul', 'mata_kuliahs.rps')
+        $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul', 'rps_details.file_rps')
                         ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
                         ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
                         ->leftJoin('mata_kuliahs', 'mata_kuliahs.id', '=', 'jadwals.id_mk')
                         ->leftJoin('pengajars', 'pengajars.id_jadwal', '=', 'jadwals.id')
                         ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
+                        ->leftJoin('rps_details', function($join) use ($id_tahun) {
+                            $join->on('rps_details.mata_kuliah_id', '=', 'mata_kuliahs.id')
+                                ->where('rps_details.tahun_ajaran_id', '=', $id_tahun)
+                                // Sub-query untuk memastikan hanya mengambil 1 ID terbaru (jika ada upload ganda)
+                                ->whereRaw('rps_details.id = (SELECT MAX(id) FROM rps_details as rd2 WHERE rd2.mata_kuliah_id = rps_details.mata_kuliah_id AND rd2.tahun_ajaran_id = ?)', [$id_tahun]);
+                        })
                         ->where([ 'pengajars.id_dsn' => $id_dsn->id, 'jadwals.status' => 'Aktif', 'jadwals.id_tahun' => $id_tahun])->get();
         $no = 1;
         $jumlah_input_krs = [];
@@ -486,6 +493,7 @@ class KrmController extends Controller
     }
     public function simpanRps(Request $request){
         $id_matkul = $request->id_mk;
+        $taAktif = TahunAjaran::where('status', 'Aktif')->first();
         $filename = '';
         if ($request->file('rps') != null) {
             $file = $request->file('rps');
@@ -493,10 +501,12 @@ class KrmController extends Controller
             $tujuan_upload = 'assets/file/rps';
             $file->move($tujuan_upload,$filename);
 
-            $matakuliah = MataKuliah::find($id_matkul);
-            $matakuliah->rps = $filename;
-            $matakuliah->rps_log = date('Y-m-d H:i:s');
-            $matakuliah->save();
+            RpsDetail::create([
+                'mata_kuliah_id' => $id_matkul,
+                'tahun_ajaran_id' => $taAktif->id, // Ganti dengan ID tahun ajaran yang sesuai
+                'file_rps' => $filename,
+                'rps_log' => date('Y-m-d H:i:s'),
+            ]);
         }
         return redirect('/dosen/krm');
     }

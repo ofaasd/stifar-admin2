@@ -275,8 +275,8 @@
                                                                                 <label for="rps">RPS :</label>
                                                                                 <input type="file" class="form-control" name="rps"/>
                                                                                 <div class="alert alert-warning">Kosongi jika tidak ada file upload</div>
-                                                                                @if(!empty($mk['rps']))
-                                                                                <a href="{{url::to('/assets/file/rps/' . $mk['rps'])}}" class="btn btn-primary" target="_blank">Lihat File</a>
+                                                                                @if(!empty($mk->rps_sekarang))
+                                                                                <a href="{{url::to('/assets/file/rps/' . $mk->rps_sekarang->file_rps)}}" class="btn btn-primary" target="_blank">Lihat File</a>
                                                                                 @endif
                                                                             </div>
                                                                             <div class="mt-2 mb-2"></div>

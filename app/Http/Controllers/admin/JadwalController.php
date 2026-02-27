@@ -206,14 +206,33 @@ class JadwalController extends Controller
             }
             $mk = MataKuliah::where('status', 'Aktif')->whereIn('id',$list_mk)->get();
 
-            $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul','mata_kuliahs.rps')
-            ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
-            ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
-            ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
-            ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
-            ->where('jadwals.id_tahun',$id_tahun)
-            ->whereIn('id_mk', $list_mk)
-            ->get();
+            $jadwal = Jadwal::select(
+                            'jadwals.*', 
+                            'ta.kode_ta', 
+                            'waktus.nama_sesi', 
+                            'ruang.nama_ruang', 
+                            'mata_kuliahs.kode_matkul', 
+                            'mata_kuliahs.nama_matkul',
+                            // Ambil dari tabel rps_details, bukan mata_kuliahs
+                            'rps_details.file_rps', 
+                            'rps_details.rps_log'
+                        )
+                        ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
+                        ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
+                        ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
+                        ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
+                        
+                        // Tambahkan join ke rps_details dengan 2 parameter on
+                        ->leftJoin('rps_details', function($join) use ($id_tahun) {
+                            $join->on('rps_details.mata_kuliah_id', '=', 'mata_kuliahs.id')
+                                ->where('rps_details.tahun_ajaran_id', '=', $id_tahun)
+                                // Sub-query untuk memastikan hanya mengambil 1 ID terbaru (jika ada upload ganda)
+                                ->whereRaw('rps_details.id = (SELECT MAX(id) FROM rps_details as rd2 WHERE rd2.mata_kuliah_id = rps_details.mata_kuliah_id AND rd2.tahun_ajaran_id = ?)', [$id_tahun]);
+                        })
+                        
+                        ->where('jadwals.id_tahun', $id_tahun)
+                        ->whereIn('id_mk', $list_mk)
+                        ->get();
         }else{
 
             $mk = MataKuliah::select("mata_kuliahs.*")
@@ -222,15 +241,33 @@ class JadwalController extends Controller
                             ->where('mata_kuliahs.status', 'Aktif')
                             ->where('kurikulums.thn_ajar',$id_tahun)
                             ->get();
-            $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul','mata_kuliahs.rps')
-                    ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
-                    ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
-                    ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
-                    ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
-                    ->where('jadwals.id_tahun',$id_tahun)
-                    ->get();
+            $jadwal = Jadwal::select(
+                            'jadwals.*', 
+                            'ta.kode_ta', 
+                            'waktus.nama_sesi', 
+                            'ruang.nama_ruang', 
+                            'mata_kuliahs.kode_matkul', 
+                            'mata_kuliahs.nama_matkul',
+                            // Ambil dari tabel rps_details, bukan mata_kuliahs
+                            'rps_details.file_rps', 
+                            'rps_details.rps_log'
+                        )
+                        ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
+                        ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
+                        ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
+                        ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
+                        
+                        // Tambahkan join ke rps_details dengan 2 parameter on
+                        ->leftJoin('rps_details', function($join) use ($id_tahun) {
+                            $join->on('rps_details.mata_kuliah_id', '=', 'mata_kuliahs.id')
+                                ->where('rps_details.tahun_ajaran_id', '=', $id_tahun)
+                                // Sub-query untuk memastikan hanya mengambil 1 ID terbaru (jika ada upload ganda)
+                                ->whereRaw('rps_details.id = (SELECT MAX(id) FROM rps_details as rd2 WHERE rd2.mata_kuliah_id = rps_details.mata_kuliah_id AND rd2.tahun_ajaran_id = ?)', [$id_tahun]);
+                        })
+                        
+                        ->where('jadwals.id_tahun', $id_tahun)
+                        ->get();
         }
-
 
         $pegawai = PegawaiBiodatum::all();
         $list_pegawai = [];
@@ -375,14 +412,33 @@ class JadwalController extends Controller
             }
         }
 
-        $jadwal = Jadwal::select('jadwals.*', 'ta.kode_ta', 'waktus.nama_sesi', 'ruang.nama_ruang', 'mata_kuliahs.kode_matkul', 'mata_kuliahs.nama_matkul','mata_kuliahs.rps')
-            ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
-            ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
-            ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
-            ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
-            ->where('jadwals.id_tahun',$id_tahun)
-            ->whereIn('id_mk', $list_mk)
-            ->get();
+        $jadwal = Jadwal::select(
+                    'jadwals.*', 
+                    'ta.kode_ta', 
+                    'waktus.nama_sesi', 
+                    'ruang.nama_ruang', 
+                    'mata_kuliahs.kode_matkul', 
+                    'mata_kuliahs.nama_matkul',
+                    // Ambil dari tabel rps_details, bukan mata_kuliahs
+                    'rps_details.file_rps', 
+                    'rps_details.rps_log'
+                )
+                ->leftJoin('tahun_ajarans as ta', 'ta.id', '=', 'jadwals.id_tahun')
+                ->leftJoin('mata_kuliahs', 'jadwals.id_mk', '=', 'mata_kuliahs.id')
+                ->leftJoin('waktus', 'waktus.id', '=', 'jadwals.id_sesi')
+                ->leftJoin('master_ruang as ruang', 'ruang.id', '=', 'jadwals.id_ruang')
+                
+                // Tambahkan join ke rps_details dengan 2 parameter on
+                ->leftJoin('rps_details', function($join) use ($id_tahun) {
+                    $join->on('rps_details.mata_kuliah_id', '=', 'mata_kuliahs.id')
+                        ->where('rps_details.tahun_ajaran_id', '=', $id_tahun)
+                        // Sub-query untuk memastikan hanya mengambil 1 ID terbaru (jika ada upload ganda)
+                        ->whereRaw('rps_details.id = (SELECT MAX(id) FROM rps_details as rd2 WHERE rd2.mata_kuliah_id = rps_details.mata_kuliah_id AND rd2.tahun_ajaran_id = ?)', [$id_tahun]);
+                })
+                
+                ->where('jadwals.id_tahun', $id_tahun)
+                ->whereIn('id_mk', $list_mk)
+                ->get();
         $pegawai = PegawaiBiodatum::all();
         $list_pegawai = [];
         foreach($pegawai as $row){

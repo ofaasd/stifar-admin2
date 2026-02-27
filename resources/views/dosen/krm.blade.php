@@ -74,10 +74,10 @@
                                                                 <div class="modal-body">
                                                                     @csrf
                                                                     <input type="hidden" name="id_mk" value="{{$jad['id_mk']}}">
-                                                                    @if(empty($jad['rps']))
+                                                                    @if(empty($jad['file_rps']))
                                                                         <div class="alert alert-danger">File RPS Tidak Ditemukan</div>
                                                                     @else
-                                                                        <a href="{{url('/assets/file/rps/' . $jad->rps)}}" class="btn btn-primary" target="_blank">Lihat RPS & Kontrak Kuliah</a>
+                                                                        <a href="{{url('/assets/file/rps/' . $jad->file_rps)}}" class="btn btn-primary" target="_blank">Lihat RPS & Kontrak Kuliah</a>
                                                                     @endif
 
                                                                     <a href="{{url('/assets/file/rps/STIFAR - template RPS KPT 2024.docx')}}" class="btn btn-primary" target="_blank">Template RPS</a> <a href="{{url('/assets/file/rps/Kontrak perkuliahan Stifar 2024.docx')}}" class="btn btn-primary" target="_blank">Template Kontrak Perkuliahan</a><br /><br />

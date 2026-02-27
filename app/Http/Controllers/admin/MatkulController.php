@@ -9,6 +9,8 @@ use App\Models\KelompokMataKuliah;
 use App\Models\MasterBidangMinat;
 use App\Models\Rumpun;
 use App\Models\Prodi;
+use App\Models\RpsDetail;
+use App\Models\TahunAjaran;
 use Auth;
 
 class MatkulController extends Controller
@@ -18,8 +20,11 @@ class MatkulController extends Controller
     {
         //
         $title = "Master Matakuliah";
-        $mk = MataKuliah::select('mata_kuliahs.*')->leftJoin('kelompok_mata_kuliahs', 'kelompok_mata_kuliahs.id','=','mata_kuliahs.kel_mk')
-                          ->leftJoin('rumpuns', 'rumpuns.id','=','mata_kuliahs.rumpun')->get();
+        $mk = MataKuliah::with('rps_sekarang')
+                ->select('mata_kuliahs.*') // Pastikan id ikut terpilih
+                ->leftJoin('kelompok_mata_kuliahs', 'kelompok_mata_kuliahs.id', '=', 'mata_kuliahs.kel_mk')
+                ->leftJoin('rumpuns', 'rumpuns.id', '=', 'mata_kuliahs.rumpun')
+                ->get();
         $list_mk = [];
         $list_kode_mk = [];
         foreach($mk as $row){
@@ -35,6 +40,7 @@ class MatkulController extends Controller
 
     public function simpanMK(Request $request)
     {
+        $taAktif = TahunAjaran::where('status', 'Aktif')->first();
         $filename = '';
         if ($request->file('rps') != null) {
             $file = $request->file('rps');
@@ -42,42 +48,29 @@ class MatkulController extends Controller
             $tujuan_upload = 'assets/file/rps';
             $file->move($tujuan_upload,$filename);
         }
+        $mk = MataKuliah::create(
+            [
+                'kode_matkul' => $request->kode_matkul,
+                'nama_matkul' => $request->nama_matkul,
+                'nama_matkul_eng' => $request->nama_inggris,
+                'kel_mk' => $request->kelompok,
+                'semester' => $request->semester,
+                'sks_teori' => $request->sks_teori,
+                'sks_praktek' => $request->sks_praktek,
+                'status_mk' => $request->status_mk,
+                'id_bidang_minat' => $request->id_bidang_minat,
+                'prasyarat1' => $request->prasyarat1,
+                'rumpun' => $request->rumpun,
+                'status' => $request->status
+            ]
+        );
         if(!empty($filename)){
-            $mk = MataKuliah::create(
-                [
-                    'kode_matkul' => $request->kode_matkul,
-                    'nama_matkul' => $request->nama_matkul,
-                    'nama_matkul_eng' => $request->nama_inggris,
-                    'kel_mk' => $request->kelompok,
-                    'semester' => $request->semester,
-                    'sks_teori' => $request->sks_teori,
-                    'sks_praktek' => $request->sks_praktek,
-                    'status_mk' => $request->status_mk,
-                    'id_bidang_minat' => $request->id_bidang_minat,
-                    'rumpun' => $request->rumpun,
-                    'prasyarat1' => $request->prasyarat1,
-                    'rps' => $filename,
-                    'rps_log' => date('Y-m-d H:i:s'),
-                    'status' => $request->status
-                ]
-            );
-        }else{
-            $mk = MataKuliah::create(
-                [
-                    'kode_matkul' => $request->kode_matkul,
-                    'nama_matkul' => $request->nama_matkul,
-                    'nama_matkul_eng' => $request->nama_inggris,
-                    'kel_mk' => $request->kelompok,
-                    'semester' => $request->semester,
-                    'sks_teori' => $request->sks_teori,
-                    'sks_praktek' => $request->sks_praktek,
-                    'status_mk' => $request->status_mk,
-                    'id_bidang_minat' => $request->id_bidang_minat,
-                    'prasyarat1' => $request->prasyarat1,
-                    'rumpun' => $request->rumpun,
-                    'status' => $request->status
-                ]
-            );
+            RpsDetail::create([
+                'mata_kuliah_id' => $mk->id,
+                'tahun_ajaran_id' => $taAktif->id, // Ganti dengan ID tahun ajaran yang sesuai
+                'file_rps' => $filename,
+                'rps_log' => date('Y-m-d H:i:s'),
+            ]);
         }
         if ($mk) {
             return json_encode(['status' => 'ok', 'kode' => 200]);
@@ -86,6 +79,7 @@ class MatkulController extends Controller
         }
     }
     public function updateMK(Request $request){
+        $taAktif = TahunAjaran::where('status', 'Aktif')->first();
         $filename = '';
         if ($request->file('rps') != null) {
             $file = $request->file('rps');
@@ -93,37 +87,26 @@ class MatkulController extends Controller
             $tujuan_upload = 'assets/file/rps';
             $file->move($tujuan_upload,$filename);
         }
+        $mk = MataKuliah::where('id', $request->id)->update([
+            'kode_matkul' => $request->kode_matkul,
+            'nama_matkul' => $request->nama_matkul,
+            'nama_matkul_eng' => $request->nama_inggris,
+            'kel_mk' => $request->kelompok,
+            'semester' => $request->semester,
+            'sks_teori' => $request->sks_teori,
+            'sks_praktek' => $request->sks_praktek,
+            'status_mk' => $request->status_mk,
+            'id_bidang_minat' => $request->id_bidang_minat,
+            'rumpun' => $request->rumpun,
+            'prasyarat1' => $request->prasyarat1,
+            'status' => $request->status
+        ]);
         if(!empty($filename)){
-            $mk = MataKuliah::where('id', $request->id)->update([
-                'kode_matkul' => $request->kode_matkul,
-                'nama_matkul' => $request->nama_matkul,
-                'nama_matkul_eng' => $request->nama_inggris,
-                'kel_mk' => $request->kelompok,
-                'semester' => $request->semester,
-                'sks_teori' => $request->sks_teori,
-                'sks_praktek' => $request->sks_praktek,
-                'status_mk' => $request->status_mk,
-                'id_bidang_minat' => $request->id_bidang_minat,
-                'rumpun' => $request->rumpun,
-                'rps' => $filename,
+            RpsDetail::create([
+                'mata_kuliah_id' => $request->id,
+                'tahun_ajaran_id' => $taAktif->id, // Ganti dengan ID tahun ajaran yang sesuai
+                'file_rps' => $filename,
                 'rps_log' => date('Y-m-d H:i:s'),
-                'prasyarat1' => $request->prasyarat1,
-                'status' => $request->status
-            ]);
-        }else{
-            $mk = MataKuliah::where('id', $request->id)->update([
-                'kode_matkul' => $request->kode_matkul,
-                'nama_matkul' => $request->nama_matkul,
-                'nama_matkul_eng' => $request->nama_inggris,
-                'kel_mk' => $request->kelompok,
-                'semester' => $request->semester,
-                'sks_teori' => $request->sks_teori,
-                'sks_praktek' => $request->sks_praktek,
-                'status_mk' => $request->status_mk,
-                'id_bidang_minat' => $request->id_bidang_minat,
-                'rumpun' => $request->rumpun,
-                'prasyarat1' => $request->prasyarat1,
-                'status' => $request->status
             ]);
         }
         if ($mk) {

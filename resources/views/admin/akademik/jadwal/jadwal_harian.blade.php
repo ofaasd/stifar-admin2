@@ -114,10 +114,10 @@
                                                             <td>{{ $jad['tp'] }}</td>
                                                             <td>{{$jumlah_input_krs[$jad->id]}} / {{ ($jad['kuota_tetap'] == 0) ? ((int)$jad['kuota'] +(int)$jumlah_input_krs[$jad->id]) : $jad['kuota_tetap']}}</td>
                                                             <td>
-                                                                 @if(empty($jad['rps']))
-                                                                        <div class="alert alert-danger">Empty</div>
+                                                                 @if(empty($jad['file_rps']))
+                                                                    <div class="alert alert-danger">Empty</div>
                                                                 @else
-                                                                    <a href="{{url('/assets/file/rps/' . $jad->rps)}}" class="btn btn-primary" target="_blank">RPS</a>
+                                                                    <a href="{{url('/assets/file/rps/' . $jad->file_rps)}}" class="btn btn-primary" target="_blank">RPS</a>
                                                                 @endif
                                                             </td>
                                                             <td>

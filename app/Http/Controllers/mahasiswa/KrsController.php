@@ -57,13 +57,21 @@ class KrsController extends Controller
         $angkatan_ta = (int)($mahasiswa->angkatan . "1");
 
         $tahun_ajaran = TahunAjaran::where('status','Tidak Aktif')->where('kode_ta','>=',$angkatan_ta)->get();
+        
         $krs = [];
         foreach($tahun_ajaran as $row){
-            $krs[$row->id] = Krs::select('krs.*', 'a.hari', 'a.kel', 'b.nama_matkul', 'b.sks_teori', 'b.sks_praktek','b.kode_matkul', 'c.nama_sesi', 'd.nama_ruang', 'b.rps')
+            $id_tahun = $row->id;
+            $krs[$row->id] = Krs::select('krs.*', 'a.hari', 'a.kel', 'b.nama_matkul', 'b.sks_teori', 'b.sks_praktek','b.kode_matkul', 'c.nama_sesi', 'd.nama_ruang', 'rps_details.file_rps')
                     ->leftJoin('jadwals as a', 'krs.id_jadwal', '=', 'a.id')
                     ->leftJoin('mata_kuliahs as b', 'a.id_mk', '=', 'b.id')
                     ->leftJoin('waktus as c', 'a.id_sesi', '=', 'c.id')
                     ->leftJoin('master_ruang as d', 'a.id_ruang', '=', 'd.id')
+                    ->leftJoin('rps_details', function($join) use ($id_tahun) {
+                        $join->on('rps_details.mata_kuliah_id', '=', 'mata_kuliahs.id')
+                            ->where('rps_details.tahun_ajaran_id', '=', $id_tahun)
+                            // Sub-query untuk memastikan hanya mengambil 1 ID terbaru (jika ada upload ganda)
+                            ->whereRaw('rps_details.id = (SELECT MAX(id) FROM rps_details as rd2 WHERE rd2.mata_kuliah_id = rps_details.mata_kuliah_id AND rd2.tahun_ajaran_id = ?)', [$id_tahun]);
+                    })
                     ->where('krs.id_tahun', $row->id)
                     ->where('id_mhs',$mahasiswa->id)
                     ->where('is_publish',1)
